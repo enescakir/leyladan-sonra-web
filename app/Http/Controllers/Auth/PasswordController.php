@@ -20,6 +20,10 @@ class PasswordController extends Controller
 
     use ResetsPasswords;
 
+//    protected $linkRequestView = 'admin.auth.passwords.email';
+    protected $subject = 'Şifre Sıfırlama Linkiniz';
+//    protected $resetView = 'admin.auth.passwords.reset';
+
     /**
      * Create a new password controller instance.
      *
@@ -29,4 +33,10 @@ class PasswordController extends Controller
     {
         $this->middleware('guest');
     }
+
+    protected function getSendResetLinkEmailSuccessResponse($response)
+    {
+        return redirect()->back()->with('status', 'Şifrenizi sıfırlamak için ilgili talimatlar e-posta adresinize gönderilmiştir.');
+    }
+
 }

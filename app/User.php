@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -12,7 +13,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'first_name', 'last_name', 'email', 'password', 'birthday', 'mobile', 'year', 'title', 'profile_photo', 'faculty_id'
     ];
 
     /**
@@ -23,4 +24,19 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $appends = ['full_name'];
+
+
+    public function setBirthdayAttribute($date){
+        return $this->attributes['birthday'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
+    }
+
+    public function setMobileAttribute($mobile){
+        return $this->attributes['mobile'] = substr(str_replace(['\0', '+', ')', '(', '-', ' ', '\t'], '', $mobile), -10);
+    }
+
+    public function getFullNameAttribute(){
+        return $this->attributes['first_name'] . " " .$this->attributes['last_name'];
+    }
 }

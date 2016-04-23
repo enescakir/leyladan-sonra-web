@@ -7,6 +7,11 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
+use Auth, Log, Session;
+use App\Faculty;
 
 class AuthController extends Controller
 {
@@ -28,7 +33,11 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/admin';
+//    protected $loginView = 'admin.auth.login';
+//    protected $registerView = 'admin.auth.register';
+    protected $redirectAfterLogout = '/admin';
+
 
     /**
      * Create a new authentication controller instance.
@@ -41,6 +50,55 @@ class AuthController extends Controller
     }
 
     /**
+     * Log user in system. It check activation status of user.
+     *
+     * @param  Request $request -> User login datas
+     * @return Return view and status message
+     */
+    public function login(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials, $request->has('remember'))) {
+            $currentUser = Auth::user();
+            $currentUser->last_login = date("Y-m-d H:i:s");
+            $currentUser->save();
+
+            if ($currentUser->activated_by == null) {
+                Session::flash('flash_message', 'Hesabınız fakülte yöneticiniz tarafından daha onaylanmadı.');
+                Auth::logout();
+                return back()->withInput($request->only('email', 'remember'));
+            } else {
+                return redirect()->route('admin.dashboard');
+            }
+        } else {
+            Session::flash('flash_message', 'Giriş bilgilerinizde bir problem var.');
+            return back()->withInput($request->only('email', 'remember'));
+        }
+    }
+
+
+    /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRegistrationForm()
+    {
+        if (property_exists($this, 'registerView')) {
+            return view($this->registerView);
+        }
+        $faculties = Faculty::all();
+        return view('auth.register', compact(['faculties']));
+    }
+
+
+    /**
      * Get a validator for an incoming registration request.
      *
      * @param  array  $data
@@ -49,9 +107,15 @@ class AuthController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
+            'faculty_id' => 'required',
+            'birthday' => 'required|max:255',
+            'mobile' => 'required|max:255',
+            'year' => 'required|max:255',
+            'title' => 'required|max:255',
         ]);
     }
 
@@ -64,9 +128,15 @@ class AuthController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'birthday' => $data['birthday'],
+            'faculty_id' => intval($data['faculty_id']),
+            'mobile' => substr(str_replace(['\0', '+', ')', '(', '-', ' ', '\t'], '', $data['mobile']), -10),
+            'year' => $data['year'],
+            'title' => $data['title'],
         ]);
     }
 }

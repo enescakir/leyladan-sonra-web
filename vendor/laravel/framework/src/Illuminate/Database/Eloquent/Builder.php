@@ -355,6 +355,33 @@ class Builder
     }
 
     /**
+     * Chunk the results of a query by comparing numeric IDs.
+     *
+     * @param  int  $count
+     * @param  callable  $callback
+     * @param  string  $column
+     * @return bool
+     */
+    public function chunkById($count, callable $callback, $column = 'id')
+    {
+        $lastId = null;
+
+        $results = $this->forPageAfterId($count, 0, $column)->get();
+
+        while (! $results->isEmpty()) {
+            if (call_user_func($callback, $results) === false) {
+                return false;
+            }
+
+            $lastId = $results->last()->{$column};
+
+            $results = $this->forPageAfterId($count, $lastId, $column)->get();
+        }
+
+        return true;
+    }
+
+    /**
      * Execute a callback over each item while chunking.
      *
      * @param  callable  $callback
