@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Blood;
+use Datatables;
 
 class BloodController extends Controller
 {
@@ -23,6 +24,19 @@ class BloodController extends Controller
     {
         return view('admin.blood.index');
     }
+
+    public function indexData()
+    {
+        return Datatables::of(Blood::all())
+            ->addColumn('operations','
+                <a class="edit btn btn-success btn-sm" href="{{ route("admin.blood.edit", $id) }}"><i class="fa fa-pencil"></i></a>
+                <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>
+           ')
+            ->editColumn('first_name','{{$first_name . " " . $last_name}}')
+            ->editColumn('birthday','{{date("d.m.Y", strtotime($birthday))}}')
+            ->make(true);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -52,8 +66,6 @@ class BloodController extends Controller
 
         $this->validate($request, Blood::$validationRules, Blood::$validationMessages);
         $blood = new Blood($request->all());
-        dd($blood);
-
         $blood->save();
         return redirect()->route('admin.blood.index');
     }

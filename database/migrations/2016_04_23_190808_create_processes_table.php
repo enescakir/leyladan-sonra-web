@@ -19,8 +19,8 @@ class CreateProcessesTable extends Migration
             $table->string('desc');
             $table->timestamps();
 
-            $table->foreign('creator_id')->references('id')->on('users');
-            $table->foreign('child_id')->references('id')->on('children');
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');
         });
     }
 

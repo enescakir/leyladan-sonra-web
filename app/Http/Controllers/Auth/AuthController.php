@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Auth, Log, Session;
+use Auth, Log, Session, Mail;
 use App\Faculty;
 
 class AuthController extends Controller
@@ -97,6 +97,36 @@ class AuthController extends Controller
         return view('auth.register', compact(['faculties']));
     }
 
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            $this->throwValidationException(
+                $request, $validator
+            );
+        }
+
+
+        //Auth::guard($this->getGuard())->login();
+        $newUser = $this->create($request->all());
+        $users = User::where('faculty_id', $newUser->faculty_id)->where('title', 'Fakülte Sorumlusu')->get();
+
+        foreach ($users as $user) {
+            Mail::send('email.admin.newuser', ['user' => $user, 'newUser' => $newUser], function ($m) use ($user, $newUser) {
+                $m->to($user->email)->subject("Fakültenize yeni kayıt!");
+            });
+        }
+        Session::flash('flash_message', 'Fakülte yöneticiniz üyeliğinizi onayladıktan sonra giriş yapabilirsiniz.');
+        return redirect($this->redirectPath());
+    }
 
     /**
      * Get a validator for an incoming registration request.

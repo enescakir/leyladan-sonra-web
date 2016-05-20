@@ -1,14 +1,16 @@
 <?php
 
-return array(
-    "driver" => "smtp",
-    "host" => "smtp.sendgrid.net",
-    "port" => 2525,
-    "from" => array("address" => "teknik@leyladansonra.com", "name" => 'Leyla\'dan Sonra Sistem'),
-    "encryption" => "tls",
-    "username" => "EnesCakir",
-    "password" => "@Kaliforniya11@",
-);
+return [
+    'driver' => 'smtp',
+    'host' => 'smtp.sendgrid.net',
+    'port' => 587,
+    'from' => array('address' => 'teknik@leyladansonra.com', 'name' => 'Leyla\'dan Sonra Sistem'),
+    'encryption' => 'tls',
+    'username' => 'EnesCakir',
+    'password' => '@Kaliforniya11@',
+    'sendmail' => '/usr/sbin/sendmail -bs',
+    'pretend' => false,
+];
 
 //
 //return [

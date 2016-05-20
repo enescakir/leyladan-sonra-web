@@ -17,10 +17,10 @@ class CreateVolunteersTable extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
-            $table->string('platform')->nullable();
-            $table->string('device_token')->nullable();
             $table->string('mobile')->nullable();
             $table->string('city')->nullable();
+            $table->string('platform')->nullable();
+            $table->string('device_token')->nullable();
             $table->timestamps();
         });
 

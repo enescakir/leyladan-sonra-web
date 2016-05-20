@@ -38,11 +38,12 @@ class CreateChildrenTable extends Migration
             $table->string('verification_doc')->nullable();
             $table->enum('gift_state', ['Bekleniyor', 'Yolda', 'Bize Ulaştı', 'Teslim Edildi'])->default('Bekleniyor');
             $table->boolean('on_hospital')->nullable();
-            $table->datetime('until');
+            $table->date('until');
+            $table->string('slug');
             $table->timestamps();
 
             $table->foreign('faculty_id')->references('id')->on('faculties');
-            $table->foreign('volunteer_id')->references('id')->on('volunteers');
+            $table->foreign('volunteer_id')->references('id')->on('volunteers')->onDelete('set null');
         });
 
         Schema::create('child_user', function (Blueprint $table) {

@@ -21,10 +21,10 @@ class CreateBloodsTable extends Migration
             $table->boolean('rh');
             $table->integer('height')->nullable();
             $table->integer('weight')->nullable();
-            $table->date('birthday');
-            $table->string('mobile');
-            $table->string('email')->unique();
-            $table->string('city');
+            $table->date('birthday')->nullable();
+            $table->string('mobile')->unique();
+            $table->string('email')->nullable();
+            $table->string('city')->nullable();
             $table->timestamps();
         });
     }

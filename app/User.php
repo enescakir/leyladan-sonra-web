@@ -13,7 +13,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'email', 'password', 'birthday', 'mobile', 'year', 'title', 'profile_photo', 'faculty_id'
+        'first_name', 'last_name', 'email', 'password', 'birthday', 'mobile', 'year', 'title', 'profile_photo', 'faculty_id', 'gender'
     ];
 
     /**
@@ -28,6 +28,19 @@ class User extends Authenticatable
     protected $appends = ['full_name'];
 
 
+    public function children(){
+        return $this->belongsToMany('App\Child');
+    }
+
+    public function faculty(){
+        return $this->belongsTo('App\Faculty');
+    }
+
+    public function processes(){
+        return $this->hasMany('App\Process');
+    }
+
+
     public function setBirthdayAttribute($date){
         return $this->attributes['birthday'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
     }
@@ -39,4 +52,9 @@ class User extends Authenticatable
     public function getFullNameAttribute(){
         return $this->attributes['first_name'] . " " .$this->attributes['last_name'];
     }
+
+    public function getBirthdayHumanAttribute(){
+        return date("d.m.Y", strtotime($this->attributes['birthday']));
+    }
+
 }

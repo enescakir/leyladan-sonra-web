@@ -24,7 +24,7 @@ class CreateNotificationsTable extends Migration
             $table->timestamps();
 
             $table->foreign('faculty_id')->references('id')->on('faculties');
-            $table->foreign('done_by')->references('id')->on('users');
+            $table->foreign('done_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

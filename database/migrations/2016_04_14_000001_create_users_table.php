@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->dateTime('last_login')->nullable();
             $table->integer('faculty_id')->unsigned();
+            $table->enum('gender', ['Kadın', 'Erkek'])->nullable();
             $table->date('birthday');
             $table->string('mobile',10);
             $table->integer('year');

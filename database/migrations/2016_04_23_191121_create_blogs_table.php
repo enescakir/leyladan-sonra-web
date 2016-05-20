@@ -15,12 +15,16 @@ class CreateBlogsTable extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
-            $table->longtext('text');
-            $table->string('thumb');
-            $table->integer('author_id')->unsigned();
+            $table->longtext('text')->nullable();
+            $table->string('thumb')->nullable();
+            $table->integer('author_id')->unsigned()->nullable();
+            $table->string('slug');
+            $table->string('type');
+            $table->string('link')->nullable();
+
             $table->timestamps();
 
-            $table->foreign('author_id')->references('id')->on('users');
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
 
         });
 
@@ -29,10 +33,10 @@ class CreateBlogsTable extends Migration
             $table->string('title');
             $table->string('slug');
             $table->text('desc')->nullable();
-            $table->integer('created_by')->unsigned();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->timestamps();
 
-            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
 
         });
 

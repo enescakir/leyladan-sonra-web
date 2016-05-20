@@ -30,6 +30,17 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
+        view()->composer('front.parent', function($view)
+        {
+            $totalChildren = DB::table('children')->count();
+            $totalFaculties = DB::table('faculties')->count();
+
+            $view->with([
+                'totalChildren' => $totalChildren,
+                'totalFaculties' => $totalFaculties
+            ]);
+        });
+
 
     }
 

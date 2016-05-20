@@ -18,7 +18,7 @@ class Blood extends Model
         'gender'=>'required',
         'rh'=>'required',
         'birthday'=>'required|max:255',
-        'mobile'=>'required|max:255',
+        'mobile'=>'required|unique:bloods|max:255',
         'city'=>'required|max:255',
         'blood_type'=>'required',
         'email'=>'required|email|max:255'
@@ -34,6 +34,7 @@ class Blood extends Model
         'birthday.required'=>'Doğum günü boş bırakılamaz',
         'birthday.max'=>'Doğum günü en fazla 255 karakter olabilir',
         'mobile.required'=>'Telefon numarası boş bırakılamaz',
+        'mobile.unique'=>'Bu telefon numarası zaten kayıtlı.',
         'mobile.max'=>'Telefon numarası en fazla 255 karakter olabilir',
         'city.required'=>'Şehir boş bırakılamaz',
         'city.max'=>'Şehir en fazla 255 karakter olabilir',

@@ -21,17 +21,18 @@ class CreatePostsTable extends Migration
             $table->string('type');
             $table->timestamps();
 
-            $table->foreign('child_id')->references('id')->on('children');
-            $table->foreign('approved_by')->references('id')->on('users');
+            $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');
+            $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
         });
 
         Schema::create('post_images', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('ratio');
             $table->integer('post_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('post_id')->references('id')->on('posts');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });
 
     }

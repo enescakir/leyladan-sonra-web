@@ -24,6 +24,7 @@ class CreateNewsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->text('desc');
+            $table->string('link');
             $table->integer('channel_id')->unsigned();
             $table->timestamps();
 

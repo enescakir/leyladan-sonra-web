@@ -8,6 +8,13 @@ use Carbon\Carbon;
 class Faculty extends Model
 {
     /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'faculties';
+
+    /**
      * The attributes that are not mass assignable.
      *
      * @var array
@@ -15,9 +22,30 @@ class Faculty extends Model
     protected $guarded = [];
 
 
+    public function feeds(){
+        return $this->hasMany('App\Feed');
+    }
+
+    public function users(){
+        return $this->hasMany('App\User');
+    }
+
+    public function chats(){
+        return $this->hasMany('App\Chat');
+    }
+
+    public function responsibles(){
+        return $this->hasMany('App\User')->where('title','Fakülte Sorumlusu');
+    }
+
+    public function posts(){
+        return $this->hasManyThrough('App\Post', 'App\Child');
+    }
+
+
     public static $validationRules=[
         'full_name'=>'required|max:255',
-        'short_name'=>'required|max:255',
+        'slug'=>'required|max:255',
         'latitude'=>'numeric',
         'longitude'=>'numeric',
         'city'=>'required|max:255'
@@ -26,8 +54,8 @@ class Faculty extends Model
     public static $validationMessages=[
         'full_name.required'=>'Ad boş bırakılamaz',
         'full_name.max'=>'Ad en fazla 255 karakter olabilir',
-        'short_name.required'=>'Kısa ad boş bırakılamaz',
-        'short_name.max'=>'Kısa ad en fazla 255 karakter olabilir',
+        'slug.required'=>'Kısa ad boş bırakılamaz',
+        'slug.max'=>'Kısa ad en fazla 255 karakter olabilir',
         'latitude.numeric'=>'Enlem sayılardan oluşmalıdır',
         'longitude.numeric'=>'Boylam sayılardan oluşmalıdır',
         'city.required'=>'Şehir boş bırakılamaz',
