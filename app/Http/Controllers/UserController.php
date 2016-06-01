@@ -161,7 +161,7 @@ class UserController extends Controller
     public function approve(Request $request)
     {
         $user = User::findOrFail($request->user_id);
-        if($user->activated_by   == null){
+        if($user->activated_by == null){
             $user->activated_by = Auth::user()->id;
             $user->save();
             Mail::send('email.admin.activation', ['user' => $user], function ($m) use ($user) {

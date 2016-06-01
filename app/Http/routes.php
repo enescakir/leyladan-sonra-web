@@ -99,6 +99,7 @@ Route::group(['middleware' => ['web']], function () {
                 Route::get('users/unapproved/count', 'FacultyController@unapprovedCount')->name('admin.faculty.users.unapproved.count');
             });
             Route::get('cities', 'FacultyController@cities')->name('admin.faculty.cities');
+            Route::get('city/{code}', 'FacultyController@city')->name('admin.faculty.city');
         });
         Route::resource('faculty', 'FacultyController');
 
@@ -125,6 +126,7 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::resource('blog', 'BlogController');
         Route::resource('new', 'NewController');
+        Route::resource('testimonial', 'TestimonialController');
 
 
     });
@@ -140,6 +142,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/blog.html', 'FrontController@blogs')->name('front.blogs');
     Route::get('/blog/{name}.html', 'FrontController@blog')->name('front.blog');
     Route::get('/fakülteler.html', 'FrontController@faculties')->name('front.faculties');
+    Route::get('/gizlilik-politikasi.html', 'FrontController@privacy')->name('front.privacy');
+    Route::get('/kullanim-sartlari.html', 'FrontController@tos')->name('front.tos');
+    Route::get('/iletisim.html', 'FrontController@contact')->name('front.contact');
 
     Route::get('/{facultyName}.html', 'FrontController@faculty')->name('front.faculty');
     Route::post('/{facultyName}/{childSlug}', 'FrontController@childMessage')->name('front.child.message');

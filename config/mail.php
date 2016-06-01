@@ -1,5 +1,6 @@
 <?php
 
+
 return [
     'driver' => 'smtp',
     'host' => 'smtp.sendgrid.net',
@@ -7,12 +8,12 @@ return [
     'from' => array('address' => 'teknik@leyladansonra.com', 'name' => 'Leyla\'dan Sonra Sistem'),
     'encryption' => 'tls',
     'username' => 'EnesCakir',
-    'password' => '@Kaliforniya11@',
+    'password' => 'Kaliforniya11',
     'sendmail' => '/usr/sbin/sendmail -bs',
     'pretend' => false,
 ];
 
-//
+
 //return [
 //
 //    /*

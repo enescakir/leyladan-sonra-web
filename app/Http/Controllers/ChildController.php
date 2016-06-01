@@ -390,7 +390,29 @@ class ChildController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $child = Child::find($id);
+        $posts = $child->posts;
+        foreach( $posts as $post){
+            foreach( $post->images as $image){
+                File::delete('resources/admin/uploads/child_photos/' . $image->name);
+                $image->delete();
+            }
+            $post->delete();
+        }
+        File::delete('resources/admin/uploads/verification_docs/' . $child->verification_doc);
+        Process::where('child_id', $id)->delete();
+        $desc = Auth::user()->full_name . ", " . $child->full_name . " isimli çocuğunuzu sildi.";
+        $feed = new Feed([
+            'desc' => $desc,
+            'icon' => '4',
+            'faculty_id' => $child->faculty_id,
+            'title' => 'All'
+        ]);
+        $feed->save();
+
+        $child->delete();
+        //TODO: Add chats, socials
+        return http_response_code(200);
     }
 
 
@@ -407,12 +429,12 @@ class ChildController extends Controller
             $child->gift_state = 'Bize Ulaştı';
             $child->save();
 
-            $users = $child->users;
-            foreach ($users as $value) {
-                Mail::send('email.admin.giftarrival', ['user' => $value, 'child' => $child], function ($m) use ($value, $child) {
-                    $m->to($value->email)->subject("Çocuğunuzun hediyesi bize ulaştı.");
-                });
-            }
+//            $users = $child->users;
+//            foreach ($users as $value) {
+//                Mail::send('email.admin.giftarrival', ['user' => $value, 'child' => $child], function ($m) use ($value, $child) {
+//                    $m->to($value->email)->subject("Çocuğunuzun hediyesi bize ulaştı.");
+//                });
+//            }
 
             $feed = new Feed;
             $feed->desc = $child->full_name . " hediyesi geldi.";

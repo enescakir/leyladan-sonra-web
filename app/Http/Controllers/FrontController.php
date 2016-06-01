@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Requests\VolunteerMessageRequest;
 use App\Child, App\Post, App\Faculty, App\News, App\Channel;
-use App\Volunteer, App\Chat, App\Message, App\Testimonial;
+use App\Volunteer, App\Chat, App\Message, App\Testimonial, DB;
 
 class FrontController extends Controller
 {
@@ -35,8 +35,21 @@ class FrontController extends Controller
         return view('front.us');
     }
 
+    public function privacy(){
+        return view('front.privacy');
+    }
+
+    public function tos(){
+        return view('front.tos');
+    }
+
+    public function contact(){
+        return view('front.contact');
+    }
+
     public function testimonials(){
-        return view('front.testimonials');
+        $testimonials = Testimonial::orderBy(DB::raw('LENGTH(text)'), 'DESC')->get();
+        return view('front.testimonials', compact(['testimonials']));
     }
 
     public function newskit(){
@@ -104,5 +117,6 @@ class FrontController extends Controller
 
         return "Tebrikler mesaj alındı";
     }
+
 
 }

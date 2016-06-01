@@ -14,6 +14,8 @@ class Feed extends Model
      */
     protected $table = 'feeds';
 
+    protected $guarded = [];
+
     public function faculty(){
         return $this->belongsTo('App\Faculty');
     }

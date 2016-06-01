@@ -16,7 +16,8 @@ class NewController extends Controller
      */
     public function index()
     {
-        return view('admin.new.index');
+        $news = News::with('channel')->get();
+        return view('admin.new.index', compact(['news']));
     }
 
     /**

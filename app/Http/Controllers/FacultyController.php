@@ -112,13 +112,30 @@ class FacultyController extends Controller
     public function cities()
     {
 
-        $cities = Faculty::lists('id','code')->toArray();
-
-        foreach($cities as $key => $city){
-            $cities[$key] = '#339a99';
+//        $cities = Faculty::lists('id','code')->toArray();
+//
+//        foreach($cities as $key => $city){
+//            $cities[$key] = '#339a99';
+//        }
+        $cities = Faculty::all();
+        $coloredCities = [];
+        foreach($cities as $city){
+            if($city->started_at == null){
+                $coloredCities[$city->code] = '#fcd5ae';
+            }else{
+                $coloredCities[$city->code] = '#339999';
+            }
         }
+
+        return $coloredCities;
+    }
+
+    public function city($code)
+    {
+        $cities = Faculty::where('code', $code)->get();
         return $cities;
     }
+
 
     /**
      * Display a listing of faculty's children.

@@ -71,4 +71,8 @@ class Faculty extends Model
         $this->attributes['started_at'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
     }
 
+//    public function getStartedAtAttribute(){
+//        return date("d.m.Y", strtotime($this->attributes['started_at']));
+//    }
+
 }
