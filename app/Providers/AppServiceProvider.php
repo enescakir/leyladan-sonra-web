@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Auth, DB, Log;
+use Auth, DB, Log, Cache;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,7 +24,6 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('admin.parent', function($view)
         {
             $authUser = Auth::user();
-
             $view->with([
                 'authUser' => $authUser
             ]);
@@ -32,8 +31,15 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('front.parent', function($view)
         {
-            $totalChildren = DB::table('children')->count();
-            $totalFaculties = DB::table('faculties')->count();
+
+            $totalChildren = Cache::remember('totalChildren', 15, function() {
+                return DB::table('children')->count();
+            });
+
+            $totalFaculties = Cache::remember('activeFaculties', 15, function() {
+                return DB::table('faculties')->whereNotNull('started_at')->count();
+            });
+
 
             $view->with([
                 'totalChildren' => $totalChildren,

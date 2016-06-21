@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Blog, App\BlogCategory;
-use Auth;
+use Auth, Image;
 
 class BlogController extends Controller
 {
@@ -17,7 +17,8 @@ class BlogController extends Controller
      */
     public function index()
     {
-        //
+        $blogs = Blog::with('categories')->get();
+        return $blogs->toArray();
     }
 
     /**
@@ -39,7 +40,44 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $this->validate($request, Blog::$validationRules, Blog::$validationMessages);
+        $blog = new Blog($request->only('title', 'type','text'));
+        if( $request->link != ''){
+            $blog->link = $request->link;
+        }
+        $categoriesArray = [];
+        $categories = $request->categories;
+        foreach($categories as $categoryItem){
+            $category = BlogCategory::where('title',$categoryItem)->first();
+            if($category == null){
+                $slug = str_slug($this->removeTurkish($categoryItem));
+                $category = new BlogCategory([
+                    'title' => $categoryItem,
+                    'slug' => $slug,
+                    'desc' => '',
+                    'created_by' => Auth::user()->id
+                ]);
+                $category->save();
+            }
+            array_push($categoriesArray, $category->id);
+        }
+        $blog->author_id = Auth::user()->id;
+        $blog->save();
+        $blog->slug = str_slug($this->removeTurkish($blog->title). "-" . $blog->id);
+
+        $blog->categories()->attach($categoriesArray);
+        if($request->hasFile('thumb') ){
+            $thumb = Image::make($request->file('thumb'))
+                ->resize(1000, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })
+                ->save('resources/admin/uploads/blog_images/' . $blog->id . '_thumb.jpg', 80);
+            $blog->thumb =  $blog->id . '_thumb.jpg';
+        }
+        $blog->save();
+
+        return redirect()->route('admin.blog.index');
+
     }
 
     /**
@@ -86,4 +124,20 @@ class BlogController extends Controller
     {
         //
     }
+
+    private  function removeTurkish($string){
+        $charsArray = [
+            'c'    => ['ç', 'Ç'],
+            'g'    => ['ğ', 'Ğ'],
+            'i'    => ['I', 'İ', 'ı'],
+            'o'    => ['Ö','ö'],
+            's'    => ['Ş', 'ş'],
+            'u'    => ['ü', 'Ü'],
+        ];
+        foreach ($charsArray as $key => $val) {
+            $string = str_replace($val, $key, $string);
+        }
+        return $string;
+    }
+
 }

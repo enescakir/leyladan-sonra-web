@@ -1,0 +1,51 @@
+{
+  "name": "spatie/laravel-analytics",
+  "description": "An opinionated Laravel 5 package to retrieve Google Analytics data.",
+  "keywords": [
+    "spatie",
+    "google",
+    "analytics",
+    "retrieve",
+    "reports",
+    "laravel"
+  ],
+  "homepage": "https://github.com/spatie/laravel-analytics",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Freek Van der Herten",
+      "email": "freek@spatie.be",
+      "homepage": "https://murze.be",
+      "role": "Developer"
+    },
+    {
+      "name": "Matthias De Winter",
+      "email": "dewinter.matthias@gmail.com",
+      "homepage": "https://github.com/MatthiasDeWinter",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php" : ">=5.4.0",
+    "illuminate/contracts": "~5.0",
+    "illuminate/support": "~5.0",
+    "google/apiclient" : "1.1.*",
+    "nesbot/carbon": "~1.0"
+
+  },
+  "require-dev": {
+    "phpunit/phpunit" : "4.*",
+    "mockery/mockery": "0.9.*",
+    "scrutinizer/ocular": "~1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Spatie\\LaravelAnalytics\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Spatie\\LaravelAnalytics\\Tests\\": "tests"
+    }
+  }
+}

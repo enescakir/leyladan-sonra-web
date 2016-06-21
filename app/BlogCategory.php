@@ -11,7 +11,7 @@ class BlogCategory extends Model
     protected $guarded = [];
 
     public function blogs(){
-        return $this->belongsToMany('App\Blog')->withTimestamps();
+        return $this->belongsToMany('App\Blog','blog_category','category_id', 'blog_id')->withTimestamps();
     }
 
 }

@@ -158,7 +158,7 @@ class Process
             $this->setEnv($env);
         }
 
-        $this->input = $input;
+        $this->setInput($input);
         $this->setTimeout($timeout);
         $this->useFileHandles = '\\' === DIRECTORY_SEPARATOR;
         $this->pty = false;
@@ -216,7 +216,7 @@ class Process
      * @throws RuntimeException       if PHP was compiled with --enable-sigchild and the enhanced sigchild compatibility mode is not enabled
      * @throws ProcessFailedException if the process didn't terminate successfully
      */
-    public function mustRun(callable $callback = null)
+    public function mustRun($callback = null)
     {
         if (!$this->enhanceSigchildCompatibility && $this->isSigchildEnabled()) {
             throw new RuntimeException('This PHP has been compiled with --enable-sigchild. You must use setEnhanceSigchildCompatibility() to use this method.');
@@ -248,7 +248,7 @@ class Process
      * @throws RuntimeException When process is already running
      * @throws LogicException   In case a callback is provided and output has been disabled
      */
-    public function start(callable $callback = null)
+    public function start($callback = null)
     {
         if ($this->isRunning()) {
             throw new RuntimeException('Process is already running');
@@ -321,7 +321,7 @@ class Process
      *
      * @see start()
      */
-    public function restart(callable $callback = null)
+    public function restart($callback = null)
     {
         if ($this->isRunning()) {
             throw new RuntimeException('Process is already running');
@@ -348,7 +348,7 @@ class Process
      * @throws RuntimeException When process stopped after receiving signal
      * @throws LogicException   When process is not yet started
      */
-    public function wait(callable $callback = null)
+    public function wait($callback = null)
     {
         $this->requireProcessIsStarted(__FUNCTION__);
 
@@ -477,10 +477,10 @@ class Process
      * In comparison with the getOutput method which always return the whole
      * output, this one returns the new output since the last call.
      *
+     * @return string The process output since the last call
+     *
      * @throws LogicException in case the output has been disabled
      * @throws LogicException In case the process is not started
-     *
-     * @return string The process output since the last call
      */
     public function getIncrementalOutput()
     {
@@ -536,10 +536,10 @@ class Process
      * whole error output, this one returns the new error output since the last
      * call.
      *
+     * @return string The process error output since the last call
+     *
      * @throws LogicException in case the output has been disabled
      * @throws LogicException In case the process is not started
-     *
-     * @return string The process error output since the last call
      */
     public function getIncrementalErrorOutput()
     {
@@ -1023,6 +1023,22 @@ class Process
     }
 
     /**
+     * Gets the contents of STDIN.
+     *
+     * @return string|null The current contents
+     *
+     * @deprecated since version 2.5, to be removed in 3.0.
+     *             Use setInput() instead.
+     *             This method is deprecated in favor of getInput.
+     */
+    public function getStdin()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Use the getInput() method instead.', E_USER_DEPRECATED);
+
+        return $this->getInput();
+    }
+
+    /**
      * Gets the Process input.
      *
      * @return null|string The Process input
@@ -1030,6 +1046,26 @@ class Process
     public function getInput()
     {
         return $this->input;
+    }
+
+    /**
+     * Sets the contents of STDIN.
+     *
+     * @param string|null $stdin The new contents
+     *
+     * @return self The current Process instance
+     *
+     * @deprecated since version 2.5, to be removed in 3.0.
+     *             Use setInput() instead.
+     *
+     * @throws LogicException           In case the process is running
+     * @throws InvalidArgumentException In case the argument is invalid
+     */
+    public function setStdin($stdin)
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.5 and will be removed in 3.0. Use the setInput() method instead.', E_USER_DEPRECATED);
+
+        return $this->setInput($stdin);
     }
 
     /**
@@ -1042,6 +1078,8 @@ class Process
      * @return self The current Process instance
      *
      * @throws LogicException In case the process is running
+     *
+     * Passing an object as an input is deprecated since version 2.5 and will be removed in 3.0.
      */
     public function setInput($input)
     {
@@ -1049,7 +1087,7 @@ class Process
             throw new LogicException('Input can not be set while the process is running.');
         }
 
-        $this->input = ProcessUtils::validateInput(sprintf('%s::%s', __CLASS__, __FUNCTION__), $input);
+        $this->input = ProcessUtils::validateInput(__METHOD__, $input);
 
         return $this;
     }
@@ -1207,12 +1245,13 @@ class Process
      */
     protected function buildCallback($callback)
     {
+        $that = $this;
         $out = self::OUT;
-        $callback = function ($type, $data) use ($callback, $out) {
+        $callback = function ($type, $data) use ($that, $callback, $out) {
             if ($out == $type) {
-                $this->addOutput($data);
+                $that->addOutput($data);
             } else {
-                $this->addErrorOutput($data);
+                $that->addErrorOutput($data);
             }
 
             if (null !== $callback) {

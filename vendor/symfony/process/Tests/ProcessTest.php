@@ -209,6 +209,24 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedLength, strlen($p->getErrorOutput()));
     }
 
+    public function testLiveStreamAsInput()
+    {
+        $stream = fopen('php://memory', 'r+');
+        fwrite($stream, 'hello');
+        rewind($stream);
+
+        $p = $this->getProcess(sprintf('%s -r %s', self::$phpBin, escapeshellarg('stream_copy_to_stream(STDIN, STDOUT);')));
+        $p->setInput($stream);
+        $p->start(function ($type, $data) use ($stream) {
+            if ('hello' === $data) {
+                fclose($stream);
+            }
+        });
+        $p->wait();
+
+        $this->assertSame('hello', $p->getOutput());
+    }
+
     /**
      * @expectedException \Symfony\Component\Process\Exception\LogicException
      * @expectedExceptionMessage Input can not be set while the process is running.
@@ -263,6 +281,24 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
             array(null, null),
             array('24.5', 24.5),
             array('input data', 'input data'),
+        );
+    }
+
+    /**
+     * @dataProvider provideLegacyInputValues
+     * @group legacy
+     */
+    public function testLegacyValidInput($expected, $value)
+    {
+        $process = $this->getProcess(self::$phpBin.' -v');
+        $process->setInput($value);
+        $this->assertSame($expected, $process->getInput());
+    }
+
+    public function provideLegacyInputValues()
+    {
+        return array(
+            array('stringifiable', new Stringifiable()),
         );
     }
 
@@ -1145,7 +1181,7 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
      * @dataProvider provideVariousIncrementals
      */
     public function testIncrementalOutputDoesNotRequireAnotherCall($stream, $method) {
-        $process = new Process(self::$phpBin.' -r '.escapeshellarg('$n = 0; while ($n < 3) { file_put_contents(\''.$stream.'\', $n, 1); $n++; usleep(1000); }'), null, null, null, null);
+        $process = $this->getProcess(self::$phpBin.' -r '.escapeshellarg('$n = 0; while ($n < 3) { file_put_contents(\''.$stream.'\', $n, 1); $n++; usleep(1000); }'), null, null, null, null);
         $process->start();
         $result = '';
         $limit = microtime(true) + 3;
@@ -1211,6 +1247,14 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
                 $this->setExpectedException('Symfony\Component\Process\Exception\RuntimeException', 'This PHP has been compiled with --enable-sigchild.');
             }
         }
+    }
+}
+
+class Stringifiable
+{
+    public function __toString()
+    {
+        return 'stringifiable';
     }
 }
 

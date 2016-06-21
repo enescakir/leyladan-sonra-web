@@ -22,6 +22,7 @@ class PasswordController extends Controller
 
 //    protected $linkRequestView = 'admin.auth.passwords.email';
     protected $subject = 'Şifre Sıfırlama Linkiniz';
+    protected $redirectPath = '/admin';
 //    protected $resetView = 'admin.auth.passwords.reset';
 
     /**
@@ -37,6 +38,22 @@ class PasswordController extends Controller
     protected function getSendResetLinkEmailSuccessResponse($response)
     {
         return redirect()->back()->with('status', 'Şifrenizi sıfırlamak için ilgili talimatlar e-posta adresinize gönderilmiştir.');
+    }
+
+    protected function resetEmailBuilder()
+    {
+//        \Mail::send('email.admin.giftarrival', ['user' => $value, 'child' => $child], function ($message) use ($value, $child) {
+//            $message
+//                ->to($value->email)
+//                ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+//                ->subject('Çocuğunuzun hediyesi bize ulaştı.');
+//        });
+
+        return function ($message) {
+            $message
+                ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+                ->subject($this->getEmailSubject());
+        };
     }
 
 }

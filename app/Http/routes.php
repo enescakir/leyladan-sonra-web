@@ -3,7 +3,7 @@
 Route::group(['prefix' => 'api'], function () {
     Route::get('children', 'ApiController@children')->name('api.children');
     Route::get('child/{id}', 'ApiController@child')->name('api.child');
-
+    Route::post('child/form', 'ApiController@childForm')->name('api.child.form');
 });
 
 /*
@@ -23,22 +23,27 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/', function () { return redirect('/admin/login'); })->name('admin.login');
         Route::get('/blank', 'DashboardController@blank')->name('admin.blank');
         Route::get('/sendemail', 'DashboardController@sendEmail');
+        Route::get('/test', 'DashboardController@test');
         Route::get('/moving', 'DashboardController@moving');
         Route::get('/materials', 'DashboardController@materials')->name('admin.materials');
+        Route::get('/form/create', 'DashboardController@createForm')->name('admin.form.create');
+        Route::post('/form', 'DashboardController@storeForm')->name('admin.form.store');
 
 
-        Route::get('/kilavuz', 'DashboardController@manual')->name('admin.manual');
+        Route::get('/manual', 'DashboardController@manual')->name('admin.manual');
 
         Route::group(['prefix' => 'dashboard'], function () {
             Route::get('/', 'DashboardController@dashboard')->name('admin.dashboard');
             Route::get('birthdays','DashboardController@birthdays')->name('admin.dashboard.birthdays');
         });
 
-        Route::group(['prefix' => 'statics'], function () {
-            Route::get('user', 'StaticController@user')->name('admin.statics.user');
-            Route::get('horoscope', 'StaticController@horoscope' )->name('admin.statics.horoscope');
-            Route::get('children/count/general', 'StaticController@children_by_general')->name('admin.statics.children.count.general');
-            Route::get('children/count/faculty/{id}', 'StaticController@children_by_faculty')->name('admin.statics.children.count.faculty');
+        Route::group(['prefix' => 'statistics'], function () {
+            Route::get('website', 'StatisticController@website')->name('admin.statistics.website');
+            Route::get('child', 'StatisticController@child')->name('admin.statistics.child');
+            Route::get('user', 'StatisticController@user')->name('admin.statistics.user');
+            Route::get('user/horoscope', 'StatisticController@userHoroscope' )->name('admin.statistics.user.horoscope');
+            Route::get('children/count/general', 'StatisticController@children_by_general')->name('admin.statistics.children.count.general');
+            Route::get('children/count/faculty/{id}', 'StatisticController@children_by_faculty')->name('admin.statistics.children.count.faculty');
         });
 
         Route::group(['prefix' => 'post'], function () {
@@ -50,10 +55,10 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('post', 'PostController');
 
 
-        Route::group(['prefix' => 'comment'], function () {
-
-        });
-        Route::resource('comment', 'CommentController');
+//        Route::group(['prefix' => 'comment'], function () {
+//
+//        });
+//        Route::resource('comment', 'CommentController');
 
 
         Route::group(['prefix' => 'volunteer'], function () {
@@ -75,6 +80,12 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::group(['prefix' => 'child'], function () {
             Route::get('/data', 'ChildController@indexData')->name('admin.child.index.data');
+            Route::group(['prefix' => '{id}'], function () {
+                Route::put('volunteer', 'ChildController@volunteered')->name('admin.children.volunteered');
+                Route::get('chats', 'ChildController@chats')->name('admin.children.chats');
+                Route::get('chat/{chatID}', 'ChildController@chat')->name('admin.children.chat');
+                Route::get('chats/opens', 'ChildController@chatsOpens')->name('admin.children.chats.opens');
+            });
 
         });
         Route::resource('child', 'ChildController');
@@ -97,11 +108,33 @@ Route::group(['middleware' => ['web']], function () {
                 Route::get('users/unapproved', 'FacultyController@unapproved')->name('admin.faculty.users.unapproved');
                 Route::get('users/unapproved/data', 'FacultyController@unapprovedData')->name('admin.faculty.users.unapproved.data');
                 Route::get('users/unapproved/count', 'FacultyController@unapprovedCount')->name('admin.faculty.users.unapproved.count');
+                Route::get('sendmail', 'FacultyController@createMail')->name('admin.faculty.mail.create');
+                Route::post('sendmail', 'FacultyController@sendMail')->name('admin.faculty.mail.send');
+
+
             });
             Route::get('cities', 'FacultyController@cities')->name('admin.faculty.cities');
             Route::get('city/{code}', 'FacultyController@city')->name('admin.faculty.city');
         });
         Route::resource('faculty', 'FacultyController');
+
+
+        Route::group(['prefix' => 'chat'], function () {
+            Route::group(['prefix' => '{id}'], function () {
+                Route::put('close', 'ChatController@close')->name('admin.chat.close');
+            });
+        });
+        Route::resource('chat', 'ChatController');
+
+
+        Route::group(['prefix' => 'message'], function () {
+            Route::group(['prefix' => '{id}'], function () {
+                Route::put('answered', 'MessageController@answered')->name('admin.message.answered');
+            });
+        });
+        Route::resource('message', 'MessageController');
+
+        Route::resource('volunteer', 'VolunteerController');
 
 
         Route::group(['prefix' => 'social'], function () {
@@ -118,6 +151,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::group(['prefix' => 'blood'], function () {
             Route::get('/data', 'BloodController@indexData')->name('admin.blood.index.data');
         });
+
         Route::resource('blood', 'BloodController');
 
         Route::group(['prefix' => 'new'], function () {
@@ -126,17 +160,32 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::resource('blog', 'BlogController');
         Route::resource('new', 'NewController');
+
+        Route::group(['prefix' => 'testimonial'], function () {
+            Route::get('/data', 'TestimonialController@indexData')->name('admin.testimonial.index.data');
+        });
         Route::resource('testimonial', 'TestimonialController');
 
+
+        Route::group([ 'prefix' => 'logs',], function() {
+            Route::get('/', [ 'as'    => 'log-viewer::dashboard',  'uses'  => 'LogController@index',]);
+            Route::get('/lists', [ 'as'    => 'log-viewer::logs.list',  'uses'  => 'LogController@listLogs',]);
+            Route::delete('delete', ['as'    => 'log-viewer::logs.delete', 'uses'  => 'LogController@delete',]);
+            Route::group([ 'prefix'    => '{date}',], function() {
+                Route::get('/', ['as'    => 'log-viewer::logs.show', 'uses'  => 'LogController@show',]);
+                Route::get('download', ['as'    => 'log-viewer::logs.download', 'uses'  => 'LogController@download',]);
+                Route::get('{level}', ['as'    => 'log-viewer::logs.filter', 'uses'  => 'LogController@showByLevel',]);
+            });
+        });
 
     });
 
 
     Route::get('/', 'FrontController@home')->name('front.home');
-    Route::get('/basinda-biz.html', 'FrontController@news')->name('front.news');
-    Route::get('/biz-kimiz.html', 'FrontController@us')->name('front.us');
+    Route::get('/hakkimizda/basinda-biz.html', 'FrontController@news')->name('front.news');
+    Route::get('/hakkimizda/biz-kimiz.html', 'FrontController@us')->name('front.us');
+    Route::get('/hakkimizda/basin-kiti.html', 'FrontController@newskit')->name('front.newskit');
     Route::get('/neler-soylediniz.html', 'FrontController@testimonials')->name('front.testimonials');
-    Route::get('/basin-kiti.html', 'FrontController@newskit')->name('front.newskit');
     Route::get('/leyla-kimdir.html', 'FrontController@leyla')->name('front.leyla');
     Route::get('/sikca-sorulan-sorular.html', 'FrontController@sss')->name('front.sss');
     Route::get('/blog.html', 'FrontController@blogs')->name('front.blogs');
@@ -145,6 +194,13 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/gizlilik-politikasi.html', 'FrontController@privacy')->name('front.privacy');
     Route::get('/kullanim-sartlari.html', 'FrontController@tos')->name('front.tos');
     Route::get('/iletisim.html', 'FrontController@contact')->name('front.contact');
+    Route::post('/iletisim', 'FrontController@contactStore')->name('front.contact.store');
+    Route::post('/newsletter', 'FrontController@newsletter')->name('front.newsletter');
+    Route::get('/cities', 'FrontController@cities')->name('admin.front.cities');
+    Route::get('/city/{code}', 'FrontController@city')->name('admin.front.city');
+    Route::get('/english.html', 'FrontController@english')->name('front.english');
+    Route::get('/kan-bagisi.html', 'FrontController@blood')->name('front.blood');
+    Route::post('/kan-bagisi', 'FrontController@bloodStore')->name('front.blood.store');
 
     Route::get('/{facultyName}.html', 'FrontController@faculty')->name('front.faculty');
     Route::post('/{facultyName}/{childSlug}', 'FrontController@childMessage')->name('front.child.message');

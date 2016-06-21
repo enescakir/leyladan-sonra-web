@@ -497,6 +497,30 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @group legacy
+     */
+    public function testLegacyAsText()
+    {
+        $application = new Application();
+        $application->add(new \FooCommand());
+        $this->ensureStaticCommandHelp($application);
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_astext1.txt', $this->normalizeLineBreaks($application->asText()), '->asText() returns a text representation of the application');
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_astext2.txt', $this->normalizeLineBreaks($application->asText('foo')), '->asText() returns a text representation of the application');
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testLegacyAsXml()
+    {
+        $application = new Application();
+        $application->add(new \FooCommand());
+        $this->ensureStaticCommandHelp($application);
+        $this->assertXmlStringEqualsXmlFile(self::$fixturesPath.'/application_asxml1.txt', $application->asXml(), '->asXml() returns an XML representation of the application');
+        $this->assertXmlStringEqualsXmlFile(self::$fixturesPath.'/application_asxml2.txt', $application->asXml('foo'), '->asXml() returns an XML representation of the application');
+    }
+
     public function testRenderException()
     {
         $application = $this->getMock('Symfony\Component\Console\Application', array('getTerminalWidth'));
@@ -712,6 +736,33 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \LogicException
+     * @expectedExceptionMessage An option with shortcut "e" already exists.
+     */
+    public function testAddingOptionWithDuplicateShortcut()
+    {
+        $dispatcher = new EventDispatcher();
+        $application = new Application();
+        $application->setAutoExit(false);
+        $application->setCatchExceptions(false);
+        $application->setDispatcher($dispatcher);
+
+        $application->getDefinition()->addOption(new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'Environment'));
+
+        $application
+            ->register('foo')
+            ->setAliases(array('f'))
+            ->setDefinition(array(new InputOption('survey', 'e', InputOption::VALUE_REQUIRED, 'My option with a shortcut.')))
+            ->setCode(function (InputInterface $input, OutputInterface $output) {})
+        ;
+
+        $input = new ArrayInput(array('command' => 'foo'));
+        $output = new NullOutput();
+
+        $application->run($input, $output);
+    }
+
+    /**
+     * @expectedException \LogicException
      * @dataProvider getAddingAlreadySetDefinitionElementData
      */
     public function testAddingAlreadySetDefinitionElementData($def)
@@ -748,6 +799,8 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $helperSet = $application->getHelperSet();
 
         $this->assertTrue($helperSet->has('formatter'));
+        $this->assertTrue($helperSet->has('dialog'));
+        $this->assertTrue($helperSet->has('progress'));
     }
 
     public function testAddingSingleHelperSetOverwritesDefaultValues()

@@ -43,6 +43,18 @@ class Child extends Model
         return $this->hasMany('App\Post');
     }
 
+    public function meetingPosts(){
+        return $this->hasMany('App\Post')->where('type', 'Tanışma');
+    }
+
+    public function chats(){
+        return $this->hasMany('App\Chat');
+    }
+
+    public function openChats(){
+        return $this->hasMany('App\Chat')->whereIn('status', ['Açık', 'Cevaplandı']);
+    }
+
     public function processes(){
         return $this->hasMany('App\Process')->with(['user']);
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Message, Auth, Carbon\Carbon, Log;
 
 class MessageController extends Controller
 {
@@ -48,6 +49,23 @@ class MessageController extends Controller
     public function show($id)
     {
         //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function answered($id)
+    {
+        $message = Message::whereId($id)->with('chat')->first();
+        $message->answered_by = Auth::user()->id;
+        $message->answered_at = Carbon::now();
+        $message->chat->status = 'Cevaplandı';
+        $message->save();
+        $message->chat->save();
+        return ['volunteer_name' => Auth::user()->full_name, 'chat_id' => $message->chat->id ];
     }
 
     /**

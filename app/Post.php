@@ -27,6 +27,10 @@ class Post extends Model
         $query->where('type','Tanışma')->where('child_id', $id);
     }
 
+    public function scopeApproved($query){
+        $query->whereNotNull('approved_at');
+    }
+
     public function scopeGiftPost($query,$id){
         $query->where('type','Hediye')->where('child_id', $id);
     }

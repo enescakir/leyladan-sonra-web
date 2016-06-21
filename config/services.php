@@ -35,4 +35,8 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'sendgrid' => [
+        'api_key' => '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'
+    ]
+
 ];

@@ -14,7 +14,7 @@ class Message extends Model
     protected $table = 'messages';
 
     protected $guarded = [];
-
+    protected $appends = ['is_sent'];
     protected $dates = ['answered_at', 'sent_at'];
 
     public function chat(){
@@ -31,6 +31,10 @@ class Message extends Model
 
     public function getCreatedAtHumanAttribute($date){
         return date("d.m.Y", strtotime($this->attributes['created_at']));
+    }
+
+    public function getIsSentAttribute(){
+        return $this->attributes['sent_at'] != null;
     }
 
 }

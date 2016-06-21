@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Chat, Auth;
 
 class ChatController extends Controller
 {
@@ -16,6 +17,14 @@ class ChatController extends Controller
     public function index()
     {
         //
+    }
+
+    public function close($id)
+    {
+        $chat = Chat::find($id);
+        $chat->status = 'Kapalı';
+        $chat->save();
+        return [ 'child_id' => $chat->child_id, 'volunteer_id' => $chat->volunteer_id, 'chat_id' => $chat->id];
     }
 
     /**

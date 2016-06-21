@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Chat;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Child, App\Faculty, App\User, App\Post, App\PostImage, App\Process, App\Feed, App\Notification;
-use App\Social, App\SocialImage;
+use App\Social, App\SocialImage, App\Volunteer;
 use Auth, Carbon\Carbon, DB, File, Log, Mail, Datatables, Image, Session;
 use App\Http\Requests\CreateChildRequest;
 
@@ -415,6 +416,41 @@ class ChildController extends Controller
         return http_response_code(200);
     }
 
+    public function volunteered(Request $request, $id){
+        $child = Child::find($id);
+        if( $child == null)
+            abort(404);
+
+        $volunteer = Volunteer::find($request->volunteer_id);
+
+        $child->volunteer_id = $request->volunteer_id;
+        $child->gift_state = 'Yolda';
+        if($child->save()){
+            $process = new Process;
+            $process->creator_id = Auth::user()->id;
+            $process->child_id = $child->id;
+            $process->desc = $volunteer->first_name . ' ' . $volunteer->last_name .' gönüllü olarak belirlendi.';
+            $process->save();
+        }
+
+
+        return json_encode( ['message' => $child->first_name . " gönüllüsü " . $volunteer->first_name . " olarak güncellendi."]);
+    }
+
+    public function chats(Request $request){
+
+    }
+
+    public function chat($id, $chatID){
+        $chat = Chat::where('id', $chatID)->with('messages', 'volunteer', 'volunteer.boughtGift', 'volunteer.volunteeredGift', 'messages.sender', 'messages.answerer')->first();
+        return $chat;
+    }
+
+    public function chatsOpens(Request $request, $id){
+        $child = Child::find($id);
+        $chats = $child->openChats()->with('volunteer', 'volunteer.boughtGift', 'volunteer.volunteeredGift')->get();
+        return $chats;
+    }
 
     public function createProcess(Request $request)
     {
@@ -429,12 +465,16 @@ class ChildController extends Controller
             $child->gift_state = 'Bize Ulaştı';
             $child->save();
 
-//            $users = $child->users;
-//            foreach ($users as $value) {
-//                Mail::send('email.admin.giftarrival', ['user' => $value, 'child' => $child], function ($m) use ($value, $child) {
-//                    $m->to($value->email)->subject("Çocuğunuzun hediyesi bize ulaştı.");
-//                });
-//            }
+            $users = $child->users;
+            foreach ($users as $value) {
+                \Mail::send('email.admin.giftarrival', ['user' => $value, 'child' => $child], function ($message) use ($value, $child) {
+                    $message
+                        ->to($value->email)
+                        ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+                        ->subject('Çocuğunuzun hediyesi bize ulaştı.');
+                });
+            }
+
 
             $feed = new Feed;
             $feed->desc = $child->full_name . " hediyesi geldi.";

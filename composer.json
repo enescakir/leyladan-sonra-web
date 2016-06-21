@@ -11,8 +11,15 @@
 	    "laravelcollective/html": "5.2.*",
         "yajra/laravel-datatables-oracle": "~6.0",
         "guzzlehttp/guzzle": "~5.3|~6.0",
+        "sendgrid/smtpapi": "~0.5",
+        "sendgrid/sendgrid": "~4.0",
         "s-ichikawa/laravel-sendgrid-driver": "dev-master",
-        "barryvdh/laravel-dompdf": "0.6.*"
+        "barryvdh/laravel-dompdf": "0.6.*",
+        "arcanedev/log-viewer": "~3.0",
+        "spatie/laravel-newsletter": "^3.0",
+        "davibennun/laravel-push-notification": "dev-laravel5",
+        "genealabs/laravel-caffeine": "~0.3.0",
+        "spatie/laravel-analytics": "^1.4"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

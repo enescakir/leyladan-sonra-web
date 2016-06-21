@@ -3,6 +3,8 @@
 namespace Yajra\Datatables\Engines;
 
 use Closure;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Helper;
@@ -281,6 +283,8 @@ class QueryBuilderEngine extends BaseEngine
         $column = $this->connection->getQueryGrammar()->wrap($column);
         if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
+        } elseif ($this->database === 'firebird') {
+            $column = 'CAST(' . $column . ' as VARCHAR(255))';
         }
 
         return $column;
@@ -459,20 +463,45 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
-        $table   = $this->query->getRelation($relation)->getRelated()->getTable();
-        $foreign = $this->query->getRelation($relation)->getQualifiedForeignKey();
-        $other   = $this->query->getRelation($relation)->getQualifiedOtherKeyName();
-        $column  = $table . '.' . $relationColumn;
-
         $joins = [];
         foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
             $joins[] = $join->table;
         }
 
-        if (! in_array($table, $joins)) {
-            $this->getQueryBuilder()
-                 ->leftJoin($table, $foreign, '=', $other);
+        $model = $this->query->getRelation($relation);
+        if ($model instanceof BelongsToMany) {
+            $pivot   = $model->getTable();
+            $pivotPK = $model->getForeignKey();
+            $pivotFK = $model->getQualifiedParentKeyName();
+
+            if (! in_array($pivot, $joins)) {
+                $this->getQueryBuilder()->leftJoin($pivot, $pivotPK, '=', $pivotFK);
+            }
+
+            $related = $model->getRelated();
+            $table   = $related->getTable();
+            $tablePK = $related->getForeignKey();
+            $tableFK = $related->getQualifiedKeyName();
+
+            if (! in_array($table, $joins)) {
+                $this->getQueryBuilder()->leftJoin($table, $pivot . '.' . $tablePK, '=', $tableFK);
+            }
+        } else {
+            $table = $model->getRelated()->getTable();
+            if ($model instanceof HasOne) {
+                $foreign = $model->getForeignKey();
+                $other   = $model->getQualifiedParentKeyName();
+            } else {
+                $foreign = $model->getQualifiedForeignKey();
+                $other   = $model->getQualifiedOtherKeyName();
+            }
+
+            if (! in_array($table, $joins)) {
+                $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
+            }
         }
+
+        $column = $table . '.' . $relationColumn;
 
         return $column;
     }

@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Auth, Datatables, File, Log;
-use App\Faculty, App\Child, App\Post, App\PostImage;
+use Auth, Datatables, File, Log, DB, Session;
+use App\Faculty, App\Child, App\Post, App\PostImage, App\User;
 
 class FacultyController extends Controller
 {
@@ -67,7 +67,8 @@ class FacultyController extends Controller
      */
     public function show($id)
     {
-        //
+        $faculty = Faculty::where('id' , $id)->with('responsibles')->first();
+        return view('admin.faculty.show', compact('faculty'));
     }
 
     /**
@@ -78,7 +79,11 @@ class FacultyController extends Controller
      */
     public function edit($id)
     {
-        //
+        $faculty = Faculty::where('id' , $id)->with('responsibles')->first();
+        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'), 'faculty_id')->where('faculty_id', $faculty->id)->orderby('first_name')->lists('fullname2', 'id');
+        $responsibles = $faculty->responsibles()->lists('id')->toArray();
+
+        return view('admin.faculty.edit', compact('faculty','users','responsibles'));
     }
 
     /**
@@ -90,7 +95,27 @@ class FacultyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, Faculty::$validationRules, Faculty::$validationMessages);
+        $faculty = Faculty::find($id);
+        $faculty->update($request->except(['next','users']));
+        if($faculty->save()){
+            Session::flash('success_message', $faculty->full_name . ' Tıp Fakültesi başarıyla güncellendi.');
+        }
+        else{
+            Session::flash('error_message', $faculty->full_name . ' Tıp Fakültesi güncellenemedi.');
+            return redirect()->back()->withInput();
+        }
+
+        if(User::where('faculty_id', $id)->where('title', 'Fakülte Sorumlusu')->update(['title' => 'Fakülte Yönetim Kurulu'])
+            && User::where('faculty_id', $id)->whereIn('id', $request->users)->update(['title' => 'Fakülte Sorumlusu'])){
+        }
+        else{
+            Session::flash('error_message', $faculty->full_name . ' Tıp Fakültesi sorumluları güncellenemedi.');
+            return redirect()->back()->withInput();
+        }
+
+        return redirect()->route('admin.faculty.show', $id);
+
     }
 
     /**
@@ -111,17 +136,13 @@ class FacultyController extends Controller
      */
     public function cities()
     {
-
-//        $cities = Faculty::lists('id','code')->toArray();
-//
-//        foreach($cities as $key => $city){
-//            $cities[$key] = '#339a99';
-//        }
         $cities = Faculty::all();
         $coloredCities = [];
         foreach($cities as $city){
             if($city->started_at == null){
-                $coloredCities[$city->code] = '#fcd5ae';
+                if(!array_has($coloredCities, $city->code)){
+                    $coloredCities[$city->code] = '#fcd5ae';
+                }
             }else{
                 $coloredCities[$city->code] = '#339999';
             }
@@ -353,8 +374,45 @@ class FacultyController extends Controller
         $authUser = Auth::user();
         $colors = ["purple", "red", "green"];
         $faculty = Faculty::find($id);
-        return view('admin.faculty.messages_unanswered', compact(['faculty','colors','authUser']));
+        $children = $faculty->children()->has('openChats')->withCount('openChats')->get();
+        $chats = $faculty->children()->has('openChats')->withCount('openChats')->get();
+        return view('admin.faculty.messages_unanswered', compact(['children','faculty','colors','authUser']));
     }
 
+
+    public function createMail($id)
+    {
+        $facultyId = $id;
+        return view('admin.faculty.send_mail',compact(['facultyId']));
+    }
+
+    public function sendMail(Request $request, $id)
+    {
+        $sender = Auth::user();
+        if( !($sender->title == 'Yönetici' || $sender->title == 'Fakülte Sorumlusu') ){
+            return redirect()->back()->withInput()->with('error_message', 'Fakülte üyelerine e-posta gönderme yetkisine sahip değilsiniz.');
+        }
+        $titles = $request->title;
+        $users = User::where('faculty_id', $id)->whereIn('title', $titles)->get();
+        $text = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i",'<$1$2>', strip_tags($request->text, '<p><br><i><b><u><ul><li><ol><h1><h2><h3><h4><h5>'));
+        $subject = $request->subject;
+        foreach($users as $user){
+            \Mail::send('email.admin.faculty', ['user' => $user, 'text' => $text ,'sender' => $sender], function ($message) use ($user, $subject) {
+                $message
+                    ->to($user->email)
+                    ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+                    ->subject($subject);
+            });
+
+        }
+        $user = User::find(1);
+        \Mail::send('email.admin.faculty', ['user' => $user, 'text' => $text ,'sender' => $sender], function ($message) use ($user, $subject) {
+                $message
+                    ->to($user->email)
+                    ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+                    ->subject($subject);
+            });
+        return redirect()->back()->with('success_message', count($users) . ' kişiye başarılı bir şekilde e-posta gönderildi.');
+    }
 
 }

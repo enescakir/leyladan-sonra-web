@@ -10,11 +10,11 @@
 //    return Request::is($path) ? $active : '';
 //}
 
-//function set_active ($route)
+//function set_active ($path, $active = 'active')
 //{
-//    if(is_array($route))
+//    if(is_array($path))
 //    {
-//        return in_array(Request::path(), $route) ? 'active' : '';
+//        return Request::is($path) ? $active : '';
 //    }
-//    return Request::path() == $route ? 'active' : '';
+//    return Request::is($path) ? $active : '';
 //}

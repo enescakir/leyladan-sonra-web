@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Volunteer, App\Child;
 
 class VolunteerController extends Controller
 {
@@ -15,7 +16,8 @@ class VolunteerController extends Controller
      */
     public function index()
     {
-        //
+        $volunteers = Volunteer::all();
+        view('admin.volunteer.index', compact('volunteers'));
     }
 
     /**
@@ -25,7 +27,7 @@ class VolunteerController extends Controller
      */
     public function create()
     {
-        //
+        view('admin.volunteer.create');
     }
 
     /**

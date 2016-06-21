@@ -93,7 +93,7 @@ class AuthController extends Controller
         if (property_exists($this, 'registerView')) {
             return view($this->registerView);
         }
-        $faculties = Faculty::all();
+        $faculties = Faculty::orderby('full_name')->get();
         return view('auth.register', compact(['faculties']));
     }
 
@@ -120,9 +120,13 @@ class AuthController extends Controller
         $users = User::where('faculty_id', $newUser->faculty_id)->where('title', 'Fakülte Sorumlusu')->get();
 
         foreach ($users as $user) {
-            Mail::send('email.admin.newuser', ['user' => $user, 'newUser' => $newUser], function ($m) use ($user, $newUser) {
-                $m->to($user->email)->subject("Fakültenize yeni kayıt!");
+            \Mail::send('email.admin.newuser', ['user' => $user, 'newUser' => $newUser], function ($message) use ($user, $newUser) {
+                $message
+                    ->to($user->email)
+                    ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+                    ->subject('Fakültenize yeni kayıt!');
             });
+
         }
         Session::flash('flash_message', 'Fakülte yöneticiniz üyeliğinizi onayladıktan sonra giriş yapabilirsiniz.');
         return redirect($this->redirectPath());

@@ -164,9 +164,13 @@ class UserController extends Controller
         if($user->activated_by == null){
             $user->activated_by = Auth::user()->id;
             $user->save();
-            Mail::send('email.admin.activation', ['user' => $user], function ($m) use ($user) {
-                $m->to($user->email)->subject('Hesabınız artık aktif!');
+            \Mail::send('email.admin.activation', ['user' => $user], function ($message) use ($user) {
+                $message
+                    ->to($user->email)
+                    ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+                    ->subject('Hesabınız artık aktif!');
             });
+
             return 1;
         }
         else{

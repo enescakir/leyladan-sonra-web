@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Testimonial;
-use Session;
+use Session, Datatables;
 class TestimonialController extends Controller
 {
     public function __construct(){
@@ -20,8 +20,24 @@ class TestimonialController extends Controller
      */
     public function index()
     {
-        $testimonials = Testimonial::all();
-        return view('admin.testimonial.index', compact(['testimonials']));
+//        $testimonials = Testimonial::all();
+        return view('admin.testimonial.index');
+    }
+
+    public function indexData()
+    {
+        return Datatables::of(Testimonial::all())
+            ->addColumn('operations','
+                <a class="approve btn btn-success btn-sm" href="javascript:;"><i class="fa fa-check"></i></a>
+                <a class="edit btn btn-primary btn-sm" href="{{ route("admin.testimonial.edit", $id) }}"><i class="fa fa-pencil"></i> </a>
+                <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>
+           ')
+            ->editColumn('approved_at','@if ($approved_at != null)
+                                <span class="label label-success"> Onaylandı </span>
+                            @else
+                                <span class="label label-danger"> Onaylanmadı </span>
+                            @endif')
+            ->make(true);
     }
 
     /**
@@ -100,6 +116,8 @@ class TestimonialController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if( Testimonial::destroy($id))
+            return http_response_code(200);
+
     }
 }
