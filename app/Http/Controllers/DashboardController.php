@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Faculty;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Auth, DB, Mail, App\User;
+use Auth, DB, Mail, App\User, App\Child, App\Volunteer, App\Chat, App\Feed;
 use PDF, Newsletter, PushNotification, Cache;
 
 class DashboardController extends Controller
@@ -28,6 +29,7 @@ class DashboardController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
+
         $totalChild = Cache::remember('totalChildren', 15, function() {
             return DB::table('children')->count();
         });
@@ -75,7 +77,14 @@ class DashboardController extends Controller
         $deliveredFacultyChild = Cache::remember('deliveredFacultyChild-' . $user->faculty_id, 15, function() use ($user) {
             return DB::table('children')->where('faculty_id', $user->faculty_id)->where('gift_state','Teslim Edildi')->count();
         });
-        return view('admin.dashboard', compact(['totalChild', 'totalBlood', 'totalVolunteer', 'totalUser', 'waitGeneralChild', 'roadGeneralChild', 'reachGeneralChild', 'deliveredGeneralChild', 'waitFacultyChild', 'roadFacultyChild', 'reachFacultyChild', 'deliveredFacultyChild']));
+
+        $feeds = Cache::remember('faculty-feeds-' . $user->faculty_id, 5, function() use ($user) {
+            return Feed::where('faculty_id', $user->faculty_id)->orderby('id', 'desc')->limit(30)->get();
+        });
+
+        return view('admin.dashboard', compact(['totalChild', 'totalBlood', 'totalVolunteer', 'totalUser',
+            'waitGeneralChild', 'roadGeneralChild', 'reachGeneralChild', 'deliveredGeneralChild', 'waitFacultyChild',
+            'roadFacultyChild', 'reachFacultyChild', 'deliveredFacultyChild', 'feeds']));
     }
 
     public function birthdays()
@@ -233,8 +242,29 @@ class DashboardController extends Controller
 //            }
 //        }
 //        dd($logs);
-        return 'Success';
 
+
+//        $chats = Chat::where('status', 'Açık')->with('child','volunteer')->get();
+//        $logs = [];
+//        foreach ($chats as $chat) {
+//            $users = User::where('faculty_id', $chat->faculty_id)->whereIn('title', ['Fakülte Sorumlusu', 'İletişim Sorumlusu'])->get();
+//            $volunteer = $chat->volunteer;
+//            $child = $chat->child;
+//
+//            foreach ($users as $user) {
+//                array_push($logs, "user: " . $user->full_name . "( ". $user->title . ") volunteer: " . $volunteer->first_name . " child: " . $child->full_name );
+//
+//                \Mail::send('email.admin.newmessage', ['user' => $user, 'volunteer' => $volunteer, 'child' => $child], function ($message) use ($user, $volunteer, $child) {
+//                    $message
+//                        ->to($user->email)
+//                        ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+//                        ->subject('Fakültenizde yeni mesaj var!');
+//                });
+//            }
+//        }
+//
+//        dd($logs);
+//        return 'Success';
     }
 
     public function sendEmail()

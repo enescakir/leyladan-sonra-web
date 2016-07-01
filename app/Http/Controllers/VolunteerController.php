@@ -5,10 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Volunteer, App\Child;
+use App\Volunteer, App\Child, Datatables;
 
 class VolunteerController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,8 +22,18 @@ class VolunteerController extends Controller
      */
     public function index()
     {
-        $volunteers = Volunteer::all();
-        view('admin.volunteer.index', compact('volunteers'));
+        return view('admin.volunteer.index');
+    }
+
+    public function indexData()
+    {
+        return Datatables::of(Volunteer::withCount(['boughtGift','volunteeredGift'])->get())
+//            ->addColumn('operations','
+//                <a class="edit btn btn-success btn-sm" href="{{ route("admin.volunteer.edit", $id) }}"><i class="fa fa-pencil"></i></a>
+//                <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>
+//           ')
+            ->addColumn('operations','')
+            ->make(true);
     }
 
     /**

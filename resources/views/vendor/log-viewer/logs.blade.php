@@ -55,7 +55,7 @@
                         <a href="{{ route('log-viewer::logs.download', [$date]) }}" class="btn btn-xs btn-success">
                             <i class="fa fa-download"></i>
                         </a>
-                        <a href="#delete-log-modal" class="btn btn-xs btn-danger" data-log-date="{{ $date }}">
+                        <a href="#delete-log-modal" class="delete btn btn-xs btn-danger" data-log-date="{{ $date }}">
                             <i class="fa fa-trash-o"></i>
                         </a>
                     </td>
@@ -110,7 +110,7 @@
                 deleteLogForm  = $('form#delete-log-form'),
                 submitBtn      = deleteLogForm.find('button[type=submit]');
 
-            $("a[href=#delete-log-modal]").click(function(event) {
+            $(".delete").click(function(event) {
                 event.preventDefault();
                 var date = $(this).data('log-date');
                 deleteLogForm.find('input[name=date]').val(date);

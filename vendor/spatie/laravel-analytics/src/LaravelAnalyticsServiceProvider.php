@@ -61,6 +61,7 @@ class LaravelAnalyticsServiceProvider extends ServiceProvider
      */
     protected function guardAgainstMissingP12()
     {
+
         if (!$this->app['files']->exists(config('laravel-analytics.certificatePath'))) {
             throw new \Exception("Can't find the .p12 certificate in: ".config('laravel-analytics.certificatePath'));
         }

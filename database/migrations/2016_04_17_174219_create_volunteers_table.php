@@ -20,6 +20,7 @@ class CreateVolunteersTable extends Migration
             $table->string('mobile')->nullable();
             $table->string('city')->nullable();
             $table->string('platform')->nullable();
+            $table->string('notification_token')->nullable();
             $table->string('device_token')->nullable();
             $table->timestamps();
         });

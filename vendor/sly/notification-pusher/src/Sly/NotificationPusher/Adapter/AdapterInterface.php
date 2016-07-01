@@ -39,13 +39,6 @@ interface AdapterInterface
     public function supports($token);
 
     /**
-     * Get defined parameters.
-     *
-     * @return array
-     */
-    public function getDefinedParameters();
-
-    /**
      * Get default parameters.
      *
      * @return array

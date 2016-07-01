@@ -101,4 +101,7 @@
   'minionprobold' => array(
     'normal' => DOMPDF_FONT_DIR . 'd3099559bbceb2f907dfdaa08370065c',
   ),
+  'open sans' => array(
+    'normal' => DOMPDF_FONT_DIR . '6a7cd5f0d0d8013feb5fbb0a0335cf7d',
+  ),
 ) ?>

@@ -4,6 +4,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('children', 'ApiController@children')->name('api.children');
     Route::get('child/{id}', 'ApiController@child')->name('api.child');
     Route::post('child/form', 'ApiController@childForm')->name('api.child.form');
+    Route::post('token', 'ApiController@token')->name('api.token');
 });
 
 /*
@@ -38,7 +39,14 @@ Route::group(['middleware' => ['web']], function () {
         });
 
         Route::group(['prefix' => 'statistics'], function () {
+            Route::get('volunteer', 'StatisticController@volunteer')->name('admin.statistics.volunteer');
+            Route::get('social/facebook', 'StatisticController@facebook')->name('admin.statistics.facebook');
+            Route::get('social/facebook/{id}', 'StatisticController@facebookPost')->name('admin.statistics.facebook.post');
+
             Route::get('website', 'StatisticController@website')->name('admin.statistics.website');
+            Route::get('website/visitors', 'StatisticController@websiteVisitors')->name('admin.statistics.website.visitors');
+            Route::get('website/active', 'StatisticController@websiteActive')->name('admin.statistics.website.active');
+
             Route::get('child', 'StatisticController@child')->name('admin.statistics.child');
             Route::get('user', 'StatisticController@user')->name('admin.statistics.user');
             Route::get('user/horoscope', 'StatisticController@userHoroscope' )->name('admin.statistics.user.horoscope');
@@ -55,17 +63,8 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('post', 'PostController');
 
 
-//        Route::group(['prefix' => 'comment'], function () {
-//
-//        });
-//        Route::resource('comment', 'CommentController');
 
 
-        Route::group(['prefix' => 'volunteer'], function () {
-            Route::get('unanswered', 'VolunteerController@unanswered')->name('admin.volunteer.unanswered');
-            Route::post('unanswered', 'VolunteerController@childUnanswered')->name('admin.volunteer.unanswered');
-        });
-//        Route::get('/request/{id}', 'VolunteerController@showRequest')->name('admin.request.show');
 
         Route::group(['prefix' => 'user'], function () {
             Route::group(['prefix' => '{id}'], function () {
@@ -134,6 +133,12 @@ Route::group(['middleware' => ['web']], function () {
         });
         Route::resource('message', 'MessageController');
 
+
+        Route::group(['prefix' => 'volunteer'], function () {
+            Route::get('unanswered', 'VolunteerController@unanswered')->name('admin.volunteer.unanswered');
+            Route::post('unanswered', 'VolunteerController@childUnanswered')->name('admin.volunteer.unanswered');
+            Route::get('data', 'VolunteerController@indexData')->name('admin.volunteer.index.data');
+        });
         Route::resource('volunteer', 'VolunteerController');
 
 

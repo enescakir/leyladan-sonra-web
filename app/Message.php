@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Message extends Model
 {
@@ -32,6 +33,12 @@ class Message extends Model
     public function getCreatedAtHumanAttribute($date){
         return date("d.m.Y", strtotime($this->attributes['created_at']));
     }
+
+    public function getCreatedAtDiff(){
+        Carbon::setLocale('tr');
+        return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']),'Europe/Istanbul')->diffForHumans();
+    }
+
 
     public function getIsSentAttribute(){
         return $this->attributes['sent_at'] != null;

@@ -91,7 +91,6 @@ class PushManager extends PushCollection
                 )
             );
         }
-        $adapter->setEnvironment($this->getEnvironment());
 
         return $adapter->getFeedback();
     }

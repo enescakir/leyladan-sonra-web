@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('mobile',10);
             $table->integer('year');
             $table->string('title');
-            $table->string('profile_photo')->default('default.jpg');
+            $table->string('profile_photo')->default('default');
             $table->integer('activated_by')->unsigned()->nullable();
             $table->rememberToken();
             $table->timestamps();

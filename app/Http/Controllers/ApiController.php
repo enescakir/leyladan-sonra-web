@@ -5,20 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Child, DB;
-use App\Volunteer, App\Chat, App\Message;
+use App\Child, DB, Log;
+use App\Volunteer, App\Chat, App\Message, App\Subscriber;
 
 class ApiController extends Controller
 {
     public function children(){
         $data =  new \stdClass();
-        $data->children = Child::select('id', 'first_name', 'last_name','gift_state', 'faculty_id')->where('gift_state', 'Bekleniyor')
+        $data->children = Child::select('id', 'first_name', 'last_name','gift_state', 'faculty_id', 'meeting_day')->where('gift_state', 'Bekleniyor')
             ->with([
-                'posts' => function ($query) { $query->where('type','Tanışma');},
+                'meetingPosts',
                 'faculty',
-                'posts.images'])
+                'meetingPosts.images'])
+            ->whereHas('posts', function ($query) {
+                $query->where('type', 'Tanışma')->approved();
+            })
             ->orderby('meeting_day','desc')
-            ->limit(100)->get();
+            ->get();
+
         $data->waitGeneralChild = DB::table('children')->where('gift_state','Bekleniyor')->count();
         $data->roadGeneralChild = DB::table('children')->where('gift_state','Yolda')->count();
         $data->reachGeneralChild = DB::table('children')->where('gift_state','Bize Ulaştı')->count();
@@ -28,7 +32,7 @@ class ApiController extends Controller
     }
 
     public function child($id){
-        $child = Child::select('id', 'first_name', 'last_name','gift_state', 'faculty_id')->whereId($id)
+        $child = Child::select('id', 'first_name', 'last_name','gift_state', 'faculty_id', 'meeting_day')->whereId($id)
             ->with([
                 'posts',
                 'faculty',
@@ -54,7 +58,7 @@ class ApiController extends Controller
                 'volunteer_id' => $volunteer->id,
                 'faculty_id' => $child->faculty->id,
                 'child_id' => $child->id,
-                'via' => 'iOS',
+                'via' => $request->via,
                 'status' => 'Açık'
             ]);
             $chat->save();
@@ -65,6 +69,23 @@ class ApiController extends Controller
         $message->save();
 
         return response("Talebiniz tarafımıza ulaştı.", 200);
+    }
+
+    public function token(Request $request){
+        $subscriber = Subscriber::where('notification_token', $request->token)->first();
+        Log::info($request->token);
+        Log::info($subscriber);
+
+        if($subscriber != null)
+            return response("",200);
+
+        $subscriber = new Subscriber([
+            'notification_token' => $request->token,
+        ]);
+        Log::info($subscriber);
+
+        if($subscriber->save())
+            return response("",200);
     }
 
 }

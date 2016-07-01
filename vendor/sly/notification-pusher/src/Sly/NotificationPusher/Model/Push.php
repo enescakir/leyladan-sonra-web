@@ -13,6 +13,8 @@ namespace Sly\NotificationPusher\Model;
 
 use Sly\NotificationPusher\Collection\DeviceCollection;
 use Sly\NotificationPusher\Adapter\AdapterInterface;
+use Sly\NotificationPusher\Model\DeviceInterface;
+use Sly\NotificationPusher\Model\MessageInterface;
 use Sly\NotificationPusher\Exception\AdapterException;
 
 /**
@@ -51,10 +53,10 @@ class Push extends BaseOptionedModel implements PushInterface
     /**
      * Constructor.
      *
-     * @param \Sly\NotificationPusher\Adapter\AdapterInterface $adapter Adapter
-     * @param DeviceInterface|DeviceCollection                 $devices Device(s)
-     * @param \Sly\NotificationPusher\Model\MessageInterface   $message Message
-     * @param array                                            $options Options
+     * @param \Sly\NotificationPusher\Adapter\AdapterInterface  $adapter Adapter
+     * @param DeviceInterface|DeviceCollection                           $devices Device(s)
+     * @param \Sly\NotificationPusher\Model\MessageInterface             $message Message
+     * @param array                                             $options Options
      *
      * Options are adapters specific ones, like Apns "badge" or "sound" option for example.
      * Of course, they can be more general.
@@ -88,7 +90,7 @@ class Push extends BaseOptionedModel implements PushInterface
             if (false === $adapter->supports($device->getToken())) {
                 throw new AdapterException(
                     sprintf(
-                        'Adapter %s does not support %s token\'s device',
+                        'Adapter %s does not supports %s token\'s device',
                         (string) $adapter,
                         $device->getToken()
                     )

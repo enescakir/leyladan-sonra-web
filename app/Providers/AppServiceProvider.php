@@ -21,11 +21,25 @@ class AppServiceProvider extends ServiceProvider
             // $query->time
         });
 
-        view()->composer('admin.parent', function($view)
-        {
+        view()->composer('admin.parent', function($view) {
             $authUser = Auth::user();
+            if($authUser == null)
+                abort(401);
+
+            $feeds = Cache::remember('faculty-feeds-' . $authUser->faculty_id, 5, function () use ($authUser) {
+                return \App\Feed::where('faculty_id', $authUser->faculty_id)->orderby('id', 'desc')->limit(30)->get();
+            });
+
+            $chats = [];
+            if ($authUser->title == "Yönetici" || $authUser->title == "Fakülte Sorumlusu" || $authUser->title == "İletişim Sorumlusu"){
+                $chats = Cache::remember('faculty-chats-' . $authUser->faculty_id, 5, function () use ($authUser) {
+                    return \App\Chat::where('faculty_id', $authUser->faculty_id)->with('messages', 'volunteer')->orderby('id', 'desc')->open()->get();
+                });
+            }
             $view->with([
-                'authUser' => $authUser
+                'authUser' => $authUser,
+                'feeds' => $feeds,
+                'chats' => $chats
             ]);
         });
 

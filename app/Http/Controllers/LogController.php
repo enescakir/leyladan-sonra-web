@@ -26,7 +26,7 @@ class LogController extends Controller
     public function __construct()
     {
         parent::__construct();
-
+        $this->middleware('auth');
         $this->perPage = config('log-viewer.per-page', $this->perPage);
     }
 

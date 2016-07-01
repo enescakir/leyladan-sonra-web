@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Requests\VolunteerMessageRequest;
-use App\Child, App\Post, App\Faculty, App\News, App\Channel;
+use App\Child, App\Post, App\Faculty, App\News, App\Channel, App\User;
 use App\Volunteer, App\Chat, App\Message, App\Testimonial, App\Blood;
 use Log,  DB, Validator, Cache, Mail, Carbon\Carbon, Newsletter;
 
@@ -188,15 +188,24 @@ class FrontController extends Controller
         return view('front.faculties', compact(['faculties']));
     }
 
-    public function faculty($facultyName){
+    public function faculty(Request $request, $facultyName){
+
         $faculty = Faculty::where('slug', $facultyName)->first();
-        $children = $faculty->children()
-            ->with([
-                'posts',
-                'faculty',
-                'posts.images'])
-            ->orderby('meeting_day','desc')
-            ->simplePaginate(20);
+        if( $faculty == null){ abort(404);}
+
+        $page = $request->has('page') ? $request->page : '1';
+        $children = Cache::remember( $facultyName . '-children-' . $page, 10, function() use ($faculty) {
+            return $faculty->children()
+                ->with([
+                    'posts',
+                    'faculty',
+                    'posts.images'])
+                ->whereHas('posts', function ($query) {
+                    $query->where('type', 'Tanışma')->approved();
+                })
+                ->orderby('meeting_day','desc')
+                ->simplePaginate(20);
+        });
         return view('front.faculty', compact(['faculty','children']));
     }
 
@@ -258,6 +267,19 @@ class FrontController extends Controller
 
         $message = new Message([ 'chat_id' => $chat->id, 'text' => $request->text ]);
         $message->save();
+
+        $users = User::where('faculty_id', $child->faculty->id)->whereIn('title', ['Fakülte Sorumlusu', 'İletişim Sorumlusu'])->get();
+
+        foreach ($users as $user) {
+        \Mail::send('email.admin.newmessage', ['user' => $user, 'volunteer' => $volunteer, 'child' => $child], function ($message) use ($user, $volunteer, $child) {
+            $message
+                    ->to($user->email)
+                    ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+                    ->subject('Fakültenizde yeni mesaj var!');
+            });
+
+        }
+
         $text = '<span style="font-size: 24px"><br><strong>' . $child->first_name .'</strong> isimli miniğimizin hediyesi ile ilgili talebiniz tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong>' . $volunteer->email . '</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!<br></br></span>';
         return array('alert' => 'success', 'message' => $text);
     }

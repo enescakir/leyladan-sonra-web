@@ -11,8 +11,8 @@
 
 namespace Sly\NotificationPusher\Adapter;
 
-use Sly\NotificationPusher\Model\BaseOptionedModel;
 use Sly\NotificationPusher\Model\PushInterface;
+use Sly\NotificationPusher\Model\MessageInterface;
 use Sly\NotificationPusher\Model\DeviceInterface;
 use Sly\NotificationPusher\Exception\AdapterException;
 use Sly\NotificationPusher\Exception\PushException;
@@ -30,18 +30,12 @@ use ZendService\Apple\Apns\Client\Feedback as ServiceFeedbackClient;
  * APNS adapter.
  *
  * @uses \Sly\NotificationPusher\Adapter\BaseAdapter
+ * @uses \Sly\NotificationPusher\Adapter\AdapterInterface
  *
  * @author Cédric Dugat <cedric@dugat.me>
  */
-class Apns extends BaseAdapter
+class Apns extends BaseAdapter implements AdapterInterface
 {
-
-    /** @var ServiceClient */
-    private $openedClient;
-
-    /** @var ServiceFeedbackClient */
-    private $feedbackClient;
-
     /**
      * {@inheritdoc}
      *
@@ -65,7 +59,7 @@ class Apns extends BaseAdapter
      */
     public function push(PushInterface $push)
     {
-        $client = $this->getOpenedServiceClient();
+        $client = $this->getOpenedClient(new ServiceClient());
 
         $pushedDevices = new DeviceCollection();
 
@@ -83,6 +77,8 @@ class Apns extends BaseAdapter
             }
         }
 
+        $client->close();
+
         return $pushedDevices;
     }
 
@@ -93,9 +89,10 @@ class Apns extends BaseAdapter
      */
     public function getFeedback()
     {
-        $client           = $this->getOpenedFeedbackClient();
+        $client           = $this->getOpenedClient(new ServiceFeedbackClient());
         $responses        = array();
         $serviceResponses = $client->feedback();
+        $client->close();
 
         foreach ($serviceResponses as $response) {
             $responses[$response->getToken()] = new \DateTime(date("c", $response->getTime()));
@@ -123,42 +120,14 @@ class Apns extends BaseAdapter
     }
 
     /**
-     * Get opened ServiceClient
-     *
-     * @return ServiceAbstractClient
-     */
-    private function getOpenedServiceClient()
-    {
-        if (!isset($this->openedClient)) {
-            $this->openedClient = $this->getOpenedClient(new ServiceClient());
-        }
-
-        return $this->openedClient;
-    }
-
-    /**
-     * Get opened ServiceFeedbackClient
-     *
-     * @return ServiceAbstractClient
-     */
-    private function getOpenedFeedbackClient()
-    {
-        if (!isset($this->feedbackClient)) {
-            $this->feedbackClient = $this->getOpenedClient(new ServiceFeedbackClient());
-        }
-
-        return $this->feedbackClient;
-    }
-
-    /**
      * Get service message from origin.
      *
-     * @param \Sly\NotificationPusher\Model\DeviceInterface $device Device
-     * @param BaseOptionedModel|\Sly\NotificationPusher\Model\MessageInterface $message Message
+     * @param \Sly\NotificationPusher\Model\DeviceInterface  $device  Device
+     * @param \Sly\NotificationPusher\Model\MessageInterface $message Message
      *
      * @return \ZendService\Apple\Apns\Message
      */
-    public function getServiceMessageFromOrigin(DeviceInterface $device, BaseOptionedModel $message)
+    public function getServiceMessageFromOrigin(DeviceInterface $device, MessageInterface $message)
     {
         $badge = ($message->hasOption('badge'))
             ? (int) ($message->getOption('badge') + $device->getParameter('badge', 0))
@@ -166,18 +135,13 @@ class Apns extends BaseAdapter
         ;
 
         $sound = $message->getOption('sound', 'bingbong.aiff');
-        $contentAvailable = $message->getOption('content-available');
-        $category = $message->getOption('category');
 
         $alert = new ServiceAlert(
             $message->getText(),
             $message->getOption('actionLocKey'),
             $message->getOption('locKey'),
             $message->getOption('locArgs'),
-            $message->getOption('launchImage'),
-            $message->getOption('title'),
-            $message->getOption('titleLocKey'),
-            $message->getOption('titleLocArgs')
+            $message->getOption('launchImage')
         );
         if ($actionLocKey = $message->getOption('actionLocKey')) {
             $alert->setActionLocKey($actionLocKey);
@@ -191,35 +155,16 @@ class Apns extends BaseAdapter
         if ($launchImage = $message->getOption('launchImage')) {
             $alert->setLaunchImage($launchImage);
         }
-        if ($title = $message->getOption('title')) {
-            $alert->setTitle($title);
-        }
-        if ($titleLocKey = $message->getOption('titleLocKey')) {
-            $alert->setTitleLocKey($titleLocKey);
-        }
-        if ($titleLocArgs = $message->getOption('titleLocArgs')) {
-            $alert->setTitleLocArgs($titleLocArgs);
-        }
 
         $serviceMessage = new ServiceMessage();
         $serviceMessage->setId(sha1($device->getToken().$message->getText()));
         $serviceMessage->setAlert($alert);
         $serviceMessage->setToken($device->getToken());
-        if (0 !== $badge) {
-            $serviceMessage->setBadge($badge);
-        }
+        $serviceMessage->setBadge($badge);
         $serviceMessage->setCustom($message->getOption('custom', array()));
 
         if (null !== $sound) {
             $serviceMessage->setSound($sound);
-        }
-
-        if (null !== $contentAvailable) {
-            $serviceMessage->setContentAvailable($contentAvailable);
-        }
-
-        if (null !== $category) {
-            $serviceMessage->setCategory($category);
         }
 
         return $serviceMessage;
@@ -231,14 +176,6 @@ class Apns extends BaseAdapter
     public function supports($token)
     {
         return (ctype_xdigit($token) && 64 == strlen($token));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefinedParameters()
-    {
-        return array();
     }
 
     /**

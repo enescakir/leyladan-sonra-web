@@ -61,8 +61,8 @@ class DeviceCollection extends AbstractCollection implements \IteratorAggregate
     {
         $tokens = array();
 
-        foreach ($this as $device) {
-            $tokens[] = $device->getToken();
+        foreach ($this as $token => $device) {
+            $tokens[] = $token;
         }
 
         return array_unique(array_filter($tokens));

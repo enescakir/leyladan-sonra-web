@@ -19,7 +19,8 @@
         "spatie/laravel-newsletter": "^3.0",
         "davibennun/laravel-push-notification": "dev-laravel5",
         "genealabs/laravel-caffeine": "~0.3.0",
-        "spatie/laravel-analytics": "^1.4"
+        "spatie/laravel-analytics": "^1.4",
+        "facebook/php-sdk-v4": "^5.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
