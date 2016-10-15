@@ -37,9 +37,12 @@ class User extends Authenticatable
     }
 
     public function processes(){
-        return $this->hasMany('App\Process');
+        return $this->hasMany('App\Process', 'creator_id');
     }
 
+    public function visits(){
+        return $this->hasMany('App\Process', 'creator_id')->where('desc', 'Ziyaret edildi.');
+    }
 
     public function setBirthdayAttribute($date){
         return $this->attributes['birthday'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();

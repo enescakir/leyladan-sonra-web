@@ -40,14 +40,24 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::group(['prefix' => 'statistics'], function () {
             Route::get('volunteer', 'StatisticController@volunteer')->name('admin.statistics.volunteer');
+            Route::get('faculty', 'StatisticController@faculty')->name('admin.statistics.faculty');
+
             Route::get('social/facebook', 'StatisticController@facebook')->name('admin.statistics.facebook');
             Route::get('social/facebook/{id}', 'StatisticController@facebookPost')->name('admin.statistics.facebook.post');
+
 
             Route::get('website', 'StatisticController@website')->name('admin.statistics.website');
             Route::get('website/visitors', 'StatisticController@websiteVisitors')->name('admin.statistics.website.visitors');
             Route::get('website/active', 'StatisticController@websiteActive')->name('admin.statistics.website.active');
 
             Route::get('child', 'StatisticController@child')->name('admin.statistics.child');
+            Route::get('child/department', 'StatisticController@childDepartment' )->name('admin.statistics.child.department');
+
+            Route::get('blood', 'StatisticController@blood')->name('admin.statistics.blood');
+            Route::get('blood/rh', 'StatisticController@bloodRh' )->name('admin.statistics.blood.rh');
+            Route::get('blood/type', 'StatisticController@bloodType' )->name('admin.statistics.blood.type');
+            Route::get('blood/gender', 'StatisticController@bloodGender' )->name('admin.statistics.blood.gender');
+
             Route::get('user', 'StatisticController@user')->name('admin.statistics.user');
             Route::get('user/horoscope', 'StatisticController@userHoroscope' )->name('admin.statistics.user.horoscope');
             Route::get('children/count/general', 'StatisticController@children_by_general')->name('admin.statistics.children.count.general');
@@ -170,6 +180,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('/data', 'TestimonialController@indexData')->name('admin.testimonial.index.data');
         });
         Route::resource('testimonial', 'TestimonialController');
+        Route::resource('emailsample', 'EmailSampleController');
 
 
         Route::group([ 'prefix' => 'logs',], function() {
@@ -206,6 +217,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/english.html', 'FrontController@english')->name('front.english');
     Route::get('/kan-bagisi.html', 'FrontController@blood')->name('front.blood');
     Route::post('/kan-bagisi', 'FrontController@bloodStore')->name('front.blood.store');
+    Route::get('/bekleyen-hediyeler', 'FrontController@waitings');
+    Route::post('/bekleyen-hediyeler', 'FrontController@waitings');
 
     Route::get('/{facultyName}.html', 'FrontController@faculty')->name('front.faculty');
     Route::post('/{facultyName}/{childSlug}', 'FrontController@childMessage')->name('front.child.message');

@@ -8,9 +8,25 @@
 
 ##Change Log
 
-### v6.11.6 - 2016-06-18
-    - Fix searching based on configurations. #607
-    - Fix column wrapping when smart search is disable. #606
+### v6.14.0 - 2016-07-01
+    - Add model option to dataTable command. #620
+    - Make generator namespace configurable.
+    - Add filename in generator with timestamps.
+
+### v6.13.1 - 2016-06-23
+    - Add option to manually set the total records.
+        -New method: ->setTotalRecords(int total)
+    - Addresses count queries performance issue like #578.
+
+### v6.13.0 - 2016-06-23
+    - Add Auto-Index Column. #597
+    - Add method 'addIndexColumn()' to compliment PR#597.
+        - Note: addIndexColumn can be used without the builder.
+    - Add config file descriptions for reference.
+
+### v6.12.0 - 2016-06-23
+    - Add support for ajax data function. #613
+    - Update dataTable service query return docblock and stub.
 
 ### v6.11.5 - 2016-06-01
     - Fix HasOne relation which uses different methods to get foreign and other key. #585
