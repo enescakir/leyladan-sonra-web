@@ -8,6 +8,8 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
+use Log, Auth;
 
 class Handler extends ExceptionHandler
 {
@@ -45,6 +47,23 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        $user_id = "";
+        if(Auth::user())
+            $user_id = Auth::user()->id;
+
+        $class_parts = explode('\\', get_class($e));
+        Log::warning(
+            end( $class_parts ) .
+            "\nMethod: " . $request->method() .
+            "\nPath: " . $request->path() .
+            "\nIP: " . $request->ip() .
+            "\nUser ID: " . $user_id .
+            "\nTrace: " . $e->getTraceAsString()
+        );
+
+        if ($e instanceof TokenMismatchException) {
+            return redirect()->back()->withInput()->with('error_message', 'Bir hata ile karşılaşıldı. Sayfayı yenileyip işleminizi tekrar deneyin. <br> Eğer hata almaya devam ederseniz <strong>teknik@leyladansonra.com</strong> adresi ile iletişime geçin.');
+        }
         return parent::render($request, $e);
     }
 

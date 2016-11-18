@@ -199,6 +199,18 @@ class DashboardController extends Controller
     }
 
     public function test(){
+        $chats = Chat::where('faculty_id', 1)->with('volunteer', 'messages', 'messages.answerer', 'child')->orderBy('id', 'desc')->get();
+//        foreach ($chats as $index => $chat) {
+//            $sum = 0;
+//            foreach ($chat as $c) {
+//                $sum += $c->avgTime();
+//            }
+//            $avg = $sum / count($chat);
+//            $faculty = Faculty::find($index);
+//            $avgTimes[ $faculty->full_name ] = [ number_format($avg, 2,".",""), $faculty->chats()->where('status', 'Açık')->count()];
+//        }
+        return view('admin.test', compact('chats'));
+
 //        Newsletter::subscribe('murat@cakir.web.tr');
 //        if(Newsletter::lastActionSucceeded())
 //            return 'Success';

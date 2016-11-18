@@ -3,9 +3,9 @@
 return array(
 
     'appNameIOS'     => array(
-        'environment' =>'development',
-        'certificate' => app_path() . '/certificate.pem',
-        'passPhrase'  =>'',
+        'environment' =>'production',
+        'certificate' => app_path() . '/LSPush.pem',
+        'passPhrase'  =>'@Kaliforniya@',
         'service'     =>'apns'
     ),
     'appNameAndroid' => array(

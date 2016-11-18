@@ -27,6 +27,7 @@ return array(
     'CreateFacultiesTable' => $baseDir . '/database/migrations/2016_04_13_174151_create_faculties_table.php',
     'CreateFeedsTable' => $baseDir . '/database/migrations/2016_04_23_190755_create_feeds_table.php',
     'CreateMessagesTable' => $baseDir . '/database/migrations/2016_04_23_190508_create_messages_table.php',
+    'CreateMobileNotificationsTable' => $baseDir . '/database/migrations/2016_10_15_150507_create_mobile_notifications_table.php',
     'CreateNewsTable' => $baseDir . '/database/migrations/2016_04_23_191206_create_news_table.php',
     'CreateNotificationsTable' => $baseDir . '/database/migrations/2016_04_23_190748_create_notifications_table.php',
     'CreatePasswordResetsTable' => $baseDir . '/database/migrations/2016_04_14_000002_create_password_resets_table.php',

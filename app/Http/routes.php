@@ -1,6 +1,11 @@
 <?php
 
 Route::group(['prefix' => 'api'], function () {
+    Route::group(['prefix' => 'admin'], function () {
+        Route::get('log', 'ApiAdminController@log')->name('api.admin.logs');
+        Route::get('log/{date}', 'ApiAdminController@logDaily')->name('api.admin.logs.daily');
+    });
+
     Route::get('children', 'ApiController@children')->name('api.children');
     Route::get('child/{id}', 'ApiController@child')->name('api.child');
     Route::post('child/form', 'ApiController@childForm')->name('api.child.form');
@@ -181,9 +186,12 @@ Route::group(['middleware' => ['web']], function () {
         });
         Route::resource('testimonial', 'TestimonialController');
         Route::resource('emailsample', 'EmailSampleController');
+        Route::resource('mobile-notification', 'MobileNotificationController');
+        Route::post('mobile-notification/{id}/send', 'MobileNotificationController@send')->name('mobile-notification.send');
 
 
-        Route::group([ 'prefix' => 'logs',], function() {
+
+        Route::group([ 'prefix' => 'logs', 'middleware' => ['auth']], function() {
             Route::get('/', [ 'as'    => 'log-viewer::dashboard',  'uses'  => 'LogController@index',]);
             Route::get('/lists', [ 'as'    => 'log-viewer::logs.list',  'uses'  => 'LogController@listLogs',]);
             Route::delete('delete', ['as'    => 'log-viewer::logs.delete', 'uses'  => 'LogController@delete',]);

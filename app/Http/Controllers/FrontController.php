@@ -14,7 +14,6 @@ class FrontController extends Controller
 {
     //
 
-    //TODO: Don't show not approved
     public function home(Request $request)
     {
         $page = $request->has('page') ? $request->page : '1';
@@ -27,6 +26,7 @@ class FrontController extends Controller
                 ->whereHas('posts', function ($query) {
                     $query->where('type', 'Tanışma')->approved();
                 })
+                ->where('until', '>', Carbon::now())
                 ->orderby('meeting_day', 'desc')
                 ->simplePaginate(20);
         });
@@ -257,6 +257,7 @@ class FrontController extends Controller
                 ->whereHas('posts', function ($query) {
                     $query->where('type', 'Tanışma')->approved();
                 })
+                ->where('until', '>', Carbon::now())
                 ->orderby('meeting_day', 'desc')
                 ->simplePaginate(20);
         });
@@ -271,7 +272,7 @@ class FrontController extends Controller
             return Child::where('slug', $childSlug)->with('faculty', 'posts', 'posts.images')->first();
         });
 
-        if ($child == null || $child->faculty->slug != $facultyName) {
+        if ($child == null || $child->faculty->slug != $facultyName || $child->until < Carbon::now()) {
             abort(404);
         }
 

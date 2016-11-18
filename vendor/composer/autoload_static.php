@@ -502,6 +502,7 @@ class ComposerStaticInite1cf590072ebe5c81ad261dcfefb6737
         'CreateFacultiesTable' => __DIR__ . '/../..' . '/database/migrations/2016_04_13_174151_create_faculties_table.php',
         'CreateFeedsTable' => __DIR__ . '/../..' . '/database/migrations/2016_04_23_190755_create_feeds_table.php',
         'CreateMessagesTable' => __DIR__ . '/../..' . '/database/migrations/2016_04_23_190508_create_messages_table.php',
+        'CreateMobileNotificationsTable' => __DIR__ . '/../..' . '/database/migrations/2016_10_15_150507_create_mobile_notifications_table.php',
         'CreateNewsTable' => __DIR__ . '/../..' . '/database/migrations/2016_04_23_191206_create_news_table.php',
         'CreateNotificationsTable' => __DIR__ . '/../..' . '/database/migrations/2016_04_23_190748_create_notifications_table.php',
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2016_04_14_000002_create_password_resets_table.php',

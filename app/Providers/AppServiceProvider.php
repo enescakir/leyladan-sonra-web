@@ -14,17 +14,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        /*
         DB::listen(function ($query) {
             Log::info( $query->sql . " |||| IN: " . $query->time);
             // $query->sql
             // $query->bindings
             // $query->time
         });
-
+        */
         view()->composer('admin.parent', function($view) {
             $authUser = Auth::user();
-            if($authUser == null)
-                abort(401);
+            if($authUser == null){
+                Log::warning('authUser is null');
+                Log::warning(request()->fullUrl());
+                Auth::logout();
+                return redirect()->guest('admin/login')->with('error_message', 'Bir sıkıntı ile karşılaşıldı. Durumu <strong>teknik@leyladansonra.com</strong> adresine bildirebilirsiniz');
+            }
 
             $feeds = Cache::remember('faculty-feeds-' . $authUser->faculty_id, 5, function () use ($authUser) {
                 return \App\Feed::where('faculty_id', $authUser->faculty_id)->orderby('id', 'desc')->limit(30)->get();

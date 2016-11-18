@@ -9,6 +9,10 @@ use App\Message, Auth, Carbon\Carbon, Log;
 
 class MessageController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
