@@ -53,11 +53,12 @@ class QueryBuilderEngine extends BaseEngine
      * Overrides global search
      *
      * @param \Closure $callback
+     * @param bool $globalSearch
      * @return $this
      */
-    public function filter(Closure $callback)
+    public function filter(Closure $callback, $globalSearch = false)
     {
-        $this->overrideGlobalSearch($callback, $this->query);
+        $this->overrideGlobalSearch($callback, $this->query, $globalSearch);
 
         return $this;
     }
@@ -122,7 +123,7 @@ class QueryBuilderEngine extends BaseEngine
     {
         $this->query->where(
             function ($query) {
-                $globalKeyword = $this->setupKeyword($this->request->keyword());
+                $globalKeyword = $this->request->keyword();
                 $queryBuilder  = $this->getQueryBuilder($query);
 
                 foreach ($this->request->searchableColumnIndex() as $index) {
@@ -142,7 +143,7 @@ class QueryBuilderEngine extends BaseEngine
 
                         if ($columnDef['method'] instanceof Closure) {
                             $whereQuery = $queryBuilder->newQuery();
-                            call_user_func_array($columnDef['method'], [$whereQuery, $this->request->keyword()]);
+                            call_user_func_array($columnDef['method'], [$whereQuery, $globalKeyword]);
                             $queryBuilder->addNestedWhereQuery($whereQuery, 'or');
                         } else {
                             $this->compileColumnQuery(
@@ -150,7 +151,7 @@ class QueryBuilderEngine extends BaseEngine
                                 Helper::getOrMethod($columnDef['method']),
                                 $columnDef['parameters'],
                                 $columnName,
-                                $this->request->keyword()
+                                $globalKeyword
                             );
                         }
                     } else {

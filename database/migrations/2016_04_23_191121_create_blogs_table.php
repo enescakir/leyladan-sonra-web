@@ -23,6 +23,11 @@ class CreateBlogsTable extends Migration
             $table->string('link')->nullable();
 
             $table->timestamps();
+            $table->integer('updated_by')->unsigned()->nullable();
+            $table->integer('deleted_by')->unsigned()->nullable();
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('deleted_by')->references('id')->on('users')->onDelete('set null');
+            $table->softDeletes();
 
             $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
 
@@ -33,10 +38,9 @@ class CreateBlogsTable extends Migration
             $table->string('title');
             $table->string('slug');
             $table->text('desc')->nullable();
-            $table->integer('created_by')->unsigned()->nullable();
             $table->timestamps();
-
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            BaseActions($table);
+            $table->softDeletes();
 
         });
 
@@ -48,8 +52,9 @@ class CreateBlogsTable extends Migration
 
             $table->integer('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('blog_categories')->onDelete('cascade');
-
             $table->timestamps();
+            BaseActions($table);
+            $table->softDeletes();
         });
 
     }

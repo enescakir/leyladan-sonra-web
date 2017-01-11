@@ -36,7 +36,7 @@ class MailChimp
         $this->api_key = $api_key;
 
         if (strpos($this->api_key, '-') === false) {
-            throw new \Exception('Invalid MailChimp API key supplied.');
+            throw new \Exception("Invalid MailChimp API key `{$api_key}` supplied.");
         }
 
         list(, $data_center) = explode('-', $this->api_key);
@@ -214,7 +214,7 @@ class MailChimp
                 break;
 
             case 'get':
-                $query = http_build_query($args);
+                $query = http_build_query($args, '', '&');
                 curl_setopt($ch, CURLOPT_URL, $url . '?' . $query);
                 break;
 
@@ -251,6 +251,14 @@ class MailChimp
         $this->determineSuccess($response, $formattedResponse);
 
         return $formattedResponse;
+    }
+    
+    /**
+     * @return string The url to the API endpoint
+     */
+    public function getApiEndpoint()
+    {
+        return $this->api_endpoint;
     }
 
     /**
@@ -313,12 +321,12 @@ class MailChimp
      */
     private function findHTTPStatus($response, $formattedResponse)
     {
-        if (!empty($response['body']) && isset($formattedResponse['status'])) {
-            return (int) $formattedResponse['status'];
-        }
-
         if (!empty($response['headers']) && isset($response['headers']['http_code'])) {
             return (int) $response['headers']['http_code'];
+        }
+
+        if (!empty($response['body']) && isset($formattedResponse['status'])) {
+            return (int) $formattedResponse['status'];
         }
 
         return 418;

@@ -2,46 +2,42 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class Faculty extends Model
+class Faculty extends BaseModel
 {
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
     protected $table = 'faculties';
-
-    /**
-     * The attributes that are not mass assignable.
-     *
-     * @var array
-     */
     protected $guarded = [];
 
-
-    public function feeds(){
+    public function feeds()
+    {
         return $this->hasMany('App\Feed');
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->hasMany('App\User');
     }
 
-    public function chats(){
+    public function chats()
+    {
         return $this->hasMany('App\Chat');
     }
 
-    public function responsibles(){
-        return $this->hasMany('App\User')->where('title','Fakülte Sorumlusu');
+    public function responsibles()
+    {
+        return $this->hasMany('App\User')->where('title', 'Fakülte Sorumlusu');
     }
 
-    public function posts(){
+    public function posts()
+    {
         return $this->hasManyThrough('App\Post', 'App\Child');
     }
 
+    public function children()
+    {
+        return $this->hasMany('App\Child');
+    }
 
     public static $validationRules=[
         'full_name'=>'required|max:255',
@@ -63,28 +59,21 @@ class Faculty extends Model
     ];
 
 
-    public function setStartedAtAttribute($date){
-        if($date == ''){
+    public function setStartedAtAttribute($date)
+    {
+        if ($date == '') {
             return $this->attributes['started_at'] = null;
         };
 
         $this->attributes['started_at'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
     }
 
-    public function getStartedAtHumanAttribute(){
-        if($this->attributes['started_at'] == null){
+    public function getStartedAtLabelAttribute()
+    {
+        if ($this->attributes['started_at'] == null) {
             return null;
         };
 
         return date("d.m.Y", strtotime($this->attributes['started_at']));
     }
-
-    public function children(){
-        return $this->hasMany('App\Child');
-    }
-
-//    public function getStartedAtAttribute(){
-//        return date("d.m.Y", strtotime($this->attributes['started_at']));
-//    }
-
 }

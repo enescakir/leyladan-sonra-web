@@ -6,14 +6,16 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'tmhOAuth' => array($vendorDir . '/themattharris/tmhoauth'),
     'ZendService\\Google\\Gcm\\' => array($vendorDir . '/zendframework/zendservice-google-gcm/library'),
     'ZendService\\Google\\Exception\\' => array($vendorDir . '/zendframework/zendservice-google-gcm/library'),
     'ZendService\\Apple\\Exception\\' => array($vendorDir . '/zendframework/zendservice-apple-apns/library'),
     'ZendService\\Apple\\Apns\\' => array($vendorDir . '/zendframework/zendservice-apple-apns/library'),
+    'Ubench' => array($vendorDir . '/devster/ubench/src'),
+    'Thujohn\\Twitter' => array($vendorDir . '/thujohn/twitter/src'),
     'Smtpapi' => array($vendorDir . '/sendgrid/smtpapi/lib'),
     'Sly' => array($vendorDir . '/sly/notification-pusher/src'),
     'SendGrid' => array($vendorDir . '/sendgrid/sendgrid/lib'),
-    'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'PHPExcel' => array($vendorDir . '/phpoffice/phpexcel/Classes'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),

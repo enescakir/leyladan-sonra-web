@@ -14,7 +14,6 @@ class CreateSocialsTable extends Migration
     {
          Schema::create('socials', function (Blueprint $table) {
              $table->increments('id');
-             $table->integer('created_by')->unsigned()->nullable();
              $table->integer('child_id')->unsigned()->nullable();
 
              $table->longtext('facebook_text');
@@ -32,9 +31,10 @@ class CreateSocialsTable extends Migration
              $table->string('link')->nullable();
 
              $table->timestamps();
+             BaseActions($table);
+             $table->softDeletes();
 
              $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');
-             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
              $table->foreign('facebook_by')->references('id')->on('users')->onDelete('set null');
              $table->foreign('twitter_by')->references('id')->on('users')->onDelete('set null');
              $table->foreign('instagram_by')->references('id')->on('users')->onDelete('set null');
@@ -45,6 +45,8 @@ class CreateSocialsTable extends Migration
             $table->string('name');
             $table->integer('social_id')->unsigned();
             $table->timestamps();
+            BaseActions($table);
+            $table->softDeletes();
 
             $table->foreign('social_id')->references('id')->on('socials')->onDelete('cascade');
         });

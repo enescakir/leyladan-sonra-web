@@ -23,6 +23,8 @@ class CreateTestimonialsTable extends Migration
             $table->date('approved_at')->nullable();
 
             $table->timestamps();
+            BaseActions($table);
+            $table->softDeletes();
 
             $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
 

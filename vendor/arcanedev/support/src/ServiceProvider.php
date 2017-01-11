@@ -58,6 +58,14 @@ abstract class ServiceProvider extends IlluminateServiceProvider
      | ------------------------------------------------------------------------------------------------
      */
     /**
+     * Register the service provider.
+     */
+    public function register()
+    {
+        //
+    }
+
+    /**
      * Boot the service provider.
      */
     public function boot()
@@ -86,6 +94,48 @@ abstract class ServiceProvider extends IlluminateServiceProvider
     protected function singleton($abstract, $concrete = null)
     {
         $this->app->singleton($abstract, $concrete);
+    }
+
+    /**
+     * Register a service provider.
+     *
+     * @param  \Illuminate\Support\ServiceProvider|string  $provider
+     * @param  array                                       $options
+     * @param  bool                                        $force
+     *
+     * @return \Illuminate\Support\ServiceProvider
+     */
+    protected function registerProvider($provider, array $options = [], $force = false)
+    {
+        return $this->app->register($provider, $options, $force);
+    }
+
+    /**
+     * Register multiple service providers.
+     *
+     * @param  array  $providers
+     */
+    protected function registerProviders(array $providers)
+    {
+        foreach ($providers as $provider) {
+            $this->registerProvider($provider);
+        }
+    }
+
+    /**
+     * Register a console service provider.
+     *
+     * @param  \Illuminate\Support\ServiceProvider|string  $provider
+     * @param  array                                       $options
+     * @param  bool                                        $force
+     *
+     * @return \Illuminate\Support\ServiceProvider|null
+     */
+    protected function registerConsoleServiceProvider($provider, array $options = [], $force = false)
+    {
+        return $this->app->runningInConsole()
+            ? $this->registerProvider($provider, $options, $force)
+            : null;
     }
 
     /**
@@ -133,34 +183,27 @@ abstract class ServiceProvider extends IlluminateServiceProvider
         return $this;
     }
 
-    /**
-     * Add Aliases into the app.
-     *
-     * @deprecated 3.7.0 Use the aliases() method instead and don't forget to add the registerAliases() inside register() method.
-     *
-     * @param  array  $aliases
-     *
-     * @return self
+    /* ------------------------------------------------------------------------------------------------
+     |  Services
+     | ------------------------------------------------------------------------------------------------
      */
-    protected function addFacades(array $aliases)
+    /**
+     * Get the config repository instance.
+     *
+     * @return \Illuminate\Config\Repository
+     */
+    protected function config()
     {
-        foreach ($aliases as $alias => $facade) {
-            $this->addFacade($alias, $facade);
-        }
-
-        return $this;
+        return $this->app['config'];
     }
 
     /**
-     * Add Alias. (Facade)
+     * Get the filesystem instance.
      *
-     * @deprecated 3.7.0 Use the alias() method instead and don't forget to add the registerAliases() inside register() method.
-     *
-     * @param  string  $alias
-     * @param  string  $facade
+     * @return \Illuminate\Filesystem\Filesystem
      */
-    protected function addFacade($alias, $facade)
+    protected function filesystem()
     {
-        $this->aliasLoader->alias($alias, $facade);
+        return $this->app['files'];
     }
 }

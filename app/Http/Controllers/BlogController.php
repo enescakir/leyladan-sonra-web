@@ -55,7 +55,7 @@ class BlogController extends Controller
         foreach($categories as $categoryItem){
             $category = BlogCategory::where('title',$categoryItem)->first();
             if($category == null){
-                $slug = str_slug($this->removeTurkish($categoryItem));
+                $slug = str_slug(removeTurkish($categoryItem));
                 $category = new BlogCategory([
                     'title' => $categoryItem,
                     'slug' => $slug,
@@ -68,7 +68,7 @@ class BlogController extends Controller
         }
         $blog->author_id = Auth::user()->id;
         $blog->save();
-        $blog->slug = str_slug($this->removeTurkish($blog->title). "-" . $blog->id);
+        $blog->slug = str_slug(removeTurkish($blog->title). "-" . $blog->id);
 
         $blog->categories()->attach($categoriesArray);
         if($request->hasFile('thumb') ){
@@ -129,20 +129,4 @@ class BlogController extends Controller
     {
         //
     }
-
-    private  function removeTurkish($string){
-        $charsArray = [
-            'c'    => ['ç', 'Ç'],
-            'g'    => ['ğ', 'Ğ'],
-            'i'    => ['I', 'İ', 'ı'],
-            'o'    => ['Ö','ö'],
-            's'    => ['Ş', 'ş'],
-            'u'    => ['ü', 'Ü'],
-        ];
-        foreach ($charsArray as $key => $val) {
-            $string = str_replace($val, $key, $string);
-        }
-        return $string;
-    }
-
 }

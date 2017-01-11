@@ -32,6 +32,13 @@ class Manager
     protected $requestedIncludes = [];
 
     /**
+     * Array of scope identifiers for resources to exclude.
+     *
+     * @var array
+     */
+    protected $requestedExcludes = [];
+
+    /**
      * Array containing modifiers as keys and an array value of params.
      *
      * @var array
@@ -91,15 +98,11 @@ class Manager
      *
      * @param string $include
      *
-     * @return \League\Fractal\ParamBag|null
+     * @return \League\Fractal\ParamBag
      */
     public function getIncludeParams($include)
     {
-        if (! isset($this->includeParams[$include])) {
-            return;
-        }
-
-        $params = $this->includeParams[$include];
+        $params = isset($this->includeParams[$include]) ? $this->includeParams[$include] : [];
 
         return new ParamBag($params);
     }
@@ -112,6 +115,16 @@ class Manager
     public function getRequestedIncludes()
     {
         return $this->requestedIncludes;
+    }
+
+    /**
+     * Get Requested Excludes.
+     *
+     * @return array
+     */
+    public function getRequestedExcludes()
+    {
+        return $this->requestedExcludes;
     }
 
     /**
@@ -191,6 +204,40 @@ class Manager
 
         // This should be optional and public someday, but without it includes would never show up
         $this->autoIncludeParents();
+
+        return $this;
+    }
+
+    /**
+     * Parse Exclude String.
+     *
+     * @param array|string $excludes Array or csv string of resources to exclude
+     *
+     * @return $this
+     */
+    public function parseExcludes($excludes)
+    {
+        $this->requestedExcludes = [];
+
+        if (is_string($excludes)) {
+            $excludes = explode(',', $excludes);
+        }
+
+        if (! is_array($excludes)) {
+            throw new \InvalidArgumentException(
+                'The parseExcludes() method expects a string or an array. '.gettype($excludes).' given'
+            );
+        }
+
+        foreach ($excludes as $excludeName) {
+            $excludeName = $this->trimToAcceptableRecursionLevel($excludeName);
+
+            if (in_array($excludeName, $this->requestedExcludes)) {
+                continue;
+            }
+
+            $this->requestedExcludes[] = $excludeName;
+        }
 
         return $this;
     }

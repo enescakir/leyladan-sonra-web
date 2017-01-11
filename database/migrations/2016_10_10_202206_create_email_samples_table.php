@@ -18,8 +18,8 @@ class CreateEmailSamplesTable extends Migration
             $table->string('category')->nullable();
             $table->longtext('text');
             $table->timestamps();
-            $table->integer('created_by')->unsigned();
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            BaseActions($table);
+            $table->softDeletes();
         });
     }
 

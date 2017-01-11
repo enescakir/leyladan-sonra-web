@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Auth, DB, Mail, App\User, App\Child, App\Volunteer, App\Chat, App\Feed;
-use PDF, Newsletter, PushNotification, Cache;
+use Illuminate\Support\Facades\Log;
+use PDF, Newsletter, PushNotification, Cache, Session;
 
 class DashboardController extends Controller
 {
@@ -29,6 +30,7 @@ class DashboardController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
+        $user->used = count(DB::select('select * from oylar where used_by = ?', [$user->id])) > 0;
 
         $totalChild = Cache::remember('totalChildren', 15, function() {
             return DB::table('children')->count();
@@ -84,7 +86,7 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', compact(['totalChild', 'totalBlood', 'totalVolunteer', 'totalUser',
             'waitGeneralChild', 'roadGeneralChild', 'reachGeneralChild', 'deliveredGeneralChild', 'waitFacultyChild',
-            'roadFacultyChild', 'reachFacultyChild', 'deliveredFacultyChild', 'feeds']));
+            'roadFacultyChild', 'reachFacultyChild', 'deliveredFacultyChild', 'feeds']))->with(['authUser' => $user]);
     }
 
     public function birthdays()
@@ -199,17 +201,30 @@ class DashboardController extends Controller
     }
 
     public function test(){
-        $chats = Chat::where('faculty_id', 1)->with('volunteer', 'messages', 'messages.answerer', 'child')->orderBy('id', 'desc')->get();
-//        foreach ($chats as $index => $chat) {
-//            $sum = 0;
-//            foreach ($chat as $c) {
-//                $sum += $c->avgTime();
-//            }
-//            $avg = $sum / count($chat);
-//            $faculty = Faculty::find($index);
-//            $avgTimes[ $faculty->full_name ] = [ number_format($avg, 2,".",""), $faculty->chats()->where('status', 'Açık')->count()];
-//        }
-        return view('admin.test', compact('chats'));
+        /*
+        $users = User::
+            with('faculty')
+            ->where('id', '>', '2928')
+            ->whereHas('faculty', function($query) {
+                $query->whereNotIn('code', [34, 35, 1]);
+            })
+            ->get();
+
+        $i = 1;
+        $count = count($users);
+        foreach($users as $user){
+            \Mail::send('email.admin.oylama', ['user' => $user], function ($message) use ($user) {
+                $message
+                    ->to(str_replace(' ', '', $user->email))
+                    ->from('teknik@leyladansonra.com', 'Leyla\'dan Sonra Sistem')
+                    ->subject("Leyla'dan Sonra 2017 Eğitim Kampı");
+            });
+            Log::info("User #" . $user->id . " sent. (" . $i . " / " . $count . ")");
+            $i++;
+        }
+
+        dd($users);
+**/
 
 //        Newsletter::subscribe('murat@cakir.web.tr');
 //        if(Newsletter::lastActionSucceeded())
@@ -348,6 +363,34 @@ class DashboardController extends Controller
         return view('admin.moving', compact('numbers'));
     }
 
+
+    public function oylama(){
+        return view('admin.oylama');
+    }
+
+    public function oylamaKaydet(Request $request){
+        $user = Auth::user();
+//        if($user->faculty->city == "İstanbul" || $user->faculty->city == "İzmir"){
+//            Session::flash('error_message', 'Fakültesi <strong>İstanbul</strong> ya da <strong>İzmir</strong>\'de bulunanlar oy kullanamazlar.');
+//            return view('admin.oylama');
+//        }
+
+        $oylar = DB::select('select * from oylar where used_by = ?', [$user->id]);
+        if(count($oylar) > 0){
+            Session::flash('error_message', 'Daha önceden oy kullanmışsınız.');
+            return redirect()->back()->withInput();
+        }
+
+        if( !($request->has('first') && $request->has('second') && $request->has('third')) ){
+            Session::flash('error_message', 'Lütfen bütün tarihleri oylayınız.');
+            return redirect()->back()->withInput();
+        }
+
+        Session::flash('success_message', 'Başarıyla oy kullandınız.');
+        DB::insert('insert into oylar (used_by, faculty_name, first, second, third) values (?, ?, ?, ?, ?)', [$user->id, $user->faculty->slug, $request->first, $request->second, $request->third ]);
+
+        return view('admin.oylama');
+    }
 
 
 }

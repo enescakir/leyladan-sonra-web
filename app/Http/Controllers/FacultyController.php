@@ -365,8 +365,11 @@ class FacultyController extends Controller
 
     public function messages($id)
     {
+        $authUser = Auth::user();
+        $colors = ["purple", "red", "green"];
         $faculty = Faculty::find($id);
-        return view('admin.faculty.messages', compact(['faculty']));
+        $children = $faculty->children()->has('chats')->withCount('chats')->orderBy('id','desc')->get();
+        return view('admin.faculty.messages', compact(['children','faculty','colors','authUser']));
     }
 
     public function messagesUnanswered($id)
@@ -374,8 +377,7 @@ class FacultyController extends Controller
         $authUser = Auth::user();
         $colors = ["purple", "red", "green"];
         $faculty = Faculty::find($id);
-        $children = $faculty->children()->has('openChats')->withCount('openChats')->get();
-        $chats = $faculty->children()->has('openChats')->withCount('openChats')->get();
+        $children = $faculty->children()->has('openChats')->withCount('openChats', 'unansweredMessages')->orderBy('id','desc')->get();
         return view('admin.faculty.messages_unanswered', compact(['children','faculty','colors','authUser']));
     }
 

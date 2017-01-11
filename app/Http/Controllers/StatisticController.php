@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Volunteer;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Auth, DB, App\Child, App\User, LaravelAnalytics, App\Chat, App\Faculty, App\Process, App\Blood;
 use Carbon\Carbon, Log;
 use Facebook\Facebook, PDF;
+use App\Message;
 
 class StatisticController extends Controller
 {
@@ -52,7 +54,8 @@ class StatisticController extends Controller
         $ageAve = DB::select("SELECT AVG(TIMESTAMPDIFF(YEAR, birthday, CURDATE())) AS `average` FROM users;")[0];
         $visits = User::with('faculty')->withCount('visits')->limit(10)->orderby('visits_count', 'desc')->get();
         $meetings = User::with('faculty')->withCount('children')->limit(10)->orderby('children_count', 'desc')->get();
-        return view('admin.statistics.user', compact(['user', 'youngest', 'oldest', 'ageAve', 'visits', 'meetings']));
+        $messages = User::with('faculty')->withCount('answers')->limit(10)->orderby('answers_count', 'desc')->get();
+        return view('admin.statistics.user', compact(['user', 'youngest', 'oldest', 'ageAve', 'visits', 'meetings', 'messages']));
 
     }
 
@@ -97,7 +100,33 @@ class StatisticController extends Controller
             })
             ->orderby('meeting_day', 'desc')
             ->get();
-        return view('admin.statistics.volunteer', compact(['avgTimes', 'children']));
+        $chats = Faculty::withCount('chats')->get()->toArray();
+        usort($chats, function ($a, $b) { return $b['chats_count'] - $a['chats_count']; });
+
+        $todayMessage = Message::whereDate('created_at', '=', date('Y-m-d'))->count();
+        $todayVolunteer = Volunteer::whereDate('created_at', '=', date('Y-m-d'))->count();
+        $totalMessage = Message::count();
+        $totalVolunteer = Volunteer::count();
+
+        return view('admin.statistics.volunteer', compact(['avgTimes', 'children', 'chats', 'todayMessage', 'todayVolunteer', 'totalMessage', 'totalVolunteer']));
+    }
+
+    public function volunteersAndMessages()
+    {
+        $volunteersAndMessages = [[], []];
+        $volunteersAndMessages[0] = DB::select("SELECT c.datefield AS date, IFNULL(COUNT(m.`id`),0) AS messages FROM messages as m RIGHT JOIN calendar as c ON (DATE(m.created_at) = c.datefield) WHERE (c.datefield BETWEEN (CURDATE() - INTERVAL 6 MONTH) AND CURDATE()) GROUP BY DATE");
+        $volunteersAndMessages[1] = DB::select("SELECT c.datefield AS date, IFNULL(COUNT(v.`id`),0) AS volunteers FROM volunteers as v RIGHT JOIN calendar as c ON (DATE(v.created_at) = c.datefield) WHERE (c.datefield BETWEEN (CURDATE() - INTERVAL 6 MONTH) AND CURDATE()) GROUP BY DATE");
+
+        //Carbon::setLocale('tr');
+        for( $i = 0; $i < count($volunteersAndMessages[0]); $i++){
+            $message = $volunteersAndMessages[0][$i];
+            $volunteer = $volunteersAndMessages[1][$i];
+            $date = new Carbon($message->date);
+            $volunteersAndMessages[0][$i] = [ $date->format('d.m.Y'), $message->messages / 1];
+            $volunteersAndMessages[1][$i] = [ $date->format('d.m.Y'), $volunteer->volunteers / 1];
+
+        }
+        return $volunteersAndMessages;
     }
 
     public function child()
@@ -155,6 +184,11 @@ class StatisticController extends Controller
     {
         $datas = Faculty::whereNotNull('started_at')->get();
         $faculties = [];
+        $facultyMeetings = [];
+        setlocale(LC_ALL, 'tr_TR.UTF-8');
+        $first  = strtotime('first day this month');
+        $lastMonths = [];
+        for ($i = 5; $i >= 1; $i--) array_push($lastMonths, ["n" => date('n', strtotime("-$i month", $first)), "M" => strftime("%b", strtotime("-$i month", $first)) , "Y" =>date('Y', strtotime("-$i month", $first))]);
 
         foreach ($datas as $key => $faculty) {
             $object = new \stdClass();
@@ -170,13 +204,16 @@ class StatisticController extends Controller
                 $object->total = $object->total + 100;
             }
             array_push($faculties, $object);
+            $facultyMeetings[$faculty->full_name . " Tıp Fak."][0] = Child::where("faculty_id", $faculty->id)->whereYear('meeting_day', '=', $lastMonths[0]["Y"])->whereMonth('meeting_day', '=', $lastMonths[0]["n"])->count();
+            $facultyMeetings[$faculty->full_name . " Tıp Fak."][1] = Child::where("faculty_id", $faculty->id)->whereYear('meeting_day', '=', $lastMonths[1]["Y"])->whereMonth('meeting_day', '=', $lastMonths[1]["n"])->count();
+            $facultyMeetings[$faculty->full_name . " Tıp Fak."][2] = Child::where("faculty_id", $faculty->id)->whereYear('meeting_day', '=', $lastMonths[2]["Y"])->whereMonth('meeting_day', '=', $lastMonths[2]["n"])->count();
+            $facultyMeetings[$faculty->full_name . " Tıp Fak."][3] = Child::where("faculty_id", $faculty->id)->whereYear('meeting_day', '=', $lastMonths[3]["Y"])->whereMonth('meeting_day', '=', $lastMonths[3]["n"])->count();
+            $facultyMeetings[$faculty->full_name . " Tıp Fak."][4] = Child::where("faculty_id", $faculty->id)->whereYear('meeting_day', '=', $lastMonths[4]["Y"])->whereMonth('meeting_day', '=', $lastMonths[4]["n"])->count();
         }
-
         usort($faculties, function ($a, $b) {
             return $b->total - $a->total;
         });
-
-        return view('admin.statistics.faculty', compact(['faculties']));
+        return view('admin.statistics.faculty', compact(['faculties', 'lastMonths', 'facultyMeetings']));
     }
 
     public function website()

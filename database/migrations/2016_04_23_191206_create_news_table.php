@@ -18,6 +18,9 @@ class CreateNewsTable extends Migration
             $table->string('logo');
             $table->string('category');
             $table->timestamps();
+            BaseActions($table);
+            $table->softDeletes();
+
         });
 
         Schema::create('news', function (Blueprint $table) {
@@ -27,6 +30,8 @@ class CreateNewsTable extends Migration
             $table->string('link');
             $table->integer('channel_id')->unsigned();
             $table->timestamps();
+            BaseActions($table);
+            $table->softDeletes();
 
             $table->foreign('channel_id')->references('id')->on('channels');
 

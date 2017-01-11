@@ -14,12 +14,11 @@ class CreateProcessesTable extends Migration
     {
         Schema::create('processes', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('creator_id')->unsigned();
             $table->integer('child_id')->unsigned();
             $table->string('desc');
             $table->timestamps();
-
-            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
+            BaseActions($table);
+            $table->softDeletes();
             $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');
         });
     }

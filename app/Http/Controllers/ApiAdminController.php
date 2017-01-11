@@ -18,8 +18,11 @@ class ApiAdminController extends Controller
      */
     public function log(Request $request)
     {
-        if($request->pass == "@Onkoloji11@")
-            return LogViewer::tree();
+        if($request->pass == "@Onkoloji11@"){
+            $logs = LogViewer::tree();
+            krsort($logs);
+            return $logs;
+        }
         return "";
     }
 

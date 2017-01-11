@@ -40,6 +40,10 @@ class User extends Authenticatable
         return $this->hasMany('App\Process', 'creator_id');
     }
 
+    public function answers(){
+        return $this->hasMany('App\Message', 'answered_by');
+    }
+
     public function visits(){
         return $this->hasMany('App\Process', 'creator_id')->where('desc', 'Ziyaret edildi.');
     }

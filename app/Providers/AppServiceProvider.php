@@ -25,8 +25,9 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('admin.parent', function($view) {
             $authUser = Auth::user();
             if($authUser == null){
-                Log::warning('authUser is null');
-                Log::warning(request()->fullUrl());
+                Log::warning(
+                    "authUser is null" . " - " . request()->method() . " - " . request()->path()
+                );
                 Auth::logout();
                 return redirect()->guest('admin/login')->with('error_message', 'Bir sıkıntı ile karşılaşıldı. Durumu <strong>teknik@leyladansonra.com</strong> adresine bildirebilirsiniz');
             }

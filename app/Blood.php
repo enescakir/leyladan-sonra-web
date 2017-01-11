@@ -2,12 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
-
-class Blood extends Model
+class Blood extends BaseModel
 {
-
+    use Birthday, Mobile;
     protected $fillable = [
         'first_name', 'last_name', 'gender', 'rh', 'height', 'weight', 'birthday', 'mobile', 'city', 'blood_type', 'email'
     ];
@@ -43,13 +40,4 @@ class Blood extends Model
         'email.max'=>'E-posta en fazla 255 karakterden oluşabilir',
         'email.email'=>'Lütfen geçerli bir e-posta adresi giriniz'
     ];
-
-    public function setBirthdayAttribute($date){
-        return $this->attributes['birthday'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
-    }
-
-    public function setMobileAttribute($mobile){
-        return $this->attributes['mobile'] = substr(str_replace(['\0', '+', ')', '(', '-', ' ', '\t'], '', $mobile), -10);
-    }
-
 }

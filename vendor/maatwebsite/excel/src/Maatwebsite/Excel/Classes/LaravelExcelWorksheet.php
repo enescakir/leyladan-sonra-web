@@ -5,7 +5,6 @@ use PHPExcel_Cell;
 use PHPExcel_Exception;
 use PHPExcel_Worksheet;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config;
 use Maatwebsite\Excel\Writers\CellWriter;
 use Maatwebsite\Excel\Exceptions\LaravelExcelException;
 use PHPExcel_Worksheet_PageSetup;
@@ -110,6 +109,9 @@ class LaravelExcelWorksheet extends PHPExcel_Worksheet {
     {
         parent::__construct($pParent, $pTitle);
         $this->setParent($pParent);
+        // check if we should generate headings
+        // defaults to true if not overridden by settings
+        $this->autoGenerateHeading = config('excel.export.generate_heading_by_indices', true);
     }
 
     /**
@@ -127,7 +129,7 @@ class LaravelExcelWorksheet extends PHPExcel_Worksheet {
             list($setter, $set) = $this->_setSetter($setup);
 
             // get the value
-            $value = Config::get('excel.sheets.pageSetup.' . $setup, null);
+            $value = config('excel.sheets.pageSetup.' . $setup, null);
 
             // Set the page setup value
             if (!is_null($value))
@@ -135,7 +137,7 @@ class LaravelExcelWorksheet extends PHPExcel_Worksheet {
         }
 
         // Set default page margins
-        $this->setPageMargin(Config::get('excel.export.sheets.page_margin', false));
+        $this->setPageMargin(config('excel.export.sheets.page_margin', false));
     }
 
     /**
@@ -671,10 +673,7 @@ class LaravelExcelWorksheet extends PHPExcel_Worksheet {
      */
     protected function generateHeadingByIndices()
     {
-        if (!$this->autoGenerateHeading)
-            return false;
-
-        return Config::get('excel.export.generate_heading_by_indices', false);
+        return $this->autoGenerateHeading;
     }
 
     /**
@@ -957,7 +956,7 @@ class LaravelExcelWorksheet extends PHPExcel_Worksheet {
         if (isset($this->autoSize))
             return $this->autoSize;
 
-        return Config::get('excel.export.autosize', true);
+        return config('excel.export.autosize', true);
     }
 
     /**
@@ -1100,7 +1099,7 @@ class LaravelExcelWorksheet extends PHPExcel_Worksheet {
         // Set center alignment on merge cells
         $this->cells($pRange, function ($cell) use ($alignment)
         {
-            $aligment = is_string($alignment) ? $alignment : Config::get('excel.export.merged_cell_alignment', 'left');
+            $aligment = is_string($alignment) ? $alignment : config('excel.export.merged_cell_alignment', 'left');
             $cell->setAlignment($aligment);
         });
 
@@ -1173,7 +1172,7 @@ class LaravelExcelWorksheet extends PHPExcel_Worksheet {
      */
     protected function getDefaultNullValue()
     {
-        return Config::get('excel.export.sheets.nullValue', null);
+        return config('excel.export.sheets.nullValue', null);
     }
 
     /**
@@ -1182,7 +1181,7 @@ class LaravelExcelWorksheet extends PHPExcel_Worksheet {
      */
     protected function getDefaultStartCell()
     {
-        return Config::get('excel.export.sheets.startCell', 'A1');
+        return config('excel.export.sheets.startCell', 'A1');
     }
 
 
@@ -1192,7 +1191,7 @@ class LaravelExcelWorksheet extends PHPExcel_Worksheet {
      */
     protected function getDefaultStrictNullComparison()
     {
-        return Config::get('excel.export.sheets.strictNullComparison', false);
+        return config('excel.export.sheets.strictNullComparison', false);
     }
 
     /**

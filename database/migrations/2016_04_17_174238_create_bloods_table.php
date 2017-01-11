@@ -26,6 +26,8 @@ class CreateBloodsTable extends Migration
             $table->string('email')->nullable();
             $table->string('city')->nullable();
             $table->timestamps();
+            BaseActions($table);
+            $table->softDeletes();
         });
     }
 

@@ -272,10 +272,13 @@ class FrontController extends Controller
             return Child::where('slug', $childSlug)->with('faculty', 'posts', 'posts.images')->first();
         });
 
-        if ($child == null || $child->faculty->slug != $facultyName || $child->until < Carbon::now()) {
+        if ($child == null || $child->faculty->slug != $facultyName) {
             abort(404);
         }
 
+        if($child->until < Carbon::now()){
+            return view('front.childExpired');
+        }
         $children = Cache::remember('childRandom-' . $childSlug, 30, function () {
             return Child::where('gift_state', 'Bekleniyor')
                 ->with([
@@ -292,11 +295,11 @@ class FrontController extends Controller
                 ->get();
         });
         $children = $children->random(min(10, $children->count()));
-        $nextPrev = Cache::remember('childNextPrev-' . $childSlug, 30, function () {
-            return Child::select('id', 'gift_state', 'slug', 'faculty_id')->with('faculty')->where('gift_state', 'Bekleniyor')->get()->random(2);
-        });
-        $previousChild = $nextPrev->first();
-        $nextChild = $nextPrev->last();
+//        $nextPrev = Cache::remember('childNextPrev-' . $childSlug, 30, function () {
+//            return Child::select('id', 'gift_state', 'slug', 'faculty_id')->with('faculty')->where('gift_state', 'Bekleniyor')->get()->random(2);
+//        });
+        $previousChild = $children->first();
+        $nextChild = $children->last();
 
         return view('front.child', compact(['child', 'children', 'previousChild', 'nextChild']));
     }
@@ -327,13 +330,17 @@ class FrontController extends Controller
         $message = new Message(['chat_id' => $chat->id, 'text' => $request->text]);
         $message->save();
 
-        $users = User::where('faculty_id', $child->faculty->id)->whereIn('title', ['Fakülte Sorumlusu', 'İletişim Sorumlusu'])->get();
+//        $users = User::where('faculty_id', $child->faculty->id)->whereIn('title', ['Fakülte Sorumlusu', 'İletişim Sorumlusu'])->get();
+        $users = User::where('faculty_id', $child->faculty->id)->where('title', 'İletişim Sorumlusu')->get();
+        if(count($users) == 0){
+            $users = User::where('faculty_id', $child->faculty->id)->where('title', 'Fakülte Sorumlusu')->get();
+        }
 
         foreach ($users as $user) {
             \Mail::send('email.admin.newmessage', ['user' => $user, 'volunteer' => $volunteer, 'child' => $child], function ($message) use ($user, $volunteer, $child) {
                 $message
                     ->to($user->email)
-                    ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+                    ->from('teknik@leyladansonra.com', 'Leyla\'dan Sonra Sistem')
                     ->subject('Fakültenizde yeni mesaj var!');
             });
 

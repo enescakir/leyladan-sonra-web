@@ -114,6 +114,7 @@ class AuthController extends Controller
             );
         }
 
+        $request->email = str_replace(' ', '', $request->email);
 
         //Auth::guard($this->getGuard())->login();
         $newUser = $this->create($request->all());

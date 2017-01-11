@@ -23,6 +23,7 @@ class CreateChildrenTable extends Migration
             $table->string('taken_treatment')->nullable();
             $table->string('child_state')->nullable();
             $table->string('child_state_desc')->nullable();
+            $table->enum('gender', ['Kız', 'Erkek'])->nullable();
             $table->date('meeting_day');
             $table->date('birthday');
             $table->string('wish');
@@ -42,6 +43,9 @@ class CreateChildrenTable extends Migration
             $table->string('slug');
             $table->timestamps();
 
+            BaseActions($table);
+            $table->softDeletes();
+
             $table->foreign('faculty_id')->references('id')->on('faculties');
             $table->foreign('volunteer_id')->references('id')->on('volunteers')->onDelete('set null');
         });
@@ -55,6 +59,8 @@ class CreateChildrenTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
+            BaseActions($table);
+            $table->softDeletes();
         });
 
     }

@@ -36,4 +36,9 @@ return [
                 'id' => env('MAILCHIMP_LIST_ID'),
             ],
         ],
+        
+        /*
+         * If you're having trouble with https connections, set this to false.
+         */
+        'ssl' => true,
 ];

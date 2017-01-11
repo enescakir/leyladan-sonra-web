@@ -72,7 +72,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->child_count = $user->children()->count();
         $user->visit_count = Process::where('creator_id', $user->id)->where('desc', 'Ziyaret edildi.')->count();
         $user->child_delivered_count = $user->children()->where('gift_state', 'Teslim Edildi')->count();
@@ -87,7 +87,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->child_count = $user->children()->count();
         $user->visit_count = Process::where('creator_id', $user->id)->where('desc', 'Ziyaret edildi.')->count();
         $user->child_delivered_count = $user->children()->where('gift_state', 'Teslim Edildi')->count();
@@ -104,7 +104,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->fill($request->all());
         $user->save();
         if($request->has('form')){
@@ -151,7 +151,7 @@ class UserController extends Controller
     }
 
     public function children($id){
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->child_count = $user->children()->count();
         $user->visit_count = Process::where('creator_id', $user->id)->where('desc', 'Ziyaret edildi.')->count();
         $user->child_delivered_count = $user->children()->where('gift_state', 'Teslim Edildi')->count();

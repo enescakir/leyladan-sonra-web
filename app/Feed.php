@@ -2,30 +2,18 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
-
-class Feed extends Model
+class Feed extends BaseModel
 {
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
     protected $table = 'feeds';
-
     protected $guarded = [];
 
-    public function faculty(){
+    public function faculty()
+    {
         return $this->belongsTo('App\Faculty');
     }
 
-    public function getCreatedAtAttribute(){
-        Carbon::setLocale('tr');
-        return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']),'Europe/Istanbul')->diffForHumans();
-    }
-
-    public function getIconAttribute(){
+    public function getIconAttribute()
+    {
         $icon = $this->attributes['icon'];
         $iconText = "";
         switch ($icon) {
@@ -47,5 +35,4 @@ class Feed extends Model
 
         return $iconText;
     }
-
 }

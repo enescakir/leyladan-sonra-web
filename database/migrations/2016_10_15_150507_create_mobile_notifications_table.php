@@ -18,15 +18,8 @@ class CreateMobileNotificationsTable extends Migration
             $table->dateTime('expected_at');
             $table->dateTime('sent_at')->nullable();
             $table->timestamps();
+            BaseActions($table);
             $table->softDeletes();
-
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->integer('updated_by')->unsigned()->nullable();
-            $table->integer('deleted_by')->unsigned()->nullable();
-
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
-            $table->foreign('deleted_by')->references('id')->on('users');
         });
     }
 

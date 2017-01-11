@@ -12,7 +12,7 @@ class ApiController extends Controller
 {
     public function children(){
         $data =  new \stdClass();
-        $data->children = Child::select('id', 'first_name', 'last_name','gift_state', 'faculty_id', 'meeting_day')->where('gift_state', 'Bekleniyor')
+        $data->children = Child::select('id', 'first_name', 'last_name','gift_state', 'faculty_id', 'meeting_day', 'wish')->where('gift_state', 'Bekleniyor')
             ->with([
                 'meetingPosts',
                 'faculty',
@@ -32,11 +32,12 @@ class ApiController extends Controller
     }
 
     public function child($id){
-        $child = Child::select('id', 'first_name', 'last_name','gift_state', 'faculty_id', 'meeting_day')->whereId($id)
+        $child = Child::select('id', 'first_name', 'last_name','gift_state', 'faculty_id', 'meeting_day', 'wish')
             ->with([
-                'posts',
+                'meetingPosts',
                 'faculty',
-                'posts.images'])
+                'meetingPosts.images'])
+            ->whereId($id)
             ->first();
         return $child;
     }
@@ -73,16 +74,20 @@ class ApiController extends Controller
 
     public function token(Request $request){
         $subscriber = Subscriber::where('notification_token', $request->token)->first();
-        Log::info($request->token);
-        Log::info($subscriber);
 
-        if($subscriber != null)
+        if( $subscriber != null){
             return response("",200);
+        }
 
         $subscriber = new Subscriber([
             'notification_token' => $request->token,
         ]);
-        Log::info($subscriber);
+
+        Log::info(
+            "New iOS app user" .
+            "\nIP: " . $request->ip() .
+            "\nToken: " . $request->token
+        );
 
         if($subscriber->save())
             return response("",200);

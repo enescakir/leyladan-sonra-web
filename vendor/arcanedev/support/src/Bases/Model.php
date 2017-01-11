@@ -1,5 +1,6 @@
 <?php namespace Arcanedev\Support\Bases;
 
+use Arcanedev\Support\Traits\PrefixedModel;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -11,45 +12,54 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 abstract class Model extends Eloquent
 {
     /* ------------------------------------------------------------------------------------------------
-     |  Properties
+     |  Traits
      | ------------------------------------------------------------------------------------------------
      */
-    /**
-     * The table prefix.
-     *
-     * @var string
-     */
-    protected $prefix       = '';
+    use PrefixedModel;
 
     /* ------------------------------------------------------------------------------------------------
-     |  Constructor
+     |  Other Functions
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Create a new Eloquent model instance.
+     * Get the attributes that have been changed since last sync.
      *
-     * @param  array  $attributes
+     * @return array
      */
-    public function __construct($attributes = [])
+    public function getDirty()
     {
-        if ($this->isPrefixed()) {
-            $this->table = $this->prefix . $this->table;
+        $dirty    = [];
+        $original = $this->getCastedOriginal();
+
+        foreach ($this->attributes as $key => $value) {
+            if ($this->hasCast($key, $value)) {
+                $value = $this->castAttribute($key, $value);
+            }
+
+            if (
+                ! array_key_exists($key, $original) ||
+                ($value !== $original[$key] && ! $this->originalIsNumericallyEquivalent($key))
+            ) {
+                $dirty[$key] = $value;
+            }
         }
 
-        parent::__construct($attributes);
+        return $dirty;
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Check Functions
-     | ------------------------------------------------------------------------------------------------
-     */
     /**
-     * Check if table is prefixed.
+     * Get the casted original attributes.
      *
-     * @return bool
+     * @return array
      */
-    protected function isPrefixed()
+    protected function getCastedOriginal()
     {
-        return ! empty($this->prefix);
+        $original = [];
+
+        foreach ($this->original as $key => $value) {
+            $original[$key] = $this->hasCast($key) ? $this->castAttribute($key, $value) : $value;
+        }
+
+        return $original;
     }
 }

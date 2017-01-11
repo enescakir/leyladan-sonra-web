@@ -306,6 +306,55 @@ class Builder
     }
 
     /**
+     * Sets HTML table attribute(s).
+     *
+     * @param string|array $attribute
+     * @param mixed $value
+     * @return $this
+     */
+    public function setTableAttribute($attribute, $value = null)
+    {
+        if (is_array($attribute)) {
+            $this->setTableAttributes($attribute);
+        } else {
+            $this->tableAttributes[$attribute] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets multiple HTML table attributes at once.
+     *
+     * @param array $attributes
+     * @return $this
+     */
+    public function setTableAttributes(array $attributes)
+    {
+        foreach ($attributes as $attribute => $value) {
+            $this->setTableAttribute($attribute, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieves HTML table attribute value.
+     *
+     * @param string $attribute
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getTableAttribute($attribute)
+    {
+        if (! array_key_exists($attribute, $this->tableAttributes)) {
+            throw new \Exception("Table attribute '{$attribute}' does not exist.");
+        }
+
+        return $this->tableAttributes[$attribute];
+    }
+
+    /**
      * Add a column in collection using attributes.
      *
      * @param  array $attributes

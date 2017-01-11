@@ -22,6 +22,8 @@ class CreateMessagesTable extends Migration
             $table->string('status');
 
             $table->timestamps();
+            $table->integer('updated_by')->unsigned()->nullable();
+            $table->foreign('updated_by')->references('id')->on('users');
 
             $table->foreign('volunteer_id')->references('id')->on('volunteers')->onDelete('cascade');
             $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');

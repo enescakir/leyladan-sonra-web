@@ -4,11 +4,44 @@
 [![Build Status](https://img.shields.io/travis/spatie/laravel-newsletter/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-newsletter)
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/10993a65-449a-488a-886c-f810b9950070.svg?style=flat-square)](https://insight.sensiolabs.com/projects/10993a65-449a-488a-886c-f810b9950070)
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-newsletter.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-newsletter)
+[![StyleCI](https://styleci.io/repos/35035915/shield?branch=master)](https://styleci.io/repos/35035915)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-newsletter.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-newsletter)
 
-This package provides an easy way to integrate MailChimp with Laravel 5. Behind the scenes v3 for the MailChimp API is used.
+This package provides an easy way to integrate MailChimp with Laravel 5. Behind the scenes v3 for the MailChimp API is used. Here are some examples of what you can do with the package:
+
+```php
+Newsletter::subscribe('rincewind@discworld.com');
+
+Newsletter::unsubscribe('the.luggage@discworld.com');
+
+//Merge variables can be passed as the second argument
+Newsletter::subscribe('sam.vines@discworld.com', ['firstName'=>'Sam', 'lastName'=>'Vines']);
+
+//Subscribe someone to a specific list by using the third argument:
+Newsletter::subscribe('nanny.ogg@discworld.com', ['firstName'=>'Nanny', 'lastName'=>'Ogg'], 'Name of your list');
+
+//Subscribe or update someone
+Newsletter::subscribeOrUpdate('sam.vines@discworld.com', ['firstName'=>'Foo', 'lastName'=>'Bar']);
+
+//Get some member info, returns an array described in the official docs
+Newsletter::getMember('lord.vetinari@discworld.com');
+
+//Returns a boolean
+Newsletter::hasMember('greebo@discworld.com');
+
+//If you want to do something else, you can get an instance of the underlying API:
+Newsletter::getApi();
+```
 
 Spatie is a webdesign agency in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
+
+## Postcardware
+
+You're free to use this package (it's [MIT-licensed](LICENSE.md)), but if it makes it to your production environment you are required to send us a postcard from your hometown, mentioning which of our package(s) you are using.
+
+Our address is: Spatie, Samberstraat 69D, 2060 Antwerp, Belgium.
+
+The best postcards will get published on the open source page on our website.
 
 ## Installation
 
@@ -24,7 +57,7 @@ You must also install this service provider.
 // config/app.php
 'providers' => [
     ...
-    'Spatie\Newsletter\NewsletterServiceProvider',
+    Spatie\Newsletter\NewsletterServiceProvider::class,
     ...
 ];
 ```
@@ -35,7 +68,7 @@ If you want to make use of the facade you must install it as well.
 // config/app.php
 'aliases' => [
     ..
-    'Newsletter' => 'Spatie\Newsletter\NewsletterFacade',
+    'Newsletter' => Spatie\Newsletter\NewsletterFacade::class,
 ];
 ```
 
@@ -45,7 +78,7 @@ To publish the config file to `app/config/laravel-newsletter.php` run:
 php artisan vendor:publish --provider="Spatie\Newsletter\NewsletterServiceProvider"
 ```
 
-This wil publish a file `laravel-newsletter.php` in your config directory with the following contents: 
+This will publish a file `laravel-newsletter.php` in your config directory with the following contents:
 ```php
 return [
 
@@ -95,7 +128,7 @@ After you've installed the package and filled in the values in the config-file w
 use Newsletter;
 ```
 
-### Subscribing and unsubscribing
+### Subscribing, updating and unsubscribing
 
 Subscribing an email address can be done like this:
 
@@ -105,7 +138,7 @@ use Newsletter;
 Newsletter::subscribe('rincewind@discworld.com');
 ```
 
-Let's unsubcribe someone:
+Let's unsubscribe someone:
 
 ```php
 Newsletter::unsubscribe('the.luggage@discworld.com');
@@ -123,25 +156,53 @@ Newsletter::subscribe('rincewind@discworld.com', ['firstName'=>'Rince', 'lastNam
 ```
 That third argument is the name of a list you configured in the config file.
 
+You can also subscribe and/or update someone. The person will be subscribed or updated if he/she is already subscribed:
+
+ ```php
+ Newletter::subscribeOrUpdate('rincewind@discworld.com', ['firstName'=>'Foo', 'lastname'=>'Bar']);
+ ```
+ 
+You can subscribe someone to one or more specific group(s)/interest(s) by using the fourth argument:
+
+```php
+Newsletter::subscribeOrUpdate('rincewind@dscworld.com', ['firstName'=>'Rince','lastName'=>'Wind'], 'subscribers', ['interests'=>['interestId'=>true, 'interestId'=>true]])
+```
+Simply add `false` if you want to remove someone from a group/interest.
+
 You can also unsubscribe someone from a specific list:
 ```php
 Newsletter::unsubscribe('rincewind@discworld.com', 'subscribers');
 ```
 
+You can also subscribe and/or update someone. He/She will be subscribed or updated if he/she is already subscribed:
+```php
+Newletter::subscribeOrUpdate('rincewind@discworld.com', ['firstName'=>'Foo', 'lastname'=>'Bar']);
+```
+
+### Deleting subscribers
+
+Deleting is not the same as unsubscribing. Unlinke unsubscribing, deleting a member will result in the loss of all history (add/opt-in/edits) as well as removing them from the list. In most cases you want to use `unsubscribe` instead of `delete`.
+
+Here's how to perform a delete:
+
+```php
+Newsletter::delete('rincewind@discworld.com');
+```
+
 ### Getting subscriber info
 
-You can get information on a subscriber by using the `getMember`-function:
+You can get information on a subscriber by using the `getMember` function:
 ```php
-Newsletter::getMember('lord.vetinari@discworld.com')
+Newsletter::getMember('lord.vetinari@discworld.com');
 ```
 
 This will return an array with information on the subscriber. If there's no one subscribed with that
-e-mailaddress the function will return `false`
+e-mail address the function will return `false`
 
-There's also a convience method to check if some in subscribed:
+There's also a convenience method to check if someone is already subscribed:
 
 ```php
-Newsletter::hasMember('nanny.ogg@discworld.com') //returns a bool
+Newsletter::hasMember('nanny.ogg@discworld.com'); //returns a bool
 ```
 
 ### Creating a campaign
@@ -168,14 +229,14 @@ Note the campaign will only be created, no mails will be sent out.
 
 ### Handling errors
 
-If something went wrong you can get the last error with
-```
+If something went wrong you can get the last error with:
+```php
 Newsletter::getLastError();
 ```
 
-If you just want to make sure if the last action succeeded you can to this:
+If you just want to make sure if the last action succeeded you can use:
 ```php
-Newsletter::lastActionSucceed();
+Newsletter::lastActionSucceeded(); //returns a bool
 ```
 
 ### Need something else?

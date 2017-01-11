@@ -190,7 +190,7 @@ p {padding: 0!important; margin-top: 0!important; margin-right: 0!important; mar
 													<tr> 
 														<td align="center" height="45"bgcolor="#4edeb5" style="border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-left: 30px; padding-right: 30px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; color: rgb(255, 255, 255); background-color: rgb(51,153,153);">
 															<!--[if !mso]><!--><span style="font-family: Helvetica; font-weight: normal;"><!--<![endif]-->
-																<a href="{{ route('admin.login') }}" style="color: rgb(255, 255, 255); font-size: 15px; text-decoration: none; line-height: 34px; width: 100%;">Giriş Yap</a>
+																<a href="http://www.leyladansonra.com/admin/login" style="color: rgb(255, 255, 255); font-size: 15px; text-decoration: none; line-height: 34px; width: 100%;">Giriş Yap</a>
 															<!--[if !mso]><!--></span><!--<![endif]-->
 														</td> 
 													</tr> 
@@ -225,7 +225,7 @@ p {padding: 0!important; margin-top: 0!important; margin-right: 0!important; mar
 												<!--[if !mso]><!--><span style="font-family: Helvetica; font-weight: normal;"><!--<![endif]-->
 												Eğer sistemi nasıl kullanacağınızı bilmiyorsanız 
 												<strong>
-												<a href="{{ route('admin.manual') }}" style="color: #3f4345; text-decoration: none;">
+												<a href="http://www.leyladansonra.com/admin/manual" style="color: #3f4345; text-decoration: none;">
 													bu linkten
 												</a>
 												</strong>

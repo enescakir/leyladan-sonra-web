@@ -171,7 +171,7 @@ class ChildController extends Controller
         $socialSize = 1280;
 
         if ($request->ratio == '2/3'){
-            $imageSize = 400;
+            $imageSize = 800;
             $textYLoc = 1350;
             $socialSize = 960;
         }
@@ -182,7 +182,7 @@ class ChildController extends Controller
             ->resize($imageSize, null, function ($constraint) {
                 $constraint->aspectRatio();
             })
-            ->save('resources/admin/uploads/child_photos/' . $postImage->name, 80);
+            ->save('resources/admin/uploads/child_photos/' . $postImage->name, 90);
 
         //TODO: Uncomment when all child moved
 //        $imgSocial = Image::make($request->file('website_image'))
@@ -437,8 +437,10 @@ class ChildController extends Controller
         return json_encode( ['message' => $child->first_name . " gönüllüsü " . $volunteer->first_name . " olarak güncellendi."]);
     }
 
-    public function chats(Request $request){
-
+    public function chats(Request $request, $id){
+        $child = Child::find($id);
+        $chats = $child->chats()->with('volunteer', 'volunteer.boughtGift', 'volunteer.volunteeredGift')->orderBy('id','desc')->get();
+        return $chats;
     }
 
     public function chat($id, $chatID){
@@ -448,7 +450,7 @@ class ChildController extends Controller
 
     public function chatsOpens(Request $request, $id){
         $child = Child::find($id);
-        $chats = $child->openChats()->with('volunteer', 'volunteer.boughtGift', 'volunteer.volunteeredGift')->get();
+        $chats = $child->openChats()->with('volunteer', 'volunteer.boughtGift', 'volunteer.volunteeredGift')->orderBy('id','desc')->get();
         return $chats;
     }
 
@@ -504,6 +506,19 @@ class ChildController extends Controller
 
             $feed = new Feed;
             $feed->desc = $child->full_name . " hediyesi teslim edildi.";
+            $feed->icon = 2;
+            $feed->faculty_id = $child->faculty_id;
+            $feed->title = "All";
+            $feed->save();
+
+        }
+        else if($request->type == 4){
+            $child = Child::find($process->child_id);
+            $child->gift_state = 'Bekleniyor';
+            $child->save();
+
+            $feed = new Feed;
+            $feed->desc = $child->full_name . ' hediye durumu "Bekleniyor" olarak güncellendi.';
             $feed->icon = 2;
             $feed->faculty_id = $child->faculty_id;
             $feed->title = "All";

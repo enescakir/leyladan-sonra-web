@@ -38,6 +38,11 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::get('/manual', 'DashboardController@manual')->name('admin.manual');
 
+        Route::group(['prefix' => 'oylama'], function () {
+            Route::get('/', 'DashboardController@oylama')->name('admin.oylama');
+            Route::post('/','DashboardController@oylamaKaydet')->name('admin.oylama.kaydet');
+        });
+
         Route::group(['prefix' => 'dashboard'], function () {
             Route::get('/', 'DashboardController@dashboard')->name('admin.dashboard');
             Route::get('birthdays','DashboardController@birthdays')->name('admin.dashboard.birthdays');
@@ -45,6 +50,8 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::group(['prefix' => 'statistics'], function () {
             Route::get('volunteer', 'StatisticController@volunteer')->name('admin.statistics.volunteer');
+            Route::get('volunteer/messages', 'StatisticController@volunteersAndMessages')->name('admin.statistics.volunteer.messages');
+
             Route::get('faculty', 'StatisticController@faculty')->name('admin.statistics.faculty');
 
             Route::get('social/facebook', 'StatisticController@facebook')->name('admin.statistics.facebook');

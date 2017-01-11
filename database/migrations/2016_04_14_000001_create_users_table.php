@@ -23,17 +23,29 @@ class CreateUsersTable extends Migration
             $table->enum('gender', ['Kadın', 'Erkek'])->nullable();
             $table->date('birthday');
             $table->string('mobile',10);
-            $table->integer('year');
+            $table->string('year');
             $table->string('title');
             $table->string('profile_photo')->default('default');
             $table->integer('activated_by')->unsigned()->nullable();
             $table->rememberToken();
+
+            $table->integer('updated_by')->unsigned()->nullable();
+            $table->integer('deleted_by')->unsigned()->nullable();
+            $table->foreign('updated_by')->references('id')->on('users');
+            $table->foreign('deleted_by')->references('id')->on('users');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('faculty_id')->references('id')->on('faculties');
             $table->foreign('activated_by')->references('id')->on('users');
 
         });
+
+
+        Schema::table('faculties', function (Blueprint $table) {
+            BaseActions($table);
+        });
+
     }
 
     /**

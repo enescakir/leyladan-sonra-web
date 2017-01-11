@@ -22,6 +22,8 @@ class CreateNotificationsTable extends Migration
             $table->string('link')->nullable();
             $table->integer('faculty_id')->unsigned();
             $table->timestamps();
+            BaseActions($table);
+            $table->softDeletes();
 
             $table->foreign('faculty_id')->references('id')->on('faculties');
             $table->foreign('done_by')->references('id')->on('users')->onDelete('set null');

@@ -37,21 +37,36 @@ class Newsletter
     {
         $list = $this->lists->findByName($listName);
 
-        $defaultOptions = [
-            'email_address' => $email,
-            'status' => 'subscribed',
-            'email_type' => 'html',
-        ];
-
-        if (count($mergeFields)) {
-            $defaultOptions['merge_fields'] = $mergeFields;
-        }
-
-        $options = array_merge($defaultOptions, $options);
+        $options = $this->getSubscriptionOptions($email, $mergeFields, $options);
 
         $response = $this->mailChimp->post("lists/{$list->getId()}/members", $options);
 
-        if (!$this->lastActionSucceeded()) {
+        if (! $this->lastActionSucceeded()) {
+            return false;
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param string $email
+     * @param array  $mergeFields
+     * @param string $listName
+     * @param array  $options
+     *
+     * @return array|bool
+     *
+     * @throws \Spatie\Newsletter\Exceptions\InvalidNewsletterList
+     */
+    public function subscribeOrUpdate($email, $mergeFields = [], $listName = '', $options = [])
+    {
+        $list = $this->lists->findByName($listName);
+
+        $options = $this->getSubscriptionOptions($email, $mergeFields, $options);
+
+        $response = $this->mailChimp->put("lists/{$list->getId()}/members/{$this->getSubscriberHash($email)}", $options);
+
+        if (! $this->lastActionSucceeded()) {
             return false;
         }
 
@@ -70,10 +85,6 @@ class Newsletter
     {
         $list = $this->lists->findByName($listName);
 
-        if (!$this->lastActionSucceeded()) {
-            return false;
-        }
-
         return $this->mailChimp->get("lists/{$list->getId()}/members/{$this->getSubscriberHash($email)}");
     }
 
@@ -86,12 +97,12 @@ class Newsletter
     public function hasMember($email, $listName = '')
     {
         $response = $this->getMember($email, $listName);
-        
+
         if (! isset($response['email_address'])) {
             return false;
         }
-        
-        if ($response['email_address'] != $email) {
+
+        if (strtolower($response['email_address']) != strtolower($email)) {
             return false;
         }
 
@@ -107,6 +118,25 @@ class Newsletter
      * @throws \Spatie\Newsletter\Exceptions\InvalidNewsletterList
      */
     public function unsubscribe($email, $listName = '')
+    {
+        $list = $this->lists->findByName($listName);
+
+        $response = $this->mailChimp->patch("lists/{$list->getId()}/members/{$this->getSubscriberHash($email)}", [
+            'status' => 'unsubscribed',
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * @param $email
+     * @param string $listName
+     *
+     * @return array|false
+     *
+     * @throws \Spatie\Newsletter\Exceptions\InvalidNewsletterList
+     */
+    public function delete($email, $listName = '')
     {
         $list = $this->lists->findByName($listName);
 
@@ -148,7 +178,7 @@ class Newsletter
 
         $response = $this->mailChimp->post('campaigns', $options);
 
-        if (!$this->lastActionSucceeded()) {
+        if (! $this->lastActionSucceeded()) {
             return false;
         }
 
@@ -156,7 +186,7 @@ class Newsletter
             return $response;
         }
 
-        if (!$this->updateContent($response['id'], $html, $contentOptions)) {
+        if (! $this->updateContent($response['id'], $html, $contentOptions)) {
             return false;
         }
 
@@ -171,7 +201,7 @@ class Newsletter
 
         $response = $this->mailChimp->put("campaigns/{$campaignId}/content", $options);
 
-        if (!$this->lastActionSucceeded()) {
+        if (! $this->lastActionSucceeded()) {
             return false;
         }
 
@@ -199,7 +229,7 @@ class Newsletter
      */
     public function lastActionSucceeded()
     {
-        return !$this->mailChimp->getLastError();
+        return ! $this->mailChimp->getLastError();
     }
 
     /**
@@ -210,5 +240,28 @@ class Newsletter
     protected function getSubscriberHash($email)
     {
         return $this->mailChimp->subscriberHash($email);
+    }
+
+    /**
+     * @param $email
+     * @param $mergeFields
+     * @param $options
+     * @return array
+     */
+    protected function getSubscriptionOptions($email, $mergeFields, $options)
+    {
+        $defaultOptions = [
+            'email_address' => $email,
+            'status' => 'subscribed',
+            'email_type' => 'html',
+        ];
+
+        if (count($mergeFields)) {
+            $defaultOptions['merge_fields'] = $mergeFields;
+        }
+
+        $options = array_merge($defaultOptions, $options);
+
+        return $options;
     }
 }

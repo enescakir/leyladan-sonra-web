@@ -53,9 +53,7 @@ class Handler extends ExceptionHandler
 
         $class_parts = explode('\\', get_class($e));
         Log::warning(
-            end( $class_parts ) .
-            "\nMethod: " . $request->method() .
-            "\nPath: " . $request->path() .
+            end( $class_parts ) . " - " . $request->method() . " - " . $request->path() .
             "\nIP: " . $request->ip() .
             "\nUser ID: " . $user_id .
             "\nTrace: " . $e->getTraceAsString()

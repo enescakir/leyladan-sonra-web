@@ -25,9 +25,17 @@ return [
     ],
 
     /**
-     * DataTables default fractal serializer.
+     * DataTables fractal configurations.
      */
     'fractal'         => [
+        /**
+         * Request key name to parse includes on fractal.
+         */
+        'includes'   => 'include',
+
+        /**
+         * Default fractal serializer.
+         */
         'serializer' => 'League\Fractal\Serializer\DataArraySerializer',
     ],
 
@@ -67,4 +75,12 @@ return [
          */
         'model' => '',
     ],
+
+    /**
+     * PDF generator to be used when converting the table to pdf.
+     * Available generators: excel, snappy
+     * Snappy package: barryvdh/laravel-snappy
+     * Excel package: maatwebsite/excel
+     */
+    'pdf_generator'   => 'excel',
 ];

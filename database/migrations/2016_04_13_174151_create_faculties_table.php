@@ -22,6 +22,7 @@ class CreateFacultiesTable extends Migration
             $table->string('city');
             $table->string('code')->nullable();
             $table->date('started_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
