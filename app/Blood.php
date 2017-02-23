@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Traits\Birthday;
+use App\Traits\Mobile;
+
 class Blood extends BaseModel
 {
     use Birthday, Mobile;

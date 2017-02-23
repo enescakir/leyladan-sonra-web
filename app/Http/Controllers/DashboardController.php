@@ -377,17 +377,18 @@ class DashboardController extends Controller
 
         $oylar = DB::select('select * from oylar where used_by = ?', [$user->id]);
         if(count($oylar) > 0){
-            Session::flash('error_message', 'Daha önceden oy kullanmışsınız.');
-            return redirect()->back()->withInput();
+//            Session::flash('error_message', 'Daha önceden oy kullanmışsınız.');
+//            return redirect()->back()->withInput();
+            DB::update('delete from oylar where id = ?', [$oylar[0]->id]);
         }
 
-        if( !($request->has('first') && $request->has('second') && $request->has('third')) ){
+        if( !($request->has('first') && $request->has('second')) ){
             Session::flash('error_message', 'Lütfen bütün tarihleri oylayınız.');
             return redirect()->back()->withInput();
         }
 
         Session::flash('success_message', 'Başarıyla oy kullandınız.');
-        DB::insert('insert into oylar (used_by, faculty_name, first, second, third) values (?, ?, ?, ?, ?)', [$user->id, $user->faculty->slug, $request->first, $request->second, $request->third ]);
+        DB::insert('insert into oylar (used_by, faculty_name, first, second) values (?, ?, ?, ?)', [$user->id, $user->faculty->slug, $request->first, $request->second ]);
 
         return view('admin.oylama');
     }

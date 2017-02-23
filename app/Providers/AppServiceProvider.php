@@ -14,14 +14,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        /*
-        DB::listen(function ($query) {
-            Log::info( $query->sql . " |||| IN: " . $query->time);
-            // $query->sql
-            // $query->bindings
-            // $query->time
-        });
-        */
+        if (\App::environment('local')) {
+//            DB::listen(function ($query) {
+//                Log::info( $query->sql . " |||| IN: " . $query->time);
+//                // $query->sql
+//                // $query->bindings
+//                // $query->time
+//            });
+        }
+
         view()->composer('admin.parent', function($view) {
             $authUser = Auth::user();
             if($authUser == null){

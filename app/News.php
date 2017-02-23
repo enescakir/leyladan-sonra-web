@@ -2,13 +2,12 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class News extends Model
+class News extends BaseModel
 {
     protected $table = 'news';
 
-    public function channel(){
+    public function channel()
+    {
         return $this->belongsTo('App\Channel');
     }
 

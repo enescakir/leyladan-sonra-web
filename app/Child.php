@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Traits\Birthday;
 use Carbon\Carbon;
 
 class Child extends BaseModel
@@ -51,7 +52,7 @@ class Child extends BaseModel
 
     public function processes()
     {
-        return $this->hasMany('App\Process')->with(['user']);
+        return $this->hasMany('App\Process')->with(['creator']);
     }
 
 

@@ -8,11 +8,5 @@ class Subscriber extends Model
 {
     protected $table = 'subscribers';
 
-    /**
-     * The attributes that are not mass assignable.
-     *
-     * @var array
-     */
     protected $guarded = [];
-
 }

@@ -210,7 +210,7 @@ class ChildController extends Controller
 
         $process = new Process;
         $process->child_id = $child->id;
-        $process->creator_id = $user->id;
+        $process->created_by = $user->id;
         $process->desc = "Çocuk sisteme girildi.";
         $process->save();
 
@@ -427,7 +427,7 @@ class ChildController extends Controller
         $child->gift_state = 'Yolda';
         if($child->save()){
             $process = new Process;
-            $process->creator_id = Auth::user()->id;
+            $process->created_by = Auth::user()->id;
             $process->child_id = $child->id;
             $process->desc = $volunteer->first_name . ' ' . $volunteer->last_name .' gönüllü olarak belirlendi.';
             $process->save();
@@ -458,7 +458,7 @@ class ChildController extends Controller
     {
         $user = Auth::user();
         $process = new Process;
-        $process->creator_id = $user->id;
+        $process->created_by = $user->id;
         $process->child_id = $request->child_id;
         $process->desc = $request->desc;
         $process->save();
@@ -527,7 +527,7 @@ class ChildController extends Controller
         }
 
 
-        return Process::whereId($process->id)->with('user')->first();
+        return Process::whereId($process->id)->with('creator')->first();
     }
 
 

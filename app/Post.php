@@ -2,12 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Post extends Model
+class Post extends BaseModel
 {
     protected $table = 'posts';
-
     protected $guarded = [];
 
     public function child()
@@ -15,16 +12,10 @@ class Post extends Model
         return $this->belongsTo('App\Child');
     }
 
-//    public function faculty(){
-//        return $this->belongsTo('App\Child');
-//        //return $this->belongsTo('App\Faculty', 'children', 'child_id','faculty_id');
-//    }
-
     public function images()
     {
         return $this->hasMany('App\PostImage');
     }
-
 
     public function scopeMeetingPost($query, $id)
     {
@@ -46,6 +37,4 @@ class Post extends Model
     {
         return $this->attributes['text'] = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i", '<$1$2>', strip_tags($text, '<p><a><br><pre><i><b><u><ul><li><ol><blockquote><h1><h2><h3><h4><h5>'));
     }
-
-
 }

@@ -212,6 +212,23 @@ class FrontController extends Controller
         return view('front.blogs');
     }
 
+    public function appLanding()
+    {
+        $totalChildren = Cache::remember('totalChildren', 15, function() {
+            return DB::table('children')->count();
+        });
+
+        $totalFaculties = Cache::remember('activeFaculties', 15, function() {
+            return DB::table('faculties')->whereNotNull('started_at')->count();
+        });
+
+
+        return view('front.appLanding')->with([
+            'totalChildren' => $totalChildren,
+            'totalFaculties' => $totalFaculties
+        ]);
+    }
+
     public function blog($name)
     {
         return view('front.blog');

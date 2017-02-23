@@ -78,7 +78,6 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::group(['prefix' => 'post'], function () {
             Route::get('/data', 'PostController@indexData')->name('admin.post.index.data');
-            Route::get('unapproved', 'PostController@unapproved')->name('admin.post.unapproved');
             Route::get('unapprovedCount', 'PostController@unapprovedCount')->name('admin.post.unapprovedCount');
             Route::post('approve', 'PostController@approve')->name('admin.post.approve');
         });
@@ -231,6 +230,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/city/{code}', 'FrontController@city')->name('admin.front.city');
     Route::get('/english.html', 'FrontController@english')->name('front.english');
     Route::get('/kan-bagisi.html', 'FrontController@blood')->name('front.blood');
+    Route::get('/mobil-uygulama.html', 'FrontController@appLanding')->name('front.landing');
     Route::post('/kan-bagisi', 'FrontController@bloodStore')->name('front.blood.store');
     Route::get('/bekleyen-hediyeler', 'FrontController@waitings');
     Route::post('/bekleyen-hediyeler', 'FrontController@waitings');

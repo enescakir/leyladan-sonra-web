@@ -2,11 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class PostImage extends Model
+class PostImage extends BaseModel
 {
-    public function post(){
+    public function post()
+    {
         return $this->belongsTo('App\Post');
     }
 

@@ -1,11 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: EnesCakir
- * Date: 5/6/16
- * Time: 12:44 AM
- */
-//
+
 function set_active($path, $active = 'active')
 {
     if (is_array($path)) {
@@ -33,8 +27,6 @@ function session_info($text)
     Session::flash('info_message', $text);
 }
 
-
-
 function BaseActions(Illuminate\Database\Schema\Blueprint $table)
 {
     $table->integer('created_by')->unsigned()->nullable();
@@ -54,7 +46,8 @@ function Approval(Illuminate\Database\Schema\Blueprint $table)
 }
 
 
-function removeTurkish($string){
+function removeTurkish($string)
+{
     $charsArray = [
         'c'    => ['ç', 'Ç'],
         'g'    => ['ğ', 'Ğ'],

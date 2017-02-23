@@ -111,8 +111,8 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-//        Post::destroy($id);
-//        return 'Success';
+        Post::destroy($id);
+        return 'Success';
     }
 
     /**
@@ -147,29 +147,30 @@ class PostController extends Controller
     public function approve(Request $request)
     {
         $post = Post::whereId($request->post_id)->with('child')->first();
-        if($post->approved_by   == null){
+        if ($post->approved_at == null) {
             $post->approved_by = Auth::user()->id;
             $post->approved_at = new Carbon();
             $post->save();
 
             $process = new Process;
             $process->child_id = $post->child->id;
-            $process->creator_id = Auth::user()->id;
+            $process->created_by = Auth::user()->id;
             $process->desc = "Çocuğun yazısı onaylandı.";
             $process->save();
 
             return 1;
         }
-        else{
+        else {
             $post->approved_by = null;
             $post->approved_at = null;
             $post->save();
 
             $process = new Process;
             $process->child_id = $post->child->id;
-            $process->creator_id = Auth::user()->id;
+            $process->created_by = Auth::user()->id;
             $process->desc = "Çocuğun yazısının onayı kaldırıldı.";
             $process->save();
+
             return 0;
         }
     }
@@ -225,7 +226,7 @@ class PostController extends Controller
 
             $process = new Process;
             $process->child_id = $post->child->id;
-            $process->creator_id = Auth::user()->id;
+            $process->created_by = Auth::user()->id;
             $process->desc = "Çocuğun yazısı onaylandı.";
             $process->save();
         }
