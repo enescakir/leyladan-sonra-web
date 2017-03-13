@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Blood;
 use Datatables;
+use App\Sms;
+use Auth;
 
 class BloodController extends Controller
 {
@@ -81,4 +83,37 @@ class BloodController extends Controller
 
         return 'Success';
     }
+
+
+    public function showSMS()
+    {
+        return view('admin.blood.sms');
+    }
+
+    public function previewSMS(Request $request)
+    {
+      $types = $request->type;
+      $rh = $request->rh;
+      $cities = $request->cities;
+      $message = $request->message;
+
+      $bloods = Blood::whereIn('city', $cities)->whereIn('blood_type', $types)->whereIn('rh', $rh)->get();
+
+      return view('admin.blood.preview', compact(['bloods', 'message', 'types', 'rh', 'cities']));
+    }
+
+    public function sendSMS(Request $request)
+    {
+      $sms = new Sms([
+        'title' => 'BirDamlaCan',
+        'message' => $request->message,
+        'category' => 'Kan Bağışı',
+        'receiver_count' => count($request->bloods),
+        'sent_by' => Auth::user()->id,
+      ]);
+
+      if($sms->save())
+        return 'İleti Merkezi\'nde başlığımız onaylanır onaylanmaz SMS gönderebileceksiniz.';
+    }
+
 }
