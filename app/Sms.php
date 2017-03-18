@@ -57,5 +57,32 @@ class Sms extends Model
     return $result;
   }
 
+  public static function checkBalance()
+  {
+    $username   = env('ILETI_USERNAME');
+    $password   = env('ILETI_PASSWORD');
+
+    $xml = "<request>
+      <authentication>
+        <username>".$username."</username>
+        <password>".$password."</password>
+      </authentication>
+    </request>";
+
+    $site_name = env('ILETI_URL') . "/get-balance";
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $site_name);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: text/xml']);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+    $result = curl_exec($ch);
+    return (string) simplexml_load_string($result)->balance->sms;
+  }
 
 }

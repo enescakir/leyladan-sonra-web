@@ -175,13 +175,15 @@ Route::group(['middleware' => ['web']], function () {
 
 
         Route::group(['prefix' => 'blood'], function () {
+            Route::get('/people', 'BloodController@editPeople')->name('admin.blood.people.edit');
+            Route::post('/people', 'BloodController@updatePeople')->name('admin.blood.people.update');
             Route::get('/data', 'BloodController@indexData')->name('admin.blood.index.data');
             Route::get('/sms', 'BloodController@showSMS')->name('admin.blood.sms.show');
+            Route::get('/sms/balance', 'BloodController@checkBalance')->name('admin.blood.sms.balance');
             Route::post('/sms/preview', 'BloodController@previewSMS')->name('admin.blood.sms.preview');
             Route::post('/sms/test', 'BloodController@testSMS')->name('admin.blood.sms.test');
             Route::post('/sms', 'BloodController@sendSMS')->name('admin.blood.sms.send');
         });
-
         Route::resource('blood', 'BloodController');
 
         Route::group(['prefix' => 'new'], function () {

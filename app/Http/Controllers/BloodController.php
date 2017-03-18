@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Blood;
 use Datatables;
-use App\Sms;
-use Auth;
+use App\Sms, App\User;
+use Auth, DB;
 use Session;
 
 class BloodController extends Controller
@@ -138,5 +138,47 @@ class BloodController extends Controller
       } else {
         return 'Bir hata ile karşılaşıldı.';
       }
+    }
+
+    public function checkBalance()
+    {
+      return ["balance" => Sms::checkBalance()];
+    }
+
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function editPeople()
+    {
+        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'))->orderby('first_name')->lists('fullname2', 'id');
+        $responsibles = User::where('title', 'Kan Bağışı Görevlisi')->lists('id')->toArray();
+        return view('admin.blood.editPeople', compact('users','responsibles'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePeople(Request $request)
+    {
+
+        if(User::where('title', 'Kan Bağışı Görevlisi')->update(['title' => 'Normal Üye'])
+            && User::whereIn('id', $request->users)->update(['title' => 'Kan Bağışı Görevlisi'])){
+              Session::flash('success_message', 'Kan Bağışı sorumluları başarıyla güncellendi.');
+
+        }
+        else{
+            Session::flash('error_message', ' Kan Bağışı sorumluları güncellenemedi.');
+            return redirect()->back()->withInput();
+        }
+
+        return redirect()->route('admin.blood.people.edit');
     }
 }
