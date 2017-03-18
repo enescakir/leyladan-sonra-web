@@ -9,6 +9,7 @@ use App\Blood;
 use Datatables;
 use App\Sms;
 use Auth;
+use Session;
 
 class BloodController extends Controller
 {
@@ -105,15 +106,37 @@ class BloodController extends Controller
     public function sendSMS(Request $request)
     {
       $sms = new Sms([
-        'title' => 'BirDamlaCan',
+        'title' => 'LEYLADANSNR',
         'message' => $request->message,
         'category' => 'Kan Bağışı',
         'receiver_count' => count($request->bloods),
         'sent_by' => Auth::user()->id,
       ]);
 
-      if($sms->save())
-        return 'İleti Merkezi\'nde başlığımız onaylanır onaylanmaz SMS gönderebileceksiniz.';
+      if($sms->save()){
+        $sms->send($request->bloods);
+        Session::flash('success_message', 'Kan bağışı SMS\'i ' . count($request->bloods) . ' kişiye başarıyla gönderildi.' );
+        return redirect()->route('admin.blood.sms.show');
+      } else {
+        return 'Bir hata ile karşılaşıldı.';
+      }
     }
 
+    public function testSMS(Request $request)
+    {
+      $sms = new Sms([
+        'title' => 'LEYLADANSNR',
+        'message' => $request->message,
+        'category' => 'Kan Bağışı Test',
+        'receiver_count' => 1,
+        'sent_by' => Auth::user()->id,
+      ]);
+
+      if($sms->save()){
+        $sms->send($request->tester);
+        return $sms;
+      } else {
+        return 'Bir hata ile karşılaşıldı.';
+      }
+    }
 }

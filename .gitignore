@@ -5,3 +5,6 @@
 Homestead.yaml
 Homestead.json
 .env
+/bootstrap/compiled.php
+/vendor
+/.idea

@@ -178,6 +178,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('/data', 'BloodController@indexData')->name('admin.blood.index.data');
             Route::get('/sms', 'BloodController@showSMS')->name('admin.blood.sms.show');
             Route::post('/sms/preview', 'BloodController@previewSMS')->name('admin.blood.sms.preview');
+            Route::post('/sms/test', 'BloodController@testSMS')->name('admin.blood.sms.test');
             Route::post('/sms', 'BloodController@sendSMS')->name('admin.blood.sms.send');
         });
 
