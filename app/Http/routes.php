@@ -68,7 +68,6 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('blood', 'StatisticController@blood')->name('admin.statistics.blood');
             Route::get('blood/rh', 'StatisticController@bloodRh' )->name('admin.statistics.blood.rh');
             Route::get('blood/type', 'StatisticController@bloodType' )->name('admin.statistics.blood.type');
-            Route::get('blood/gender', 'StatisticController@bloodGender' )->name('admin.statistics.blood.gender');
 
             Route::get('user', 'StatisticController@user')->name('admin.statistics.user');
             Route::get('user/horoscope', 'StatisticController@userHoroscope' )->name('admin.statistics.user.horoscope');

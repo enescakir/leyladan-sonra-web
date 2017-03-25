@@ -30,7 +30,7 @@ class BloodController extends Controller
         return Datatables::of(Blood::all())->addColumn('operations', '
                 <a class="edit btn btn-success btn-sm" href="{{ route("admin.blood.edit", $id) }}"><i class="fa fa-pencil"></i></a>
                 <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>
-           ')->editColumn('first_name', '{{$first_name . " " . $last_name}}')->editColumn('birthday', '{{date("d.m.Y", strtotime($birthday))}}')->make(true);
+           ')->make(true);
     }
 
     public function create()
@@ -41,13 +41,6 @@ class BloodController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->get('gender') == '1') {
-            $request['gender'] = "Bay";
-        }
-        else {
-            $request['gender'] = "Bayan";
-        }
-
         if ($request->get('rh') == '1') {
             $request['rh'] = 1;
         }

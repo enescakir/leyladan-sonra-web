@@ -150,16 +150,10 @@ class StatisticController extends Controller
 
     public function blood()
     {
-        $youngest = Blood::orderby('birthday', 'desc')->first();
-        $oldest = Blood::orderby('birthday')->first();
-        $ageAve = DB::select("SELECT AVG(TIMESTAMPDIFF(YEAR, birthday, CURDATE())) AS `average` FROM bloods;")[0];
-        $heightAve = DB::select("SELECT AVG(height) AS `average` FROM bloods;")[0];
-        $weightAve = DB::select("SELECT AVG(weight) AS `average` FROM bloods;")[0];
-
         $cities = DB::table('bloods')->select('city', DB::raw('count(*) as count'))->groupBy('city')->get();
         usort($cities, function ($a, $b) { return $b->count - $a->count; });
 
-        return view('admin.statistics.blood', compact(['youngest', 'oldest', 'ageAve', 'cities', 'heightAve', 'weightAve']));
+        return view('admin.statistics.blood', compact(['cities']));
     }
 
     public function bloodRh()
@@ -172,12 +166,6 @@ class StatisticController extends Controller
     {
         $types = DB::table('bloods')->select('blood_type', DB::raw('count(*) as number'))->groupBy('blood_type')->get();
         return $types;
-    }
-
-    public function bloodGender()
-    {
-        $genders = DB::table('bloods')->select('gender', DB::raw('count(*) as number'))->groupBy('gender')->get();
-        return $genders;
     }
 
     public function faculty()

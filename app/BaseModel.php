@@ -18,22 +18,28 @@ class BaseModel extends Model
         // create a event to happen on updating
         static::updating(function ($model) {
             if(Schema::hasColumn($model->getTable(), 'updated_by')) {
+              if(Auth::user()){
                 $model->updated_by = Auth::user()->id;
+              }
             }
         });
 
         // create a event to happen on deleting
         static::deleting(function ($model) {
             if(Schema::hasColumn($model->getTable(), 'deleted_by')) {
+              if(Auth::user()){
                 $model->deleted_by = Auth::user()->id;
                 $model->save();
+              }
             }
         });
 
         // create a event to happen on saving
         static::creating(function ($model) {
             if(Schema::hasColumn($model->getTable(), 'created_by')) {
+              if(Auth::user()){
                 $model->created_by = Auth::user()->id;
+              }
             }
         });
 
