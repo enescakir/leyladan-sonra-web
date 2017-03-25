@@ -14,16 +14,9 @@ class CreateBloodsTable extends Migration
     {
         Schema::create('bloods', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->enum('gender', ['Bay', 'Bayan']);
             $table->enum('blood_type', ['A', 'B', 'AB', '0']);
             $table->boolean('rh');
-            $table->integer('height')->nullable();
-            $table->integer('weight')->nullable();
-            $table->date('birthday')->nullable();
             $table->string('mobile')->unique();
-            $table->string('email')->nullable();
             $table->string('city')->nullable();
             $table->timestamps();
             BaseActions($table);

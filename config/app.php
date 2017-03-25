@@ -156,7 +156,7 @@ return [
         Davibennun\LaravelPushNotification\LaravelPushNotificationServiceProvider::class,
         Spatie\Newsletter\NewsletterServiceProvider::class,
         Spatie\LaravelAnalytics\LaravelAnalyticsServiceProvider::class,
-        GeneaLabs\LaravelCaffeine\LaravelCaffeineServiceProvider::class,
+        Zizaco\Entrust\EntrustServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -218,6 +218,7 @@ return [
         'PushNotification' => Davibennun\LaravelPushNotification\Facades\PushNotification::class,
         'Newsletter' => Spatie\Newsletter\NewsletterFacade::class,
         'LaravelAnalytics' => Spatie\LaravelAnalytics\LaravelAnalyticsFacade::class,
+        'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
     ],
 
 ];
