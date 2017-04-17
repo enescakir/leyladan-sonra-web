@@ -108,6 +108,7 @@ Route::group(['middleware' => ['web']], function () {
 
         });
         Route::resource('child', 'ChildController');
+        Route::resource('diagnosis', 'DiagnosisController');
 
         Route::group(['prefix' => 'faculty'], function () {
             Route::group(['prefix' => '{id}'], function () {
