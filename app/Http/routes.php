@@ -192,10 +192,12 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::resource('blog', 'BlogController');
         Route::resource('new', 'NewController');
+        Route::resource('sponsor', 'SponsorController');
 
         Route::group(['prefix' => 'testimonial'], function () {
             Route::get('/data', 'TestimonialController@indexData')->name('admin.testimonial.index.data');
         });
+
         Route::resource('testimonial', 'TestimonialController');
         Route::resource('emailsample', 'EmailSampleController');
         Route::resource('mobile-notification', 'MobileNotificationController');
@@ -221,6 +223,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/hakkimizda/basinda-biz.html', 'FrontController@news')->name('front.news');
     Route::get('/hakkimizda/biz-kimiz.html', 'FrontController@us')->name('front.us');
     Route::get('/hakkimizda/basin-kiti.html', 'FrontController@newskit')->name('front.newskit');
+    Route::get('/hakkimizda/destek-verenler.html', 'FrontController@sponsors')->name('front.sponsors');
     Route::get('/neler-soylediniz.html', 'FrontController@testimonials')->name('front.testimonials');
     Route::get('/leyla-kimdir.html', 'FrontController@leyla')->name('front.leyla');
     Route::get('/sikca-sorulan-sorular.html', 'FrontController@sss')->name('front.sss');

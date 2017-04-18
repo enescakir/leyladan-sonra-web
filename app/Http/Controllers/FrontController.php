@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Requests\VolunteerMessageRequest;
 use App\Child, App\Post, App\Faculty, App\News, App\Channel, App\User;
-use App\Volunteer, App\Chat, App\Message, App\Testimonial, App\Blood;
+use App\Volunteer, App\Chat, App\Message, App\Testimonial, App\Blood, App\Sponsor;
 use Log, DB, Validator, Cache, Mail, Carbon\Carbon, Newsletter;
 
 class FrontController extends Controller
@@ -181,6 +181,16 @@ class FrontController extends Controller
             return array('alert' => 'success', 'message' => $text);
         }
 
+    }
+
+    public function sponsors()
+    {
+      $sponsors = Sponsor::orderBy('order', 'DESC')->get();
+        // $channels = Cache::remember('channels', 60, function () {
+        //     return Channel::with('news')->get();
+        // });
+
+        return view('front.sponsors', compact(['sponsors']));
     }
 
     public function testimonials()
