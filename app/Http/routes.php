@@ -225,6 +225,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/hakkimizda/basin-kiti.html', 'FrontController@newskit')->name('front.newskit');
     Route::get('/hakkimizda/destek-verenler.html', 'FrontController@sponsors')->name('front.sponsors');
     Route::get('/neler-soylediniz.html', 'FrontController@testimonials')->name('front.testimonials');
+    Route::post('/neler-soylediniz', 'FrontController@testimonialStore')->name('front.testimonial.store');
     Route::get('/leyla-kimdir.html', 'FrontController@leyla')->name('front.leyla');
     Route::get('/sikca-sorulan-sorular.html', 'FrontController@sss')->name('front.sss');
     Route::get('/blog.html', 'FrontController@blogs')->name('front.blogs');

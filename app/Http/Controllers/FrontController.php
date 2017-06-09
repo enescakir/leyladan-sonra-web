@@ -196,10 +196,23 @@ class FrontController extends Controller
     public function testimonials()
     {
         $testimonials = Cache::remember('testimonials', 60, function () {
-            return Testimonial::whereNotNull('approved_at')->get();
+            return Testimonial::whereNotNull('approved_at')->orderBy('priority', 'DESC')->get();
         });
 
         return view('front.testimonials', compact(['testimonials']));
+    }
+
+    public function testimonialStore(Request $request)
+    {
+        $testimonial = new Testimonial($request->all());
+        $testimonial->via = "Site";
+        if ($testimonial->save()) {
+            $text = '<span style="font-size: 24px"><br>' . $testimonial->name . ' mesajınız başarıyla alınmıştır.<br></br></span>';
+            return array('alert' => 'success', 'message' => $text);
+        } else {
+            $text = '<span style="font-size: 24px"><br> Bir sorun ile karşılaşıldı :( <br></br></span>';
+            return array('alert' => 'error', 'message' => $text);
+        }
     }
 
     public function newskit()
