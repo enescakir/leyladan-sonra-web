@@ -174,6 +174,7 @@ return [
         Zizaco\Entrust\EntrustServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
+        Laravel\Tinker\TinkerServiceProvider::class,
         /*
          * Application Service Providers...
          */

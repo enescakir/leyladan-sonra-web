@@ -1,19 +1,4 @@
 <?php
-
-
-//return [
-//    'driver' => 'smtp',
-//    'host' => 'smtp.sendgrid.net',
-//    'port' => 587,
-//    'from' => array('address' => 'teknik@leyladansonra.com', 'name' => 'Leyla\'dan Sonra Sistem'),
-//    'encryption' => 'tls',
-//    'username' => 'EnesCakir',
-//    'password' => 'Kaliforniya11',
-//    'sendmail' => '/usr/sbin/sendmail -bs',
-//    'pretend' => false,
-//];
-
-
 return [
 
     /*
@@ -123,4 +108,11 @@ return [
 
     'sendmail' => '/usr/sbin/sendmail -bs',
 
+    'markdown' => [
+        'theme' => 'default',
+
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+    ],
 ];
