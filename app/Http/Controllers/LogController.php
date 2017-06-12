@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Arcanedev\LogViewer\Bases\Controller;
-use Arcanedev\LogViewer\Entities\Log;
-use Arcanedev\LogViewer\Exceptions\LogNotFound;
+// TODO: Update Log Viewer
+// use Arcanedev\LogViewer\Bases\Controller;
+// use Arcanedev\LogViewer\Entities\Log;
+// use Arcanedev\LogViewer\Exceptions\LogNotFound;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 
@@ -26,9 +27,10 @@ class LogController extends Controller
      */
     public function __construct()
     {
-        parent::__construct();
-        $this->middleware('auth');
-        $this->perPage = config('log-viewer.per-page', $this->perPage);
+      // TODO: Update it
+        // parent::__construct();
+        // $this->middleware('auth');
+        // $this->perPage = config('log-viewer.per-page', $this->perPage);
     }
 
     /* ------------------------------------------------------------------------------------------------

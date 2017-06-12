@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'sistem@leyladansonra.com', 'name' => 'Leyla\'dan Sonra Sistem'],
 
     /*
     |--------------------------------------------------------------------------

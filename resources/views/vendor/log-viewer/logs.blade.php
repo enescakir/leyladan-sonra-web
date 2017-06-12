@@ -1,16 +1,7 @@
-@extends('admin.parent')
+@extends('log-viewer::_template.master')
 
-@section('page-title')
-    Loglar
-@endsection
-
-@section('page-styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/css/bootstrap-datetimepicker.min.css">
-    @include('admin.logs.style')
-@endsection
-
-@section('page-content')
-    <h1 class="page-header">Loglar</h1>
+@section('content')
+    <h1 class="page-header">Logs</h1>
 
     {!! $rows->render() !!}
 
@@ -29,44 +20,54 @@
                         @endif
                     </th>
                     @endforeach
-                    <th class="text-right">İşlemler</th>
+                    <th class="text-right">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($rows as $date => $row)
-                <tr>
-                    @foreach($row as $key => $value)
-                    <td class="{{ $key == 'date' ? 'text-left' : 'text-center' }}">
-                        @if ($key == 'date')
-                            <span class="label label-primary">{{ $value }}</span>
-                        @elseif ($value == 0)
-                            <span class="level level-empty">{{ $value }}</span>
-                        @else
-                            <a href="{{ route('log-viewer::logs.filter', [$date, $key]) }}">
-                                <span class="level level-{{ $key }}">{{ $value }}</span>
+                @if ($rows->count() > 0)
+                    @foreach($rows as $date => $row)
+                    <tr>
+                        @foreach($row as $key => $value)
+                            <td class="{{ $key == 'date' ? 'text-left' : 'text-center' }}">
+                                @if ($key == 'date')
+                                    <span class="label label-primary">{{ $value }}</span>
+                                @elseif ($value == 0)
+                                    <span class="level level-empty">{{ $value }}</span>
+                                @else
+                                    <a href="{{ route('log-viewer::logs.filter', [$date, $key]) }}">
+                                        <span class="level level-{{ $key }}">{{ $value }}</span>
+                                    </a>
+                                @endif
+                            </td>
+                        @endforeach
+                        <td class="text-right">
+                            <a href="{{ route('log-viewer::logs.show', [$date]) }}" class="btn btn-xs btn-info">
+                                <i class="fa fa-search"></i>
                             </a>
-                        @endif
-                    </td>
+                            <a href="{{ route('log-viewer::logs.download', [$date]) }}" class="btn btn-xs btn-success">
+                                <i class="fa fa-download"></i>
+                            </a>
+                            <a href="#delete-log-modal" class="btn btn-xs btn-danger" data-log-date="{{ $date }}">
+                                <i class="fa fa-trash-o"></i>
+                            </a>
+                        </td>
+                    </tr>
                     @endforeach
-                    <td class="text-right">
-                        <a href="{{ route('log-viewer::logs.show', [$date]) }}" class="btn btn-xs btn-info">
-                            <i class="fa fa-search"></i>
-                        </a>
-                        <a href="{{ route('log-viewer::logs.download', [$date]) }}" class="btn btn-xs btn-success">
-                            <i class="fa fa-download"></i>
-                        </a>
-                        <a href="#delete-log-modal" class="delete btn btn-xs btn-danger" data-log-date="{{ $date }}">
-                            <i class="fa fa-trash-o"></i>
-                        </a>
-                    </td>
-                </tr>
-                @endforeach
+                @else
+                    <tr>
+                        <td colspan="11" class="text-center">
+                            <span class="label label-default">{{ trans('log-viewer::general.empty-logs') }}</span>
+                        </td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     </div>
 
     {!! $rows->render() !!}
+@endsection
 
+@section('modals')
     {{-- DELETE MODAL --}}
     <div id="delete-log-modal" class="modal fade">
         <div class="modal-dialog">
@@ -79,38 +80,29 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title">LOG DOSYASINI SİL</h4>
+                        <h4 class="modal-title">DELETE LOG FILE</h4>
                     </div>
                     <div class="modal-body">
                         <p></p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">İptal</button>
-                        <button type="submit" class="btn btn-sm btn-danger" data-loading-text="Loading&hellip;">DOSYAYI SİL</button>
+                        <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-sm btn-danger" data-loading-text="Loading&hellip;">DELETE FILE</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-@stop
+@endsection
 
-@section('page-scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment-with-locales.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/js/bootstrap-datetimepicker.min.js"></script>
-    <script>
-        Chart.defaults.global.responsive      = true;
-        Chart.defaults.global.scaleFontFamily = "'Source Sans Pro'";
-        Chart.defaults.global.animationEasing = "easeOutQuart";
-    </script>
-
+@section('scripts')
     <script>
         $(function () {
             var deleteLogModal = $('div#delete-log-modal'),
                 deleteLogForm  = $('form#delete-log-form'),
                 submitBtn      = deleteLogForm.find('button[type=submit]');
 
-            $(".delete").click(function(event) {
+            $("a[href=#delete-log-modal]").on('click', function(event) {
                 event.preventDefault();
                 var date = $(this).data('log-date');
                 deleteLogForm.find('input[name=date]').val(date);
@@ -121,7 +113,7 @@
                 deleteLogModal.modal('show');
             });
 
-            deleteLogForm.submit(function(event) {
+            deleteLogForm.on('submit', function(event) {
                 event.preventDefault();
                 submitBtn.button('loading');
 
@@ -151,10 +143,10 @@
                 return false;
             });
 
-            deleteLogModal.on('hidden.bs.modal', function(event) {
+            deleteLogModal.on('hidden.bs.modal', function() {
                 deleteLogForm.find('input[name=date]').val('');
                 deleteLogModal.find('.modal-body p').html('');
             });
         });
     </script>
-@stop
+@endsection

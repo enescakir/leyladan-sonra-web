@@ -65,6 +65,4 @@ class BaseModel extends Model
         }
         return date("d.m.Y", strtotime($this->attributes['created_at']));
     }
-
-
 }

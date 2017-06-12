@@ -1,5 +1,6 @@
 /public/resources/admin/uploads
 /public/resources/admin/uploads/*
+!*public/uploads
 /node_modules
 /public/storage
 /storage/framework

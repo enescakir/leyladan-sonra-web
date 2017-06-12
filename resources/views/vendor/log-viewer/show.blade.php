@@ -1,32 +1,23 @@
-@extends('admin.parent')
+@extends('log-viewer::_template.master')
 
-@section('page-title')
-    Log [{{ $log->date }}]
-@endsection
-
-@section('page-styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/css/bootstrap-datetimepicker.min.css">
-    @include('admin.logs.style')
-@endsection
-
-@section('page-content')
+@section('content')
     <h1 class="page-header">Log [{{ $log->date }}]</h1>
 
     <div class="row">
         <div class="col-md-2">
-            @include('admin.logs.menu')
+            @include('log-viewer::_partials.menu')
         </div>
         <div class="col-md-10">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Log bilgisi :
+                    Log info :
 
                     <div class="group-btns pull-right">
                         <a href="{{ route('log-viewer::logs.download', [$log->date]) }}" class="btn btn-xs btn-success">
-                            <i class="fa fa-download"></i> İNDİR
+                            <i class="fa fa-download"></i> DOWNLOAD
                         </a>
                         <a href="#delete-log-modal" class="btn btn-xs btn-danger" data-toggle="modal">
-                            <i class="fa fa-trash-o"></i> SİL
+                            <i class="fa fa-trash-o"></i> DELETE
                         </a>
                     </div>
                 </div>
@@ -34,25 +25,25 @@
                     <table class="table table-condensed">
                         <thead>
                             <tr>
-                                <td>Dosya Yolu :</td>
+                                <td>File path :</td>
                                 <td colspan="5">{{ $log->getPath() }}</td>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Log girdileri : </td>
+                                <td>Log entries : </td>
                                 <td>
                                     <span class="label label-primary">{{ $entries->total() }}</span>
                                 </td>
-                                <td>Boyut :</td>
+                                <td>Size :</td>
                                 <td>
                                     <span class="label label-primary">{{ $log->size() }}</span>
                                 </td>
-                                <td>Oluşturulma :</td>
+                                <td>Created at :</td>
                                 <td>
                                     <span class="label label-primary">{{ $log->createdAt() }}</span>
                                 </td>
-                                <td>Güncellenme :</td>
+                                <td>Updated at :</td>
                                 <td>
                                     <span class="label label-primary">{{ $log->updatedAt() }}</span>
                                 </td>
@@ -68,7 +59,7 @@
                         {!! $entries->render() !!}
 
                         <span class="label label-info pull-right">
-                            Sayfa {!! $entries->currentPage() !!} / {!! $entries->lastPage() !!}
+                            Page {!! $entries->currentPage() !!} of {!! $entries->lastPage() !!}
                         </span>
                     </div>
                 @endif
@@ -78,10 +69,10 @@
                         <thead>
                             <tr>
                                 <th>ENV</th>
-                                <th style="width: 120px;">Seviye</th>
-                                <th style="width: 65px;">Tarih</th>
-                                <th>Başlık</th>
-                                <th class="text-right">İşlem</th>
+                                <th style="width: 120px;">Level</th>
+                                <th style="width: 65px;">Time</th>
+                                <th>Header</th>
+                                <th class="text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -96,7 +87,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="label level label-default">
+                                        <span class="label label-default">
                                             {{ $entry->datetime->format('H:i:s') }}
                                         </span>
                                     </td>
@@ -106,7 +97,7 @@
                                     <td class="text-right">
                                         @if ($entry->hasStack())
                                             <a class="btn btn-xs btn-default" role="button" data-toggle="collapse" href="#log-stack-{{ $key }}" aria-expanded="false" aria-controls="log-stack-{{ $key }}">
-                                                <i class="fa fa-toggle-on"></i> Ayrıntı
+                                                <i class="fa fa-toggle-on"></i> Stack
                                             </a>
                                         @endif
                                     </td>
@@ -115,7 +106,7 @@
                                     <tr>
                                         <td colspan="5" class="stack">
                                             <div class="stack-content collapse" id="log-stack-{{ $key }}">
-                                                {!! preg_replace("/\n/", '<br>', $entry->stack) !!}
+                                                {!! $entry->stack() !!}
                                             </div>
                                         </td>
                                     </tr>
@@ -137,7 +128,9 @@
             </div>
         </div>
     </div>
+@endsection
 
+@section('modals')
     {{-- DELETE MODAL --}}
     <div id="delete-log-modal" class="modal fade">
         <div class="modal-dialog">
@@ -165,23 +158,14 @@
     </div>
 @endsection
 
-@section('page-scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment-with-locales.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/js/bootstrap-datetimepicker.min.js"></script>
-    <script>
-        Chart.defaults.global.responsive      = true;
-        Chart.defaults.global.scaleFontFamily = "'Source Sans Pro'";
-        Chart.defaults.global.animationEasing = "easeOutQuart";
-    </script>
-
+@section('scripts')
     <script>
         $(function () {
             var deleteLogModal = $('div#delete-log-modal'),
                 deleteLogForm  = $('form#delete-log-form'),
                 submitBtn      = deleteLogForm.find('button[type=submit]');
 
-            deleteLogForm.submit(function(event) {
+            deleteLogForm.on('submit', function(event) {
                 event.preventDefault();
                 submitBtn.button('loading');
 
