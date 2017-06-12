@@ -33,7 +33,7 @@ class NewController extends Controller
      */
     public function create()
     {
-        $channels = Channel::lists('name','id')->toArray();
+        $channels = Channel::pluck('name','id')->toArray();
         $channels = array_add($channels,'','');
         return view('admin.new.create', compact(['channels']));
     }

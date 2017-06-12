@@ -147,8 +147,8 @@ class BloodController extends Controller
      */
     public function editPeople()
     {
-        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'))->orderby('first_name')->lists('fullname2', 'id');
-        $responsibles = User::where('title', 'Kan Bağışı Görevlisi')->lists('id')->toArray();
+        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'))->orderby('first_name')->pluck('fullname2', 'id');
+        $responsibles = User::where('title', 'Kan Bağışı Görevlisi')->pluck('id')->toArray();
         return view('admin.blood.editPeople', compact('users','responsibles'));
     }
 

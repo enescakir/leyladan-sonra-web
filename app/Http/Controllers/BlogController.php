@@ -33,7 +33,7 @@ class BlogController extends Controller
      */
     public function create()
     {
-        $categories = BlogCategory::lists('title', 'slug');
+        $categories = BlogCategory::pluck('title', 'slug');
         return view('admin.blog.create', compact(['categories']));
     }
 

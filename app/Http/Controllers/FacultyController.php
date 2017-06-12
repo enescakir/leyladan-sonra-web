@@ -81,8 +81,8 @@ class FacultyController extends Controller
     public function edit($id)
     {
         $faculty = Faculty::where('id' , $id)->with('responsibles')->first();
-        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'), 'faculty_id')->where('faculty_id', $faculty->id)->orderby('first_name')->lists('fullname2', 'id');
-        $responsibles = $faculty->responsibles()->lists('id')->toArray();
+        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'), 'faculty_id')->where('faculty_id', $faculty->id)->orderby('first_name')->pluck('fullname2', 'id');
+        $responsibles = $faculty->responsibles()->pluck('id')->toArray();
 
         return view('admin.faculty.edit', compact('faculty','users','responsibles'));
     }

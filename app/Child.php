@@ -58,12 +58,12 @@ class Child extends BaseModel
 
     public function getUserNameListAttribute()
     {
-        return implode(", ", $this->users->lists('full_name')->toArray());
+        return implode(", ", $this->users->pluck('full_name')->toArray());
     }
 
     public function getUserListAttribute()
     {
-        return $this->users->lists('id');
+        return $this->users->pluck('id');
     }
 
     public function getFullNameAttribute()

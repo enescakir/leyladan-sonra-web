@@ -71,8 +71,8 @@ class ChildController extends Controller
     {
         $authUser = Auth::user();
         $faculties = Faculty::all();
-        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'), 'faculty_id')->where('faculty_id',$authUser->faculty_id)->orderby('first_name')->lists('fullname2', 'id');
-        $diagnosis = Diagnosis::orderBy('name')->lists('name', 'name')->toArray();
+        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'), 'faculty_id')->where('faculty_id',$authUser->faculty_id)->orderby('first_name')->pluck('fullname2', 'id');
+        $diagnosis = Diagnosis::orderBy('name')->pluck('name', 'name')->toArray();
         $diagnosis = array_merge($diagnosis, ['' => '']);
         return view('admin.child.create', compact(['faculties','authUser', 'users', 'diagnosis']));
     }
@@ -253,12 +253,12 @@ class ChildController extends Controller
     {
         $authUser = Auth::user();
         $child = Child::with('users')->find($id);
-        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'), 'faculty_id')->where('faculty_id',$child->faculty_id)->orderby('first_name')->lists('fullname2', 'id');
+        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'), 'faculty_id')->where('faculty_id',$child->faculty_id)->orderby('first_name')->pluck('fullname2', 'id');
         $faculties = Faculty::all('full_name','id');
         $faculty = Faculty::findOrFail($child->faculty_id);
         $meeting_post = Post::meetingPost($child->id)->with('images')->first();
         $gift_post = Post::giftPost($child->id)->with('images')->first();
-        $selectedUser = $child->users->lists('id')->toArray();
+        $selectedUser = $child->users->pluck('id')->toArray();
         return view('admin.child.edit', compact(['authUser','users','faculties', 'child','faculty','meeting_post', 'gift_post','selectedUser']));
 
     }
