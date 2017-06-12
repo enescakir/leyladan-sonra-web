@@ -20,7 +20,8 @@
         "barryvdh/laravel-debugbar": "^2.4",
         "predis/predis": "^1.1",
         "phpoffice/phpexcel": "^1.8",
-        "laravel/passport": "^2.0"
+        "laravel/passport": "^2.0",
+        "laravel/scout": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
