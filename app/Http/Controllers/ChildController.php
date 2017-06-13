@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Child, App\Faculty, App\User, App\Post, App\PostImage, App\Process, App\Feed, App\Notification;
-use App\Diagnosis;
-use App\Social, App\SocialImage, App\Volunteer;
+use App\Diagnosis, App\Volunteer;
 use Auth, Carbon\Carbon, DB, File, Log, Mail, Datatables, Image, Session;
 use App\Http\Requests\CreateChildRequest;
 use Illuminate\Support\Str;
@@ -71,9 +70,8 @@ class ChildController extends Controller
     {
         $authUser = Auth::user();
         $faculties = Faculty::all();
-        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'), 'faculty_id')->where('faculty_id',$authUser->faculty_id)->orderby('first_name')->pluck('fullname2', 'id');
-        $diagnosis = Diagnosis::orderBy('name')->pluck('name', 'name')->toArray();
-        $diagnosis = array_merge($diagnosis, ['' => '']);
+        $users = $authUser->faculty->usersToSelect();
+        $diagnosis = Diagnosis::toSelect(true);
         return view('admin.child.create', compact(['faculties','authUser', 'users', 'diagnosis']));
     }
 
@@ -87,7 +85,9 @@ class ChildController extends Controller
     {
         $similarChildren = Child::
             where('first_name', 'like', '%' . $request->first_name . '%')
-            ->where('last_name', 'like', '%' . $request->last_name . '%')->with('users', 'faculty')->get();
+            ->where('last_name', 'like', '%' . $request->last_name . '%')
+            ->with('users', 'faculty')
+            ->get();
         if(count($similarChildren) != 0 && $request->accepted == '0'){
             $message = "";
             foreach($similarChildren as $similarChild){
@@ -137,33 +137,8 @@ class ChildController extends Controller
         $postImage->save();
 
 
-        //TODO: Uncomment when all child moved
-//        $social = new Social();
-//        $social->created_by = $user->id;
-//        $social->child_id = $child->id;
-//        $social->facebook_text = $request->facebook_text;
-//        if($request->twitter_text == '' || $request->twitter_text == null){
-//            $social->twitter_text = $request->facebook_text;
-//        }
-//        else{
-//            $social->twitter_text = $request->twitter_text;
-//        }
-//
-//        if($request->instagram_text == '' || $request->instagram_text == null){
-//            $social->instagram_text = $request->facebook_text;
-//        }
-//        else{
-//            $social->instagram_text = $request->instagram_text;
-//        }
 
         $faculty = Faculty::find($request->get('faculty_id'));
-//        $social->link = route('public.child', [$faculty->slug, $child->slug]);
-//        $social->save();
-
-//        $socialImage = new SocialImage();
-//        $socialImage->social_id = $social->id;
-//        $socialImage->name = $child->id . '_1.jpg';
-//        $socialImage->save();
 
         ini_set('max_execution_time', 300);
         ini_set("memory_limit", "-1");
@@ -186,28 +161,9 @@ class ChildController extends Controller
             })
             ->save('resources/admin/uploads/child_photos/' . $postImage->name, 90);
 
-        //TODO: Uncomment when all child moved
-//        $imgSocial = Image::make($request->file('website_image'))
-//            ->rotate(-$request->rotation)
-//            ->crop($request->w, $request->h, $request->x, $request->y)
-//            ->resize($socialSize, null, function ($constraint) {
-//                $constraint->aspectRatio();
-//            })
-//            ->text('Çukurova Tıp - Adana', 51, $textYLoc + 1, function($font) {
-//                $font->file(public_path('resources/admin/fonts/amatic-bold.ttf'));
-//                $font->size(64);
-//                $font->color('#313131');
-//                $font->valign('top');
-//            })
-//            ->text('Çukurova Tıp - Adana', 50, $textYLoc, function($font) {
-//                $font->file(public_path('resources/admin/fonts/amatic-bold.ttf'));
-//                $font->size(64);
-//                $font->color('#ffffff');
-//                $font->valign('top');
-//            });
-
         ini_restore("memory_limit");
         ini_restore("max_execution_time");
+
         Session::flash('success_message', $child->first_name . ' başarıyla sisteme eklendi.');
 
         $process = new Process;
@@ -253,13 +209,14 @@ class ChildController extends Controller
     {
         $authUser = Auth::user();
         $child = Child::with('users')->find($id);
-        $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'), 'faculty_id')->where('faculty_id',$child->faculty_id)->orderby('first_name')->pluck('fullname2', 'id');
+        $users = $authUser->faculty->usersToSelect();
+        $diagnosis = Diagnosis::toSelect(true);
         $faculties = Faculty::all('full_name','id');
         $faculty = Faculty::findOrFail($child->faculty_id);
         $meeting_post = Post::meetingPost($child->id)->with('images')->first();
         $gift_post = Post::giftPost($child->id)->with('images')->first();
         $selectedUser = $child->users->pluck('id')->toArray();
-        return view('admin.child.edit', compact(['authUser','users','faculties', 'child','faculty','meeting_post', 'gift_post','selectedUser']));
+        return view('admin.child.edit', compact(['authUser','users','faculties', 'child','faculty','meeting_post', 'gift_post','selectedUser', 'diagnosis']));
 
     }
 

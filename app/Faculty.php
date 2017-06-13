@@ -19,6 +19,12 @@ class Faculty extends BaseModel
         return $this->hasMany('App\User');
     }
 
+    public function usersToSelect($empty = false)
+    {
+      $res = $this->users()->orderby('first_name')->get()->pluck('fullname', 'id');
+      return $empty ? array_merge($res, ['' => '']) : $res;
+    }
+
     public function chats()
     {
         return $this->hasMany('App\Chat');
