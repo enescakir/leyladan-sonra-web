@@ -20,7 +20,7 @@ class NewUser extends Notification
      */
     public function __construct($newUser)
     {
-        $this->$newUser = $newUser;
+        $this->newUser = $newUser;
     }
 
     /**
@@ -43,10 +43,10 @@ class NewUser extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject("Fakültenize yeni kayıt!")
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', 'https://laravel.com')
-                    ->line('Thank you for using our application!');
+                    ->subject("Fakültenizden onay bekleyen üyeler var!")
+                    ->line('Fakültenizden <strong>' . $this->newUser->full_name . '</strong> sistemimize <strong><em>' . $this->newUser->title . '</strong></em> olarak ' . $this->newUser->email . ' e-posta adresi ile kayıt oldu.')
+                    ->line('Sisteme giriş yaparak "Üyeler > Onay Bekleyen Üyeler" sayfasından üyeliği onaylayabilirsiniz.')
+                    ->action('Üyeyi Onayla', route('admin.faculty.users.unapproved', $this->newUser->faculty_id ));
     }
 
     /**

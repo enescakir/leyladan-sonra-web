@@ -59,7 +59,7 @@ class RegisterController extends Controller
     {
       $user->sendEmailActivationNotification();
       $this->guard()->logout();
-      session_info("E-posta adresinize doğrulama bağlantısı gönderilmiştir.");
+      session_info("E-posta adresinize doğrulama kodu gönderilmiştir.");
       return redirect($this->redirectPath());
     }
 

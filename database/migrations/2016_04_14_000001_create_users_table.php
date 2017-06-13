@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             $table->string('title');
             $table->string('email_token')->nullable();
             $table->string('profile_photo')->default('default');
+            $table->datetime('activated_at')->nullable();
             $table->integer('activated_by')->unsigned()->nullable();
             $table->rememberToken();
 

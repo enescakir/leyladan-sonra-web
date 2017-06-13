@@ -17,7 +17,6 @@ class LoginController extends Controller
     | to conveniently provide its functionality to your applications.
     |
     */
-
     use AuthenticatesUsers;
 
     /**
@@ -47,17 +46,19 @@ class LoginController extends Controller
      */
     protected function authenticated($request, $user)
     {
-      //TODO: Check is email and account activated
-      // if ($currentUser->activated_at == null) {
-      //   $user->last_login = date("Y-m-d H:i:s");
-      //   $user->save();
-      //
-      //     Session::flash('flash_message', 'Hesabınız fakülte yöneticiniz tarafından daha onaylanmadı.');
-      //     Auth::logout();
-      //     return back()->withInput($request->only('email', 'remember'));
-      // } else {
-      //     return redirect()->route('admin.dashboard');
-      // }
+      if($user->email_token != null) {
+        session_info("E-posta adresinizi doğrulamamışsınız. <br> Tekrardan doğrulama kodu e-postanıza gönderildi.");
+        $user->sendEmailActivationNotification();
+        $this->guard()->logout();
+        return back()->withInput($request->only('email', 'remember'));
+      } else if($user->activated_at == null){
+        session_info("Hesabınızın fakülte yöneticiniz tarafından onaylanması gerekiyor.");
+        $this->guard()->logout();
+        return back()->withInput($request->only('email', 'remember'));
+      } else {
+        $user->last_login = date("Y-m-d H:i:s");
+        $user->save();
+        return redirect()->intended(route('admin.dashboard'));
+      }
     }
-
 }
