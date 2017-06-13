@@ -164,9 +164,58 @@ class FacultyController extends Controller
      *
      * @return Response
      */
-    public function children($id)
+    public function children(Request $request, $id)
     {
-        $faculty = Faculty::find($id);
+      $faculty = Faculty::find($id);
+      if($request->ajax()){
+        $user = Auth::user();
+        return Datatables::eloquent(
+            Child::select('id', 'first_name', 'last_name', 'department', 'diagnosis', 'wish', 'birthday', 'gift_state', 'meeting_day','faculty_id','until')
+              ->where('faculty_id', $faculty->id)
+              ->with('users')
+        )
+          ->editColumn('operations', '
+                                  @if (Auth::user()->title == "Yönetici" || Auth::user()->title == "Fakülte Sorumlusu" || Auth::user()->title == "Fakülte Yönetim Kurulu")
+                                      <a class="btn btn-primary btn-sm" href="{{ route("admin.child.show", $id) }}"><i class="fa fa-search"></i></a>
+                                      <a class="edit btn btn-success btn-sm" href="{{ route("admin.child.edit", $id) }}"><i class="fa fa-pencil"></i></a>
+                                      <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>
+                                  @elseif(Auth::user()->title == "İletişim Sorumlusu")
+                                      <a class="road btn btn-default btn-sm" href="javascript:;"> Gönüllü bulundu </a>
+                                  @elseif(Auth::user()->title == "Site Sorumlusu")
+                                      <a class="post btn btn-default btn-sm" href="{{ route("admin.faculty.posts", Auth::user()->faculty_id) }}"> Yazısını göster </a>
+                                  @elseif(Auth::user()->title == "Hediye Sorumlusu")
+                                      <a class="gift btn btn-default btn-sm" href="javascript:;"> Hediyesi geldi </a>
+                                  @endif
+                            ')
+            ->editColumn('first_name','{{ $full_name }}')
+            // ->editColumn('gift_state',' @if ($gift_state == "Bekleniyor")
+            //                             <td><span class="label label-danger"> Bekleniyor </span></td>
+            //                         @elseif ($gift_state == "Yolda")
+            //                             <td><span class="label label-warning"> Yolda </span></td>
+            //                         @elseif ($gift_state == "Bize Ulaştı")
+            //                             <td><span class="label label-primary"> Bize Ulaştı </span></td>
+            //                         @elseif ($gift_state == "Teslim Edildi")
+            //                             <td><span class="label label-success"> Teslim Edildi </span></td>
+            //                         @else
+            //                             <td><span class="label label-default"> Problem </span></td>
+            //                         @endif')
+            // ->editColumn('until','@if ($until == null )
+            //                             <td><span class="label label-danger"> Hata </span></td>
+            //                         @elseif ((new \Carbon\Carbon($until))->isFuture())
+            //                             <td><span class="label label-success"> {{date("d.m.Y", strtotime($until))}} </span></td>
+            //                         @elseif ((new \Carbon\Carbon($until))->isPast())
+            //                             <td><span class="label label-warning"> {{date("d.m.Y", strtotime($until))}} </span></td>
+            //                         @endif')
+            ->editColumn('users', function ($child) {
+                return $child->users->map(function($user) {
+                    return $user['full_name'];
+                })->implode(', ');
+            })
+            ->editColumn('birthday','{{date("d.m.Y", strtotime($birthday))}}')
+            ->editColumn('meeting_day','{{date("d.m.Y", strtotime($meeting_day))}}')
+            ->rawColumns(['operations'])
+            ->make(true);
+          }
         return view('admin.faculty.children', compact(['faculty']));
     }
 
@@ -199,28 +248,28 @@ class FacultyController extends Controller
                                         <a class="gift btn btn-default btn-sm" href="javascript:;"> Hediyesi geldi </a>
                                     @endif
                               ')
-            ->editColumn('first_name','{{$full_name}}')
-            ->editColumn('gift_state',' @if ($gift_state == "Bekleniyor")
-                                        <td><span class="label label-danger"> Bekleniyor </span></td>
-                                    @elseif ($gift_state == "Yolda")
-                                        <td><span class="label label-warning"> Yolda </span></td>
-                                    @elseif ($gift_state == "Bize Ulaştı")
-                                        <td><span class="label label-primary"> Bize Ulaştı </span></td>
-                                    @elseif ($gift_state == "Teslim Edildi")
-                                        <td><span class="label label-success"> Teslim Edildi </span></td>
-                                    @else
-                                        <td><span class="label label-default"> Problem </span></td>
-                                    @endif')
-            ->editColumn('until','@if ($until == null )
-                                        <td><span class="label label-danger"> Hata </span></td>
-                                    @elseif ((new \Carbon\Carbon($until))->isFuture())
-                                        <td><span class="label label-success"> {{date("d.m.Y", strtotime($until))}} </span></td>
-                                    @elseif ((new \Carbon\Carbon($until))->isPast())
-                                        <td><span class="label label-warning"> {{date("d.m.Y", strtotime($until))}} </span></td>
-                                    @endif')
-            ->editColumn('users','{{implode(\', \', array_map(function($user){ return $user[\'full_name\']; }, $users))}}')
-            ->editColumn('birthday','{{date("d.m.Y", strtotime($birthday))}}')
-            ->editColumn('meeting_day','{{date("d.m.Y", strtotime($meeting_day))}}')
+            // ->editColumn('first_name','{{$full_name}}')
+            // ->editColumn('gift_state',' @if ($gift_state == "Bekleniyor")
+            //                             <td><span class="label label-danger"> Bekleniyor </span></td>
+            //                         @elseif ($gift_state == "Yolda")
+            //                             <td><span class="label label-warning"> Yolda </span></td>
+            //                         @elseif ($gift_state == "Bize Ulaştı")
+            //                             <td><span class="label label-primary"> Bize Ulaştı </span></td>
+            //                         @elseif ($gift_state == "Teslim Edildi")
+            //                             <td><span class="label label-success"> Teslim Edildi </span></td>
+            //                         @else
+            //                             <td><span class="label label-default"> Problem </span></td>
+            //                         @endif')
+            // ->editColumn('until','@if ($until == null )
+            //                             <td><span class="label label-danger"> Hata </span></td>
+            //                         @elseif ((new \Carbon\Carbon($until))->isFuture())
+            //                             <td><span class="label label-success"> {{date("d.m.Y", strtotime($until))}} </span></td>
+            //                         @elseif ((new \Carbon\Carbon($until))->isPast())
+            //                             <td><span class="label label-warning"> {{date("d.m.Y", strtotime($until))}} </span></td>
+            //                         @endif')
+            // ->editColumn('users','{{implode(\', \', array_map(function($user){ return $user[\'full_name\']; }, $users))}}')
+            // ->editColumn('birthday','{{date("d.m.Y", strtotime($birthday))}}')
+            // ->editColumn('meeting_day','{{date("d.m.Y", strtotime($meeting_day))}}')
             ->make(true);
     }
 
