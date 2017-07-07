@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "leyladan-sonra",
+    "description": "Leyla'dan Sonra Web Application",
+    "keywords": ["leyladan", "sonra", "social", "cancer", "medicine"],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -19,10 +19,13 @@
         "aws/aws-sdk-php": "~3.0",
         "barryvdh/laravel-debugbar": "^2.4",
         "predis/predis": "^1.1",
-        "phpoffice/phpexcel": "^1.8",
+        "maatwebsite/excel": "^2.1",
+        "mpdf/mpdf": "~6.1",
+        "sentry/sentry-laravel": "^0.7.0",
         "laravel/passport": "^2.0",
         "laravel/scout": "^3.0",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "doctrine/dbal": "^2.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

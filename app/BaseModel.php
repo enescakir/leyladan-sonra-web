@@ -65,4 +65,22 @@ class BaseModel extends Model
         }
         return date("d.m.Y", strtotime($this->attributes['created_at']));
     }
+
+    public function setSlug($attribute = 'name')
+    {
+      $this->attributes['slug'] = str_slug(remove_turkish($this->attributes[$attribute]) . "-" . $this->attributes['id']);
+      return $this->save();
+    }
+
+    public function setImage($file, $attribute, $location)
+    {
+      $imageName = $this->attributes['id']. str_random(15) . ".jpg";
+      $imageLocation = public_path() . "/upload/" . $location . "/" ;
+      $this->attributes[$attribute] = $imageName;
+      Image::make($file)
+        ->resize(1000, null, function ($constraint) { $constraint->aspectRatio(); })
+        ->save($imageLocation . $imageName, 80);
+      return $this->save();
+    }
+
 }

@@ -175,18 +175,43 @@ class FacultyController extends Controller
               ->with('users')
         )
           ->editColumn('operations', '
-                                  @if (Auth::user()->title == "Yönetici" || Auth::user()->title == "Fakülte Sorumlusu" || Auth::user()->title == "Fakülte Yönetim Kurulu")
-                                      <a class="btn btn-primary btn-sm" href="{{ route("admin.child.show", $id) }}"><i class="fa fa-search"></i></a>
-                                      <a class="edit btn btn-success btn-sm" href="{{ route("admin.child.edit", $id) }}"><i class="fa fa-pencil"></i></a>
-                                      <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>
-                                  @elseif(Auth::user()->title == "İletişim Sorumlusu")
-                                      <a class="road btn btn-default btn-sm" href="javascript:;"> Gönüllü bulundu </a>
-                                  @elseif(Auth::user()->title == "Site Sorumlusu")
-                                      <a class="post btn btn-default btn-sm" href="{{ route("admin.faculty.posts", Auth::user()->faculty_id) }}"> Yazısını göster </a>
-                                  @elseif(Auth::user()->title == "Hediye Sorumlusu")
-                                      <a class="gift btn btn-default btn-sm" href="javascript:;"> Hediyesi geldi </a>
-                                  @endif
-                            ')
+            <div class="btn-group">
+                <a class="btn purple" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-user"></i> Settings
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-plus"></i> Add </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-trash-o"></i> Edit </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-times"></i> Delete </a>
+                    </li>
+                    <li class="divider"> </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="i"></i> Full Settings </a>
+                    </li>
+                </ul>
+            </div>
+            @if (Auth::user()->title == "Yönetici" || Auth::user()->title == "Fakülte Sorumlusu" || Auth::user()->title == "Fakülte Yönetim Kurulu")
+                <a class="btn btn-primary" href="{{ route("admin.child.show", $id) }}"><i class="fa fa-search"></i></a>
+                <a class="edit btn btn-success" href="{{ route("admin.child.edit", $id) }}"><i class="fa fa-pencil"></i></a>
+                <a class="delete btn btn-danger" href="javascript:;"><i class="fa fa-trash"></i> </a>
+            @elseif(Auth::user()->title == "İletişim Sorumlusu")
+                <a class="road btn btn-default btn-sm" href="javascript:;"> Gönüllü bulundu </a>
+            @elseif(Auth::user()->title == "Site Sorumlusu")
+                <a class="post btn btn-default btn-sm" href="{{ route("admin.faculty.posts", Auth::user()->faculty_id) }}"> Yazısını göster </a>
+            @elseif(Auth::user()->title == "Hediye Sorumlusu")
+                <a class="gift btn btn-default btn-sm" href="javascript:;"> Hediyesi geldi </a>
+            @endif
+          ')
             ->editColumn('first_name','{{ $full_name }}')
             // ->editColumn('gift_state',' @if ($gift_state == "Bekleniyor")
             //                             <td><span class="label label-danger"> Bekleniyor </span></td>
@@ -207,12 +232,10 @@ class FacultyController extends Controller
             //                             <td><span class="label label-warning"> {{date("d.m.Y", strtotime($until))}} </span></td>
             //                         @endif')
             ->editColumn('users', function ($child) {
-                return $child->users->map(function($user) {
-                    return $user['full_name'];
-                })->implode(', ');
+                return $child->users->implode('full_name', ',');
             })
-            ->editColumn('birthday','{{date("d.m.Y", strtotime($birthday))}}')
-            ->editColumn('meeting_day','{{date("d.m.Y", strtotime($meeting_day))}}')
+            ->editColumn('birthday','{{ date("d.m.Y", strtotime($birthday)) }}')
+            ->editColumn('meeting_day','{{ date("d.m.Y", strtotime($meeting_day)) }}')
             ->rawColumns(['operations'])
             ->make(true);
           }

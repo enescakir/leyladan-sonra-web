@@ -112,7 +112,7 @@ class ChildController extends Controller
         $child->until = $child->meeting_day->copy()->addYear()->format('d.m.Y');
         $child->save();
         $child->users()->attach($request->users);
-        $child->slug = str_slug($this->removeTurkish($child->first_name) . "-" . $child->id);
+        $child->slug = str_slug($this->remove_turkish($child->first_name) . "-" . $child->id);
 
         if($request->hasFile('verification_doc') ){
             $verificationDoc = Image::make($request->file('verification_doc'))
@@ -491,7 +491,7 @@ class ChildController extends Controller
 
 
     //HELPERS
-    private  function removeTurkish($string){
+    private  function remove_turkish($string){
         $charsArray = [
             'c'    => ['ç', 'Ç'],
             'g'    => ['ğ', 'Ğ'],

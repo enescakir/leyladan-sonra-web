@@ -55,7 +55,7 @@ class BlogController extends Controller
         foreach($categories as $categoryItem){
             $category = BlogCategory::where('title',$categoryItem)->first();
             if($category == null){
-                $slug = str_slug(removeTurkish($categoryItem));
+                $slug = str_slug(remove_turkish($categoryItem));
                 $category = new BlogCategory([
                     'title' => $categoryItem,
                     'slug' => $slug,
@@ -68,7 +68,7 @@ class BlogController extends Controller
         }
         $blog->author_id = Auth::user()->id;
         $blog->save();
-        $blog->slug = str_slug(removeTurkish($blog->title). "-" . $blog->id);
+        $blog->slug = str_slug(remove_turkish($blog->title). "-" . $blog->id);
 
         $blog->categories()->attach($categoriesArray);
         if($request->hasFile('thumb') ){
