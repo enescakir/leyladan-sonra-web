@@ -5,10 +5,9 @@ function set_active($path, $active = 'active')
 {
   if (is_array($path)) {
     foreach ( $path as $p)
-    if(Request::is($p)) return $active;
-    return '';
+      if(Request::is($p)) return $active;
+        return '';
   }
-
   return Request::is($path) ? $active : '';
 }
 
@@ -18,7 +17,7 @@ function upload_path($folder = null, $file = null)
   if ($folder) {
     $path .= "/" . $folder;
     if ($file)
-    $path .= "/" . $file;
+      $path .= "/" . $file;
   }
   return $path;
 }
@@ -58,23 +57,22 @@ function Approval(Illuminate\Database\Schema\Blueprint $table)
   $table->foreign('approved_by')->references('id')->on('users');
 }
 
-
+// String Helpers
 function remove_turkish($string)
 {
   $charsArray = [
-    'c'    => ['ç', 'Ç'],
-    'g'    => ['ğ', 'Ğ'],
-    'i'    => ['I', 'İ', 'ı'],
-    'o'    => ['Ö','ö'],
-    's'    => ['Ş', 'ş'],
-    'u'    => ['ü', 'Ü'],
+    'c' => ['ç', 'Ç'],
+    'g' => ['ğ', 'Ğ'],
+    'i' => ['I', 'İ', 'ı'],
+    'o' => ['Ö','ö'],
+    's' => ['Ş', 'ş'],
+    'u' => ['ü', 'Ü'],
   ];
   foreach ($charsArray as $key => $val)
-  $string = str_replace($val, $key, $string);
+    $string = str_replace($val, $key, $string);
   return $string;
 }
 
-// String Helpers
 function title_case_turkish($string)
 {
   return mb_convert_case(str_replace("i", "İ", str_replace("I", "ı", $string)), MB_CASE_TITLE, "UTF-8");

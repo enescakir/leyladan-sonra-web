@@ -1,6 +1,19 @@
-/public/resources/admin/uploads
-/public/resources/admin/uploads/*
-!*public/uploads
+!*public/upload
+/public/upload/blog/*
+!/public/upload/blog/.gitkeep
+/public/upload/channel/*
+!/public/upload/channel/.gitkeep
+/public/upload/child/*
+!/public/upload/child/.gitkeep
+/public/upload/faculty/*
+!/public/upload/faculty/.gitkeep
+/public/upload/profile/*
+!/public/upload/profile/.gitkeep
+/public/upload/sponsor/*
+!/public/upload/sponsor/.gitkeep
+/public/upload/verification/*
+!/public/upload/verification/.gitkeep
+
 /node_modules
 /public/storage
 /storage/framework
@@ -13,3 +26,4 @@ Homestead.json
 /public/hot
 /public/storage
 /storage/*.key
+composer.lock
