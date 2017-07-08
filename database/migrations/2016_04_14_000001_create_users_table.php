@@ -25,29 +25,22 @@ class CreateUsersTable extends Migration
             $table->string('mobile',10);
             $table->string('year');
             $table->string('title');
+            $table->dateTime('left_at')->nullable();
+            $table->dateTime('graduated_at')->nullable();
             $table->string('email_token')->nullable();
             $table->string('profile_photo')->default('default');
-            $table->datetime('activated_at')->nullable();
-            $table->integer('activated_by')->unsigned()->nullable();
             $table->rememberToken();
-
-            $table->integer('updated_by')->unsigned()->nullable();
-            $table->integer('deleted_by')->unsigned()->nullable();
-            $table->foreign('updated_by')->references('id')->on('users');
-            $table->foreign('deleted_by')->references('id')->on('users');
             $table->softDeletes();
             $table->timestamps();
-
+            BaseActions($table)
+            Approval($table)
             $table->foreign('faculty_id')->references('id')->on('faculties');
-            $table->foreign('activated_by')->references('id')->on('users');
-
         });
 
 
         Schema::table('faculties', function (Blueprint $table) {
             BaseActions($table);
         });
-
     }
 
     /**
