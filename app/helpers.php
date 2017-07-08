@@ -22,6 +22,15 @@ function upload_path($folder = null, $file = null)
   return $path;
 }
 
+function media_path($folder = null, $file = null)
+{
+  if ($folder == 'admin') {
+    return 'resources/admin/media/' . $file;
+  } else if ($folder == 'front') {
+    return 'resources/front/images/' . $file;
+  }
+}
+
 // Session Message Helpers
 function session_success($text)
 {

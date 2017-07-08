@@ -7,7 +7,7 @@ class Testimonial extends BaseModel
   // Properties
   protected $table    = 'testimonials';
   protected $fillable = ['name', 'text', 'email', 'via', 'priority', 'approved_at', 'approved_by'];
-  protected $dates    = array_merge($this->dates, ['approved_at']);
+  protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'approved_at'];
 
   // Validation rules
   public static $validationRules = [

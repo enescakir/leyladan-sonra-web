@@ -5,6 +5,9 @@ namespace App;
 use App\Traits\Birthday;
 use Carbon\Carbon;
 
+use App\Enums\PostType;
+use App\Enums\ChatStatus;
+
 class Child extends BaseModel
 {
   use Birthday;
@@ -17,7 +20,7 @@ class Child extends BaseModel
     'g_mobile', 'g_email', 'province', 'city', 'address', 'extra_info',
     'volunteer_id', 'verification_doc', 'gift_state', 'on_hospital', 'until', 'slug'
   ];
-  protected $dates    = array_merge($this->dates, ['meeting_day', 'birthday', 'until']);
+  protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'meeting_day', 'birthday', 'until'];
   protected $appends  = ['full_name'];
   protected $slugKeys = ['first_name', 'id'];
 
@@ -103,12 +106,4 @@ class Child extends BaseModel
   {
     return $this->attributes['g_mobile'] = make_mobile($g_mobile);
   }
-}
-// TODO: Complete chat status
-class GiftStatus extends SplEnum
-{
-  const Waiting   = 'Bekleniyor';
-  const OnRoad    = 'Yolda';
-  const Arrived   = 'Bize Ulaştı';
-  const Delivered = 'Teslim Edildi';
 }

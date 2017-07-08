@@ -12,7 +12,7 @@ class Faculty extends BaseModel
     'full_name', 'slug', 'latitude', 'longitude', 'address',
     'city', 'code', 'started_at'
   ];
-  protected $dates    = array_merge($this->dates, ['started_at']);
+  protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'started_at'];
 
   // Validation rules
   public static $createRules = [

@@ -29,9 +29,3 @@ class Blog extends BaseModel
     return $this->attributes['text'] = clean_text($text);
   }
 }
-
-// TODO: Complete blog types
-class BlogType extends SplEnum {
-  const Milestone = 'milestone';
-  const Video     = 'video';
-}

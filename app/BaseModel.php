@@ -62,8 +62,8 @@ class BaseModel extends Model
   public function updateSlug()
   {
     return $this->slugKeys ?
-    $this->update([
-      'slug' => str_slug( remove_turkish( implode('-', array_map( function($key) { return $this->attributes[$key]; , $this->slugKeys ) ))
+      $this->update([
+        'slug' => str_slug( remove_turkish( implode('-', array_map( function($key) { return $this->attributes[$key]; } , $this->slugKeys ) )))
       ])
       : false ;
     }

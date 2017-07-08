@@ -59,10 +59,3 @@ class Chat extends BaseModel
     return $sum / $counter / 60;
   }
 }
-
-// TODO: Complete chat status
-class ChatStatus extends SplEnum {
-  const Open     = 'Açık';
-  const Answered = 'Cevaplandı';
-  const Closed   = 'Kapalı';
-}

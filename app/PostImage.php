@@ -21,10 +21,3 @@ class PostImage extends BaseModel
   }
 
 }
-
-
-class ImageRatio extends SplEnum
-{
-  const Portrait  = '2/3';
-  const Landscape = '4/3';
-}

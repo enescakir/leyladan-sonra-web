@@ -103,12 +103,3 @@ class User extends Authenticatable
     $this->notify(new ActivateEmailNotification($token));
   }
 }
-
-// TODO: Complete user title
-class UserTitle extends SplEnum
-{
-  const Admin   = 'Yönetici';
-  const Faculty = 'Fakülte Sorumlusu';
-  const Blood   = 'Kan Görevlisi';
-  const Normal   = 'Normal';
-}

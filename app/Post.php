@@ -7,7 +7,7 @@ class Post extends BaseModel
   // Properties
   protected $table    = 'posts';
   protected $fillable = ['child_id', 'approved_by', 'approved_at', 'text', 'type'];
-  protected $dates    = array_merge($this->dates, ['approved_at']);
+  protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'approved_at'];
 
   // Relations
   public function child()
@@ -41,10 +41,4 @@ class Post extends BaseModel
   {
     $query->whereNotNull('approved_at');
   }
-}
-
-class PostType extends SplEnum
-{
-  const Meeting  = 'Tanışma';
-  const Delivery = 'Hediye';
 }
