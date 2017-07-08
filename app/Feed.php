@@ -4,35 +4,37 @@ namespace App;
 
 class Feed extends BaseModel
 {
-    protected $table = 'feeds';
-    protected $guarded = [];
+  // Properties
+  protected $table    = 'feeds';
+  protected $fillable = ['title', 'desc', 'icon', 'link', 'faculty_id'];
 
-    public function faculty()
-    {
-        return $this->belongsTo('App\Faculty');
+  // Relations
+  public function faculty()
+  {
+    return $this->belongsTo(Faculty::class);
+  }
+
+  // Accessors
+  public function getIconLabelAttribute()
+  {
+    $icon_code = $this->attributes['icon'];
+    switch ($icon_code) {
+      case "1":
+        $result = ["warning", "child"];
+      break;
+      case "2":
+        $result = ["info", "male"];
+      break;
+      case "3":
+        $result = ["success", "gift"];
+      break;
+      case "4":
+        $result = ["danger", "trash"];
+      break;
+      default:
+        $result = ["", ""];
+      break;
     }
-
-    public function getIconAttribute()
-    {
-        $icon = $this->attributes['icon'];
-        $iconText = "";
-        switch ($icon) {
-            case "1":
-                $iconText = '<div class="label label-sm label-warning"> <i class="fa fa-child"></i></div>';
-                break;
-            case "2":
-                $iconText = '<div class="label label-sm label-info"> <i class="fa fa-male"></i></div>';
-                break;
-            case "3":
-                $iconText = '<div class="label label-sm label-success"> <i class="fa fa-gift"></i></div>';
-                break;
-            case "4":
-                $iconText = '<div class="label label-sm label-danger"> <i class="fa fa-trash"></i></div>';
-                break;
-            default:
-                echo "Your favorite color is neither red, blue, nor green!";
-        }
-
-        return $iconText;
-    }
+    return '<div class="label label-sm label-' . $result[0] . '"> <i class="fa fa-' . $result[1] . '"></i></div>';
+  }
 }

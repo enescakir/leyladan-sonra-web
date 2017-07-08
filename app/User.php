@@ -17,6 +17,11 @@ class User extends Authenticatable
     use SoftDeletes;
     use Notifiable;
 
+    // Properties
+    protected $table    = 'users';
+    protected $fillable = ['name', 'text', 'email', 'via', 'priority', 'approved_at', 'approved_by'];
+    protected $dates    = array_merge($this->dates, ['approved_at']);
+
     protected $fillable = ['first_name', 'last_name', 'email', 'password', 'birthday', 'mobile', 'year', 'title', 'profile_photo', 'faculty_id', 'gender'];
     protected $hidden = ['password', 'remember_token'];
     protected $appends = ['full_name'];
@@ -71,7 +76,6 @@ class User extends Authenticatable
     {
         return $this->attributes['first_name'] . " " . $this->attributes['last_name'];
     }
-
 
     public function sendPasswordResetNotification($token)
     {

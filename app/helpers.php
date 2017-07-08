@@ -90,6 +90,11 @@ function lower_case_turkish($string)
   return mb_convert_case(str_replace("İ", "i", str_replace("I", "ı", $string)), MB_CASE_LOWER, "UTF-8");
 }
 
+function clean_text($text)
+{
+  return reg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i",'<$1$2>', strip_tags($text, '<p><a><br><pre><i><b><u><ul><li><ol><img><blockquote><h1><h2><h3><h4><h5>'));
+}
+
 function make_mobile($mobile)
 {
   return substr(str_replace(['\0', '+', ')', '(', '-', ' ', '\t'], '', $mobile), - 10);

@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Auth, DB, Log, Cache, App;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,9 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        if (App::environment('local')) {
-            DB::enableQueryLog();
-        }
+        Carbon::setLocale('tr');
 
         view()->composer('admin.parent', function($view) {
             $authUser = Auth::user();

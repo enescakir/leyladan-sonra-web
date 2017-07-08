@@ -6,80 +6,70 @@ use Carbon\Carbon;
 
 class Faculty extends BaseModel
 {
-    protected $table = 'faculties';
-    protected $guarded = [];
+  // Properties
+  protected $table    = 'faculties';
+  protected $fillable = [
+    'full_name', 'slug', 'latitude', 'longitude', 'address',
+    'city', 'code', 'started_at'
+  ];
+  protected $dates    = array_merge($this->dates, ['started_at']);
 
-    public function feeds()
-    {
-        return $this->hasMany('App\Feed');
-    }
+  // Validation rules
+  public static $createRules = [
+    'full_name' =>'required|max:255',
+    'slug'      =>'required|max:255',
+    'latitude'  =>'numeric',
+    'longitude' =>'numeric',
+    'city'      =>'required|max:255'
+  ];
 
-    public function users()
-    {
-        return $this->hasMany('App\User');
-    }
+  // Relations
+  public function feeds()
+  {
+    return $this->hasMany(Feed::class);
+  }
 
-    public function usersToSelect($empty = false)
-    {
-      $res = $this->users()->orderby('first_name')->get()->pluck('fullname', 'id');
-      return $empty ? array_merge($res, ['' => '']) : $res;
-    }
+  public function users()
+  {
+    return $this->hasMany(User::class);
+  }
 
-    public function chats()
-    {
-        return $this->hasMany('App\Chat');
-    }
+  public function chats()
+  {
+    return $this->hasMany(Chat::class);
+  }
 
-    public function responsibles()
-    {
-        return $this->hasMany('App\User')->where('title', 'Fakülte Sorumlusu');
-    }
+  public function responsibles()
+  {
+    return $this->hasMany(User::class)->where('title', 'Fakülte Sorumlusu');
+  }
 
-    public function posts()
-    {
-        return $this->hasManyThrough('App\Post', 'App\Child');
-    }
+  public function posts()
+  {
+    return $this->hasManyThrough(Post::class, Child::class);
+  }
 
-    public function children()
-    {
-        return $this->hasMany('App\Child');
-    }
+  public function children()
+  {
+    return $this->hasMany(Child::class);
+  }
 
-    public static $validationRules=[
-        'full_name'=>'required|max:255',
-        'slug'=>'required|max:255',
-        'latitude'=>'numeric',
-        'longitude'=>'numeric',
-        'city'=>'required|max:255'
-    ];
+  // Methods
+  public function usersToSelect($empty = false)
+  {
+    $res = $this->users()->orderby('first_name')->get()->pluck('fullname', 'id');
+    return $empty ? array_merge($res, ['' => '']) : $res;
+  }
 
-    public static $validationMessages=[
-        'full_name.required'=>'Ad boş bırakılamaz',
-        'full_name.max'=>'Ad en fazla 255 karakter olabilir',
-        'slug.required'=>'Kısa ad boş bırakılamaz',
-        'slug.max'=>'Kısa ad en fazla 255 karakter olabilir',
-        'latitude.numeric'=>'Enlem sayılardan oluşmalıdır',
-        'longitude.numeric'=>'Boylam sayılardan oluşmalıdır',
-        'city.required'=>'Şehir boş bırakılamaz',
-        'city.max'=>'Şehir en fazla 255 karakter olabilir'
-    ];
+  // Mutators
+  public function setStartedAtAttribute($date)
+  {
+    $this->attributes['started_at'] = $date ? NULL : Carbon::createFromFormat('d.m.Y', $date)->toDateString();
+  }
 
-
-    public function setStartedAtAttribute($date)
-    {
-        if ($date == '') {
-            return $this->attributes['started_at'] = null;
-        };
-
-        $this->attributes['started_at'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
-    }
-
-    public function getStartedAtLabelAttribute()
-    {
-        if ($this->attributes['started_at'] == null) {
-            return null;
-        };
-
-        return date("d.m.Y", strtotime($this->attributes['started_at']));
-    }
+  // Accessors
+  public function getStartedAtLabelAttribute()
+  {
+    return $this->attributes['started_at'] ? NULL : date("d.m.Y", strtotime($this->attributes['started_at']));
+  }
 }

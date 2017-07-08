@@ -4,5 +4,8 @@ namespace App;
 
 class MobileNotification extends BaseModel
 {
-    protected $dates = ['deleted_at', 'created_at', 'updated_at', 'expected_at', 'sent_at'];
+  // Properties
+  protected $table    = 'mobile_notifications';
+  protected $fillable = ['message', 'expected_at', 'sent_at'];
+  protected $dates    = array_merge($this->dates, ['expected_at', 'sent_at']);
 }

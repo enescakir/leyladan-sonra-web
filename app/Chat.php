@@ -1,73 +1,68 @@
 <?php
 
 namespace App;
-
-use Illuminate\Database\Eloquent\Model;
-use Auth;
 use Carbon\Carbon;
 
-class Chat extends Model
+class Chat extends BaseModel
 {
 
-    protected $table = 'chats';
-    protected $guarded = [];
+  // Properties
+  protected $table    = 'chats';
+  protected $fillable = ['volunteer_id', 'faculty_id', 'child_id', 'via', 'status'];
 
-    public static function boot()
-    {
-        parent::boot();
+  // Relations
+  public function faculty()
+  {
+    return $this->belongsTo(Faculty::class);
+  }
 
-        static::updating(function ($model) {
-            if(Schema::hasColumn($model->getTable(), 'updated_by')) {
-                $model->updated_by = Auth::user()->id;
-            }
-        });
-    }
+  public function child()
+  {
+    return $this->belongsTo(Child::class);
+  }
 
-    public function faculty()
-    {
-        return $this->belongsTo('App\Faculty');
-    }
+  public function volunteer()
+  {
+    return $this->belongsTo(Volunteer::class);
+  }
 
-    public function child()
-    {
-        return $this->belongsTo('App\Child');
-    }
+  public function messages()
+  {
+    return $this->hasMany(Message::class);
+  }
 
-    public function volunteer()
-    {
-        return $this->belongsTo('App\Volunteer');
-    }
+  // Scopes
+  public function scopeOpen($query)
+  {
+    $query->where('status', ChatStatus::Open);
+  }
 
-    public function messages()
-    {
-        return $this->hasMany('App\Message');
-    }
+  // Methods
+  public function avgTime()
+  {
+    $messages = $this->messages;
+    $sum = 0;
+    $counter = 0;
 
-    public function avgTime()
-    {
-        $messages = $this->messages;
-        $sum = 0;
-        $counter = 0;
-
-        foreach ($messages as $message) {
-            if ($message->sent_at == null) {
-                $counter += 1;
-                if ($message->answered_at == null) {
-                    $sum += $message->created_at->diffInMinutes(Carbon::now());
-                }
-                else {
-                    $sum += $message->created_at->diffInMinutes($message->answered_at);
-                }
-            }
+    foreach ($messages as $message) {
+      if ($message->sent_at == null) {
+        $counter += 1;
+        if ($message->answered_at == null) {
+          $sum += $message->created_at->diffInMinutes(Carbon::now());
         }
-        if ($counter == 0) return 0;
-
-        return $sum / $counter / 60;
+        else {
+          $sum += $message->created_at->diffInMinutes($message->answered_at);
+        }
+      }
     }
+    if ($counter == 0) return 0;
+    return $sum / $counter / 60;
+  }
+}
 
-
-    public function scopeOpen($query)
-    {
-        $query->where('status', 'Açık');
-    }
+// TODO: Complete chat status
+class ChatStatus extends SplEnum {
+  const Open     = 'Açık';
+  const Answered = 'Cevaplandı';
+  const Closed   = 'Kapalı';
 }

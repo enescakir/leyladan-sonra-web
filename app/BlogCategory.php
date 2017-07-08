@@ -4,12 +4,15 @@ namespace App;
 
 class BlogCategory extends BaseModel
 {
-    protected $table = 'blog_categories';
+  // Properties
+  protected $table    = 'blog_categories';
+  protected $fillable = ['title', 'slug', 'desc'];
+  protected $slugKeys = ['title'];
 
-    protected $guarded = [];
-
-    public function blogs(){
-        return $this->belongsToMany('App\Blog','blog_category','category_id', 'blog_id')->withTimestamps();
-    }
+  // Relations
+  public function blogs()
+  {
+    return $this->belongsToMany(Blog::class, 'blog_category', 'category_id', 'blog_id')->withTimestamps();
+  }
 
 }

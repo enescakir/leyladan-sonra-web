@@ -33,7 +33,7 @@ class CreateChildrenTable extends Migration
             $table->string('g_email')->nullable();
             $table->string('province');
             $table->string('city');
-            $table->text('adress');
+            $table->text('address');
             $table->text('extra_info')->nullable();
             $table->integer('volunteer_id')->unsigned()->nullable();
             $table->string('verification_doc')->nullable();

@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Sponsor extends Model
+class Sponsor extends BaseModel
 {
-    //
+  // Properties
+  protected $table    = 'sponsors';
+  protected $fillable = ['name', 'link', 'order'];
 }

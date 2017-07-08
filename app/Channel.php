@@ -4,9 +4,14 @@ namespace App;
 
 class Channel extends BaseModel
 {
-    public function news()
-    {
-        return $this->hasMany('App\News');
-    }
+  // Properties
+  protected $table    = 'channels';
+  protected $fillable = ['name', 'logo', 'category'];
+
+  // Relations
+  public function news()
+  {
+    return $this->hasMany(News::class);
+  }
 
 }

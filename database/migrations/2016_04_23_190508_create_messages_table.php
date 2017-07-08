@@ -22,9 +22,7 @@ class CreateMessagesTable extends Migration
             $table->string('status');
 
             $table->timestamps();
-            $table->integer('updated_by')->unsigned()->nullable();
-            $table->foreign('updated_by')->references('id')->on('users');
-
+            BaseActions($table);
             $table->foreign('volunteer_id')->references('id')->on('volunteers')->onDelete('cascade');
             $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');
             $table->foreign('faculty_id')->references('id')->on('faculties')->onDelete('cascade');
@@ -39,10 +37,7 @@ class CreateMessagesTable extends Migration
             $table->datetime('answered_at')->nullable();
             $table->integer('sent_by')->unsigned()->nullable();
             $table->datetime('sent_at')->nullable();
-
-
             $table->timestamps();
-
             $table->foreign('chat_id')->references('id')->on('chats')->onDelete('cascade');
             $table->foreign('answered_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('sent_by')->references('id')->on('users')->onDelete('set null');

@@ -24,13 +24,8 @@ class CreateVolunteersTable extends Migration
             $table->string('player_id')->nullable();
             $table->string('device_token')->nullable();
             $table->timestamps();
-
-            $table->integer('updated_by')->unsigned()->nullable();
-            $table->integer('deleted_by')->unsigned()->nullable();
-            $table->foreign('updated_by')->references('id')->on('users');
-            $table->foreign('deleted_by')->references('id')->on('users');
             $table->softDeletes();
-
+            BaseActions($table);
         });
 
     }

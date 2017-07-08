@@ -7,92 +7,108 @@ use Carbon\Carbon;
 
 class Child extends BaseModel
 {
-    use Birthday;
+  use Birthday;
+  // Properties
+  protected $table    = 'children';
+  protected $fillable = [
+    'faculty_id', 'department', 'first_name', 'last_name', 'diagnosis',
+    'diagnosis_desc', 'taken_treatment', 'child_state', 'child_state_desc',
+    'gender', 'meeting_day', 'birthday', 'wish', 'g_first_name', 'g_last_name',
+    'g_mobile', 'g_email', 'province', 'city', 'address', 'extra_info',
+    'volunteer_id', 'verification_doc', 'gift_state', 'on_hospital', 'until', 'slug'
+  ];
+  protected $dates    = array_merge($this->dates, ['meeting_day', 'birthday', 'until']);
+  protected $appends  = ['full_name'];
+  protected $slugKeys = ['first_name', 'id'];
 
-    protected $table = 'children';
-    protected $guarded = ['id'];
-    protected $dates = ['meeting_day', 'birthday', 'until', 'deleted_at', 'created_at', 'updated_at'];
-    protected $appends = ['full_name'];
-    protected $casts = ['users' => 'string',];
+  // Relations
+  public function users()
+  {
+    return $this->belongsToMany(User::class)->withTimestamps();
+  }
 
-    public function users()
-    {
-        return $this->belongsToMany('App\User')->withTimestamps();
-    }
+  public function faculty()
+  {
+    return $this->belongsTo(Faculty::class);
+  }
 
-    public function faculty()
-    {
-        return $this->belongsTo('App\Faculty');
-    }
+  public function posts()
+  {
+    return $this->hasMany(Post::class);
+  }
 
-    public function posts()
-    {
-        return $this->hasMany('App\Post');
-    }
+  public function meetingPosts()
+  {
+    return $this->hasMany(Post::class)->where('type', PostType::Meeting);
+  }
 
-    public function meetingPosts()
-    {
-        return $this->hasMany('App\Post')->where('type', 'Tanışma');
-    }
+  public function chats()
+  {
+    return $this->hasMany(Chat::class);
+  }
 
-    public function chats()
-    {
-        return $this->hasMany('App\Chat');
-    }
+  public function openChats()
+  {
+    return $this->hasMany(Chat::class)->whereIn('status', [ChatStatus::Open, ChatStatus::Answered]);
+  }
 
-    public function openChats()
-    {
-        return $this->hasMany('App\Chat')->whereIn('status', ['Açık', 'Cevaplandı']);
-    }
+  public function unansweredMessages()
+  {
+    return $this->hasManyThrough(Message::class, Chat::class)->whereNull('answered_at');
+  }
 
-    public function unansweredMessages()
-    {
-        return $this->hasManyThrough('App\Message', 'App\Chat')->whereNull('answered_at');
-    }
+  public function processes()
+  {
+    return $this->hasMany(Process::class)->with(['creator']);
+  }
 
-    public function processes()
-    {
-        return $this->hasMany('App\Process')->with(['creator']);
-    }
+  // Accessors
+  public function getUserNameListAttribute()
+  {
+    return implode(", ", $this->users->pluck('full_name')->toArray());
+  }
 
+  public function getUserListAttribute()
+  {
+    return $this->users->pluck('id');
+  }
 
-    public function getUserNameListAttribute()
-    {
-        return implode(", ", $this->users->pluck('full_name')->toArray());
-    }
+  public function getFullNameAttribute()
+  {
+    return $this->attributes['first_name'] . " " . $this->attributes['last_name'];
+  }
 
-    public function getUserListAttribute()
-    {
-        return $this->users->pluck('id');
-    }
+  public function getMeetingDayHumanAttribute()
+  {
+    return date("d.m.Y", strtotime($this->attributes['meeting_day']));
+  }
 
-    public function getFullNameAttribute()
-    {
-        return $this->attributes['first_name'] . " " . $this->attributes['last_name'];
-    }
+  public function getUntilHumanAttribute()
+  {
+    return date("d.m.Y", strtotime($this->attributes['until']));
+  }
 
-    public function getMeetingDayHumanAttribute()
-    {
-        return date("d.m.Y", strtotime($this->attributes['meeting_day']));
-    }
+  // Mutators
+  public function setMeetingDayAttribute($date)
+  {
+    return $this->attributes['meeting_day'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
+  }
 
-    public function getUntilHumanAttribute()
-    {
-        return date("d.m.Y", strtotime($this->attributes['until']));
-    }
+  public function setUntilAttribute($date)
+  {
+    return $this->attributes['until'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
+  }
 
-    public function setMeetingDayAttribute($date)
-    {
-        return $this->attributes['meeting_day'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
-    }
-
-    public function setUntilAttribute($date)
-    {
-        return $this->attributes['until'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
-    }
-
-    public function setGMobileAttribute($g_mobile)
-    {
-        return $this->attributes['g_mobile'] = substr(str_replace(['\0', '+', ')', '(', '-', ' ', '\t'], '', $g_mobile), -10);
-    }
+  public function setGMobileAttribute($g_mobile)
+  {
+    return $this->attributes['g_mobile'] = make_mobile($g_mobile);
+  }
+}
+// TODO: Complete chat status
+class GiftStatus extends SplEnum
+{
+  const Waiting   = 'Bekleniyor';
+  const OnRoad    = 'Yolda';
+  const Arrived   = 'Bize Ulaştı';
+  const Delivered = 'Teslim Edildi';
 }

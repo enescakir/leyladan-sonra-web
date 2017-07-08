@@ -2,43 +2,38 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Sms extends Model
+class Sms extends BaseModel
 {
-  protected $table = 'sms';
+  // Properties
+  protected $table    = 'sms';
+  protected $fillable = ['title', 'message', 'category', 'receiver_count', 'sent_by'];
 
-  protected $guarded = [];
-
+  // Methods
   public function send($people)
   {
-    $to = "";
-    if(is_array($people)){
-      foreach ($people as $person) {
-        $to = $to . "<number>" . $person . "</number>";
-      }
-    } else {
-      $to = "<number>" . $people . "</number>";
-    }
-    $username   = env('ILETI_USERNAME');
-    $password   = env('ILETI_PASSWORD');
+    $to = is_array($people) ?
+      array_reduce($people, function($reduced, $person) { return $reduced . "<number>" . $person . "</number>"; }, "")
+      : "<number>" . $people . "</number>";
+
+    $username = env('ILETI_USERNAME');
+    $password = env('ILETI_PASSWORD');
 
     $xml = "<request>
-    <authentication>
-    <username>".$username."</username>
-    <password>".$password."</password>
-    </authentication>
-    <order>
-    <sender>". $this->attributes['title'] ."</sender>
-    <sendDateTime>01/05/2013 18:00</sendDateTime>
-    <message>
-    <text><![CDATA[" . $this->attributes['message'] . "]]></text>
-    <receipents>
-    ". $to . "
-    </receipents>
-    </message>
-    </order>
-    </request>";
+              <authentication>
+                <username>" . $username . "</username>
+                <password>" . $password . "</password>
+              </authentication>
+              <order>
+                <sender>" . $this->attributes['title'] . "</sender>
+                <sendDateTime>01/05/2013 18:00</sendDateTime>
+                <message>
+                  <text><![CDATA[" . $this->attributes['message'] . "]]></text>
+                  <receipents>
+                    " . $to . "
+                  </receipents>
+                </message>
+              </order>
+            </request>";
 
     $site_name = env('ILETI_URL') . "/send-sms";
 
@@ -46,7 +41,6 @@ class Sms extends Model
     curl_setopt($ch, CURLOPT_URL, $site_name);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
-
     curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
     curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: text/xml']);
     curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -59,15 +53,15 @@ class Sms extends Model
 
   public static function checkBalance()
   {
-    $username   = env('ILETI_USERNAME');
-    $password   = env('ILETI_PASSWORD');
+    $username = env('ILETI_USERNAME');
+    $password = env('ILETI_PASSWORD');
 
     $xml = "<request>
-      <authentication>
-        <username>".$username."</username>
-        <password>".$password."</password>
-      </authentication>
-    </request>";
+              <authentication>
+                <username>" . $username . "</username>
+                <password>" . $password . "</password>
+              </authentication>
+            </request>";
 
     $site_name = env('ILETI_URL') . "/get-balance";
 
@@ -75,7 +69,6 @@ class Sms extends Model
     curl_setopt($ch, CURLOPT_URL, $site_name);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
-
     curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
     curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: text/xml']);
     curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -84,5 +77,4 @@ class Sms extends Model
     $result = curl_exec($ch);
     return (string) simplexml_load_string($result)->balance->sms;
   }
-
 }

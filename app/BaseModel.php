@@ -8,79 +8,74 @@ use Auth, Schema, Carbon\Carbon;
 
 class BaseModel extends Model
 {
-    use SoftDeletes;
-    protected $dates = ['deleted_at', 'created_at', 'updated_at'];
+  use SoftDeletes;
+  protected $dates    = ['deleted_at', 'created_at', 'updated_at'];
+  protected $slugKeys = NULL;
 
-    public static function boot()
-    {
-        parent::boot();
-
-        // create a event to happen on updating
-        static::updating(function ($model) {
-            if(Schema::hasColumn($model->getTable(), 'updated_by')) {
-              if(Auth::user()){
-                $model->updated_by = Auth::user()->id;
-              }
-            }
-        });
-
-        // create a event to happen on deleting
-        static::deleting(function ($model) {
-            if(Schema::hasColumn($model->getTable(), 'deleted_by')) {
-              if(Auth::user()){
-                $model->deleted_by = Auth::user()->id;
-                $model->save();
-              }
-            }
-        });
-
-        // create a event to happen on saving
-        static::creating(function ($model) {
-            if(Schema::hasColumn($model->getTable(), 'created_by')) {
-              if(Auth::user()){
-                $model->created_by = Auth::user()->id;
-              }
-            }
-        });
-
-    }
-
-    public function creator(){
-        return $this->belongsTo('App\User', 'created_by');
-    }
-
-    public function getCreatedAtHumanAttribute(){
-        Carbon::setLocale('tr');
-        return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']),'Europe/Istanbul')->diffForHumans();
-    }
-
-    public function getUpdatedAtHumanAttribute(){
-        Carbon::setLocale('tr');
-        return Carbon::createFromTimeStamp(strtotime($this->attributes['updated_at']),'Europe/Istanbul')->diffForHumans();
-    }
-
-    public function getCreatedAtLabelAttribute(){
-        if($this->attributes['created_at'] == null){
-            return '';
+  public static function boot()
+  {
+    parent::boot();
+    static::creating(function ($model) {
+      if(Schema::hasColumn($model->getTable(), 'created_by')) {
+        if(Auth::user()){
+          $model->created_by = Auth::user()->id;
         }
-        return date("d.m.Y", strtotime($this->attributes['created_at']));
+      }
+    });
+    static::updating(function ($model) {
+      if(Schema::hasColumn($model->getTable(), 'updated_by')) {
+        if(Auth::user()){
+          $model->updated_by = Auth::user()->id;
+        }
+      }
+    });
+    static::deleting(function ($model) {
+      if(Schema::hasColumn($model->getTable(), 'deleted_by')) {
+        if(Auth::user()){
+          $model->deleted_by = Auth::user()->id;
+          $model->save();
+        }
+      }
+    });
+  }
+
+  public function creator()
+  {
+    return $this->belongsTo(User::class, 'created_by');
+  }
+
+  public function getCreatedAtHumanAttribute()
+  {
+    return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']),'Europe/Istanbul')->diffForHumans();
+  }
+
+  public function getUpdatedAtHumanAttribute()
+  {
+    return Carbon::createFromTimeStamp(strtotime($this->attributes['updated_at']),'Europe/Istanbul')->diffForHumans();
+  }
+
+  public function getCreatedAtLabelAttribute()
+  {
+    return date("d.m.Y", strtotime($this->attributes['created_at']));
+  }
+
+  public function updateSlug()
+  {
+    return $this->slugKeys ?
+    $this->update([
+      'slug' => str_slug( remove_turkish( implode('-', array_map( function($key) { return $this->attributes[$key]; , $this->slugKeys ) ))
+      ])
+      : false ;
     }
 
-    public function setSlug($attribute = 'name')
+    public function setImage($file, $attribute, $location, $size = 1000, $quality = 80)
     {
-      $this->attributes['slug'] = str_slug(remove_turkish($this->attributes[$attribute]) . "-" . $this->attributes['id']);
-      return $this->save();
-    }
-
-    public function setImage($file, $attribute, $location)
-    {
-      $imageName = $this->attributes['id']. str_random(15) . ".jpg";
-      $imageLocation = public_path() . "/upload/" . $location . "/" ;
+      $imageName = $this->attributes['id']. "-". str_random(5) . ".jpg";
+      $imageLocation = upload_path($location);
       $this->attributes[$attribute] = $imageName;
       Image::make($file)
-        ->resize(1000, null, function ($constraint) { $constraint->aspectRatio(); })
-        ->save($imageLocation . $imageName, 80);
+        ->resize($size, null, function ($constraint) { $constraint->aspectRatio(); })
+        ->save($imageLocation . '/' . $imageName, $quality);
       return $this->save();
     }
-
-}
+  }

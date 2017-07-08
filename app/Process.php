@@ -4,10 +4,13 @@ namespace App;
 
 class Process extends BaseModel
 {
-    protected $table = 'processes';
+  // Properties
+  protected $table    = 'processes';
+  protected $fillable = ['child_id', 'desc'];
 
-    public function child()
-    {
-        return $this->belongsTo('App\Child');
-    }
+  // Relations
+  public function child()
+  {
+    return $this->belongsTo(Child::class);
+  }
 }

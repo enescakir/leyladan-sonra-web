@@ -2,44 +2,44 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class Message extends Model
+class Message extends BaseModel
 {
-    protected $table = 'messages';
+    // Properties
+    protected $table    = 'messages';
+    protected $fillable = ['chat_id', 'text', 'answered_by', 'answered_at', 'sent_by', 'sent_at'];
+    protected $appends  = ['is_sent'];
+    protected $dates    = array_merge($this->dates, ['answered_at', 'sent_at']);
 
-    protected $guarded = [];
-    protected $appends = ['is_sent'];
-    protected $dates = ['answered_at', 'sent_at'];
-
+    // Relations
     public function chat()
     {
-        return $this->belongsTo('App\Chat');
+        return $this->belongsTo(Chat::class);
     }
 
     public function answerer()
     {
-        return $this->belongsTo('App\User', 'answered_by');
+        return $this->belongsTo(User::class, 'answered_by');
     }
 
     public function sender()
     {
-        return $this->belongsTo('App\User', 'sent_by');
+        return $this->belongsTo(User::class, 'sent_by');
     }
 
-    public function getCreatedAtLabelAttribute(){
+    // Accessors
+    public function getCreatedAtLabelAttribute()
+    {
         return date("d.m.Y", strtotime($this->attributes['created_at']));
     }
 
-    public function getCreatedAtDiff(){
-        Carbon::setLocale('tr');
+    public function getCreatedAtDiffAttribute()
+    {
         return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']),'Europe/Istanbul')->diffForHumans();
     }
 
-
-    public function getIsSentAttribute(){
+    public function getIsSentAttribute()
+    {
         return $this->attributes['sent_at'] != null;
     }
-
-}

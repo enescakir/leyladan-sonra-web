@@ -4,39 +4,34 @@ namespace App;
 
 class Blog extends BaseModel
 {
+  // Properties
+  protected $table    = 'blogs';
+  protected $fillable = ['title', 'text', 'thumb', 'slug', 'type', 'link'];
+  protected $slugKeys = ['title', 'id'];
 
-    protected $table = 'blogs';
-    protected $guarded = [];
+  // Validation rules
+  public static $createRules = [
+    'title'      =>'required|max:255',
+    'categories' =>'required',
+    'thumb'      =>'image',
+    'type'       =>'required',
+  ];
 
-    public static $validationRules=[
-        'title'=>'required|max:255',
-        'categories'=>'required',
-        'thumb'=>'image',
-        'type'=>'required',
-    ];
+  // Relations
+  public function categories()
+  {
+    return $this->belongsToMany(BlogCategory::class,'blog_category','blog_id', 'category_id')->withTimestamps();
+  }
 
-    public static $validationMessages=[
-        'title.required'=>'Başlık boş bırakılamaz.',
-        'title.max'=>'Başlık en fazla 255 karakter olabilir.',
-        'categories.required'=>'Kategori boş bırakılamaz.',
-        'thumb.image'=>'Öne çıkarılan resmi geçerli formatta seçiniz.',
-        'type.required'=>'Tip boş bırakılamaz.'
-    ];
+  // Mutators
+  public function setTextAttribute($text)
+  {
+    return $this->attributes['text'] = clean_text($text);
+  }
+}
 
-
-    public function categories(){
-        return $this->belongsToMany('App\BlogCategory','blog_category','blog_id', 'category_id')->withTimestamps();
-    }
-
-    public function author(){
-        return $this->belongsTo('App\User', 'author_id');
-    }
-
-    public function setTextAttribute($text){
-        return $this->attributes['text'] = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i",'<$1$2>', strip_tags($text, '<p><a><br><pre><i><b><u><ul><li><ol><img><blockquote><h1><h2><h3><h4><h5>'));
-    }
-
-
-
-
+// TODO: Complete blog types
+class BlogType extends SplEnum {
+  const Milestone = 'milestone';
+  const Video     = 'video';
 }
