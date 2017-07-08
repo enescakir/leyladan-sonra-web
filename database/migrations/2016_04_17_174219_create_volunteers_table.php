@@ -37,6 +37,6 @@ class CreateVolunteersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('volunteers');
+        Schema::dropIfExists('volunteers');
     }
 }

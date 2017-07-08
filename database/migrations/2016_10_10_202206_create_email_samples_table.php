@@ -30,6 +30,6 @@ class CreateEmailSamplesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('email_samples');
+        Schema::dropIfExists('email_samples');
     }
 }

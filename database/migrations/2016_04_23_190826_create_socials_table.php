@@ -60,7 +60,7 @@ class CreateSocialsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('social_images');
-        Schema::drop('socials');
+        Schema::dropIfExists('social_images');
+        Schema::dropIfExists('socials');
     }
 }

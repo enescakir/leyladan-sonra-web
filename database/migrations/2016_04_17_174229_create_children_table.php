@@ -72,7 +72,7 @@ class CreateChildrenTable extends Migration
      */
     public function down()
     {
-        Schema::drop('child_user');
-        Schema::drop('children');
+        Schema::dropIfExists('child_user');
+        Schema::dropIfExists('children');
     }
 }

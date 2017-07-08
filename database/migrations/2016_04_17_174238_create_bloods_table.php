@@ -31,6 +31,6 @@ class CreateBloodsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('bloods');
+        Schema::dropIfExists('bloods');
     }
 }

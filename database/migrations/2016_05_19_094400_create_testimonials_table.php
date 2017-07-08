@@ -34,6 +34,6 @@ class CreateTestimonialsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('testimonials');
+        Schema::dropIfExists('testimonials');
     }
 }

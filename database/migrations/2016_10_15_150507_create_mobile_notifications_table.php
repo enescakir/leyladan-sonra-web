@@ -30,6 +30,6 @@ class CreateMobileNotificationsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('mobile_notifications');
+        Schema::dropIfExists('mobile_notifications');
     }
 }

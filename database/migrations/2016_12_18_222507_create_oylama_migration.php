@@ -12,7 +12,7 @@ class CreateOylamaMigration extends Migration
      */
     public function up()
     {
-        Schema::create('oylar', function (Blueprint $table) {
+        Schema::create('votes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('used_by')->unsigned();
             $table->string('faculty_name');
@@ -31,6 +31,6 @@ class CreateOylamaMigration extends Migration
      */
     public function down()
     {
-        Schema::drop('oylar');
+        Schema::dropIfExists('votes');
     }
 }

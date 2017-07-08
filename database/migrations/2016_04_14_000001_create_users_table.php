@@ -32,8 +32,8 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();
-            BaseActions($table)
-            Approval($table)
+            BaseActions($table);
+            Approval($table);
             $table->foreign('faculty_id')->references('id')->on('faculties');
         });
 
@@ -50,6 +50,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('users');
+        Schema::dropIfExists('users');
     }
 }

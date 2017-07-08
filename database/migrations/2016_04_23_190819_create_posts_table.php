@@ -45,8 +45,8 @@ class CreatePostsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('post_images');
-        Schema::drop('posts');
+        Schema::dropIfExists('post_images');
+        Schema::dropIfExists('posts');
 
     }
 }
