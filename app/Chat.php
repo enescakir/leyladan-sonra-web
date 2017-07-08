@@ -3,6 +3,8 @@
 namespace App;
 use Carbon\Carbon;
 
+use App\Enums\ChatStatus;
+
 class Chat extends BaseModel
 {
 

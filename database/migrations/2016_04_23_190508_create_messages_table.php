@@ -20,8 +20,9 @@ class CreateMessagesTable extends Migration
             $table->integer('child_id')->unsigned()->nullable();
             $table->string('via');
             $table->string('status');
-
             $table->timestamps();
+            $table->softDeletes();
+
             BaseActions($table);
             $table->foreign('volunteer_id')->references('id')->on('volunteers')->onDelete('cascade');
             $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');
