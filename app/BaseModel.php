@@ -68,7 +68,7 @@ class BaseModel extends Model
       : false ;
     }
 
-    public function setImage($file, $attribute, $location, $size = 1000, $quality = 80)
+    public function uploadImage($file, $attribute, $location, $size = 1000, $quality = 80)
     {
       $imageName = $this->attributes['id']. "-". str_random(5) . ".jpg";
       $imageLocation = upload_path($location);

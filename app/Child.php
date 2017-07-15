@@ -92,16 +92,6 @@ class Child extends BaseModel
   }
 
   // Mutators
-  public function setMeetingDayAttribute($date)
-  {
-    return $this->attributes['meeting_day'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
-  }
-
-  public function setUntilAttribute($date)
-  {
-    return $this->attributes['until'] = Carbon::createFromFormat('d.m.Y', $date)->toDateString();
-  }
-
   public function setGMobileAttribute($g_mobile)
   {
     return $this->attributes['g_mobile'] = make_mobile($g_mobile);

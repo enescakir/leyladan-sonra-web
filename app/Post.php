@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Enums\ImageRatio;
+
 class Post extends BaseModel
 {
   // Properties
@@ -40,5 +42,27 @@ class Post extends BaseModel
   public function scopeApproved($query)
   {
     $query->whereNotNull('approved_at');
+  }
+
+  // Helpers
+  public function addImage($file, $data)
+  {
+    $postImage = PostImage::create([
+      'post_id' => $this->id,
+      'name'    => $child->id . str_random(5) . '.jpg',
+      'ratio'   => $data['ratio'],
+    ]);
+
+    $imageWidth = $data['ratio'] == ImageRatio::Landscape ? 1000 : 800;
+    // Increase limits for image process
+    ini_set('max_execution_time', 300);
+    ini_set('memory_limit', '-1');
+    Image::make($file)
+      ->rotate(-$data['rotation'])
+      ->crop($data['w'], $data['h'], $data['x'], $data['y'])
+      ->resize($imageWidth, null, function ($constraint) { $constraint->aspectRatio(); })
+      ->save( upload_path('child') . '/' . $postImage->name, 90 );
+    ini_restore("memory_limit");
+    ini_restore("max_execution_time");
   }
 }
