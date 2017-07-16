@@ -101,9 +101,9 @@ class ChildController extends Controller
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function show($id)
+  public function show(Child $child)
   {
-    $child = Child::with('faculty','users','processes')->find($id);
+    $child->load('faculty','users','processes')->find($id);
     $meeting_post = Post::meetingPost($child->id)->with('images')->first();
     $gift_post = Post::giftPost($child->id)->with('images')->first();
     return view('admin.child.show', compact(['child','meeting_post', 'gift_post']));
@@ -137,16 +137,11 @@ class ChildController extends Controller
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function update(Request $request, $id)
+  public function update(Request $request, Child $child)
   {
 
-    $child = Child::find($id);
-    //        Session::flash('success_message', $child->first_name . ' başarıyla sisteme eklendi.');
-    //        return redirect()->back()->withInput();
     $child->update($request->except(['users', 'website_text', 'website_image','delivered_text','delivered_image', 'ratio1', 'rotation1','x1','y1','w1','h1', 'ratio2', 'rotation2','x2','y2','w2','h2','verification_doc']));
     $child->users()->sync($request->get('users'));
-
-    $faculty = Faculty::find($child->faculty_id);
 
     $meeting_post = Post::meetingPost($child->id)->first();
     if($meeting_post == null){
@@ -240,15 +235,9 @@ class ChildController extends Controller
 
     }
 
-    if($request->hasFile('verification_doc') ){
-      $verificationDoc = Image::make($request->file('verification_doc'))
-      ->resize(1500, null, function ($constraint) {
-        $constraint->aspectRatio();
-      })
-      ->save('resources/admin/uploads/verification_docs/' . $child->id . '_ver.jpg', 80);
-      $child->verification_doc =  $child->id . '_ver.jpg';
+    if ($request->hasFile('verification_doc') ) {
+      $child->uploadImage($request->file('verification_doc'), 'verification_doc', 'verification', 1500);
     }
-    $child->save();
     return redirect()->route('admin.child.show', $child->id);
   }
 
@@ -258,7 +247,7 @@ class ChildController extends Controller
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function destroy($id)
+  public function destroy(Child $child)
   {
     $child = Child::find($id);
     $posts = $child->posts;
@@ -282,7 +271,7 @@ class ChildController extends Controller
 
     $child->delete();
     //TODO: Add chats, socials
-    return http_response_code(200);
+    return $child;
   }
 
   public function volunteered(Request $request, $id){
