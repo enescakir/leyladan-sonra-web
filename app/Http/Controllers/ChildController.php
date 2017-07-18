@@ -447,7 +447,7 @@ class ChildController extends Controller
   {
     $similarChildren = $this->getSimilarChildren($request->first_name, $request->last_name);
     $message = "";
-    foreach($similarChildren as $similarChild){
+    foreach ($similarChildren as $similarChild) {
       $message .= "<p>";
       $message .= "<strong>Çocuk: </strong>" . $similarChild->full_name . "<br>";
       $message .= "<strong>Fakülte: </strong>" . $similarChild->faculty->full_name . " Tıp Fakültesi<br>";
