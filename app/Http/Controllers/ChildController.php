@@ -63,7 +63,7 @@ class ChildController extends Controller
   public function store(CreateChildRequest $request)
   {
     if ($this->checkSimilarChildren($request)) {
-      return $this->sendSimilarChildrenResponse($request)
+      return $this->sendSimilarChildrenResponse($request);
     }
     $user = Auth::user();
     $child = $this->createChild$request();
@@ -443,7 +443,7 @@ class ChildController extends Controller
       ->get();
   }
 
-  public function sendSimilarChildrenResponse($request)
+  public function sendSimilarChildrenResponse(Request $request)
   {
     $similarChildren = $this->getSimilarChildren($request->first_name, $request->last_name);
     $message = "";

@@ -22,6 +22,16 @@ function upload_path($folder = null, $file = null)
   return $path;
 }
 
+function admin_asset($file)
+{
+  return asset("admin" . "/" . $file);
+}
+
+function front_asset($file)
+{
+  return asset("front" . "/" . $file);
+}
+
 function media_path($folder = null, $file = null)
 {
   if ($folder == 'admin') {

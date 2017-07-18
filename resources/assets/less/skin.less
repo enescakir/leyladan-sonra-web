@@ -1,0 +1,58 @@
+/*
+ * Skin: LS
+ * ----------
+ */
+@import "../../../node_modules/bootstrap/less/mixins.less";
+@import "../../../node_modules/bootstrap/less/variables.less";
+@import "variables.less";
+@import "mixins.less";
+
+.skin-ls {
+  //Navbar
+  .main-header {
+    .navbar {
+      .navbar-variant(@primary; #fff);
+      .sidebar-toggle {
+        color: #fff;
+        &:hover {
+          background-color: @dark-primary;
+        }
+      }
+      @media (max-width: @screen-header-collapse) {
+        .dropdown-menu {
+          li {
+            &.divider {
+              background-color: rgba(255, 255, 255, 0.1);
+            }
+            a {
+              color: #fff;
+              &:hover {
+                background: @dark-primary;
+              }
+            }
+          }
+        }
+      }
+    }
+    //Logo
+    .logo {
+      .logo-variant(@dark-primary);
+    }
+
+    li.user-header {
+      background-color: @primary;
+    }
+  }
+
+  //Content Header
+  .content-header {
+    background: transparent;
+  }
+
+  //Create the sidebar skin
+  .skin-light-sidebar(@primary);
+}
+
+.skin-ls.layout-top-nav .main-header > .logo {
+  .logo-variant(@primary);
+}

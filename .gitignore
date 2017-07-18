@@ -15,6 +15,7 @@
 !/public/upload/verification/.gitkeep
 
 /node_modules
+/public/node_modules
 /bower_components
 /public/storage
 /storage/framework

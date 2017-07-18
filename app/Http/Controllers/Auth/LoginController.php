@@ -51,7 +51,7 @@ class LoginController extends Controller
         $user->sendEmailActivationNotification();
         $this->guard()->logout();
         return back()->withInput($request->only('email', 'remember'));
-      } else if($user->activated_at == null){
+      } else if($user->approved_at == null){
         session_info("Hesabınızın fakülte yöneticiniz tarafından onaylanması gerekiyor.");
         $this->guard()->logout();
         return back()->withInput($request->only('email', 'remember'));

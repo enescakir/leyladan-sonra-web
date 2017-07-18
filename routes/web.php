@@ -38,6 +38,8 @@ Route::post('/kan-bagisi', 'FrontController@bloodStore')->name('front.blood.stor
 Route::get('/bekleyen-hediyeler', 'FrontController@waitings');
 Route::post('/bekleyen-hediyeler', 'FrontController@waitings');
 
+Route::get('/yonetim', function () { return redirect('/admin/login'); })->name('admin');
+
 Route::get('/{facultyName}.html', 'FrontController@faculty')->name('front.faculty');
 Route::post('/{facultyName}/{childSlug}', 'FrontController@childMessage')->name('front.child.message');
 Route::get('/{facultyName}/{childSlug}.html', 'FrontController@child')->name('front.child');
