@@ -6,6 +6,7 @@ It's Children Management System and REST API for [Leyla'dan Sonra](http://www.le
 
 It's developed with [Laravel](http://www.laravel.com) Framework.
 
+The project was created originally in [July 2015](http://www.enescakir.com/wp-content/uploads/2017/07/LeyladanSonra_v2.0_FirstMeeting.pdf).
 [iOS Application](https://github.com/EnesCakir/leyladan-sonra-ios)
 
 ## What is Leyla'dan Sonra?
