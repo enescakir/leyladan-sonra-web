@@ -49,8 +49,10 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
     "moment": "^2.18.1",
+    "morris.js": "^0.5.0",
     "multiselect": "^0.9.12",
     "pace": "0.0.4",
+    "raphael": "^2.2.7",
     "select2": "^4.0.3",
     "sweetalert2": "^6.6.6",
     "twitter-bootstrap-wizard": "^1.2.0"
