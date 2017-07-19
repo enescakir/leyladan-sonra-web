@@ -129,6 +129,22 @@
   }
 }
 
+.btn-ls-dark {
+  color: #f4f4f4;
+  background-color: @dark-primary;
+  border-color: darken(@dark-primary, 5%);
+  &:hover, &.hover {
+    background-color: darken(@dark-primary, 5%);
+    color: #f4f4f4;
+  }
+  &.active {
+    background-color: darken(@dark-primary, 10%);
+    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+    -moz-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+  }
+}
+
 .btn-outline {
   border: 1px solid #fff;
   background: transparent;
