@@ -109,7 +109,44 @@
 
   <!-- Main row -->
   <div class="row">
-    <section class="col-lg-5">
+    <section class="col-lg-6">
+      <!-- Map box -->
+      <div class="box bg-gray-light">
+        <div class="box-header">
+          <i class="fa fa-map-marker"></i>
+          <h3 class="box-title">
+            Leyla'dan Sonra Türkiye
+          </h3>
+        </div>
+        <div class="box-body">
+          <div id="turkey-map" style="height: 250px; width: 100%;"></div>
+        </div>
+        <!-- /.box-body-->
+        <div class="box-footer no-border text-black">
+          <div class="row">
+            <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+              <h3>65</h3>
+              <div class="knob-label">Toplam Fakülte</div>
+            </div>
+            <!-- ./col -->
+            <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+              <h3>88</h3>
+              <div class="knob-label">Aktif Fakülte</div>
+            </div>
+            <!-- ./col -->
+            <div class="col-xs-4 text-center">
+              <h3>88</h3>
+              <div class="knob-label">Görüşülen Fakülte</div>
+            </div>
+            <!-- ./col -->
+          </div>
+          <!-- /.row -->
+        </div>
+      </div>
+      <!-- /.box -->
+    </section>
+    <!-- /.col -->
+    <section class="col-lg-6">
       <!-- Map box -->
       <div class="box bg-gray-light">
         <div class="box-header">
@@ -207,7 +244,7 @@
                   if(result[index]["started_at"] != null){
                     dateText = '<span class="label bg-green pull-right">' + moment(current["started_at"]).format("D MMMM YYYY") + '</span>'
                   }
-                  return '<li class="list-group-item"><a href="/admin/faculty/' + current["id"] +'">' + current["full_name"] + ' Tıp Fakültesi</a>' + dateText + '</li>';
+                  return '<li class="list-group-item text-left"><a href="/admin/faculty/' + current["id"] +'">' + current["full_name"] + ' Tıp Fakültesi</a>' + dateText + '</li>';
                 }).join("");
               }
               swal({

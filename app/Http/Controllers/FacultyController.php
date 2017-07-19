@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Auth, Datatables, File, Log, DB, Session;
-use App\Faculty, App\Child, App\Post, App\PostImage, App\User;
+use App\Models\Faculty, App\Models\Child, App\Models\Post,
+  App\Models\PostImage, App\Models\User;
 use Carbon\Carbon;
 
 class FacultyController extends Controller

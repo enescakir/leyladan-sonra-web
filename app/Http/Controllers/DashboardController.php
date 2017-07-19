@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Faculty;
 use Illuminate\Http\Request;
 
 use Auth, DB, PDF, Cache;
-use App\Feed;
+use App\Models\Faculty;
+use App\Models\Feed;
 
 class DashboardController extends Controller
 {
