@@ -33,6 +33,8 @@
   <link rel="stylesheet" href="/node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
   <!-- Sweet Alert 2 -->
   <link rel="stylesheet" href="/node_modules/sweetalert2/dist/sweetalert2.min.css">
+  <!-- Full Calendar -->
+  <link rel="stylesheet" href="/node_modules/fullcalendar/dist/fullcalendar.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ admin_asset('css/AdminLTE.min.css') }}">
 
