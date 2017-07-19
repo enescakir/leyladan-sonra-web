@@ -1,6 +1,6 @@
 <p align="center"><a href="http://www.leyladansonra.com"><img src="http://www.leyladansonra.com/resources/front/images/logo@2x.png" style="width:80%;"></a></p>
 
-## Leyla'dan Sonra Yönetim Uygulaması [İngilizce](https://github.com/EnesCakir/leyladan-sonra-web/blob/master/README.md)
+## Leyla'dan Sonra Yönetim Uygulaması [[English](https://github.com/EnesCakir/leyladan-sonra-web/blob/master/README.md)]
 `Bu proje şu an geliştirme aşamasındadır.`
 
  [Leyla'dan Sonra](http://www.leyladansonra.com) projesi için Çocuk Yönetim Sistemi ve REST API.
@@ -8,6 +8,7 @@
  İnternet dünyasında yaygın olan [Laravel](http://www.laravel.com) Framework'ü kullanılarak geliştirilmiştir.
 
 Projenin temelleri [Temmuz 2015](http://www.enescakir.com/wp-content/uploads/2017/07/LeyladanSonra_v2.0_FirstMeeting.pdf) tarihine dayanmaktadır.
+
 [iOS Uygulaması](https://github.com/EnesCakir/leyladan-sonra-ios)
 
 ## Leyla'dan Sonra Nedir?
