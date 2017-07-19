@@ -117,5 +117,5 @@
     </div>
   {!!	Form::close() !!}
   <p></p>
-  <a href="{{ url('/admin/login') }}" class="btn btn-primary btn-flat btn-full"> Zaten Üyeyim </a>
+  <a href="{{ url('/admin/login') }}" class="btn btn-ls-dark btn-flat btn-full"> Zaten Üyeyim </a>
 @endsection

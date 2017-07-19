@@ -37,5 +37,5 @@
       </div>
     {!!	Form::close() !!}
     <p><a href="{{ url('/admin/password/reset') }}">Şifremi unuttum?</a></p>
-    <a href="{{ url('/admin/register') }}" class="btn btn-primary btn-flat btn-full"> Yeni hesap oluştur </a>
+    <a href="{{ url('/admin/register') }}" class="btn btn-ls-dark btn-flat btn-full"> Yeni hesap oluştur </a>
 @endsection

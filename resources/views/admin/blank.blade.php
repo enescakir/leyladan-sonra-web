@@ -1,20 +1,28 @@
 @extends('admin.parent')
 
-@section('page-title')
+@section('title')
+  Boş Sayfa
 @endsection
 
-@section('page-level-plugin-styles')
+@section('styles')
 @endsection
 
-@section('page-styles')
+@section('header')
+  <section class="content-header">
+    <h1>
+      Page Header
+      <small>Optional description</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home"></i> Anasayfa</a></li>
+      <li class="active">Boş Sayfa</li>
+    </ol>
+  </section>
 @endsection
 
-@section('page-content')
-
+@section('content')
+  <h3>Sayfa İçeriği</h3>
 @endsection
 
-@section('page-level-plugin-scripts')
-@endsection
-
-@section('page-scripts')
+@section('scripts')
 @endsection
