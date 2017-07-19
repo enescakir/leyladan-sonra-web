@@ -16,19 +16,19 @@ It's developed with [Laravel](http://www.laravel.com) Framework.
 More information about Leyla'dan Sonra: [Turkish](http://www.leyladansonra.com), [English](http://www.afterleyla.com)
 
 ## Website
-It is developed with [Canvas](https://themeforest.net/item/canvas-the-multipurpose-html5-template/9228123) theme. Because of commercial issues, we remove it from public repository.
+It is derived from [Canvas](https://themeforest.net/item/canvas-the-multipurpose-html5-template/9228123) theme. Because of commercial issues, we remove it from public repository.
 
 ## Admin Panel
 It was developed with [Metronic](https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469) theme when this project wasn't open source. Now we are changing admin theme to open source [AdminLTE](https://github.com/almasaeed2010/AdminLTE) because [Metronic](https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469) is a commercial template. All pages aren't done with converting to AdminLTE.
 
 ## Contributors
-#### [Enes Çakır](https://github.com/enescakir)
+- **[Enes Çakır](https://github.com/enescakir)**
 Project Manager, Back-end, iOS Application
 
-#### [Ergün Erdoğmuş](https://github.com/ergun1017)
+- **[Ergün Erdoğmuş](https://github.com/ergun1017)**
 Android App, Front-end Advisor
 
-#### [Alparslan Demir](https://github.com/alparslandemir)
+- **[Alparslan Demir](https://github.com/alparslandemir)**
 Public Website
 
 ## Security Vulnerabilities
