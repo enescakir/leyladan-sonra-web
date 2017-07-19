@@ -21,6 +21,14 @@
     border-width: 1px;
   }
 
+  // Full fit buttons
+  &.btn-full {
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: -20px;
+    display:block;
+  }
+
   // Active state
   &:active {
     -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
@@ -102,6 +110,22 @@
   border-color: darken(@yellow, 5%);
   &:hover, &:active, &.hover {
     background-color: darken(@yellow, 5%);
+  }
+}
+
+.btn-ls {
+  color: #f4f4f4;
+  background-color: @primary;
+  border-color: darken(@primary, 5%);
+  &:hover, &.hover {
+    background-color: darken(@primary, 5%);
+    color: #f4f4f4;
+  }
+  &.active {
+    background-color: darken(@primary, 10%);
+    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+    -moz-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
   }
 }
 

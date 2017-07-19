@@ -14,9 +14,16 @@
 /public/upload/verification/*
 !/public/upload/verification/.gitkeep
 
+/resources/views/auth_old
+/resources/views/front
+/resources/views/admin
+/public/resources
+/public/front
+
 /node_modules
 /public/node_modules
 /bower_components
+
 /public/storage
 /storage/framework
 Homestead.yaml

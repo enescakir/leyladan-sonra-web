@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
 use App\Notifications\NewUser as NewUserNotification;
 
-use Auth, Log, Session, Mail;
-use App\Faculty;
-
+use App\User, App\Faculty;
 class RegisterController extends Controller
 {
     /*
@@ -73,14 +70,14 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
           'first_name' => 'required|max:255',
-          'last_name' => 'required|max:255',
-          'email' => 'required|max:255|unique:users|email',
-          'password' => 'required|min:6|confirmed',
+          'last_name'  => 'required|max:255',
+          'email'      => 'required|max:255|unique:users|email',
+          'password'   => 'required|min:6|confirmed',
           'faculty_id' => 'required',
-          'birthday' => 'required|max:255',
-          'mobile' => 'required|max:255',
-          'year' => 'required|max:255',
-          'title' => 'required|max:255',
+          'birthday'   => 'required|max:255',
+          'mobile'     => 'required|max:255',
+          'year'       => 'required|max:255',
+          'title'      => 'required|max:255',
         ]);
     }
 
@@ -94,15 +91,14 @@ class RegisterController extends Controller
     {
         return User::create([
             'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => str_replace(' ', '', $data['email']),
-            'password' => bcrypt($data['password']),
-            'birthday' => $data['birthday'],
+            'last_name'  => $data['last_name'],
+            'email'      => str_replace(' ', '', $data['email']),
+            'password'   => bcrypt($data['password']),
+            'birthday'   => $data['birthday'],
             'faculty_id' => intval($data['faculty_id']),
-            'mobile' => substr(str_replace(['\0', '+', ')', '(', '-', ' ', '\t'], '', $data['mobile']), -10),
-            'year' => $data['year'],
-            'title' => $data['title'],
-
+            'mobile'     => make_mobile($data['mobile']),
+            'year'       => $data['year'],
+            'title'      => $data['title'],
         ]);
     }
 }

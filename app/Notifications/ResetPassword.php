@@ -50,7 +50,7 @@ class ResetPassword extends Notification
           ->subject('Şifre Sıfırlama İşlemi')
           ->line('Hesap şifrenizi sıfırlama isteğinde bulunduğunuz için bu e-postayı aldınız.')
           ->line('Aşağıdaki butona tıklayınız ve ilgili adımları takip ediniz.')
-          ->action('Şifremi Sıfırla', url('admin/password/reset', $this->token))
+          ->action('Şifremi Sıfırla', route('admin.password.reset', [$this->token, 'email' => $notifiable->email]))
           ->line('Eğer şifre sıfırlama talebinde bulunmadıysanız bu e-postayı önemsemeyin.');
     }
 }

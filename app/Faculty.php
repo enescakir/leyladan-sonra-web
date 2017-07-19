@@ -61,6 +61,12 @@ class Faculty extends BaseModel
     return $empty ? array_merge($res, ['' => '']) : $res;
   }
 
+  public static function toSelect($empty = false)
+  {
+    $res = Faculty::orderBy('full_name')->pluck('full_name', 'id')->map(function ($name) { return $name . ' Tıp Fakültesi'; });
+    return $empty ? collect(['' => ''])->merge($res) : $res;
+  }
+
   // Mutators
   public function setStartedAtAttribute($date)
   {

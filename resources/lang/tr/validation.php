@@ -120,12 +120,12 @@ return [
       'email' => 'E-posta',
       'password' => 'Şifre',
       'mobile' => 'Telefon numarası',
-      'expiry' => 'Son kullanma tarihi',
-      'cvc' => 'Güvenlik kodu',
-      'number' => 'Kart numarası',
       'first_name' => 'Ad',
       'last_name' => 'Soyad',
-
+      'year' => 'Yıl',
+      'birthday' => 'Doğum tarihi',
+      'title' => 'Görev',
+      'faculty_id' => 'Fakülte',
     ],
 
 ];
