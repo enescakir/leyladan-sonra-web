@@ -267,48 +267,6 @@
           <div id="calendar"></div>
         </div>
         <!-- /.box-body -->
-        <div class="box-footer text-black">
-          <div class="row">
-            <div class="col-sm-6">
-              <!-- Progress bars -->
-              <div class="clearfix">
-                <span class="pull-left">Task #1</span>
-                <small class="pull-right">90%</small>
-              </div>
-              <div class="progress xs">
-                <div class="progress-bar progress-bar-green" style="width: 90%;"></div>
-              </div>
-
-              <div class="clearfix">
-                <span class="pull-left">Task #2</span>
-                <small class="pull-right">70%</small>
-              </div>
-              <div class="progress xs">
-                <div class="progress-bar progress-bar-green" style="width: 70%;"></div>
-              </div>
-            </div>
-            <!-- /.col -->
-            <div class="col-sm-6">
-              <div class="clearfix">
-                <span class="pull-left">Task #3</span>
-                <small class="pull-right">60%</small>
-              </div>
-              <div class="progress xs">
-                <div class="progress-bar progress-bar-green" style="width: 60%;"></div>
-              </div>
-
-              <div class="clearfix">
-                <span class="pull-left">Task #4</span>
-                <small class="pull-right">40%</small>
-              </div>
-              <div class="progress xs">
-                <div class="progress-bar progress-bar-green" style="width: 40%;"></div>
-              </div>
-            </div>
-            <!-- /.col -->
-          </div>
-          <!-- /.row -->
-        </div>
         <div id="calendar-loading" class="overlay">
           <i class="fa fa-refresh fa-spin"></i>
         </div>
@@ -449,9 +407,9 @@
   <script type="text/javascript">
     $(function(){
       $.ajax({
-        url: "/admin/dashboard/birthdays",
-        method: "GET",
-        dataType: "json",
+        url    : "/admin/dashboard/data",
+        data   : { "faculty_id" : AuthUser.faculty_id , "type" : "birthday" },
+        method : "GET",
         success: function(result){
           $('#calendar-loading').remove();
           $('#calendar').fullCalendar({
