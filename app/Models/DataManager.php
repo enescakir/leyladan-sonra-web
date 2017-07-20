@@ -80,6 +80,33 @@ class DataManager extends Model
       });
     }
 
+    public static function birthday($faculty_id = null)
+    {
+      return Cache::remember('birthday-' . $faculty_id, 60, function() use ($faculty_id) {
+        $birthdays = [];
+        $users = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM users WHERE faculty_id = " . $faculty_id . " AND MONTH(birthday) = " . date("n") );
+        $children = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM children WHERE faculty_id = " . $faculty_id . " AND MONTH(birthday) = " . date("n"));
+
+        foreach ($users as $key => $value) {
+          $object = new \stdClass();
+          $object->title = $value->first_name . " " . $value->last_name;
+          $object->start = date("Y") . substr($value->birthday,4);
+          $object->backgroundColor = "#F3565D";
+          array_push($birthdays, $object);
+        }
+
+        foreach ($children as $key => $value) {
+          $object = new \stdClass();
+          $object->title = $value->first_name . " " . $value->last_name;
+          $object->start = date("Y") . substr($value->birthday,4);
+          $object->backgroundColor = "#1bbc9b";
+          array_push($birthdays, $object);
+        }
+        return $birthdays;
+      });
+
+    }
+
     public static function feeds($faculty_id = null, $limit = 15)
     {
       if ($faculty_id) {

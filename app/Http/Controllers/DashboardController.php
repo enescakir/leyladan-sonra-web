@@ -27,35 +27,6 @@ class DashboardController extends Controller
         return view('admin.dashboard', compact(['authUser']));
     }
 
-    public function birthdays()
-    {
-      $user = Auth::user();
-      $birthdays = Cache::remember('birthdays-' . $user->faculty_id, 60, function() use ($user) {
-        $birthdays2 = [];
-        $users = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM users WHERE faculty_id = ". $user->faculty_id . " AND MONTH(birthday) = ". date("n") );
-        $children = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM children WHERE faculty_id = ". $user->faculty_id . " AND MONTH(birthday) = ". date("n"));
-
-        foreach ($users as $key => $value) {
-          $object = new \stdClass();
-          $object->title = $value->first_name . " " . $value->last_name;
-          $object->start = date("Y") . substr($value->birthday,4);
-          $object->backgroundColor = "#F3565D";
-          array_push($birthdays2, $object);
-        }
-
-        foreach ($children as $key => $value) {
-          $object = new \stdClass();
-          $object->title = $value->first_name . " " . $value->last_name;
-          $object->start = date("Y") . substr($value->birthday,4);
-          $object->backgroundColor = "#1bbc9b";
-          array_push($birthdays2, $object);
-        }
-        return $birthdays2;
-      });
-
-      return $birthdays;
-    }
-
     public function blank()
     {
       return view('admin.blank');
@@ -63,9 +34,12 @@ class DashboardController extends Controller
 
     public function data(Request $request)
     {
-      if ($request->type = "child-count-monthly") {
+      if ($request->type == "child-count-monthly") {
         return DataManager::childCountMonthly($request->faculty_id);
+      } else if ($request->type == "birthday") {
+        return DataManager::birthday($request->faculty_id);
       }
+      return [];
     }
 
     public function materials()
