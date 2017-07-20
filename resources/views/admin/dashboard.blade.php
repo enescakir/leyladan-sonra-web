@@ -350,7 +350,6 @@
           ajaxError(xhr, status, errorThrown, false);
         },
       });
-
     });
   </script>
 
@@ -404,40 +403,46 @@
   </script>
   <script type="text/javascript">
     $(function() {
-      $('#chart-loading').remove();
-      var line = new Morris.Line({
-        element          : 'meeting-chart',
-        resize           : true,
-        data             : [
-          { month: '2017-01', faculty: 1004, general: 2666 },
-          { month: '2017-02', faculty: 2004, general: 6810 },
-          { month: '2017-03', faculty: 1500, general: 3767 },
-          { month: '2017-04', faculty: 1800, general: 4912 },
-          { month: '2017-05', faculty: 1400, general: 6810 },
-          { month: '2017-06', faculty: 1020, general: 5670 },
-          { month: '2017-07', faculty: 1200, general: 5303 },
-          { month: '2017-08', faculty: 1100, general: 6034 },
-          { month: '2017-09', faculty: 1500, general: 3000 },
-          { month: '2017-10', faculty: 1800, general: 4031 }
-        ],
-        xkey             : 'month',
-        ykeys            : ['faculty', 'general'],
-        labels           : ['Fakülte', 'Genel'],
-        xLabels          : 'month',
-        xLabelFormat     : function (x) { return moment(x).format('MMMM YYYY'); },
-        hoverCallback: function (index, options, content, row) {
-          return '<strong>' + moment(row.month).format('MMMM YYYY') + '</strong><br>Fakülte: ' + row.faculty  + '<br>Genel: ' + row.general;
+      $.ajax({
+        url    : "/admin/dashboard/data",
+        data   : { "faculty_id" : AuthUser.faculty_id , "type" : "child-count-monthly" },
+        method : "GET",
+        success: function(result){
+          var data = $.map(result, function(value, index) {
+            value.month   = index;
+            value.faculty =  (value.faculty === undefined) ? 0 : value.faculty;
+            value.general =  (value.general === undefined) ? 0 : value.general;
+            return value;
+          });
+          $('#chart-loading').remove();
+          var line = new Morris.Line({
+            element          : 'meeting-chart',
+            resize           : true,
+            data             : data,
+            xkey             : 'month',
+            ykeys            : ['faculty', 'general'],
+            labels           : ['Fakülte', 'Genel'],
+            xLabels          : 'month',
+            xLabelFormat     : function (x) { return moment(x).format('MMMM YYYY'); },
+            hoverCallback: function (index, options, content, row) {
+              return '<strong>' + moment(row.month).format('MMMM YYYY') + '</strong><br>Fakülte: ' + row.faculty  + '<br>Genel: ' + row.general;
+            },
+            lineColors       : ['#efefef', '#efefef'],
+            lineWidth        : 2,
+            hideHover        : 'auto',
+            gridTextColor    : '#fff',
+            gridStrokeWidth  : 0.4,
+            pointSize        : 4,
+            pointStrokeColors: ['#efefef', '#efefef'],
+            gridLineColor    : '#efefef',
+            gridTextFamily   : 'Open Sans',
+            gridTextSize     : 10
+          });
         },
-        lineColors       : ['#efefef', '#efefef'],
-        lineWidth        : 2,
-        hideHover        : 'auto',
-        gridTextColor    : '#fff',
-        gridStrokeWidth  : 0.4,
-        pointSize        : 4,
-        pointStrokeColors: ['#efefef', '#efefef'],
-        gridLineColor    : '#efefef',
-        gridTextFamily   : 'Open Sans',
-        gridTextSize     : 10
+        error: function( xhr, status, errorThrown ) {
+          console.log("Tanışma grafiği sorunla karşılaşıldı.");
+          ajaxError(xhr, status, errorThrown, false);
+        },
       });
     });
   </script>
