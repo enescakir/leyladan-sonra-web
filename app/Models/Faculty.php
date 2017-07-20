@@ -67,6 +67,12 @@ class Faculty extends BaseModel
     return $empty ? collect(['' => ''])->merge($res) : $res;
   }
 
+  // Scopes
+  public function scopeStarted($query)
+  {
+    $query->whereNotNull('started_at');
+  }
+
   // Mutators
   public function setStartedAtAttribute($date)
   {

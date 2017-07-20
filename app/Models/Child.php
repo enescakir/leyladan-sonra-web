@@ -65,6 +65,12 @@ class Child extends BaseModel
     return $this->hasMany(Process::class)->with(['creator']);
   }
 
+  // Scopes
+  public function scopeGift($query, $gift_state)
+  {
+    $query->where('gift_state', $gift_state);
+  }
+
   // Accessors
   public function getUserNameListAttribute()
   {
