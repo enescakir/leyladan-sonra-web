@@ -31,7 +31,7 @@
       <!-- small box -->
       <div class="small-box bg-aqua">
         <div class="inner">
-          <h3>2000</h3>
+          <h3>{{ DataManager::childCount() }}</h3>
           <p>Çocuk</p>
         </div>
         <div class="icon">
@@ -44,7 +44,7 @@
       <!-- small box -->
       <div class="small-box bg-red">
         <div class="inner">
-          <h3>53</h3>
+          <h3>{{ DataManager::bloodCount() }}</h3>
           <p>Bağışçı</p>
         </div>
         <div class="icon">
@@ -57,7 +57,7 @@
       <!-- small box -->
       <div class="small-box bg-yellow">
         <div class="inner">
-          <h3>44</h3>
+          <h3>{{ DataManager::volunteerCount() }}</h3>
           <p>Gönüllü</p>
         </div>
         <div class="icon">
@@ -70,7 +70,7 @@
       <!-- small box -->
       <div class="small-box bg-green">
         <div class="inner">
-          <h3>65</h3>
+          <h3>{{ DataManager::userCount() }}</h3>
           <p>Öğrenci</p>
         </div>
         <div class="icon">
@@ -83,7 +83,7 @@
       <!-- small box -->
       <div class="small-box bg-orange">
         <div class="inner">
-          <h3>46</h3>
+          <h3>{{ DataManager::facultyCount() }}</h3>
           <p>Fakülte</p>
         </div>
         <div class="icon">
@@ -96,7 +96,7 @@
       <!-- small box -->
       <div class="small-box bg-purple">
         <div class="inner">
-          <h3>35</h3>
+          <h3>{{ DataManager::cityCount() }}</h3>
           <p>Şehir</p>
         </div>
         <div class="icon">
@@ -127,22 +127,25 @@
         <div class="box-footer no-border text-black">
           <div class="row">
             <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-              <h3>65</h3>
+              <h3>{{ DataManager::facultyCount('all') }}</h3>
               <div class="knob-label">Toplam Fakülte</div>
             </div>
             <!-- ./col -->
             <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-              <h3>88</h3>
+              <h3>{{ DataManager::facultyCount() }}</h3>
               <div class="knob-label">Aktif Fakülte</div>
             </div>
             <!-- ./col -->
             <div class="col-xs-4 text-center">
-              <h3>88</h3>
+              <h3>{{ DataManager::facultyCount('not-started') }}</h3>
               <div class="knob-label">Görüşülen Fakülte</div>
             </div>
             <!-- ./col -->
           </div>
           <!-- /.row -->
+        </div>
+        <div id="map-loading" class="overlay">
+          <i class="fa fa-refresh fa-spin"></i>
         </div>
       </div>
       <!-- /.box -->
@@ -165,27 +168,42 @@
         <div class="box-footer no-border text-black">
           <div class="row">
             <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
-              <h3>20/1000</h3>
+              <h3>
+                {{ DataManager::childCount($authUser->faculty_id, App\Enums\GiftStatus::Waiting) }} /
+                {{ DataManager::childCount(null, App\Enums\GiftStatus::Waiting) }}
+              </h3>
               <div class="knob-label">Beklenen</div>
             </div>
             <!-- ./col -->
             <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
-              <h3>88</h3>
+              <h3>
+                {{ DataManager::childCount($authUser->faculty_id, App\Enums\GiftStatus::OnRoad) }} /
+                {{ DataManager::childCount(null, App\Enums\GiftStatus::OnRoad) }}
+              </h3>
               <div class="knob-label">Yolda</div>
             </div>
             <!-- ./col -->
             <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
-              <h3>88</h3>
+              <h3>
+                {{ DataManager::childCount($authUser->faculty_id, App\Enums\GiftStatus::Arrived) }} /
+                {{ DataManager::childCount(null, App\Enums\GiftStatus::Arrived) }}
+              </h3>
               <div class="knob-label">Bize Ulaşan</div>
             </div>
             <!-- ./col -->
             <div class="col-xs-3 text-center">
-              <h3>88</h3>
+              <h3>
+                {{ DataManager::childCount($authUser->faculty_id, App\Enums\GiftStatus::Delivered) }} /
+                {{ DataManager::childCount(null, App\Enums\GiftStatus::Delivered) }}
+              </h3>
               <div class="knob-label">Teslim Edilen</div>
             </div>
             <!-- ./col -->
           </div>
           <!-- /.row -->
+        </div>
+        <div id="chart-loading" class="overlay">
+          <i class="fa fa-refresh fa-spin"></i>
         </div>
       </div>
       <!-- /.box -->
@@ -215,7 +233,7 @@
               </tr>
               </thead>
               <tbody>
-                @forelse($feeds->take(10) as $feed)
+                @forelse( DataManager::feeds($authUser->faculty_id)  as $feed)
                   <tr>
                     <td>{!! $feed->icon_label !!} {{ $feed->desc }}</td>
                     <td>{{ $feed->creator ? $feed->creator->full_name : '' }}</td>
@@ -291,6 +309,9 @@
           </div>
           <!-- /.row -->
         </div>
+        <div id="calendar-loading" class="overlay">
+          <i class="fa fa-refresh fa-spin"></i>
+        </div>
       </div>
       <!-- /.box -->
     </section>
@@ -321,6 +342,7 @@
         url: "/admin/faculty/cities",
         method: "GET",
         success: function(result){
+          $('#map-loading').remove();
           setMap(result);
         },
         error: function( xhr, status, errorThrown ) {
@@ -382,6 +404,7 @@
   </script>
   <script type="text/javascript">
     $(function() {
+      $('#chart-loading').remove();
       var line = new Morris.Line({
         element          : 'meeting-chart',
         resize           : true,
@@ -425,9 +448,10 @@
         method: "GET",
         dataType: "json",
         success: function(result){
+          $('#calendar-loading').remove();
           $('#calendar').fullCalendar({
-            theme        : false,
             contentHeight: 500,
+            events       : result,
             buttonIcons  : {
                 prev     : 'ion ion-chevron-left',
                 next     : 'ion ion-chevron-right',
@@ -438,7 +462,24 @@
                     end  : nowDate.clone().add(1, 'months').endOf('month')
                 };
             },
-            events       : result,
+            eventMouseover: function(calEvent, jsEvent, view) {
+                $(this).popover({
+                  title     : function() {
+                    if (calEvent.backgroundColor == '#1bbc9b') return 'Çocuk';
+                    else if (calEvent.backgroundColor == '#F3565D') return 'Öğrenci';
+                    else return '';
+                  },
+                  content   : calEvent.title,
+                  trigger   : 'hover',
+                  container : 'body',
+                  placement : function() {
+                    if (calEvent.start.day() == 0) return 'left';
+                    else if (calEvent.start.day() == 1) return 'right';
+                    else return 'top';
+                  },
+                });
+                $(this).popover('show');
+            }
           })
         },
         error: function( xhr, status, errorThrown ) {

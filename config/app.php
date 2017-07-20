@@ -241,6 +241,7 @@ return [
         'Analytics' => Spatie\Analytics\AnalyticsFacade::class,
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'DataManager' => App\Models\DataManager::class,
 
     ],
 

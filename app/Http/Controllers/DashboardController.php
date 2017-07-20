@@ -22,63 +22,8 @@ class DashboardController extends Controller
      */
     public function dashboard()
     {
-        $user = Auth::user();
-
-        $totalChild = Cache::remember('totalChildren', 15, function() {
-            return DB::table('children')->count();
-        });
-
-        $totalBlood = Cache::remember('totalBlood', 15, function() {
-            return DB::table('bloods')->count();
-        });
-
-        $totalVolunteer = Cache::remember('totalVolunteer', 15, function() {
-            return DB::table('volunteers')->count();
-        });
-
-        $totalUser = Cache::remember('totalUser', 15, function() {
-            return DB::table('users')->count();
-        });
-
-        $waitGeneralChild = Cache::remember('waitGeneralChild', 15, function() {
-            return DB::table('children')->where('gift_state','Bekleniyor')->count();
-        });
-
-        $roadGeneralChild = Cache::remember('roadGeneralChild', 15, function() {
-            return DB::table('children')->where('gift_state','Yolda')->count();
-        });
-
-        $reachGeneralChild = Cache::remember('reachGeneralChild', 15, function() {
-            return DB::table('children')->where('gift_state','Bize Ulaştı')->count();
-        });
-
-        $deliveredGeneralChild = Cache::remember('deliveredGeneralChild', 15, function() {
-            return DB::table('children')->where('gift_state','Teslim Edildi')->count();
-        });
-
-        $waitFacultyChild = Cache::remember('waitFacultyChild-' . $user->faculty_id, 15, function() use ($user) {
-            return DB::table('children')->where('faculty_id', $user->faculty_id)->where('gift_state','Bekleniyor')->count();
-        });
-
-        $roadFacultyChild = Cache::remember('roadFacultyChild-' . $user->faculty_id, 15, function() use ($user) {
-            return DB::table('children')->where('faculty_id', $user->faculty_id)->where('gift_state','Yolda')->count();
-        });
-
-        $reachFacultyChild = Cache::remember('reachFacultyChild-' . $user->faculty_id, 15, function() use ($user) {
-            return DB::table('children')->where('faculty_id', $user->faculty_id)->where('gift_state','Bize Ulaştı')->count();
-        });
-
-        $deliveredFacultyChild = Cache::remember('deliveredFacultyChild-' . $user->faculty_id, 15, function() use ($user) {
-            return DB::table('children')->where('faculty_id', $user->faculty_id)->where('gift_state','Teslim Edildi')->count();
-        });
-
-        $feeds = Cache::remember('faculty-feeds-' . $user->faculty_id, 5, function() use ($user) {
-            return Feed::where('faculty_id', $user->faculty_id)->orderby('id', 'desc')->limit(30)->get();
-        });
-
-        return view('admin.dashboard', compact(['totalChild', 'totalBlood', 'totalVolunteer', 'totalUser',
-            'waitGeneralChild', 'roadGeneralChild', 'reachGeneralChild', 'deliveredGeneralChild', 'waitFacultyChild',
-            'roadFacultyChild', 'reachFacultyChild', 'deliveredFacultyChild', 'feeds']))->with(['authUser' => $user]);
+        $authUser = Auth::user();
+        return view('admin.dashboard', compact(['authUser']));
     }
 
     public function birthdays()

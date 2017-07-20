@@ -14,6 +14,8 @@ class Feed extends BaseModel
     return $this->belongsTo(Faculty::class);
   }
 
+  // Scopes
+
   // Accessors
   public function getIconLabelAttribute()
   {
