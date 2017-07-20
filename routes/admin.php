@@ -16,6 +16,7 @@ Auth::routes();
 Route::get('/email/activation/{token}', 'Auth\ActivateEmailController@activate')->name('email.activate');
 
 Route::get('/blank', 'DashboardController@blank')->name('blank');
+Route::get('/data', 'DashboardController@data')->name('data');
 Route::get('/manual', 'DashboardController@manual')->name('manual');
 Route::get('/test', 'DashboardController@test');
 Route::get('/materials', 'DashboardController@materials')->name('materials');

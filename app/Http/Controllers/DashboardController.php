@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth, DB, PDF, Cache;
 use App\Models\Faculty;
 use App\Models\Feed;
+use DataManager;
 
 class DashboardController extends Controller
 {
@@ -58,6 +59,13 @@ class DashboardController extends Controller
     public function blank()
     {
       return view('admin.blank');
+    }
+
+    public function data(Request $request)
+    {
+      if ($request->type = "child-count-monthly") {
+        return DataManager::childCountMonthly($request->faculty_id);
+      }
     }
 
     public function materials()

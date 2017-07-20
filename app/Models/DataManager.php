@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Cache;
+use Cache, DB;
 use App\Models\Child, App\Models\Blood, App\Models\Volunteer,
     App\Models\User, App\Models\Faculty, App\Models\Feed;
 
@@ -92,4 +92,25 @@ class DataManager extends Model
       });
     }
 
+    public static function childCountMonthly($faculty_id = null, $limit = 10)
+    {
+      $faculties = [];
+      if ($faculty_id) {
+        $faculties = Cache::remember('child-count-monthly-' . $faculty_id, 15, function() use ($faculty_id, $limit) {
+          $facultiesRaw = DB::select('SELECT COUNT(*) as faculty, CONCAT(YEAR(meeting_day), "-", MONTH(meeting_day)) as month FROM children WHERE faculty_id = ' . $faculty_id . ' GROUP BY month ORDER BY meeting_day DESC LIMIT ' . $limit . ';');
+          foreach($facultiesRaw as $value) { $faculties[$value->month] = ['faculty' => $value->faculty];}
+          return $faculties;
+        });
+      }
+      $general = Cache::remember('child-count-monthly', 15, function() use ($limit) {
+        $generalRaw = DB::select('SELECT COUNT(*) as general, CONCAT(YEAR(meeting_day), "-", MONTH(meeting_day)) as month FROM children GROUP BY month ORDER BY meeting_day DESC LIMIT ' . $limit . ';');
+        foreach($generalRaw as $value) { $general[$value->month] = ['general' => $value->general];}
+        return $general;
+      });
+      if ($faculties) {
+        return array_slice ( array_merge_recursive($general, $faculties), 0, $limit, true);
+      } else {
+        return $general;
+      }
+    }
 }

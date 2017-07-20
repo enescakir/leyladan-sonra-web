@@ -79,7 +79,8 @@
   <script>
       window.Laravel = <?php echo json_encode([
           'csrfToken' => csrf_token(),
-      ]); ?>
+      ]); ?>;
+      window.AuthUser = {!! json_encode($authUser->toArray()) !!};
   </script>
 </head>
 
