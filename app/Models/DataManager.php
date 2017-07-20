@@ -108,7 +108,7 @@ class DataManager extends Model
         return $general;
       });
       if ($faculties) {
-        return array_slice ( array_merge_recursive($general, $faculties), 0, $limit, true);
+        return array_slice(array_merge_recursive($general, $faculties), 0, $limit, true);
       } else {
         return $general;
       }
