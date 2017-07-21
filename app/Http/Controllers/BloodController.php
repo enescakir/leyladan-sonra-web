@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Blood;
-use Datatables;
-use App\Sms, App\User;
+use App\Models\Blood;
+use App\Models\Sms, App\Models\User;
 use Auth, DB;
-use Session;
 
 class BloodController extends Controller
 {
@@ -22,15 +20,8 @@ class BloodController extends Controller
 
     public function index()
     {
-        return view('admin.blood.index');
-    }
-
-    public function indexData()
-    {
-        return Datatables::of(Blood::all())->addColumn('operations', '
-                <a class="edit btn btn-success btn-sm" href="{{ route("admin.blood.edit", $id) }}"><i class="fa fa-pencil"></i></a>
-                <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>
-           ')->make(true);
+      $bloods = Blood::paginate(25);
+      return view('admin.blood.index', compact('bloods'));
     }
 
     public function create()
@@ -108,7 +99,7 @@ class BloodController extends Controller
 
       if($sms->save()){
         $sms->send($request->bloods);
-        Session::flash('success_message', 'Kan bağışı SMS\'i ' . count($request->bloods) . ' kişiye başarıyla gönderildi.' );
+        success_message('Kan bağışı SMS\'i ' . count($request->bloods) . ' kişiye başarıyla gönderildi.');
         return redirect()->route('admin.blood.sms.show');
       } else {
         return 'Bir hata ile karşılaşıldı.';
@@ -164,11 +155,11 @@ class BloodController extends Controller
 
         if(User::where('title', 'Kan Bağışı Görevlisi')->update(['title' => 'Normal Üye'])
             && User::whereIn('id', $request->users)->update(['title' => 'Kan Bağışı Görevlisi'])){
-              Session::flash('success_message', 'Kan Bağışı sorumluları başarıyla güncellendi.');
+              success_message('Kan Bağışı sorumluları başarıyla güncellendi.');
 
         }
         else{
-            Session::flash('error_message', ' Kan Bağışı sorumluları güncellenemedi.');
+            error_message('Kan Bağışı sorumluları güncellenemedi.');
             return redirect()->back()->withInput();
         }
 
