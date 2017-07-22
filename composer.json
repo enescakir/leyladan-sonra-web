@@ -9,8 +9,6 @@
         "laravel/framework": "5.4.*",
         "intervention/image": "^2.3",
 	      "laravelcollective/html": "5.4.*",
-        "yajra/laravel-datatables-oracle": "7.*",
-        "zizaco/entrust": "5.2.x-dev",
         "guzzlehttp/guzzle": "~6.0",
         "arcanedev/log-viewer": "4.3.*",
         "barryvdh/laravel-dompdf": "0.8.*",
