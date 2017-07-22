@@ -51,7 +51,7 @@ class BloodController extends Controller
     $request['mobile'] = make_mobile($request->mobile);
     $this->validateBlood($request);
     $blood = Blood::create($request->all());
-    session_success('<strong>' . $blood->mobile . '</strong> numaralı bağışçı başarıyla sisteme eklendi.');
+    session_success('<strong>' . $blood->mobile . '</strong> numaralı bağışçı başarıyla sisteme kaydedildi.');
     return redirect()->route('admin.blood.index');
   }
 

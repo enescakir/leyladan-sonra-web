@@ -90,7 +90,7 @@
   <!-- Main Header -->
   <header class="main-header">
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="{{ route('admin.dashboard') }}" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>L</b>S</span>
       <!-- logo for regular state and mobile devices -->
@@ -458,6 +458,26 @@
     @yield('header')
     <!-- Main content -->
     <section class="content container-fluid">
+      @if (session()->has('success_message'))
+          <div class="alert alert-success fade in">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+              {!! session()->get('success_message') !!}
+          </div>
+      @endif
+
+      @if (session()->has('error_message'))
+          <div class="alert alert-danger fade in">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+              {!! session()->get('error_message') !!}
+          </div>
+      @endif
+
+      @if (session()->has('info_message'))
+          <div class="alert alert-info fade in">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+              {!! session()->get('info_message') !!}
+          </div>
+      @endif
       @yield('content')
     </section>
     <!-- /.content -->
