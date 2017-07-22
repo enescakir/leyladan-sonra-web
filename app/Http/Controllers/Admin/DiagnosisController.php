@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 use App\Http\Requests;
-use App\Sponsor;
+use App\Diagnosis;
 use Session, Auth;
 
-class SponsorController extends Controller
+class DiagnosisController extends Controller
 {
   public function __construct()
   {
@@ -22,8 +23,9 @@ class SponsorController extends Controller
      */
     public function index()
     {
-      $sponsors = Sponsor::orderBy('order', 'DESC')->get();
-      return view('admin.sponsor.index', compact('sponsors'));
+      $diagnosises = Diagnosis::orderBy('name')->get();
+      $diagnosises = $diagnosises->chunk(3);
+      return view('admin.diagnosis.index', compact('diagnosises'));
     }
 
     /**
@@ -33,7 +35,7 @@ class SponsorController extends Controller
      */
     public function create()
     {
-      return view('admin.sponsor.create');
+      return view('admin.diagnosis.create');
     }
 
     /**
@@ -44,19 +46,19 @@ class SponsorController extends Controller
      */
     public function store(Request $request)
     {
-      $sponsor = new Sponsor();
-      if($request->has('name')) $sponsor->name = $request->name;
-      if($request->has('link')) $sponsor->link = $request->link;
-      if($request->has('order')) $sponsor->order = $request->order; else $sponsor->order = 0;
-      $sponsor->created_by = Auth::user()->id;
+      $diagnosis = new Diagnosis();
+      if($request->has('name')) $diagnosis->name = $request->name;
+      if($request->has('category')) $diagnosis->category = $request->category;
+      if($request->has('desc')) $diagnosis->desc = $request->desc;
+      $diagnosis->created_by = Auth::user()->id;
 
-      if($sponsor->save()){
-          Session::flash('success_message', 'Destekçi başarıyla kaydedildi.');
+      if($diagnosis->save()){
+          Session::flash('success_message', 'Tanı başarıyla kaydedildi.');
       }else{
-          Session::flash('error_message',  'Destekçi kaydedilemedi.');
+          Session::flash('error_message',  'Tanı kaydedilemedi.');
           return redirect()->back()->withInput();
       }
-      return redirect()->route('admin.sponsor.index');
+      return redirect()->route('admin.diagnosis.index');
     }
 
     /**

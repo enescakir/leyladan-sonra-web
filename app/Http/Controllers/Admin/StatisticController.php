@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Volunteer;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 use App\Http\Requests;
 use Auth, DB, App\Child, App\User, LaravelAnalytics, App\Chat, App\Faculty, App\Process, App\Blood;

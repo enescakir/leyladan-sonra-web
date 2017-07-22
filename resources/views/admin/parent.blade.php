@@ -28,7 +28,7 @@
   <!-- Select2 -->
   <link rel="stylesheet" href="/node_modules/select2/dist/css/select2.min.css">
   <!-- iCheck -->
-  <link rel="stylesheet" href="/node_modules/icheck/skins/square/blue.css">
+  <link rel="stylesheet" href="/node_modules/icheck/skins/flat/red.css">
   <!-- Date Picker -->
   <link rel="stylesheet" href="/node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
   <!-- Sweet Alert 2 -->
@@ -503,8 +503,8 @@
 <script>
   $(function () {
     $('.icheck').iCheck({
-      checkboxClass: 'icheckbox_square-blue',
-      radioClass: 'iradio_square-blue',
+      checkboxClass: 'icheckbox_flat-red',
+      radioClass: 'iradio_flat-red',
       increaseArea: '20%' // optional
     });
 

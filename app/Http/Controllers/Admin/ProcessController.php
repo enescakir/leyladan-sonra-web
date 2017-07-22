@@ -1,19 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 use App\Http\Requests;
-use App\Diagnosis;
-use Session, Auth;
 
-class DiagnosisController extends Controller
+class ProcessController extends Controller
 {
-  public function __construct()
-  {
-      $this->middleware('auth');
-  }
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Display a listing of the resource.
@@ -22,9 +26,7 @@ class DiagnosisController extends Controller
      */
     public function index()
     {
-      $diagnosises = Diagnosis::orderBy('name')->get();
-      $diagnosises = $diagnosises->chunk(3);
-      return view('admin.diagnosis.index', compact('diagnosises'));
+        //
     }
 
     /**
@@ -34,7 +36,7 @@ class DiagnosisController extends Controller
      */
     public function create()
     {
-      return view('admin.diagnosis.create');
+        //
     }
 
     /**
@@ -45,19 +47,7 @@ class DiagnosisController extends Controller
      */
     public function store(Request $request)
     {
-      $diagnosis = new Diagnosis();
-      if($request->has('name')) $diagnosis->name = $request->name;
-      if($request->has('category')) $diagnosis->category = $request->category;
-      if($request->has('desc')) $diagnosis->desc = $request->desc;
-      $diagnosis->created_by = Auth::user()->id;
-
-      if($diagnosis->save()){
-          Session::flash('success_message', 'Tanı başarıyla kaydedildi.');
-      }else{
-          Session::flash('error_message',  'Tanı kaydedilemedi.');
-          return redirect()->back()->withInput();
-      }
-      return redirect()->route('admin.diagnosis.index');
+        //
     }
 
     /**
