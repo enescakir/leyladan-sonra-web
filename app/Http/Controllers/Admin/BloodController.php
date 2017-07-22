@@ -71,7 +71,6 @@ class BloodController extends Controller
   public function destroy(Blood $blood)
   {
     $blood->delete();
-
     return $blood;
   }
 
@@ -83,9 +82,9 @@ class BloodController extends Controller
 
   public function previewSMS(Request $request)
   {
-    $types = $request->type;
-    $rh = $request->rh;
-    $cities = $request->cities;
+    $types   = $request->type;
+    $rh      = $request->rh;
+    $cities  = $request->cities;
     $message = $request->message;
 
     $bloods = Blood::whereIn('city', $cities)->whereIn('blood_type', $types)->whereIn('rh', $rh)->get();
@@ -96,11 +95,11 @@ class BloodController extends Controller
   public function sendSMS(Request $request)
   {
     $sms = new Sms([
-      'title' => 'LEYLADANSNR',
-      'message' => $request->message,
-      'category' => 'Kan Bağışı',
+      'title'          => 'LEYLADANSNR',
+      'message'        => $request->message,
+      'category'       => 'Kan Bağışı',
       'receiver_count' => count($request->bloods),
-      'sent_by' => Auth::user()->id,
+      'sent_by'        => Auth::user()->id,
     ]);
 
     if($sms->save()){

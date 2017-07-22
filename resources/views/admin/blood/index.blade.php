@@ -94,7 +94,7 @@
             </thead>
             <tbody>
               @forelse ($bloods as $blood)
-                <tr>
+                <tr id="blood-{{ $blood->id }}">
                   <td>{{ $blood->id }}</td>
                   <td>{{ $blood->blood_type }}</td>
                   <td>{{ $blood->rh }}</td>
@@ -105,7 +105,7 @@
                       <a class="edit btn btn-flat btn-warning btn-xs" href="{{ route("admin.blood.edit", $blood->id) }}">
                         <i class="fa fa-pencil"></i>
                       </a>
-                      <a class="delete btn btn-flat btn-danger btn-xs" href="javascript:;"><i class="fa fa-trash"></i></a>
+                      <a class="delete btn btn-flat btn-danger btn-xs" blood-id="{{ $blood->id }}" blood-mobile="{{ $blood->mobile }}"  href="javascript:;"><i class="fa fa-trash"></i></a>
                     </div>
 
                 </td>
@@ -135,4 +135,7 @@
 @endsection
 
 @section('scripts')
+  <script type="text/javascript">
+    deleteItem("blood", "blood-id", "blood-mobile", "numaralı bağışçıyı silmek istediğinize emin misiniz?");
+  </script>
 @endsection

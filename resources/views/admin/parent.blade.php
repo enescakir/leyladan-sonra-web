@@ -39,9 +39,26 @@
   <link rel="stylesheet" href="{{ admin_asset('css/AdminLTE.min.css') }}">
 
   <!-- Google Font -->
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic&amp;subset=latin-ext">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic&amp;subset=latin-ext">
 
+  <style>
+    tr .four-button {
+      width: 110px;
+      min-width: 110px;
+      max-width: 110px;
+    }
+    tr .three-button {
+      width: 90px;
+      min-width: 90px;
+      max-width: 90px;
+    }
+
+    tr .two-button {
+      width: 70px;
+      min-width: 70px;
+      max-width: 70px;
+    }
+  </style>
   @yield('styles')
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -547,6 +564,68 @@
     $('.mobile').inputmask('(999) 999 99 99', { 'placeholder': '(___) ___ __ __' })
     moment.locale('tr');
   });
+</script>
+<script type="text/javascript">
+  $.ajaxSetup({ headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') }});
+
+  function deleteItem(slug, idAttr, nameAttr, message, deleteClass = "delete") {
+    $('.' + deleteClass).on('click', function (e) {
+      var id = $(this).attr(idAttr);
+      var name = $(this).attr(nameAttr);
+
+      swal({
+        title: "Emin misin?",
+        text:  "'" + name + "' " + message,
+        type: "warning",
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Evet, sil!",
+        showCancelButton: true,
+        cancelButtonText: "Hayır",
+        closeOnConfirm: false,
+        showLoaderOnConfirm: true,
+        preConfirm: function (email) {
+          return new Promise(function (resolve, reject) {
+            $.ajax({
+              url: "/admin/" + slug + "/" + id,
+              method: "DELETE",
+              dataType: "json",
+              success: function(result){
+                resolve()
+              },
+              error: function (xhr, ajaxOptions, thrownError) {
+                reject('Bir hata ile karşılaşıldı.')
+                ajaxError(xhr, ajaxOptions, thrownError);
+              }
+            });
+          })
+        },
+        allowOutsideClick: false,
+      }).then(function () {
+        $("#" + slug + "-" + id).remove();
+        swal({
+          title: "Başarıyla Silindi!",
+          type: "success",
+          confirmButtonText: "Tamam",
+        });
+      })
+    });
+  }
+
+  function ajaxError(xhr, ajaxOptions, thrownError) {
+    console.log("XHR:");
+    console.log(xhr);
+    console.log("Ajax Options:");
+    console.log(ajaxOptions);
+    console.log("Thrown Error:");
+    console.log(thrownError);
+    swal({
+      title: "Bir hata ile karşılaşıldı!",
+      type: "error",
+      confirmButtonText: "Tamam",
+    });
+  }
+
+
 </script>
 @yield('scripts')
 </body>
