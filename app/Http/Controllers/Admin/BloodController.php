@@ -8,11 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Models\Blood;
 use App\Models\Sms, App\Models\User;
-use Auth, DB;
+use Auth;
 
 class BloodController extends Controller
 {
-  //TODO: Edit & Update functions
 
   public function __construct()
   {
@@ -51,30 +50,29 @@ class BloodController extends Controller
     $request['mobile'] = make_mobile($request->mobile);
     $this->validateBlood($request);
     $blood = Blood::create($request->all());
-    session_success('<strong>' . $blood->mobile . '</strong> numaralı bağışçı başarıyla sisteme kaydedildi.');
+    session_success(__('messages.blood.create', ['mobile' =>  $blood->mobile]));
     return redirect()->route('admin.blood.index');
   }
 
-  public function show($id)
+  public function edit(Blood $blood)
   {
-    //
+    return view('admin.blood.edit', compact(['blood']));
   }
 
-  public function edit($id)
+  public function update(Request $request, Blood $blood)
   {
-    //
+    $request['mobile'] = make_mobile($request->mobile);
+    $this->validateBlood($request, true);
+    $blood->update($request->all());
+    session_success(__('messages.blood.update', ['mobile' =>  $blood->mobile]));
+    return redirect()->route('admin.blood.index');
   }
 
-  public function update(Request $request, $id)
+  public function destroy(Blood $blood)
   {
-    //
-  }
+    $blood->delete();
 
-  public function destroy($id)
-  {
-    Blood::destroy($id);
-
-    return 'Success';
+    return $blood;
   }
 
 
@@ -160,10 +158,10 @@ class BloodController extends Controller
     return redirect()->route('admin.blood.people.edit');
   }
 
-  private function validateBlood(Request $request)
+  private function validateBlood(Request $request, $isUpdate = false)
   {
     $this->validate($request, [
-      'mobile'     => 'required|unique:bloods|max:255',
+      'mobile'     => 'required|max:255' . ($isUpdate ? '' : '|unique:bloods'),
       'city'       => 'required|string|max:255',
       'blood_type' => 'required|string|max:255',
       'rh'         => 'required|string|max:255',
