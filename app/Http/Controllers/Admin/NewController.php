@@ -1,15 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 use App\Http\Requests;
-use App\Message, Auth, Carbon\Carbon, Log;
+use App\Channel, App\News, Log;
 
-class MessageController extends Controller
+class NewController extends Controller
 {
-    public function __construct(){
+
+    public function __construct()
+    {
         $this->middleware('auth');
     }
 
@@ -20,7 +23,8 @@ class MessageController extends Controller
      */
     public function index()
     {
-        //
+        $news = News::with('channel')->get();
+        return view('admin.new.index', compact(['news']));
     }
 
     /**
@@ -30,7 +34,9 @@ class MessageController extends Controller
      */
     public function create()
     {
-        //
+        $channels = Channel::pluck('name','id')->toArray();
+        $channels = array_add($channels,'','');
+        return view('admin.new.create', compact(['channels']));
     }
 
     /**
@@ -41,8 +47,25 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $channel = Channel::find($request->channel);
+        if($channel == null){
+            $channel = new Channel();
+            $channel->name = $request->name;
+            $channel->category = $request->category;
+            $channel->save();
+            $channel->logo = $channel->id . ".jpg";
+            $channel->save();
+        }
+        $new = new News();
+        $new->title = $request->title;
+        $new->desc = $request->desc;
+        $new->channel_id = $channel->id;
+        $new->link = $request->link;
+        $new->save();
+
+        return redirect()->route('admin.new.create');
     }
+
 
     /**
      * Display the specified resource.
@@ -53,23 +76,6 @@ class MessageController extends Controller
     public function show($id)
     {
         //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function answered($id)
-    {
-        $message = Message::whereId($id)->with('chat')->first();
-        $message->answered_by = Auth::user()->id;
-        $message->answered_at = Carbon::now();
-        $message->chat->status = 'Cevaplandı';
-        $message->save();
-        $message->chat->save();
-        return ['volunteer_name' => Auth::user()->full_name, 'chat_id' => $message->chat->id ];
     }
 
     /**

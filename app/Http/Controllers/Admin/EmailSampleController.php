@@ -1,20 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\Controller;
+use App\EmailSample, Auth, Session;
 use App\Http\Requests;
 
-class ProcessController extends Controller
+class EmailSampleController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
+    public function __construct(){
         $this->middleware('auth');
     }
 
@@ -25,7 +20,9 @@ class ProcessController extends Controller
      */
     public function index()
     {
-        //
+        $emailsamples = EmailSample::with('creator')->orderBy('category')->get();
+        $authUser = Auth::user();
+        return view('admin.emailsample.index', compact('emailsamples', 'authUser'));
     }
 
     /**
@@ -35,7 +32,7 @@ class ProcessController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.emailsample.create');
     }
 
     /**
@@ -46,7 +43,19 @@ class ProcessController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $sample = new EmailSample();
+        if($request->has('name')) $sample->name = $request->name;
+        if($request->has('category')) $sample->category = $request->category;
+        if($request->has('text')) $sample->text = $request->text;
+        $sample->created_by = Auth::user()->id;
+
+        if($sample->save()){
+            Session::flash('success_message', 'E-posta örneği başarıyla kaydedildi.');
+        }else{
+            Session::flash('error_message',  'E-posta örneği kaydedilemedi.');
+            return redirect()->back()->withInput();
+        }
+        return redirect()->route('admin.emailsample.index');
     }
 
     /**

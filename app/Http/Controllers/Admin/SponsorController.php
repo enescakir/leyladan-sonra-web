@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 use App\Http\Requests;
-use App\Channel, App\News, Log;
+use App\Sponsor;
+use Session, Auth;
 
-class NewController extends Controller
+class SponsorController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+  public function __construct()
+  {
+      $this->middleware('auth');
+  }
 
     /**
      * Display a listing of the resource.
@@ -22,8 +23,8 @@ class NewController extends Controller
      */
     public function index()
     {
-        $news = News::with('channel')->get();
-        return view('admin.new.index', compact(['news']));
+      $sponsors = Sponsor::orderBy('order', 'DESC')->get();
+      return view('admin.sponsor.index', compact('sponsors'));
     }
 
     /**
@@ -33,9 +34,7 @@ class NewController extends Controller
      */
     public function create()
     {
-        $channels = Channel::pluck('name','id')->toArray();
-        $channels = array_add($channels,'','');
-        return view('admin.new.create', compact(['channels']));
+      return view('admin.sponsor.create');
     }
 
     /**
@@ -46,25 +45,20 @@ class NewController extends Controller
      */
     public function store(Request $request)
     {
-        $channel = Channel::find($request->channel);
-        if($channel == null){
-            $channel = new Channel();
-            $channel->name = $request->name;
-            $channel->category = $request->category;
-            $channel->save();
-            $channel->logo = $channel->id . ".jpg";
-            $channel->save();
-        }
-        $new = new News();
-        $new->title = $request->title;
-        $new->desc = $request->desc;
-        $new->channel_id = $channel->id;
-        $new->link = $request->link;
-        $new->save();
+      $sponsor = new Sponsor();
+      if($request->has('name')) $sponsor->name = $request->name;
+      if($request->has('link')) $sponsor->link = $request->link;
+      if($request->has('order')) $sponsor->order = $request->order; else $sponsor->order = 0;
+      $sponsor->created_by = Auth::user()->id;
 
-        return redirect()->route('admin.new.create');
+      if($sponsor->save()){
+          Session::flash('success_message', 'Destekçi başarıyla kaydedildi.');
+      }else{
+          Session::flash('error_message',  'Destekçi kaydedilemedi.');
+          return redirect()->back()->withInput();
+      }
+      return redirect()->route('admin.sponsor.index');
     }
-
 
     /**
      * Display the specified resource.

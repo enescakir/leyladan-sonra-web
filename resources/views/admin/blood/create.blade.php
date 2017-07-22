@@ -41,34 +41,45 @@
               </div>
           </div>
           <div class="form-group{{ $errors->has('city') ? ' has-error' : '' }}">
-              {!! Form::label('city', 'Şehir', ['class' => 'col-sm-3 control-label']) !!}
+              {!! Form::label('city', 'Şehir *', ['class' => 'col-sm-3 control-label']) !!}
               <div class="col-sm-9">
-                  {!! Form::select('city', $options, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+                  {!! Form::select('city', citiesToSelect(), null, ['class' => 'form-control select2', 'required' => 'required', 'placeholder' => 'Şehir seçiniz']) !!}
                   <small class="text-danger">{{ $errors->first('city') }}</small>
               </div>
           </div>
-          <div class="form-group">
-            <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
-
-            <div class="col-sm-10">
-              <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-
-            <div class="col-sm-10">
-              <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox"> Remember me
-                </label>
+          <div class="form-group{{ $errors->has('blood_type') ? ' has-error' : '' }}">
+              {!! Form::label('blood_type', 'Kan Grubu *', ['class' => 'col-sm-3 control-label']) !!}
+              <div class="col-sm-9">
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-ls">
+                    <input type="radio" name="blood_type" value="A" autocomplete="off"> A
+                  </label>
+                  <label class="btn btn-ls">
+                    <input type="radio" name="blood_type" value="B" autocomplete="off"> B
+                  </label>
+                  <label class="btn btn-ls">
+                    <input type="radio" name="blood_type" value="AB" autocomplete="off"> AB
+                  </label>
+                  <label class="btn btn-ls">
+                    <input type="radio" name="blood_type" value="0" autocomplete="off"> 0
+                  </label>
+                </div>
+                <small class="text-danger">{{ $errors->first('blood_type') }}</small>
               </div>
-            </div>
+          </div>
+          <div class="form-group{{ $errors->has('rh') ? ' has-error' : '' }}">
+              {!! Form::label('rh', 'RH *', ['class' => 'col-sm-3 control-label']) !!}
+              <div class="col-sm-9">
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-ls">
+                    <input type="radio" name="rh" value="1" autocomplete="off"> Pozitif
+                  </label>
+                  <label class="btn btn-ls">
+                    <input type="radio" name="rh" value="0" autocomplete="off"> Negatif
+                  </label>
+                </div>
+                <small class="text-danger">{{ $errors->first('rh') }}</small>
+              </div>
           </div>
         </div>
         <!-- /.box-body -->
