@@ -305,15 +305,15 @@
             <li><a href="#"><i class="fa fa-file-text-o"></i> <span>Onam Formu Oluştur</span></a></li>
           </ul>
         </li>
-        <li class="treeview">
+        <li class="treeview {{ set_active('*blood*', 'menu-open active') }}">
           <a href="#"><i class="fa fa-tint"></i> <span>Kan Bağışı</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
               </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#"><i class="fa fa-plus"></i> <span>Yeni Bağışçı Ekle</span></a></li>
-            <li><a href="#"><i class="fa fa-users"></i> <span>Tüm Bağışçılar</span></a></li>
+            <li class="{{ set_active('*admin/blood/create*') }}"><a href="{{ route('admin.blood.create') }}"><i class="fa fa-plus"></i> <span>Yeni Bağışçı Ekle</span></a></li>
+            <li class="{{ set_active('*admin/blood') }}"><a href="{{ route('admin.blood.index') }}"><i class="fa fa-users"></i> <span>Tüm Bağışçılar</span></a></li>
             <li><a href="#"><i class="fa fa-paper-plane"></i> <span>SMS Gönder</span></a></li>
             <li><a href="#"><i class="fa fa-user-circle-o"></i> <span>Görevliler</span></a></li>
           </ul>

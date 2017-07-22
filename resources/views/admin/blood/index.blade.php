@@ -25,27 +25,58 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Ayrıntılı Tablo</h3>
-
+          <h3 class="box-title">{{ $bloods->total() }} Bağışçı</h3>
           <div class="box-tools">
-            <div class="input-group input-group-sm" style="width: 200px;">
-              <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
-              <div class="input-group-btn">
-                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                <div class="btn-group btn-group-sm">
-                  <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ request()->renew_rate ? request()->renew_rate . " aylık" : 'Paket'}} <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li><a href="{{ route('admin.blood.index') }}">Hepsi</a></li>
-                    <li><a href="{{ route('admin.blood.index', ['renew_rate' => 1]) }}">Aylık</a></li>
-                    <li><a href="{{ route('admin.blood.index', ['renew_rate' => 3]) }}">3 Aylık</a></li>
-                    <li><a href="{{ route('admin.blood.index', ['renew_rate' => 6]) }}">6 Aylık</a></li>
-                    <li><a href="{{ route('admin.blood.index', ['renew_rate' => 12]) }}">12 Aylık</a></li>
-                  </ul>
+            <form action="{{ url()->current() }}" method="GET">
+              @foreach (request()->all() as $key => $val)
+                @if ($key != "search")
+                  <input type="hidden" name="{{ $key }}" value="{{ $val }}">
+                @endif
+              @endforeach
+              <div class="input-group input-group-sm" style="width: 280px;">
+                <input type="text" class="form-control pull-right" name="search" placeholder="Arama" value="{{ request()->search }}">
+                <div class="input-group-btn">
+                  <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                  {{-- TYPE SELECTOR --}}
+                  <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {{ request()->blood_type != null ? request()->blood_type : "Kan Grubu"}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['blood_type' => ''])) }}">Hepsi</a></li>
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['blood_type' => 'A'])) }}">A</a></li>
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['blood_type' => 'B'])) }}">B</a></li>
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['blood_type' => 'AB'])) }}">AB</a></li>
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['blood_type' => '0'])) }}">0</a></li>
+                    </ul>
+                  </div>
+                  {{-- RH SELECTOR --}}
+                  <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {{ request()->rh != null ? "RH " . request()->rh : "RH"}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['rh' => ''])) }}">Hepsi</a></li>
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['rh' => '1'])) }}">Pozitif</a></li>
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['rh' => '0'])) }}">Negatif</a></li>
+                    </ul>
+                  </div>
+                  {{-- ROW PER PAGE --}}
+                  <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {{ request()->per_page ?: "25"}}
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['per_page' => 10])) }}">10</a></li>
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['per_page' => 25])) }}">25</a></li>
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['per_page' => 50])) }}">50</a></li>
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['per_page' => 100])) }}">100</a></li>
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['per_page' => 500])) }}">500</a></li>
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
         <!-- /.box-header -->
@@ -86,9 +117,17 @@
               @endforelse
             </tbody>
           </table>
-          {{ $bloods->links() }}
         </div>
         <!-- /.box-body -->
+        <div class="box-footer">
+          {{ $bloods->appends([
+                  'search' => request()->search,
+                  'per_page' => request()->per_page,
+                  'blood_type' => request()->blood_type,
+                  'rh' => request()->rh,
+             ])->links() }}
+        </div>
+        <!-- /.box-footer -->
       </div>
       <!-- /.box -->
     </div>
