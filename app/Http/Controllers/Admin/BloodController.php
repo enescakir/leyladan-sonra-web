@@ -48,18 +48,10 @@ class BloodController extends Controller
 
   public function store(Request $request)
   {
-    if ($request->get('rh') == '1') {
-      $request['rh'] = 1;
-    }
-    else {
-      $request['rh'] = 0;
-    }
-
-
-    $this->validate($request, Blood::$validationRules, Blood::$validationMessages);
-    $blood = new Blood($request->all());
-    $blood->save();
-
+    $request['mobile'] = make_mobile($request->mobile);
+    $this->validateBlood($request);
+    $blood = Blood::create($request->all());
+    session_success('<strong>' . $blood->mobile . '</strong> numaralı bağışçı başarıyla sisteme eklendi.');
     return redirect()->route('admin.blood.index');
   }
 
@@ -145,13 +137,6 @@ class BloodController extends Controller
     return ["balance" => Sms::checkBalance()];
   }
 
-
-  /**
-  * Show the form for editing the specified resource.
-  *
-  * @param  int  $id
-  * @return \Illuminate\Http\Response
-  */
   public function editPeople()
   {
     $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'))->orderby('first_name')->pluck('fullname2', 'id');
@@ -159,13 +144,6 @@ class BloodController extends Controller
     return view('admin.blood.editPeople', compact('users','responsibles'));
   }
 
-  /**
-  * Update the specified resource in storage.
-  *
-  * @param  \Illuminate\Http\Request  $request
-  * @param  int  $id
-  * @return \Illuminate\Http\Response
-  */
   public function updatePeople(Request $request)
   {
 
@@ -180,5 +158,15 @@ class BloodController extends Controller
     }
 
     return redirect()->route('admin.blood.people.edit');
+  }
+
+  private function validateBlood(Request $request)
+  {
+    $this->validate($request, [
+      'mobile'     => 'required|unique:bloods|max:255',
+      'city'       => 'required|string|max:255',
+      'blood_type' => 'required|string|max:255',
+      'rh'         => 'required|string|max:255',
+    ]);
   }
 }

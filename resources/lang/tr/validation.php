@@ -126,6 +126,8 @@ return [
       'birthday' => 'Doğum tarihi',
       'title' => 'Görev',
       'faculty_id' => 'Fakülte',
+      'rh' => 'RH',
+      'blood_type' => 'Kan Grubu',
     ],
 
 ];

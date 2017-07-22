@@ -31,7 +31,7 @@
         </div>
         <!-- /.box-header -->
         <!-- form start -->
-        {!! Form::open(['method' => 'POST', 'route' => 'admin.blood.create', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['method' => 'POST', 'route' => 'admin.blood.store', 'class' => 'form-horizontal']) !!}
         <div class="box-body">
           <div class="form-group{{ $errors->has('mobile') ? ' has-error' : '' }}">
               {!! Form::label('mobile', 'Telefon Numarası *', ['class' => 'col-sm-3 control-label']) !!}
@@ -51,17 +51,17 @@
               {!! Form::label('blood_type', 'Kan Grubu *', ['class' => 'col-sm-3 control-label']) !!}
               <div class="col-sm-9">
                 <div class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-ls">
-                    <input type="radio" name="blood_type" value="A" autocomplete="off"> A
+                  <label class="btn btn-ls @if(old('blood_type') == 'A') active @endif">
+                    {!! Form::radio('blood_type', 'A',  null) !!} A
                   </label>
-                  <label class="btn btn-ls">
-                    <input type="radio" name="blood_type" value="B" autocomplete="off"> B
+                  <label class="btn btn-ls @if(old('blood_type') == 'B') active @endif">
+                    {!! Form::radio('blood_type', 'B',  null) !!} B
                   </label>
-                  <label class="btn btn-ls">
-                    <input type="radio" name="blood_type" value="AB" autocomplete="off"> AB
+                  <label class="btn btn-ls @if(old('blood_type') == 'AB') active @endif">
+                    {!! Form::radio('blood_type', 'AB',  null) !!} AB
                   </label>
-                  <label class="btn btn-ls">
-                    <input type="radio" name="blood_type" value="0" autocomplete="off"> 0
+                  <label class="btn btn-ls @if(old('blood_type') == '0') active @endif">
+                    {!! Form::radio('blood_type', '0',  null) !!} 0
                   </label>
                 </div>
                 <small class="text-danger">{{ $errors->first('blood_type') }}</small>
@@ -71,11 +71,11 @@
               {!! Form::label('rh', 'RH *', ['class' => 'col-sm-3 control-label']) !!}
               <div class="col-sm-9">
                 <div class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-ls">
-                    <input type="radio" name="rh" value="1" autocomplete="off"> Pozitif
+                  <label class="btn btn-ls @if(old('rh') == '1') active @endif">
+                    {!! Form::radio('rh', '1',  null) !!} Pozitif
                   </label>
-                  <label class="btn btn-ls">
-                    <input type="radio" name="rh" value="0" autocomplete="off"> Negatif
+                  <label class="btn btn-ls @if(old('rh') == '0') active @endif">
+                    {!! Form::radio('rh', '0',  null) !!} Negatif
                   </label>
                 </div>
                 <small class="text-danger">{{ $errors->first('rh') }}</small>
