@@ -43,9 +43,9 @@
 
   <style>
     tr .four-button {
-      width: 110px;
-      min-width: 110px;
-      max-width: 110px;
+      width: 120px;
+      min-width: 120px;
+      max-width: 120px;
     }
     tr .three-button {
       width: 90px;
@@ -54,9 +54,15 @@
     }
 
     tr .two-button {
-      width: 70px;
-      min-width: 70px;
-      max-width: 70px;
+      width: 60px;
+      min-width: 60px;
+      max-width: 60px;
+    }
+
+    .scrollable-menu {
+      height: auto;
+      max-height: 200px;
+      overflow-x: hidden;
     }
   </style>
   @yield('styles')
@@ -476,24 +482,24 @@
     <!-- Main content -->
     <section class="content container-fluid">
       @if (session()->has('success_message'))
-          <div class="alert alert-success fade in">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-              {!! session()->get('success_message') !!}
-          </div>
+        <div class="alert alert-success alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {!! session()->get('success_message') !!}
+        </div>
       @endif
 
       @if (session()->has('error_message'))
-          <div class="alert alert-danger fade in">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-              {!! session()->get('error_message') !!}
-          </div>
+        <div class="alert alert-danger alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {!! session()->get('error_message') !!}
+        </div>
       @endif
 
       @if (session()->has('info_message'))
-          <div class="alert alert-info fade in">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-              {!! session()->get('info_message') !!}
-          </div>
+        <div class="alert alert-info alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {!! session()->get('info_message') !!}
+        </div>
       @endif
       @yield('content')
     </section>
