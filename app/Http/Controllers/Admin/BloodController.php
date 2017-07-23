@@ -27,6 +27,9 @@ class BloodController extends Controller
     if ($request->has('rh')) {
       $bloods = $bloods->where('rh', $request->rh);
     }
+    if ($request->has('city')) {
+      $bloods = $bloods->where('city', $request->city);
+    }
     if ($request->has('search')) {
       $bloods = $bloods
         ->where(function ($query) use ($request) {

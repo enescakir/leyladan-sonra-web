@@ -33,8 +33,8 @@
                   <input type="hidden" name="{{ $key }}" value="{{ $val }}">
                 @endif
               @endforeach
-              <div class="input-group input-group-sm" style="width: 280px;">
-                <input type="text" class="form-control pull-right" name="search" placeholder="Arama" value="{{ request()->search }}">
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control pull-right" style="max-width:100px;" name="search" placeholder="Arama" value="{{ request()->search }}">
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                   {{-- TYPE SELECTOR --}}
@@ -59,6 +59,18 @@
                       <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['rh' => ''])) }}">Hepsi</a></li>
                       <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['rh' => '1'])) }}">Pozitif</a></li>
                       <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['rh' => '0'])) }}">Negatif</a></li>
+                    </ul>
+                  </div>
+                  {{-- CITY SELECTOR --}}
+                  <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {{ request()->city ? request()->city : "Şehir"}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu scrollable-menu">
+                      <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['city' => ''])) }}">Hepsi</a></li>
+                      @foreach (citiesToSelect() as $city)
+                        <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['city' => $city])) }}">{{ $city }}</a></li>
+                      @endforeach
                     </ul>
                   </div>
                   {{-- ROW PER PAGE --}}
@@ -89,7 +101,7 @@
                 <th>Rh</th>
                 <th>Telefon</th>
                 <th>Şehir</th>
-                <th style="width:120px;">İşlem</th>
+                <th class="two-button">İşlem</th>
               </tr>
             </thead>
             <tbody>
@@ -125,6 +137,7 @@
                   'per_page' => request()->per_page,
                   'blood_type' => request()->blood_type,
                   'rh' => request()->rh,
+                  'city' => request()->city,
              ])->links() }}
         </div>
         <!-- /.box-footer -->
