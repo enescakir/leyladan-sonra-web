@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Models\Blood;
 use App\Models\Sms, App\Models\User;
-use Auth;
+use Auth, Excel;
 
 class BloodController extends Controller
 {
@@ -37,6 +37,14 @@ class BloodController extends Controller
             ->orWhere('mobile', 'like', '%' . $request->search . '%')
             ->orWhere('city', 'like', '%' . $request->search . '%');
         });
+    }
+    if ($request->has('csv')) {
+      $bloods = $bloods->get(['id', 'blood_type', 'rh', 'mobile', 'city', 'created_at']);
+      Excel::create('LS_KanBagisici_' . date("d_m_Y"), function($excel) use ($bloods) {
+        $excel->sheet('Bagiscilar', function($sheet) use ($bloods) {
+          $sheet->fromArray($bloods);
+        });
+      })->download('xlsx');
     }
     $bloods = $bloods->paginate($request->per_page ?: 25);
     return view('admin.blood.index', compact('bloods'));
