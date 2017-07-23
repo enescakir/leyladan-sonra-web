@@ -86,6 +86,8 @@
                       <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['per_page' => 500])) }}">500</a></li>
                     </ul>
                   </div>
+                  <a href="{{ route('admin.blood.index', array_merge(request()->all(), ['csv' => 'true'])) }}" class="btn btn-default" target="_blank"><i class="fa fa-download"></i></a>
+
                 </div>
               </div>
             </form>
