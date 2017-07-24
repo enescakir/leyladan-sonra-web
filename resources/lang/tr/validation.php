@@ -127,7 +127,9 @@ return [
       'title' => 'Görev',
       'faculty_id' => 'Fakülte',
       'rh' => 'RH',
+      'rhs' => 'RH',
       'blood_type' => 'Kan Grubu',
+      'blood_types' => 'Kan Grubu',
     ],
 
 ];

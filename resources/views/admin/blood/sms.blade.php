@@ -29,45 +29,45 @@
         <!-- form start -->
         {!!	Form::open(['route' => ['admin.blood.sms.preview'], 'class' => 'form-horizontal', 'method' => 'POST']) !!}
         <div class="box-body">
-          <div class="form-group{{ $errors->has('blood_types[]') ? ' has-error' : '' }}">
-              {!! Form::label('blood_types[]', 'Kan Grubu *', ['class' => 'col-sm-3 control-label']) !!}
+          <div class="form-group{{ $errors->has('blood_types') ? ' has-error' : '' }}">
+              {!! Form::label('blood_types', 'Kan Grubu *', ['class' => 'col-sm-3 control-label']) !!}
               <div class="col-sm-9">
                 <div class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-ls">
+                  <label class="btn btn-ls @if(in_array('A', old('blood_types') ?? [] )) active @endif">
                     {!! Form::checkbox('blood_types[]', 'A',  null) !!} A
                   </label>
-                  <label class="btn btn-ls">
+                  <label class="btn btn-ls @if(in_array('B', old('blood_types') ?? [] )) active @endif">
                     {!! Form::checkbox('blood_types[]', 'B',  null) !!} B
                   </label>
-                  <label class="btn btn-ls ">
+                  <label class="btn btn-ls @if(in_array('AB', old('blood_types') ?? [] )) active @endif">
                     {!! Form::checkbox('blood_types[]', 'AB',  null) !!} AB
                   </label>
-                  <label class="btn btn-ls">
+                  <label class="btn btn-ls @if(in_array('0', old('blood_types') ?? [] )) active @endif">
                     {!! Form::checkbox('blood_types[]', '0',  null) !!} 0
                   </label>
                 </div>
-                <small class="text-danger">{{ $errors->first('blood_types[]') }}</small>
+                <small class="text-danger">{{ $errors->first('blood_types') }}</small>
               </div>
           </div>
-          <div class="form-group{{ $errors->has('rhs[]') ? ' has-error' : '' }}">
-              {!! Form::label('rhs[]', 'RH *', ['class' => 'col-sm-3 control-label']) !!}
+          <div class="form-group{{ $errors->has('rhs') ? ' has-error' : '' }}">
+              {!! Form::label('rhs', 'RH *', ['class' => 'col-sm-3 control-label']) !!}
               <div class="col-sm-9">
                 <div class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-ls">
+                  <label class="btn btn-ls @if(in_array('1', old('rhs') ?? [] )) active @endif">
                     {!! Form::checkbox('rhs[]', '1',  null) !!} Pozitif
                   </label>
-                  <label class="btn btn-ls">
+                  <label class="btn btn-ls @if(in_array('0', old('rhs') ?? [] )) active @endif">
                     {!! Form::checkbox('rhs[]', '0',  null) !!} Negatif
                   </label>
                 </div>
-                <small class="text-danger">{{ $errors->first('rhs[]') }}</small>
+                <small class="text-danger">{{ $errors->first('rhs') }}</small>
               </div>
           </div>
-          <div class="form-group{{ $errors->has('cities[]') ? ' has-error' : '' }}">
-              {!! Form::label('cities[]', 'Şehir *', ['class' => 'col-sm-3 control-label']) !!}
+          <div class="form-group{{ $errors->has('cities') ? ' has-error' : '' }}">
+              {!! Form::label('cities', 'Şehir *', ['class' => 'col-sm-3 control-label']) !!}
               <div class="col-sm-9">
                   {!! Form::select('cities[]', citiesToSelect(), null, ['class' => 'form-control select2', 'required' => 'required',  'multiple']) !!}
-                  <small class="text-danger">{{ $errors->first('cities[]') }}</small>
+                  <small class="text-danger">{{ $errors->first('cities') }}</small>
               </div>
           </div>
           <div class="form-group">
