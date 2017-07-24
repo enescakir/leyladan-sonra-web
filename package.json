@@ -24,6 +24,7 @@
     "bootstrap-colorpicker": "^2.5.1",
     "bootstrap-datepicker": "^1.7.0",
     "bootstrap-filestyle": "^1.2.1",
+    "bootstrap-maxlength": "^1.6.0",
     "bootstrap-slider": "*",
     "bootstrap-timepicker": "^0.5.2",
     "chart.js": "1.0.*",

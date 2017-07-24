@@ -93,6 +93,13 @@ class BloodController extends Controller
 
   public function previewSMS(Request $request)
   {
+    $this->validate($request, [
+      'mobile'     => 'required|max:255' . ($isUpdate ? '' : '|unique:bloods'),
+      'city'       => 'required|string|max:255',
+      'blood_type' => 'required|string|max:255',
+      'rh'         => 'required|string|max:255',
+    ]);
+
     $types   = $request->type;
     $rh      = $request->rh;
     $cities  = $request->cities;

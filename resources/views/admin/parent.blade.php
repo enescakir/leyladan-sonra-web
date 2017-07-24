@@ -337,10 +337,18 @@
               </span>
           </a>
           <ul class="treeview-menu">
-            <li class="{{ set_active('*admin/blood/create*') }}"><a href="{{ route('admin.blood.create') }}"><i class="fa fa-plus"></i> <span>Yeni Bağışçı Ekle</span></a></li>
-            <li class="{{ set_active('*admin/blood') }}"><a href="{{ route('admin.blood.index') }}"><i class="fa fa-users"></i> <span>Tüm Bağışçılar</span></a></li>
-            <li><a href="#"><i class="fa fa-paper-plane"></i> <span>SMS Gönder</span></a></li>
-            <li class="{{ set_active('*admin/blood/people*') }}"><a href="{{ route('admin.blood.people.edit') }}"><i class="fa fa-user-circle-o"></i> <span>Görevliler</span></a></li>
+            <li class="{{ set_active('*admin/blood/create*') }}">
+              <a href="{{ route('admin.blood.create') }}"><i class="fa fa-plus"></i> <span>Yeni Bağışçı Ekle</span></a>
+            </li>
+            <li class="{{ set_active('*admin/blood') }}">
+              <a href="{{ route('admin.blood.index') }}"><i class="fa fa-users"></i> <span>Tüm Bağışçılar</span></a>
+            </li>
+            <li class="{{ set_active('*admin/blood/sms*') }}">
+              <a href="{{ route('admin.blood.sms.send') }}"><i class="fa fa-paper-plane"></i> <span>SMS Gönder</span></a>
+            </li>
+            <li class="{{ set_active('*admin/blood/people*') }}">
+              <a href="{{ route('admin.blood.people.edit') }}"><i class="fa fa-user-circle-o"></i> <span>Görevliler</span></a>
+            </li>
           </ul>
         </li>
         <li class="treeview">
@@ -404,6 +412,7 @@
           <ul class="treeview-menu">
             <li><a href="#"><i class="fa fa-plus"></i> <span>Yeni Haber Ekle</span></a></li>
             <li><a href="#"><i class="fa fa-list-alt"></i> <span>Tüm Haberler</span></a></li>
+            <li><a href="#"><i class="fa fa-plus"></i> <span>Yeni Kanal Ekle</span></a></li>
             <li><a href="#"><i class="fa fa-television"></i> <span>Kanallar</span></a></li>
           </ul>
         </li>
@@ -545,6 +554,10 @@
 <!-- Multi Select -->
 <script src="/node_modules/multiselect/js/jquery.multi-select.js"></script>
 <script src="/node_modules/jquery.quicksearch/dist/jquery.quicksearch.min.js"></script>
+<!-- Max Length -->
+<script src="/node_modules/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
+<!-- JQuery Block UI -->
+<script src="/node_modules/block-ui/jquery.blockUI.js"></script>
 <!-- AdminLTE App -->
 <script src="{{ admin_asset('js/adminlte.min.js') }}"></script>
 
@@ -572,6 +585,9 @@
       language: "tr",
       autoclose: true
     })
+    $('.max-length').maxlength({
+        alwaysShow: true,
+    });
     $('.date-mask').inputmask('dd.mm.yyyy', { 'placeholder': 'GG.AA.YYYY' })
     $('.mobile').inputmask('(999) 999 99 99', { 'placeholder': '(___) ___ __ __' })
     $('.multi-select').multiSelect({
@@ -672,6 +688,18 @@
     });
   }
 
+  function block(selector) {
+    $(selector).block({
+      message: null,
+      // message: '<img style="width:100%; height:auto;" src="{{ asset('front/images/gifs/loading.gif') }}" />',
+      // overlayCSS: { backgroundColor: 'rgb(255, 255, 255)' },
+      // css: { border: 'none' },
+    });
+  }
+
+  function unblock(selector) {
+    $(selector).unblock();
+  }
 
 </script>
 @yield('scripts')
