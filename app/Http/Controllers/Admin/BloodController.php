@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests;
-use App\Models\Blood;
-use App\Models\Sms, App\Models\User;
+use App\Models\Blood, App\Models\Sms, App\Models\User;
+use App\Enums\UserTitle;
 use Auth, Excel;
 
 class BloodController extends Controller
@@ -147,24 +147,16 @@ class BloodController extends Controller
 
   public function editPeople()
   {
-    $users = User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS fullname2'))->orderby('first_name')->pluck('fullname2', 'id');
-    $responsibles = User::where('title', 'Kan Bağışı Görevlisi')->pluck('id')->toArray();
-    return view('admin.blood.editPeople', compact('users','responsibles'));
+    $users = User::orderby('first_name')->get()->pluck('fullname', 'id');
+    $responsibles = User::title( UserTitle::BloodMember )->get()->pluck('id');
+    return view('admin.blood.people', compact('users','responsibles'));
   }
 
   public function updatePeople(Request $request)
   {
-
-    if(User::where('title', 'Kan Bağışı Görevlisi')->update(['title' => 'Normal Üye'])
-    && User::whereIn('id', $request->users)->update(['title' => 'Kan Bağışı Görevlisi'])){
-      success_message('Kan Bağışı sorumluları başarıyla güncellendi.');
-
-    }
-    else{
-      error_message('Kan Bağışı sorumluları güncellenemedi.');
-      return redirect()->back()->withInput();
-    }
-
+    User::title( UserTitle::BloodMember )->update(['title' => UserTitle::NormalMember]);
+    User::whereIn('id', $request->users)->update(['title' => UserTitle::BloodMember]);
+    session_success(__('messages.blood.people'));
     return redirect()->route('admin.blood.people.edit');
   }
 

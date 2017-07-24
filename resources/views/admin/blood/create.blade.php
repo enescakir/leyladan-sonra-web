@@ -84,7 +84,7 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-          {!! Form::reset("İptal", ['class' => 'btn btn-danger']) !!}
+          <a href="{{ route('admin.blood.index') }}" class="btn btn-danger">Geri</a>
           {!! Form::submit("Ekle", ['class' => 'btn btn-success pull-right']) !!}
         </div>
         <!-- /.box-footer -->

@@ -152,7 +152,6 @@ Route::post('/process', 'Admin\ChildController@createProcess')->name('process.st
 Route::prefix('blood')->as('blood.')->group(function () {
   Route::get('/people', 'Admin\BloodController@editPeople')->name('people.edit');
   Route::post('/people', 'Admin\BloodController@updatePeople')->name('people.update');
-  Route::get('/data', 'Admin\BloodController@indexData')->name('index.data');
   Route::get('/sms', 'Admin\BloodController@showSMS')->name('sms.show');
   Route::get('/sms/balance', 'Admin\BloodController@checkBalance')->name('sms.balance');
   Route::post('/sms/preview', 'Admin\BloodController@previewSMS')->name('sms.preview');

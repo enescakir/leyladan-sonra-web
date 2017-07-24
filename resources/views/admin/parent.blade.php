@@ -35,6 +35,8 @@
   <link rel="stylesheet" href="/node_modules/sweetalert2/dist/sweetalert2.min.css">
   <!-- Full Calendar -->
   <link rel="stylesheet" href="/node_modules/fullcalendar/dist/fullcalendar.min.css">
+  <!-- Multi Select -->
+  <link rel="stylesheet" href="/node_modules/multiselect/css/multi-select.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ admin_asset('css/AdminLTE.min.css') }}">
 
@@ -338,7 +340,7 @@
             <li class="{{ set_active('*admin/blood/create*') }}"><a href="{{ route('admin.blood.create') }}"><i class="fa fa-plus"></i> <span>Yeni Bağışçı Ekle</span></a></li>
             <li class="{{ set_active('*admin/blood') }}"><a href="{{ route('admin.blood.index') }}"><i class="fa fa-users"></i> <span>Tüm Bağışçılar</span></a></li>
             <li><a href="#"><i class="fa fa-paper-plane"></i> <span>SMS Gönder</span></a></li>
-            <li><a href="#"><i class="fa fa-user-circle-o"></i> <span>Görevliler</span></a></li>
+            <li class="{{ set_active('*admin/blood/people*') }}"><a href="{{ route('admin.blood.people.edit') }}"><i class="fa fa-user-circle-o"></i> <span>Görevliler</span></a></li>
           </ul>
         </li>
         <li class="treeview">
@@ -540,11 +542,15 @@
 <script src="/node_modules/fastclick/lib/fastclick.js"></script>
 <!-- Sweet Alert 2 -->
 <script src="/node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
+<!-- Multi Select -->
+<script src="/node_modules/multiselect/js/jquery.multi-select.js"></script>
+<script src="/node_modules/jquery.quicksearch/dist/jquery.quicksearch.min.js"></script>
 <!-- AdminLTE App -->
 <script src="{{ admin_asset('js/adminlte.min.js') }}"></script>
 
 <script>
   $(function () {
+    moment.locale('tr');
     $('.icheck').iCheck({
       checkboxClass: 'icheckbox_flat-red',
       radioClass: 'iradio_flat-red',
@@ -568,7 +574,42 @@
     })
     $('.date-mask').inputmask('dd.mm.yyyy', { 'placeholder': 'GG.AA.YYYY' })
     $('.mobile').inputmask('(999) 999 99 99', { 'placeholder': '(___) ___ __ __' })
-    moment.locale('tr');
+    $('.multi-select').multiSelect({
+      selectableHeader: "<input type='text' class='search-input' style='width: 100%; margin-bottom: 10px;' autocomplete='off' placeholder='Arama'>",
+      selectionHeader: "<input type='text' class='search-input' style='width: 100%; margin-bottom: 10px;' autocomplete='off' placeholder='Arama'>",
+      afterInit: function(ms){
+        $('#multiselect-loading').remove();
+        var that = this,
+            $selectableSearch = that.$selectableUl.prev(),
+            $selectionSearch = that.$selectionUl.prev(),
+            selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+            selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+        that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+        .on('keydown', function(e){
+          if (e.which === 40){
+            that.$selectableUl.focus();
+            return false;
+          }
+        });
+
+        that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+        .on('keydown', function(e){
+          if (e.which == 40){
+            that.$selectionUl.focus();
+            return false;
+          }
+        });
+      },
+      afterSelect: function(){
+        this.qs1.cache();
+        this.qs2.cache();
+      },
+      afterDeselect: function(){
+        this.qs1.cache();
+        this.qs2.cache();
+      }
+    });
   });
 </script>
 <script type="text/javascript">
