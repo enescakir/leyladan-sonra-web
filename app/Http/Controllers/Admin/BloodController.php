@@ -94,20 +94,20 @@ class BloodController extends Controller
   public function previewSMS(Request $request)
   {
     $this->validate($request, [
-      'mobile'     => 'required|max:255' . ($isUpdate ? '' : '|unique:bloods'),
-      'city'       => 'required|string|max:255',
-      'blood_type' => 'required|string|max:255',
-      'rh'         => 'required|string|max:255',
+      'cities'       => 'required',
+      'blood_types' => 'required',
+      'rhs'         => 'required',
+      'message'    => 'required|string|max:255',
     ]);
 
-    $types   = $request->type;
-    $rh      = $request->rh;
-    $cities  = $request->cities;
-    $message = $request->message;
+    $blood_types = $request->blood_types;
+    $rhs         = $request->rhs;
+    $cities      = $request->cities;
+    $message     = $request->message;
 
-    $bloods = Blood::whereIn('city', $cities)->whereIn('blood_type', $types)->whereIn('rh', $rh)->get();
+    $bloods = Blood::whereIn('city', $cities)->whereIn('blood_type', $blood_types)->whereIn('rh', $rhs)->get();
 
-    return view('admin.blood.preview', compact(['bloods', 'message', 'types', 'rh', 'cities']));
+    return view('admin.blood.preview', compact(['bloods', 'message', 'blood_types', 'rhs', 'cities']));
   }
 
   public function sendSMS(Request $request)
@@ -120,12 +120,13 @@ class BloodController extends Controller
       'sent_by'        => Auth::user()->id,
     ]);
 
-    if($sms->save()){
+    if ($sms->save()) {
       $sms->send($request->bloods);
-      success_message('Kan bağışı SMS\'i ' . count($request->bloods) . ' kişiye başarıyla gönderildi.');
+      session_success(__('messages.blood.sms.successful', ['count' =>  count($request->bloods)]));
       return redirect()->route('admin.blood.sms.show');
     } else {
-      return 'Bir hata ile karşılaşıldı.';
+      error_message(__('messages.blood.sms.error'));
+      return redirect()->back()->withInput();
     }
   }
 
@@ -139,8 +140,8 @@ class BloodController extends Controller
       'sent_by' => Auth::user()->id,
     ]);
 
-    if($sms->save()){
-      $sms->send($request->tester);
+    if ($sms->save()) {
+      $sms->send( make_mobile($request->number) );
       return $sms;
     } else {
       return 'Bir hata ile karşılaşıldı.';
