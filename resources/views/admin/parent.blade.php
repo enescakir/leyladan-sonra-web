@@ -303,7 +303,9 @@
 
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu" data-widget="tree">
-        <li><a href="#"><i class="fa fa-compass"></i> <span>Kontrol Paneli</span></a></li>
+        <li class="{{ set_active('*admin/dashboard*') }}">
+          <a href="{{ route('admin.dashboard') }}"><i class="fa fa-compass"></i> <span>Kontrol Paneli</span></a>
+        </li>
         <li><a href="#"><i class="fa fa-address-book-o"></i> <span>Arkadaşlarım</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-child"></i> <span>Çocuklar</span>
@@ -397,7 +399,9 @@
               </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#"><i class="fa fa-flask"></i> <span>Tanılar</span></a></li>
+            <li class="{{ set_active('*admin/diagnosis*') }}">
+              <a href="{{ route('admin.diagnosis.index') }}"><i class="fa fa-flask"></i> <span>Tanılar</span></a>
+            </li>
             <li><a href="#"><i class="fa fa-hospital-o"></i> <span>Departmanlar</span></a></li>
           </ul>
         </li>

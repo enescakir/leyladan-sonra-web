@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests;
-use App\Diagnosis;
+use App\Models\Diagnosis;
 use Session, Auth;
 
 class DiagnosisController extends Controller
