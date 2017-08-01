@@ -19,11 +19,11 @@ Route::get('/user', function (Request $request) {
 
 
 Route::group(['prefix' => 'admin'], function () {
-    Route::get('log', 'ApiAdminController@log')->name('api.admin.logs');
-    Route::get('log/{date}', 'ApiAdminController@logDaily')->name('api.admin.logs.daily');
+    Route::get('log', 'Admin\ApiAdminController@log')->name('api.admin.logs');
+    Route::get('log/{date}', 'Admin\ApiAdminController@logDaily')->name('api.admin.logs.daily');
 });
 
-Route::get('children', 'ApiController@children')->name('api.children');
-Route::get('child/{id}', 'ApiController@child')->name('api.child');
-Route::post('child/form', 'ApiController@childForm')->name('api.child.form');
-Route::post('token', 'ApiController@token')->name('api.token');
+Route::get('children', 'Admin\ApiController@children')->name('api.children');
+Route::get('child/{id}', 'Admin\ApiController@child')->name('api.child');
+Route::post('child/form', 'Admin\ApiController@childForm')->name('api.child.form');
+Route::post('token', 'Admin\ApiController@token')->name('api.token');

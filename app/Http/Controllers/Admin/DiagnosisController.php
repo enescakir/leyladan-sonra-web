@@ -6,102 +6,53 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Models\Diagnosis;
-use Session, Auth;
 
 class DiagnosisController extends Controller
 {
   public function __construct()
   {
-      $this->middleware('auth');
+    $this->middleware('auth');
   }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-      $diagnosises = Diagnosis::orderBy('name')->get();
-      $diagnosises = $diagnosises->chunk(3);
-      return view('admin.diagnosis.index', compact('diagnosises'));
-    }
+  public function index()
+  {
+    $diagnosises = Diagnosis::orderBy('name')->get();
+    $diagnosises = $diagnosises->chunk(3);
+    return view('admin.diagnosis.index', compact('diagnosises'));
+  }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-      return view('admin.diagnosis.create');
-    }
+  public function create()
+  {
+    return view('admin.diagnosis.create');
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-      $diagnosis = new Diagnosis();
-      if($request->has('name')) $diagnosis->name = $request->name;
-      if($request->has('category')) $diagnosis->category = $request->category;
-      if($request->has('desc')) $diagnosis->desc = $request->desc;
-      $diagnosis->created_by = Auth::user()->id;
-
-      if($diagnosis->save()){
-          Session::flash('success_message', 'Tanı başarıyla kaydedildi.');
-      }else{
-          Session::flash('error_message',  'Tanı kaydedilemedi.');
-          return redirect()->back()->withInput();
-      }
-      return redirect()->route('admin.diagnosis.index');
+  public function store(Request $request)
+  {
+    $diagnosis = Diagnosis::create([
+      'name' => $request->name
+    ]);
+    session_success(__('messages.diagnosis.create', ['name' =>  $diagnosis->name]));
+    if ($request->ajax()) {
+      return $diagnosis;
     }
+    return redirect()->route('admin.diagnosis.index');
+  }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+  public function update(Request $request, Diagnosis $diagnosi)
+  {
+    $diagnosi->update($request->all());
+    session_success(__('messages.diagnosis.update', ['name' =>  $diagnosi->name]));
+    if ($request->ajax()) {
+      return $diagnosi;
     }
+    return redirect()->route('admin.diagnosis.index');
+  }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+  public function destroy(Diagnosis $diagnosi)
+  {
+    info($diagnosi);
+    $diagnosi->delete();
+    info($diagnosi);
+    return $diagnosi;
+  }
 }

@@ -24,7 +24,7 @@ Route::post('/form', 'Admin\DashboardController@storeForm')->name('form.store');
 
 Route::prefix('vote')->group(function () {
   Route::get('/', 'Admin\DashboardController@vote')->name('vote');
-  Route::post('/','DashboardController@voteStore')->name('vote.store');
+  Route::post('/','Admin\DashboardController@voteStore')->name('vote.store');
 });
 
 Route::prefix('dashboard')->group(function () {
@@ -178,12 +178,12 @@ Route::post('mobile-notification/{id}/send', 'Admin\MobileNotificationController
 Route::resource('blog', 'Admin\BlogController');
 
 Route::prefix('log')->middleware('auth')->group(function() {
-  Route::get('/', [ 'as'        => 'log-viewer::dashboard', 'uses'   => 'LogController@index',]);
-  Route::get('/lists', [ 'as'   => 'log-viewer::logs.list', 'uses'   => 'LogController@listLogs',]);
-  Route::delete('delete', ['as' => 'log-viewer::logs.delete', 'uses' => 'LogController@delete',]);
+  Route::get('/', [ 'as'        => 'log-viewer::dashboard', 'uses'   => 'Admin\LogController@index',]);
+  Route::get('/lists', [ 'as'   => 'log-viewer::logs.list', 'uses'   => 'Admin\LogController@listLogs',]);
+  Route::delete('delete', ['as' => 'log-viewer::logs.delete', 'uses' => 'Admin\LogController@delete',]);
   Route::group([ 'prefix'    => '{date}',], function() {
-    Route::get('/', ['as'        => 'log-viewer::logs.show', 'uses'     => 'LogController@show',]);
-    Route::get('download', ['as' => 'log-viewer::logs.download', 'uses' => 'LogController@download',]);
-    Route::get('{level}', ['as'  => 'log-viewer::logs.filter', 'uses'   => 'LogController@showByLevel',]);
+    Route::get('/', ['as'        => 'log-viewer::logs.show', 'uses'     => 'Admin\LogController@show',]);
+    Route::get('download', ['as' => 'log-viewer::logs.download', 'uses' => 'Admin\LogController@download',]);
+    Route::get('{level}', ['as'  => 'log-viewer::logs.filter', 'uses'   => 'Admin\LogController@showByLevel',]);
   });
 });

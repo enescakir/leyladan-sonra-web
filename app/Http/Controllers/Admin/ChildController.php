@@ -67,7 +67,7 @@ class ChildController extends Controller
       return $this->sendSimilarChildrenResponse($request);
     }
     $user = Auth::user();
-    $child = $this->createChild$request();
+    $child = $this->createChild($request);
     $child->users()->attach($request->users);
     $child->updateSlug();
     if ( $request->hasFile('verification_doc') ){
@@ -82,7 +82,7 @@ class ChildController extends Controller
 
     $child->processes()->attach(
       Process::create([
-        'desc' => 'Çocuk sisteme girildi.';
+        'desc' => 'Çocuk sisteme girildi.'
       ])
     );
     // TODO: Check processes save
