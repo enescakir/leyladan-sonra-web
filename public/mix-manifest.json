@@ -1,3 +1,4 @@
 {
-    "/admin/css/AdminLTE.min.css": "/admin/css/AdminLTE.min.css"
+    "/admin/css/plugins.min.css": "/admin/css/plugins.min.css",
+    "/admin/js/plugins.min.js": "/admin/js/plugins.min.js"
 }

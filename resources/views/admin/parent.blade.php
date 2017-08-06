@@ -19,24 +19,8 @@
   <meta name="description" content="Leyla'dan Sonra Yönetim Paneli"/>
   <meta name="author" content="Enes Çakır" />
 
-  <!-- Bootstrap 3 -->
-  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="/node_modules/ionicons/css/ionicons.min.css">
-  <!-- Select2 -->
-  <link rel="stylesheet" href="/node_modules/select2/dist/css/select2.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="/node_modules/icheck/skins/flat/red.css">
-  <!-- Date Picker -->
-  <link rel="stylesheet" href="/node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
-  <!-- Sweet Alert 2 -->
-  <link rel="stylesheet" href="/node_modules/sweetalert2/dist/sweetalert2.min.css">
-  <!-- Full Calendar -->
-  <link rel="stylesheet" href="/node_modules/fullcalendar/dist/fullcalendar.min.css">
-  <!-- Multi Select -->
-  <link rel="stylesheet" href="/node_modules/multiselect/css/multi-select.css">
+  <!-- Plugin styles, Bootstrap etc. -->
+  <link rel="stylesheet" href="{{ admin_asset('css/plugins.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ admin_asset('css/AdminLTE.min.css') }}">
 
@@ -154,38 +138,8 @@
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
-
-<!-- jQuery 3 -->
-<script src="/node_modules/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- iCheck -->
-<script src="/node_modules/icheck/icheck.min.js"></script>
-<!-- Select2 -->
-<script src="/node_modules/select2/dist/js/select2.full.min.js"></script>
-<!-- Moment -->
-<script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
-<!-- Date Picker -->
-<script src="/node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-<script src="/node_modules/bootstrap-datepicker/dist/locales/bootstrap-datepicker.tr.min.js"></script>
-<!-- Input Mask -->
-<script src="/node_modules/inputmask/dist/min/inputmask/inputmask.min.js"></script>
-<script src="/node_modules/inputmask/dist/min/inputmask/jquery.inputmask.min.js"></script>
-<script src="/node_modules/inputmask/dist/min/inputmask/inputmask.extensions.min.js"></script>
-<script src="/node_modules/inputmask/dist/min/inputmask/inputmask.date.extensions.min.js"></script>
-<!-- Slimscroll -->
-<script src="/node_modules/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/node_modules/fastclick/lib/fastclick.js"></script>
-<!-- Sweet Alert 2 -->
-<script src="/node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
-<!-- Multi Select -->
-<script src="/node_modules/multiselect/js/jquery.multi-select.js"></script>
-<script src="/node_modules/jquery.quicksearch/dist/jquery.quicksearch.min.js"></script>
-<!-- Max Length -->
-<script src="/node_modules/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
-<!-- JQuery Block UI -->
-<script src="/node_modules/block-ui/jquery.blockUI.js"></script>
+<!-- Plugins - JQuery, Bootstrap etc. -->
+<script src="{{ admin_asset('js/plugins.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ admin_asset('js/adminlte.min.js') }}"></script>
 
