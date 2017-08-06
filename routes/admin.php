@@ -99,6 +99,7 @@ Route::prefix('child')->as('child.')->group(function () {
 });
 Route::resource('child', 'Admin\ChildController');
 Route::resource('diagnosis', 'Admin\DiagnosisController');
+Route::resource('department', 'Admin\DepartmentController');
 
 Route::prefix('faculty')->as('faculty.')->group(function () {
   Route::prefix('{id}')->group(function () {
