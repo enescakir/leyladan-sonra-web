@@ -41,8 +41,18 @@
               @foreach ($departments as $row)
                 <tr>
                   @foreach($row as $department)
-                    <td id="department-{{ $department->id }}" class="department" department-id="{{ $department->id }}" department-name="{{ $department->name }}">
-                      {{$department->name}}
+                    <td id="department-{{ $department->id }}" class="department" department-id="{{ $department->id }}" department-name="{{ $department->name }}" department-desc="{{ $department->desc }}">
+                        {{ $department->name }}
+                      @if ($department->desc)
+                        <span
+                          data-toggle    = "popover"
+                          data-trigger   = "hover"
+                          data-placement = "top"
+                          title          = "{{ $department->name }}"
+                          data-content   = "{{ $department->desc }}">
+                          <i class="fa fa-question-circle" aria-hidden="true"></i>
+                        </span>
+                      @endif
                     </td>
                   @endforeach
                 </tr>
@@ -63,14 +73,15 @@
       function() {
         var id = $( this ).attr('department-id');
         var name = $( this ).attr('department-name');
+        var desc = $( this ).attr('department-desc');
         $( this ).append(
           '<div class="btn-group" role="group">' +
-            '<button type="button" department-id="' + id + '" department-name="' + name + '" class="edit btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>' +
-            '<button type="button" department-id="' + id + '" department-name="' + name + '" class="delete btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button>' +
+            '<button type="button" department-id="' + id + '" department-name="' + name + '" department-desc="' + desc + '" class="edit btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>' +
+            '<button type="button" department-id="' + id + '" department-name="' + name + '" department-desc="' + desc + '" class="delete btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button>' +
           '</div>'
         );
         deleteItem("department", "department-id", "department-name", "isimli departmanı silmek istediğinize emin misiniz?");
-        editDiagnosis(id, name);
+        editDepartment(id, name, desc);
       },
       function() {
         $( this ).find( ".btn-group" ).remove();
@@ -79,35 +90,34 @@
     $("#create-department").click( function() {
       swal({
         title            : 'Departman Ekle',
-        input            : 'text',
+        html             :
+          '<input id="name" class="swal2-input" placeholder="Departmanın Adı">' +
+          '<textarea id="desc" class="swal2-textarea" placeholder="Departmanın Açıklaması"></textarea>',
         showCancelButton : true,
         confirmButtonText: 'Ekle',
         cancelButtonText : 'İptal',
-        inputValidator   : function (value) {
-          return new Promise(function (resolve, reject) {
-            if (value) {
-              resolve()
-            } else {
-              reject('Departmanın adını yazmanız gerekiyor')
-            }
-          })
-        },
         showLoaderOnConfirm: true,
         preConfirm: function (name) {
           return new Promise(function (resolve, reject) {
-            $.ajax({
-              url     : "/admin/department",
-              method  : "POST",
-              dataType: "json",
-              data    : { 'name' : name },
-              success: function(result){
-                resolve(result)
-              },
-              error: function (xhr, ajaxOptions, thrownError) {
-                reject('Bir hata ile karşılaşıldı.')
-                ajaxError(xhr, ajaxOptions, thrownError);
-              }
-            });
+            var name = $('#name').val()
+            var desc = $('#desc').val()
+            if (!name) {
+              reject('Departmanın adını yazmanız gerekiyor');
+            } else {
+              $.ajax({
+                url     : "/admin/department",
+                method  : "POST",
+                dataType: "json",
+                data    : { 'name' : name, 'desc' : desc },
+                success: function(result){
+                  resolve(result)
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                  reject('Bir hata ile karşılaşıldı.')
+                  ajaxError(xhr, ajaxOptions, thrownError);
+                }
+              });
+            }
           })
         },
         allowOutsideClick: false
@@ -120,40 +130,38 @@
       })
     })
 
-    function editDiagnosis(id, name) {
+    function editDepartment(id, name, desc) {
       $(".edit").click( function() {
         swal({
           title            : 'Departmanı Düzenle',
-          input            : 'text',
-          inputValue       : name,
+          html             :
+            '<input id="name" class="swal2-input" value="' + name + '" placeholder="Departmanın Adı">' +
+            '<textarea id="desc" class="swal2-textarea" placeholder="Departmanın Açıklaması">' + desc + '</textarea>',
           showCancelButton : true,
           confirmButtonText: 'Güncelle',
           cancelButtonText : 'İptal',
-          inputValidator   : function (value) {
-            return new Promise(function (resolve, reject) {
-              if (value) {
-                resolve()
-              } else {
-                reject('Departmanın adını boş bırakamazsınız')
-              }
-            })
-          },
           showLoaderOnConfirm: true,
           preConfirm: function (input) {
             return new Promise(function (resolve, reject) {
-              $.ajax({
-                url     : "/admin/department/" + id,
-                method  : "PUT",
-                dataType: "json",
-                data    : { 'name' : input },
-                success: function(result){
-                  resolve(result)
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                  reject('Bir hata ile karşılaşıldı.')
-                  ajaxError(xhr, ajaxOptions, thrownError);
-                }
-              });
+              var name = $('#name').val()
+              var desc = $('#desc').val()
+              if (!name) {
+                reject('Tanının adını yazmanız gerekiyor');
+              } else {
+                $.ajax({
+                  url     : "/admin/department/" + id,
+                  method  : "PUT",
+                  dataType: "json",
+                  data    : { 'name' : name, 'desc' : desc },
+                  success: function(result){
+                    resolve(result)
+                  },
+                  error: function (xhr, ajaxOptions, thrownError) {
+                    reject('Bir hata ile karşılaşıldı.')
+                    ajaxError(xhr, ajaxOptions, thrownError);
+                  }
+                });
+              }
             })
           },
           allowOutsideClick: false

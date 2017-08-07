@@ -147,21 +147,21 @@
               var desc = $('#desc').val()
               if (!name) {
                 reject('Tanının adını yazmanız gerekiyor');
+              } else {
+                $.ajax({
+                  url     : "/admin/diagnosis/" + id,
+                  method  : "PUT",
+                  dataType: "json",
+                  data    : { 'name' : name, 'desc' : desc },
+                  success: function(result){
+                    resolve(result)
+                  },
+                  error: function (xhr, ajaxOptions, thrownError) {
+                    reject('Bir hata ile karşılaşıldı.')
+                    ajaxError(xhr, ajaxOptions, thrownError);
+                  }
+                });
               }
-
-              $.ajax({
-                url     : "/admin/diagnosis/" + id,
-                method  : "PUT",
-                dataType: "json",
-                data    : { 'name' : name, 'desc' : desc },
-                success: function(result){
-                  resolve(result)
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                  reject('Bir hata ile karşılaşıldı.')
-                  ajaxError(xhr, ajaxOptions, thrownError);
-                }
-              });
             })
           },
           allowOutsideClick: false

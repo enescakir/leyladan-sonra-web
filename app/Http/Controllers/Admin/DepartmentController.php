@@ -24,7 +24,8 @@ class DepartmentController extends Controller
   public function store(Request $request)
   {
     $department = Department::create([
-      'name' => $request->name
+      'name' => $request->name,
+      'desc' => $request->desc
     ]);
     session_success(__('messages.department.create', ['name' =>  $department->name]));
     if ($request->ajax()) {
