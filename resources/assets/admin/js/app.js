@@ -26,6 +26,7 @@ $(function () {
   });
   $('.date-mask').inputmask('dd.mm.yyyy', { 'placeholder': 'GG.AA.YYYY' })
   $('.mobile').inputmask('(999) 999 99 99', { 'placeholder': '(___) ___ __ __' })
+  $('[data-toggle="popover"]').popover();
   $('.multi-select').multiSelect({
     selectableHeader: "<input type='text' class='search-input' style='width: 100%; margin-bottom: 10px;' autocomplete='off' placeholder='Arama'>",
     selectionHeader: "<input type='text' class='search-input' style='width: 100%; margin-bottom: 10px;' autocomplete='off' placeholder='Arama'>",

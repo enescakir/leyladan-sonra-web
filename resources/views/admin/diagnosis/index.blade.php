@@ -41,8 +41,18 @@
               @foreach ($diagnosises as $row)
                 <tr>
                   @foreach($row as $diagnosis)
-                    <td id="diagnosis-{{ $diagnosis->id }}" class="diagnosis" diagnosis-id="{{ $diagnosis->id }}" diagnosis-name="{{ $diagnosis->name }}">
-                      {{$diagnosis->name}}
+                    <td id="diagnosis-{{ $diagnosis->id }}" class="diagnosis" diagnosis-id="{{ $diagnosis->id }}" diagnosis-name="{{ $diagnosis->name }}" diagnosis-desc="{{ $diagnosis->desc }}">
+                        {{ $diagnosis->name }}
+                      @if ($diagnosis->desc)
+                        <span
+                          data-toggle    = "popover"
+                          data-trigger   = "hover"
+                          data-placement = "top"
+                          title          = "{{ $diagnosis->name }}"
+                          data-content   = "{{ $diagnosis->desc }}">
+                          <i class="fa fa-question-circle" aria-hidden="true"></i>
+                        </span>
+                      @endif
                     </td>
                   @endforeach
                 </tr>
@@ -63,14 +73,15 @@
       function() {
         var id = $( this ).attr('diagnosis-id');
         var name = $( this ).attr('diagnosis-name');
+        var desc = $( this ).attr('diagnosis-desc');
         $( this ).append(
           '<div class="btn-group" role="group">' +
-            '<button type="button" diagnosis-id="' + id + '" diagnosis-name="' + name + '" class="edit btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>' +
-            '<button type="button" diagnosis-id="' + id + '" diagnosis-name="' + name + '" class="delete btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button>' +
+            '<button type="button" diagnosis-id="' + id + '" diagnosis-name="' + name + '" diagnosis-desc="' + desc + '" class="edit btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>' +
+            '<button type="button" diagnosis-id="' + id + '" diagnosis-name="' + name + '" diagnosis-desc="' + desc + '" class="delete btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button>' +
           '</div>'
         );
         deleteItem("diagnosis", "diagnosis-id", "diagnosis-name", "isimli tanıyı silmek istediğinize emin misiniz?");
-        editDiagnosis(id, name);
+        editDiagnosis(id, name, desc);
       },
       function() {
         $( this ).find( ".btn-group" ).remove();
@@ -79,35 +90,34 @@
     $("#create-diagnosis").click( function() {
       swal({
         title            : 'Tanı Ekle',
-        input            : 'text',
+        html             :
+          '<input id="name" class="swal2-input" placeholder="Tanının Adı">' +
+          '<textarea id="desc" class="swal2-textarea" placeholder="Tanının Açıklaması"></textarea>',
         showCancelButton : true,
         confirmButtonText: 'Ekle',
         cancelButtonText : 'İptal',
-        inputValidator   : function (value) {
-          return new Promise(function (resolve, reject) {
-            if (value) {
-              resolve()
-            } else {
-              reject('Tanının adını yazmanız gerekiyor')
-            }
-          })
-        },
         showLoaderOnConfirm: true,
         preConfirm: function (name) {
           return new Promise(function (resolve, reject) {
-            $.ajax({
-              url     : "/admin/diagnosis",
-              method  : "POST",
-              dataType: "json",
-              data    : { 'name' : name },
-              success: function(result){
-                resolve(result)
-              },
-              error: function (xhr, ajaxOptions, thrownError) {
-                reject('Bir hata ile karşılaşıldı.')
-                ajaxError(xhr, ajaxOptions, thrownError);
-              }
-            });
+            var name = $('#name').val()
+            var desc = $('#desc').val()
+            if (!name) {
+              reject('Tanının adını yazmanız gerekiyor');
+            } else {
+              $.ajax({
+                url     : "/admin/diagnosis",
+                method  : "POST",
+                dataType: "json",
+                data    : { 'name' : name, 'desc' : desc },
+                success: function(result){
+                  resolve(result)
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                  reject('Bir hata ile karşılaşıldı.')
+                  ajaxError(xhr, ajaxOptions, thrownError);
+                }
+              });
+            }
           })
         },
         allowOutsideClick: false
@@ -120,32 +130,30 @@
       })
     })
 
-    function editDiagnosis(id, name) {
+    function editDiagnosis(id, name, desc) {
       $(".edit").click( function() {
         swal({
           title            : 'Tanı Düzenle',
-          input            : 'text',
-          inputValue       : name,
+          html             :
+            '<input id="name" class="swal2-input" value="' + name + '" placeholder="Tanının Adı">' +
+            '<textarea id="desc" class="swal2-textarea" placeholder="Tanının Açıklaması">' + desc + '</textarea>',
           showCancelButton : true,
           confirmButtonText: 'Güncelle',
           cancelButtonText : 'İptal',
-          inputValidator   : function (value) {
-            return new Promise(function (resolve, reject) {
-              if (value) {
-                resolve()
-              } else {
-                reject('Tanının adını boş bırakamazsınız')
-              }
-            })
-          },
           showLoaderOnConfirm: true,
           preConfirm: function (input) {
             return new Promise(function (resolve, reject) {
+              var name = $('#name').val()
+              var desc = $('#desc').val()
+              if (!name) {
+                reject('Tanının adını yazmanız gerekiyor');
+              }
+
               $.ajax({
                 url     : "/admin/diagnosis/" + id,
                 method  : "PUT",
                 dataType: "json",
-                data    : { 'name' : input },
+                data    : { 'name' : name, 'desc' : desc },
                 success: function(result){
                   resolve(result)
                 },

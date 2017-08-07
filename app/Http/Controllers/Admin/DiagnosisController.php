@@ -24,7 +24,8 @@ class DiagnosisController extends Controller
   public function store(Request $request)
   {
     $diagnosis = Diagnosis::create([
-      'name' => $request->name
+      'name' => $request->name,
+      'desc' => $request->desc
     ]);
     session_success(__('messages.diagnosis.create', ['name' =>  $diagnosis->name]));
     if ($request->ajax()) {
