@@ -102,7 +102,7 @@
         <li><a href="#"><i class="fa fa-paper-plane"></i> <span>E-posta Gönder</span></a></li>
       </ul>
     </li>
-    <li class="treeview">
+    <li class="treeview {{ set_active(['*diagnosis*', '*department*'], 'menu-open active') }}">
       <a href="#"><i class="fa fa-cog"></i> <span>Ayarlar</span>
         <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
@@ -112,7 +112,9 @@
         <li class="{{ set_active('*admin/diagnosis*') }}">
           <a href="{{ route('admin.diagnosis.index') }}"><i class="fa fa-flask"></i> <span>Tanılar</span></a>
         </li>
-        <li><a href="#"><i class="fa fa-hospital-o"></i> <span>Departmanlar</span></a></li>
+        <li class="{{ set_active('*admin/department*') }}">
+          <a href="{{ route('admin.department.index') }}"><i class="fa fa-hospital-o"></i> <span>Departmanlar</span></a>
+        </li>
       </ul>
     </li>
 

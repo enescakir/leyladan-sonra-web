@@ -98,8 +98,6 @@ Route::prefix('child')->as('child.')->group(function () {
 
 });
 Route::resource('child', 'Admin\ChildController');
-Route::resource('diagnosis', 'Admin\DiagnosisController');
-Route::resource('department', 'Admin\DepartmentController');
 
 Route::prefix('faculty')->as('faculty.')->group(function () {
   Route::prefix('{id}')->group(function () {
@@ -150,16 +148,6 @@ Route::resource('volunteer', 'Admin\VolunteerController');
 
 Route::post('/process', 'Admin\ChildController@createProcess')->name('process.store');
 
-Route::prefix('blood')->as('blood.')->group(function () {
-  Route::get('/people', 'Admin\BloodController@editPeople')->name('people.edit');
-  Route::post('/people', 'Admin\BloodController@updatePeople')->name('people.update');
-  Route::get('/sms', 'Admin\BloodController@showSMS')->name('sms.show');
-  Route::get('/sms/balance', 'Admin\BloodController@checkBalance')->name('sms.balance');
-  Route::post('/sms/preview', 'Admin\BloodController@previewSMS')->name('sms.preview');
-  Route::post('/sms/test', 'Admin\BloodController@testSMS')->name('sms.test');
-  Route::post('/sms', 'Admin\BloodController@sendSMS')->name('sms.send');
-});
-Route::resource('blood', 'Admin\BloodController');
 
 Route::prefix('new')->as('new.')->group(function () {
   Route::get('/channel', 'Admin\NewController@channelsData')->name('channels.data');
@@ -188,3 +176,34 @@ Route::prefix('log')->middleware('auth')->group(function() {
     Route::get('{level}', ['as'  => 'log-viewer::logs.filter', 'uses'   => 'Admin\LogController@showByLevel',]);
   });
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Refactored Routes
+|--------------------------------------------------------------------------
+*/
+
+/*
+|--------------------------------------------------------------------------
+| Blood Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('blood')->as('blood.')->group(function () {
+  Route::get('/people', 'Admin\BloodController@editPeople')->name('people.edit');
+  Route::post('/people', 'Admin\BloodController@updatePeople')->name('people.update');
+  Route::get('/sms', 'Admin\BloodController@showSMS')->name('sms.show');
+  Route::get('/sms/balance', 'Admin\BloodController@checkBalance')->name('sms.balance');
+  Route::post('/sms/preview', 'Admin\BloodController@previewSMS')->name('sms.preview');
+  Route::post('/sms/test', 'Admin\BloodController@testSMS')->name('sms.test');
+  Route::post('/sms', 'Admin\BloodController@sendSMS')->name('sms.send');
+});
+Route::resource('blood', 'Admin\BloodController');
+
+/*
+|--------------------------------------------------------------------------
+| General Setting Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('diagnosis', 'Admin\DiagnosisController');
+Route::resource('department', 'Admin\DepartmentController');

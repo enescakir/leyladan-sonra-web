@@ -21,11 +21,6 @@ class DiagnosisController extends Controller
     return view('admin.diagnosis.index', compact('diagnosises'));
   }
 
-  public function create()
-  {
-    return view('admin.diagnosis.create');
-  }
-
   public function store(Request $request)
   {
     $diagnosis = Diagnosis::create([
@@ -50,9 +45,7 @@ class DiagnosisController extends Controller
 
   public function destroy(Diagnosis $diagnosi)
   {
-    info($diagnosi);
     $diagnosi->delete();
-    info($diagnosi);
     return $diagnosi;
   }
 }

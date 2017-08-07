@@ -59,26 +59,26 @@
 
 @section('scripts')
   <script type="text/javascript">
-    $( ".diagnosis" ).hover(
+    $( ".department" ).hover(
       function() {
-        var id = $( this ).attr('diagnosis-id');
-        var name = $( this ).attr('diagnosis-name');
+        var id = $( this ).attr('department-id');
+        var name = $( this ).attr('department-name');
         $( this ).append(
           '<div class="btn-group" role="group">' +
-            '<button type="button" diagnosis-id="' + id + '" diagnosis-name="' + name + '" class="edit btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>' +
-            '<button type="button" diagnosis-id="' + id + '" diagnosis-name="' + name + '" class="delete btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button>' +
+            '<button type="button" department-id="' + id + '" department-name="' + name + '" class="edit btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>' +
+            '<button type="button" department-id="' + id + '" department-name="' + name + '" class="delete btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button>' +
           '</div>'
         );
-        deleteItem("diagnosis", "diagnosis-id", "diagnosis-name", "isimli tanıyı silmek istediğinize emin misiniz?");
+        deleteItem("department", "department-id", "department-name", "isimli departmanı silmek istediğinize emin misiniz?");
         editDiagnosis(id, name);
       },
       function() {
         $( this ).find( ".btn-group" ).remove();
       }
     );
-    $("#create-diagnosis").click( function() {
+    $("#create-department").click( function() {
       swal({
-        title            : 'Tanı Ekle',
+        title            : 'Departman Ekle',
         input            : 'text',
         showCancelButton : true,
         confirmButtonText: 'Ekle',
@@ -88,7 +88,7 @@
             if (value) {
               resolve()
             } else {
-              reject('Tanının adını yazmanız gerekiyor')
+              reject('Departmanın adını yazmanız gerekiyor')
             }
           })
         },
@@ -96,7 +96,7 @@
         preConfirm: function (name) {
           return new Promise(function (resolve, reject) {
             $.ajax({
-              url     : "/admin/diagnosis",
+              url     : "/admin/department",
               method  : "POST",
               dataType: "json",
               data    : { 'name' : name },
@@ -114,7 +114,7 @@
       }).then(function () {
         swal({
           type             : 'success',
-          title            : 'Tanı başarıyla eklendi',
+          title            : 'Departman başarıyla eklendi',
           confirmButtonText: 'Tamam'
         }).then( function() { location.reload() });
       })
@@ -123,7 +123,7 @@
     function editDiagnosis(id, name) {
       $(".edit").click( function() {
         swal({
-          title            : 'Tanı Düzenle',
+          title            : 'Departmanı Düzenle',
           input            : 'text',
           inputValue       : name,
           showCancelButton : true,
@@ -134,7 +134,7 @@
               if (value) {
                 resolve()
               } else {
-                reject('Tanının adını boş bırakamazsınız')
+                reject('Departmanın adını boş bırakamazsınız')
               }
             })
           },
@@ -142,7 +142,7 @@
           preConfirm: function (input) {
             return new Promise(function (resolve, reject) {
               $.ajax({
-                url     : "/admin/diagnosis/" + id,
+                url     : "/admin/department/" + id,
                 method  : "PUT",
                 dataType: "json",
                 data    : { 'name' : input },
@@ -160,7 +160,7 @@
         }).then(function () {
           swal({
             type             : 'success',
-            title            : 'Tanı başarıyla güncellendi',
+            title            : 'Departman başarıyla güncellendi',
             confirmButtonText: 'Tamam'
           }).then( function() { location.reload() });
         })
