@@ -13,6 +13,17 @@ let mix = require('laravel-mix');
 
  mix.less('resources/assets/adminlte/less/AdminLTE.less', 'public/admin/css/AdminLTE.min.css');
 
+
+ mix.styles('resources/assets/admin/css/app.css', 'public/admin/css/app.min.css');
+ mix.babel('resources/assets/admin/js/app.js', 'public/admin/js/app.min.js');
+
+ /*
+  |--------------------------------------------------------------------------
+  | Plugins
+  |--------------------------------------------------------------------------
+  |
+  */
+
  mix.styles([
   'node_modules/bootstrap/dist/css/bootstrap.min.css', // Bootstrap 3.3.7
   'node_modules/font-awesome/css/font-awesome.min.css', // Font Awesome
