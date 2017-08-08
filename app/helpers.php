@@ -13,6 +13,7 @@ function set_active($path, $active = 'active')
 
 function upload_path($folder = null, $file = null)
 {
+
   $path = "upload";
   if ($folder) {
     $path .= "/" . $folder;

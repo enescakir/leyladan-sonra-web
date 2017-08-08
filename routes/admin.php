@@ -149,10 +149,6 @@ Route::resource('volunteer', 'Admin\VolunteerController');
 Route::post('/process', 'Admin\ChildController@createProcess')->name('process.store');
 
 
-Route::prefix('new')->as('new.')->group(function () {
-  Route::get('/channel', 'Admin\NewController@channelsData')->name('channels.data');
-});
-Route::resource('new', 'Admin\NewController');
 
 Route::resource('sponsor', 'Admin\SponsorController');
 
@@ -207,3 +203,13 @@ Route::resource('blood', 'Admin\BloodController');
 */
 Route::resource('diagnosis', 'Admin\DiagnosisController');
 Route::resource('department', 'Admin\DepartmentController');
+
+/*
+|--------------------------------------------------------------------------
+| Website Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('diagnosis', 'Admin\DiagnosisController');
+Route::resource('department', 'Admin\DepartmentController');
+Route::resource('new', 'Admin\NewController');
+Route::resource('channel', 'Admin\ChannelController');

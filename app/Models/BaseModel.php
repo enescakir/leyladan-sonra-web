@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Auth, Schema, Carbon\Carbon;
+use Auth, Schema, Carbon\Carbon, Image, File;
 
 class BaseModel extends Model
 {
@@ -76,6 +76,16 @@ class BaseModel extends Model
       Image::make($file)
         ->resize($size, null, function ($constraint) { $constraint->aspectRatio(); })
         ->save($imageLocation . '/' . $imageName, $quality);
+      return $this->save();
+    }
+
+    public function deleteImage($attribute, $location, $null = false)
+    {
+      $imageLocation = upload_path($location) . '/' . $this->$attribute;
+      File::delete($imageLocation);
+      if ($null) {
+        $this->$attribute = NULL;
+      }
       return $this->save();
     }
   }

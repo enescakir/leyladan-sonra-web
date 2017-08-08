@@ -19,4 +19,8 @@ return [
         'create' => '<strong>:name</strong> isimli departman başarıyla sisteme kaydedildi.',
         'update' => '<strong>:name</strong> isimli departman başarıyla güncellendi.',
     ],
+    'channel' => [
+        'create' => '<strong>:name</strong> isimli haber kanalı başarıyla sisteme kaydedildi.',
+        'update' => '<strong>:name</strong> isimli haber kanalı başarıyla güncellendi.',
+    ],
 ];

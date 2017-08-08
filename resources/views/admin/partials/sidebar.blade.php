@@ -119,17 +119,25 @@
     </li>
 
     <li class="header">Site</li>
-    <li class="treeview">
+    <li class="treeview {{ set_active(['*new*', '*channel*'], 'menu-open active') }}">
       <a href="#"><i class="fa fa-newspaper-o"></i> <span>Basında Biz</span>
         <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
       </a>
       <ul class="treeview-menu">
-        <li><a href="#"><i class="fa fa-plus"></i> <span>Yeni Haber Ekle</span></a></li>
-        <li><a href="#"><i class="fa fa-list-alt"></i> <span>Tüm Haberler</span></a></li>
-        <li><a href="#"><i class="fa fa-plus"></i> <span>Yeni Kanal Ekle</span></a></li>
-        <li><a href="#"><i class="fa fa-television"></i> <span>Kanallar</span></a></li>
+        <li class="{{ set_active('*admin/new/create*') }}">
+          <a href="{{ route('admin.new.create') }}"><i class="fa fa-plus"></i> <span>Yeni Haber Ekle</span></a>
+        </li>
+        <li class="{{ set_active('*admin/new') }}">
+          <a href="{{ route('admin.new.index') }}"><i class="fa fa-list-alt"></i> <span>Tüm Haberler</span></a>
+        </li>
+        <li class="{{ set_active('*admin/channel/create*') }}">
+          <a href="{{ route('admin.channel.create') }}"><i class="fa fa-plus"></i> <span>Yeni Kanal Ekle</span></a>
+        </li>
+        <li class="{{ set_active('*admin/channel') }}">
+          <a href="{{ route('admin.channel.index') }}"><i class="fa fa-television"></i> <span>Tüm Kanallar</span></a>
+        </li>
       </ul>
     </li>
     <li class="treeview">

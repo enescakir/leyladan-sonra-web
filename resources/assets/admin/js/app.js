@@ -17,6 +17,13 @@ $(function () {
     autoclose: true
   })
 
+  $(":file").filestyle({
+    buttonText: "Dosya seç",
+    iconName: "fa fa-folder-open",
+    placeholder: "Dosya seçilmedi",
+    buttonBefore: true,
+  });
+
   $('.date-picker').datepicker({
     language: "tr",
     autoclose: true

@@ -20,3 +20,19 @@ tr .two-button {
   max-height: 200px;
   overflow-x: hidden;
 }
+
+.table-img-xs {
+  max-height: 25px;
+}
+
+.table-img-sm {
+  max-height: 50px;
+}
+
+.table-img-md {
+  max-height: 100px;
+}
+
+.table-img-lg {
+  max-height: 150px;
+}
