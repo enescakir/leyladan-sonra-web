@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests;
-use App\Sponsor;
-use Session, Auth;
+use App\Models\Sponsor;
 
 class SponsorController extends Controller
 {
@@ -23,7 +21,7 @@ class SponsorController extends Controller
      */
     public function index()
     {
-      $sponsors = Sponsor::orderBy('order', 'DESC')->get();
+      $sponsors = Sponsor::orderBy('order', 'DESC')->paginate(25);
       return view('admin.sponsor.index', compact('sponsors'));
     }
 
@@ -49,7 +47,6 @@ class SponsorController extends Controller
       if($request->has('name')) $sponsor->name = $request->name;
       if($request->has('link')) $sponsor->link = $request->link;
       if($request->has('order')) $sponsor->order = $request->order; else $sponsor->order = 0;
-      $sponsor->created_by = Auth::user()->id;
 
       if($sponsor->save()){
           Session::flash('success_message', 'Destekçi başarıyla kaydedildi.');

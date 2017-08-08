@@ -148,10 +148,6 @@ Route::resource('volunteer', 'Admin\VolunteerController');
 
 Route::post('/process', 'Admin\ChildController@createProcess')->name('process.store');
 
-
-
-Route::resource('sponsor', 'Admin\SponsorController');
-
 Route::prefix('testimonial')->as('testimonial.')->group(function () {
   Route::get('/data', 'Admin\TestimonialController@indexData')->name('index.data');
 });
@@ -209,7 +205,6 @@ Route::resource('department', 'Admin\DepartmentController');
 | Website Routes
 |--------------------------------------------------------------------------
 */
-Route::resource('diagnosis', 'Admin\DiagnosisController');
-Route::resource('department', 'Admin\DepartmentController');
 Route::resource('new', 'Admin\NewController');
 Route::resource('channel', 'Admin\ChannelController');
+Route::resource('sponsor', 'Admin\SponsorController');

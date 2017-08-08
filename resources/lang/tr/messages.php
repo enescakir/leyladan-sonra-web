@@ -27,4 +27,8 @@ return [
         'create' => '<strong>:name</strong> isimli haber başarıyla sisteme kaydedildi.',
         'update' => '<strong>:name</strong> isimli haber başarıyla güncellendi.',
     ],
+    'sponsor' => [
+        'create' => '<strong>:name</strong> isimli destekçi başarıyla sisteme kaydedildi.',
+        'update' => '<strong>:name</strong> isimli destekçi başarıyla güncellendi.',
+    ],
 ];

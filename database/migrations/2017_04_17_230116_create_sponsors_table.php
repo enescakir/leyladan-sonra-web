@@ -16,6 +16,7 @@ class CreateSponsorsTable extends Migration
           $table->increments('id');
           $table->string('name')->nullable();
           $table->string('link')->nullable();
+          $table->string('logo')->nullable();
           $table->integer('order');
           $table->timestamps();
           BaseActions($table);

@@ -163,15 +163,19 @@
         <li><a href="#"><i class="fa fa-comments-o"></i> <span>Tüm Referanslar</span></a></li>
       </ul>
     </li>
-    <li class="treeview">
+    <li class="treeview {{ set_active('*sponsor*', 'menu-open active') }}">
       <a href="#"><i class="fa fa-briefcase"></i> <span>Destekçiler</span>
         <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
       </a>
       <ul class="treeview-menu">
-        <li><a href="#"><i class="fa fa-plus"></i> <span>Yeni Destekçi Ekle</span></a></li>
-        <li><a href="#"><i class="fa fa-suitcase"></i> <span>Tüm Destekçiler</span></a></li>
+        <li class="{{ set_active('*admin/sponsor/create*') }}">
+          <a href="{{ route('admin.sponsor.create') }}"><i class="fa fa-plus"></i> <span>Yeni Destekçi Ekle</span></a>
+        </li>
+        <li class="{{ set_active('*admin/sponsor') }}">
+          <a href="{{ route('admin.sponsor.index') }}"><i class="fa fa-suitcase"></i> <span>Tüm Destekçiler</span></a>
+        </li>
       </ul>
     </li>
     <li class="treeview">
