@@ -23,4 +23,8 @@ return [
         'create' => '<strong>:name</strong> isimli haber kanalı başarıyla sisteme kaydedildi.',
         'update' => '<strong>:name</strong> isimli haber kanalı başarıyla güncellendi.',
     ],
+    'new' => [
+        'create' => '<strong>:name</strong> isimli haber başarıyla sisteme kaydedildi.',
+        'update' => '<strong>:name</strong> isimli haber başarıyla güncellendi.',
+    ],
 ];

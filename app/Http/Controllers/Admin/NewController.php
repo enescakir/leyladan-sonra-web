@@ -5,110 +5,91 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests;
-use App\Channel, App\News, Log;
+use App\Models\{News, Channel};
+use Excel;
 
 class NewController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth');
+  public function __construct()
+  {
+    $this->middleware('auth');
+  }
+
+  public function index(Request $request)
+  {
+    $news = News::orderBy('id', 'DESC');
+    if ($request->has('search')) {
+      $news = $news
+        ->where('title', 'like', '%' . $request->search . '%')
+        ->orWhere('desc', 'like', '%' . $request->search . '%');
     }
+    $news = $news->with('channel');
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $news = News::with('channel')->get();
-        return view('admin.new.index', compact(['news']));
+    if ($request->has('csv')) {
+      $news = $news->get();
+      Excel::create('LS_Haberler_' . date("d_m_Y"), function($excel) use ($news) {
+        $newsData = $news->map(function ($item, $key) {
+          return [
+            "id"         => $item->id,
+            "title"      => $item->title,
+            "desc"       => $item->desc,
+            "channel"    => $item->channel->name,
+            "link"       => $item->link,
+            "created_at" => $item->created_at,
+          ];
+        });
+        $excel->sheet('Haberler', function($sheet) use ($newsData) {
+          $sheet->fromArray($newsData);
+        });
+      })->download('xlsx');
     }
+    $news = $news->paginate(25);
+    return view('admin.new.index', compact(['news']));
+  }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $channels = Channel::pluck('name','id')->toArray();
-        $channels = array_add($channels,'','');
-        return view('admin.new.create', compact(['channels']));
-    }
+  public function create()
+  {
+    $channels = Channel::toSelect();
+    return view('admin.new.create', compact(['channels']));
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $channel = Channel::find($request->channel);
-        if($channel == null){
-            $channel = new Channel();
-            $channel->name = $request->name;
-            $channel->category = $request->category;
-            $channel->save();
-            $channel->logo = $channel->id . ".jpg";
-            $channel->save();
-        }
-        $new = new News();
-        $new->title = $request->title;
-        $new->desc = $request->desc;
-        $new->channel_id = $channel->id;
-        $new->link = $request->link;
-        $new->save();
+  public function store(Request $request)
+  {
+    $this->validateNew($request);
+    $new = News::create($request->all());
+    session_success(__('messages.new.create', ['name' =>  $new->title]));
+    return redirect()->route('admin.new.index');
+  }
 
-        return redirect()->route('admin.new.create');
-    }
+  public function edit(News $new)
+  {
+    $channels = Channel::toSelect();
+    return view('admin.new.edit', compact(['new', 'channels']));
+  }
 
+  public function update(Request $request, News $new)
+  {
+    $this->validateNew($request);
+    $new->update($request->all());
+    session_success(__('messages.new.update', ['name' =>  $new->title]));
+    return redirect()->route('admin.new.index');
+  }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+  public function destroy(News $new)
+  {
+    $new->delete();
+    return $new;
+  }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+  private function validateNew(Request $request)
+  {
+    $this->validate($request, [
+      'title'      => 'required|string|max:191',
+      'desc'       => 'required|string',
+      'link'       => 'required|string|max:191',
+      'channel_id' => 'required|integer',
+    ]);
+  }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

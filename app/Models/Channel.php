@@ -14,4 +14,11 @@ class Channel extends BaseModel
     return $this->hasMany(News::class);
   }
 
+  // Global Methods
+  public static function toSelect($empty = false)
+  {
+    $res = Channel::orderBy('name')->pluck('name', 'id');
+    return $empty ? collect(['' => ''])->merge($res) : $res;
+  }
+
 }
