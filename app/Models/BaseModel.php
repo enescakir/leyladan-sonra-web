@@ -62,30 +62,30 @@ class BaseModel extends Model
   public function updateSlug()
   {
     return $this->slugKeys ?
-      $this->update([
-        'slug' => str_slug( remove_turkish( implode('-', array_map( function($key) { return $this->attributes[$key]; } , $this->slugKeys ) )))
-      ])
-      : false ;
-    }
-
-    public function uploadImage($file, $attribute, $location, $size = 1000, $quality = 80)
-    {
-      $imageName = $this->attributes['id']. "-". str_random(5) . ".jpg";
-      $imageLocation = upload_path($location);
-      $this->attributes[$attribute] = $imageName;
-      Image::make($file)
-        ->resize($size, null, function ($constraint) { $constraint->aspectRatio(); })
-        ->save($imageLocation . '/' . $imageName, $quality);
-      return $this->save();
-    }
-
-    public function deleteImage($attribute, $location, $null = false)
-    {
-      $imageLocation = upload_path($location) . '/' . $this->$attribute;
-      File::delete($imageLocation);
-      if ($null) {
-        $this->$attribute = NULL;
-      }
-      return $this->save();
-    }
+    $this->update([
+      'slug' => str_slug( remove_turkish( implode('-', array_map( function($key) { return $this->attributes[$key]; } , $this->slugKeys ) )))
+    ])
+    : false ;
   }
+
+  public function uploadImage($file, $attribute, $location, $size = 1000, $quality = 80)
+  {
+    $imageName = $this->attributes['id']. "-". str_random(5) . ".jpg";
+    $imageLocation = upload_path($location);
+    $this->attributes[$attribute] = $imageName;
+    Image::make($file)
+    ->resize($size, null, function ($constraint) { $constraint->aspectRatio(); })
+    ->save($imageLocation . '/' . $imageName, $quality);
+    return $this->save();
+  }
+
+  public function deleteImage($attribute, $location, $null = false)
+  {
+    $imageLocation = upload_path($location) . '/' . $this->$attribute;
+    File::delete($imageLocation);
+    if ($null) {
+      $this->$attribute = NULL;
+    }
+    return $this->save();
+  }
+}

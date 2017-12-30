@@ -20,18 +20,12 @@ Contact: enes@cakir.web.tr
   <meta name="description" content="Leyla'dan Sonra Yönetim Paneli"/>
   <meta name="author" content="Enes Çakır" />
 
-  <!-- Bootstrap 3 -->
-  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css">
-  <!-- Select2 -->
-  <link rel="stylesheet" href="/node_modules/select2/dist/css/select2.min.css">
+  <!-- Plugin styles, Bootstrap etc. -->
+  <link rel="stylesheet" href="{{ admin_asset('css/plugins.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ admin_asset('css/AdminLTE.min.css') }}">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="/node_modules/icheck/skins/square/blue.css">
-  <!-- Date Picker -->
-  <link rel="stylesheet" href="/node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ admin_asset('css/app.min.css') }}">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -80,7 +74,16 @@ Contact: enes@cakir.web.tr
 </div>
 <!-- /.login-box -->
 
-<!-- jQuery 3 -->
+
+<!-- REQUIRED JS SCRIPTS -->
+<!-- Plugins - JQuery, Bootstrap etc. -->
+<script src="{{ admin_asset('js/plugins.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ admin_asset('js/adminlte.min.js') }}"></script>
+<!-- App -->
+<script src="{{ admin_asset('js/app.min.js') }}"></script>
+
+{{-- <!-- jQuery 3 -->
 <script src="/node_modules/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -97,7 +100,7 @@ Contact: enes@cakir.web.tr
 <script src="/node_modules/inputmask/dist/min/inputmask/jquery.inputmask.min.js"></script>
 <script src="/node_modules/inputmask/dist/min/inputmask/inputmask.extensions.min.js"></script>
 <script src="/node_modules/inputmask/dist/min/inputmask/inputmask.date.extensions.min.js"></script>
-
+ --}}
 <script>
   $(function () {
     $('.icheck').iCheck({

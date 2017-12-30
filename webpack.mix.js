@@ -56,4 +56,29 @@ let mix = require('laravel-mix');
   'node_modules/bootstrap-maxlength/bootstrap-maxlength.min.js', // Max Length
   'node_modules/block-ui/jquery.blockUI.js', // JQuery Block UI
   'node_modules/bootstrap-filestyle/src/bootstrap-filestyle.min.js', // Bootstrap File Style
+  'node_modules/chart.js/Chart.min.js', // Chart.js
  ], 'public/admin/js/plugins.min.js');
+
+mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.eot', 'public/admin/fonts/');
+mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.svg', 'public/admin/fonts/');
+mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf', 'public/admin/fonts/');
+mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff', 'public/admin/fonts/');
+mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2', 'public/admin/fonts/');
+mix.copy('node_modules/ionicons/fonts/ionicons.ttf', 'public/admin/fonts/');
+mix.copy('node_modules/ionicons/fonts/ionicons.woff', 'public/admin/fonts/');
+mix.copy('node_modules/icheck/skins/flat/red.png', 'public/admin/css/');
+mix.copy('node_modules/icheck/skins/flat/red@2x.png', 'public/admin/css/');
+
+// JQVMap
+mix.copy('node_modules/jqvmap/dist/jqvmap.min.css', 'public/admin/css/');
+mix.scripts([
+  'node_modules/jqvmap/dist/jquery.vmap.min.js',
+  'node_modules/jqvmap/dist/maps/jquery.vmap.turkey.js',
+], 'public/admin/js/jqvmap.min.js');
+
+
+// Full Calendar
+mix.scripts([
+  'node_modules/fullcalendar/dist/fullcalendar.min.js',
+  'node_modules/fullcalendar/dist/locale/tr.js',
+], 'public/admin/js/fullcalendar.min.js');

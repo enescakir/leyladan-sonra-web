@@ -38,7 +38,6 @@
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                   <a href="{{ route('admin.channel.index', array_merge(request()->all(), ['csv' => 'true'])) }}" class="btn btn-default" target="_blank"><i class="fa fa-download"></i></a>
-
                 </div>
               </div>
             </form>

@@ -110,7 +110,7 @@
 
   <!-- Main Footer -->
   <footer class="main-footer">
-    2017 &copy; <a href="http://www.enescakir.com" target="_blank">Enes Çakır</a>. Leyla'dan Sonra Yönetim Programı. v3.0.1
+    2017 &copy; <a href="http://www.codetoday.org" target="_blank">Code for Good</a>. Leyla'dan Sonra Yönetim Programı. v3.0.1
   </footer>
 </div>
 <!-- ./wrapper -->
