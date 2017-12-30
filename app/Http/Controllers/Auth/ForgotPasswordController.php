@@ -34,7 +34,6 @@ class ForgotPasswordController extends Controller
 
     protected function sendResetLinkResponse($response)
     {
-      return back()->with('success_message', 'Şifrenizi sıfırlamak için ilgili talimatlar e-posta adresinize gönderilmiştir.');
+        return back()->with('success_message', 'Şifrenizi sıfırlamak için ilgili talimatlar e-posta adresinize gönderilmiştir.');
     }
-
 }

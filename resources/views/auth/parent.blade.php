@@ -8,7 +8,7 @@ Contact: enes@cakir.web.tr
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Leyla'dan Sonra | @yield('title')</title>
+  <title>@yield('title') | Leyla'dan Sonra</title>
 
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -83,47 +83,6 @@ Contact: enes@cakir.web.tr
 <!-- App -->
 <script src="{{ admin_asset('js/app.min.js') }}"></script>
 
-{{-- <!-- jQuery 3 -->
-<script src="/node_modules/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- iCheck -->
-<script src="/node_modules/icheck/icheck.min.js"></script>
-<!-- Select2 -->
-<script src="/node_modules/select2/dist/js/select2.full.min.js"></script>
-<!-- Date Picker -->
-<script src="/node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-<script src="/node_modules/bootstrap-datepicker/dist/locales/bootstrap-datepicker.tr.min.js"></script>
-
-<!-- Input Mask -->
-<script src="/node_modules/inputmask/dist/min/inputmask/inputmask.min.js"></script>
-<script src="/node_modules/inputmask/dist/min/inputmask/jquery.inputmask.min.js"></script>
-<script src="/node_modules/inputmask/dist/min/inputmask/inputmask.extensions.min.js"></script>
-<script src="/node_modules/inputmask/dist/min/inputmask/inputmask.date.extensions.min.js"></script>
- --}}
-<script>
-  $(function () {
-    $('.icheck').iCheck({
-      checkboxClass: 'icheckbox_square-blue',
-      radioClass: 'iradio_square-blue',
-      increaseArea: '20%' // optional
-    });
-
-    $('.select2').select2();
-    $('.select2-no-search').select2({
-      minimumResultsForSearch: Infinity,
-    });
-
-    $('.birthday-picker').datepicker({
-      language: "tr",
-      startView: 2,
-      autoclose: true
-    })
-
-    $('.birthday-picker').inputmask('dd.mm.yyyy', { 'placeholder': 'GG.AA.YYYY' })
-    $('.mobile').inputmask('(999) 999 99 99', { 'placeholder': '(___) ___ __ __' })
-  });
-</script>
 <script>
   // Reload page because of csrf token
   setTimeout(function(){

@@ -59,7 +59,7 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-          <a href="{{ route('admin.blood.index') }}" class="btn btn-danger">Geri</a>
+          <a href="{{ route('admin.channel.index') }}" class="btn btn-danger">Geri</a>
           {!! Form::submit("Ekle", ['class' => 'btn btn-success pull-right']) !!}
         </div>
         <!-- /.box-footer -->

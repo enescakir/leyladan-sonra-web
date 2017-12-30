@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
-use App\Notifications\NewUser as NewUserNotification;
+use App\Models\User;
+use App\Models\Faculty;
 
-use App\User, App\Faculty;
 class RegisterController extends Controller
 {
     /*
@@ -48,16 +48,16 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm()
     {
-      $faculties = Faculty::orderby('full_name')->get();
-      return view('auth.register', compact(['faculties']));
+        $faculties = Faculty::orderby('full_name')->get();
+        return view('auth.register', compact(['faculties']));
     }
 
     protected function registered($request, $user)
     {
-      $user->sendEmailActivationNotification();
-      $this->guard()->logout();
-      session_info("E-posta adresinize doğrulama kodu gönderilmiştir.");
-      return redirect($this->redirectPath());
+        $user->sendEmailActivationNotification();
+        $this->guard()->logout();
+        session_info("E-posta adresinize doğrulama kodu gönderilmiştir.");
+        return redirect($this->redirectPath());
     }
 
     /**
@@ -78,7 +78,7 @@ class RegisterController extends Controller
           'mobile'     => 'required|max:255',
           'year'       => 'required|max:255',
           'title'      => 'required|max:255',
-        ]);
+      ]);
     }
 
     /**

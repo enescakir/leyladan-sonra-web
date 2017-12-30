@@ -8,7 +8,7 @@
         "php": ">=5.6.4",
         "laravel/framework": "5.4.*",
         "intervention/image": "^2.3",
-	      "laravelcollective/html": "5.4.*",
+	   "laravelcollective/html": "5.4.*",
         "guzzlehttp/guzzle": "~6.0",
         "arcanedev/log-viewer": "4.3.*",
         "barryvdh/laravel-dompdf": "0.8.*",
@@ -18,12 +18,14 @@
         "barryvdh/laravel-debugbar": "^2.4",
         "predis/predis": "^1.1",
         "maatwebsite/excel": "^2.1",
-        "mpdf/mpdf": "~6.1",
         "sentry/sentry-laravel": "^0.7.0",
         "laravel/passport": "^2.0",
         "laravel/scout": "^3.0",
         "laravel/tinker": "^1.0",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "mpdf/mpdf": "^7.0",
+        "spatie/laravel-image-optimizer": "^1.1",
+        "jenssegers/agent": "^2.6"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -34,10 +34,15 @@
                 @endif
               @endforeach
               <div class="input-group input-group-sm">
-                <input type="text" class="form-control pull-right" style="max-width:100px;" name="search" placeholder="Arama" value="{{ request()->search }}">
+                <input type="text" class="form-control table-search-bar pull-right" name="search" placeholder="Arama" value="{{ request()->search }}">
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                  <a href="{{ route('admin.new.index', array_merge(request()->all(), ['csv' => 'true'])) }}" class="btn btn-default" target="_blank"><i class="fa fa-download"></i></a>
+                  <a href="{{ route('admin.new.index', array_merge(request()->all(), ['csv' => 'true'])) }}" class="btn btn-primary" target="_blank">
+                    <i class="fa fa-download"></i>
+                  </a>
+                  <a href="{{ route('admin.new.create') }}" class="btn btn-success">
+                    <i class="fa fa-plus"></i>
+                  </a>
                 </div>
               </div>
             </form>
@@ -64,13 +69,15 @@
                   <td>{{ $new->channel->name }}</td>
                   <td>
                     <div class="btn-group">
-                      <a class="edit btn btn-flat btn-primary btn-xs" target="_blank" href="{{ $new->link }}">
+                      <a class="edit btn btn-primary btn-xs" target="_blank" href="{{ $new->link }}">
                         <i class="fa fa-globe"></i>
                       </a>
-                      <a class="edit btn btn-flat btn-warning btn-xs" href="{{ route("admin.new.edit", $new->id) }}">
+                      <a class="edit btn btn-warning btn-xs" href="{{ route("admin.new.edit", $new->id) }}">
                         <i class="fa fa-pencil"></i>
                       </a>
-                      <a class="delete btn btn-flat btn-danger btn-xs" new-id="{{ $new->id }}" new-title="{{ $new->title }}"  href="javascript:;"><i class="fa fa-trash"></i></a>
+                      <a class="delete btn btn-danger btn-xs" new-id="{{ $new->id }}" new-title="{{ $new->title }}"  href="javascript:;">
+                        <i class="fa fa-trash"></i>
+                      </a>
                     </div>
                 </td>
                 </tr>

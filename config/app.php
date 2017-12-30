@@ -173,6 +173,9 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Spatie\LaravelImageOptimizer\ImageOptimizerServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -239,6 +242,8 @@ return [
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'DataManager' => App\Models\DataManager::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'ImageOptimizer' => Spatie\LaravelImageOptimizer\Facades\ImageOptimizer::class,
+        'Agent' => Jenssegers\Agent\Agent::class,
 
     ],
 

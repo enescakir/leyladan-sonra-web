@@ -50,7 +50,7 @@
           <div class="form-group{{ $errors->has('link') ? ' has-error' : '' }}">
               {!! Form::label('link', 'Bağlantı *', ['class' => 'col-sm-3 control-label']) !!}
               <div class="col-sm-9">
-                  {!! Form::text('link', null, ['class' => 'form-control', 'required' => 'required']) !!}
+                  {!! Form::text('link', null, ['class' => 'form-control url-mask', 'required' => 'required']) !!}
                   <small class="text-danger">{{ $errors->first('link') }}</small>
               </div>
           </div>
@@ -64,7 +64,7 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-          <a href="{{ route('admin.blood.index') }}" class="btn btn-danger">Geri</a>
+          <a href="{{ route('admin.new.index') }}" class="btn btn-danger">Geri</a>
           {!! Form::submit("Ekle", ['class' => 'btn btn-success pull-right']) !!}
         </div>
         <!-- /.box-footer -->

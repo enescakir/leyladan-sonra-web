@@ -39,34 +39,18 @@
     <div class="form-group has-feedback {{ $errors->has('year') ? ' has-error' : '' }}">
       {!! Form::label( 'year', 'Sınıfınız:',['class' => 'control-label']) !!}
       <div class="btn-group btn-group-justified" data-toggle="buttons">
+        @foreach(range(0,6) as $key)
         <label class="btn btn-ls">
-          <input type="radio" name="year" value="0" autocomplete="off"> 0
+          <input type="radio" name="year" value="{{ $key }} " autocomplete="off"> {{ $key }}
         </label>
-        <label class="btn btn-ls">
-          <input type="radio" name="year" value="1" autocomplete="off"> 1
-        </label>
-        <label class="btn btn-ls">
-          <input type="radio" name="year" value="2" autocomplete="off"> 2
-        </label>
-        <label class="btn btn-ls">
-          <input type="radio" name="year" value="3" autocomplete="off"> 3
-        </label>
-        <label class="btn btn-ls">
-          <input type="radio" name="year" value="4" autocomplete="off"> 4
-        </label>
-        <label class="btn btn-ls">
-          <input type="radio" name="year" value="5" autocomplete="off"> 5
-        </label>
-        <label class="btn btn-ls">
-          <input type="radio" name="year" value="6" autocomplete="off"> 6
-        </label>
+        @endforeach
       </div>
       @if ($errors->has('year'))
           <span class="help-block"><strong>{{ $errors->first('year') }}</strong></span>
       @endif
     </div>
     <div class="form-group has-feedback {{ $errors->has('birthday') ? 'has-error' : '' }}">
-      {!! Form::text('birthday', null, ['class' => 'form-control birthday-picker', 'placeholder' => 'Doğum Tarihi', 'required' => 'required']) !!}
+      {!! Form::text('birthday', null, ['class' => 'form-control birthday-picker date-mask', 'placeholder' => 'Doğum Tarihi', 'required' => 'required']) !!}
       <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
       @if ($errors->has('birthday'))
           <span class="help-block"><strong>{{ $errors->first('birthday') }}</strong></span>
@@ -74,19 +58,19 @@
     </div>
     <div class="form-group {{ $errors->has('title') ? ' has-error' : '' }}">
         {!! Form::select('title', [
-            'Fakülte Sorumlusu' => 'Fakülte Sorumlusu',
-            'Fakülte Yönetim Kurulu' => 'Fakülte Yönetim Kurulu',
-            'İletişim Sorumlusu' => 'İletişim Sorumlusu',
-            'Hediye Sorumlusu' => 'Hediye Sorumlusu',
-            'Site Sorumlusu' => 'Site Sorumlusu',
-            'Normal Üye' => 'Normal Üye'
+          'Fakülte Sorumlusu'      => 'Fakülte Sorumlusu',
+          'Fakülte Yönetim Kurulu' => 'Fakülte Yönetim Kurulu',
+          'İletişim Sorumlusu'     => 'İletişim Sorumlusu',
+          'Hediye Sorumlusu'       => 'Hediye Sorumlusu',
+          'Site Sorumlusu'         => 'Site Sorumlusu',
+          'Normal Üye'             => 'Normal Üye'
           ], null, ['class' => 'form-control select2-no-search', 'required' => 'required', 'placeholder' => 'Görev']) !!}
           @if ($errors->has('title'))
               <span class="help-block"><strong>{{ $errors->first('title') }}</strong></span>
           @endif
     </div>
     <div class="form-group {{ $errors->has('faculty_id') ? 'has-error' : '' }}">
-        {!! Form::select('faculty_id', App\Faculty::toSelect() , null, ['class' => 'form-control select2', 'required' => 'required', 'placeholder' => 'Fakülte']) !!}
+        {!! Form::select('faculty_id', App\Models\Faculty::toSelect() , null, ['class' => 'form-control select2', 'required' => 'required', 'placeholder' => 'Fakülte']) !!}
         @if ($errors->has('faculty_id'))
             <span class="help-block"><strong>{{ $errors->first('faculty_id') }}</strong></span>
         @endif

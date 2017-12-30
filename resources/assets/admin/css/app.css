@@ -36,3 +36,7 @@ tr .two-button {
 .table-img-lg {
   max-height: 150px;
 }
+
+.table-search-bar {
+  max-width: 100px;
+}

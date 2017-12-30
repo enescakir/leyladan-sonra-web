@@ -1,7 +1,7 @@
 @extends('admin.parent')
 
 @section('title')
-  Tüm Bağışçıları
+Tüm Bağışçılar
 @endsection
 
 @section('styles')
@@ -10,7 +10,7 @@
 @section('header')
   <section class="content-header">
     <h1>
-      Tüm Bağışçıları
+      Tüm Bağışçılar
       <small>Sistemimize kayıtlı tüm kan bağışçılarına buradan ulaşabilirsiniz</small>
     </h1>
     <ol class="breadcrumb">
@@ -34,7 +34,7 @@
                 @endif
               @endforeach
               <div class="input-group input-group-sm">
-                <input type="text" class="form-control pull-right" style="max-width:100px;" name="search" placeholder="Arama" value="{{ request()->search }}">
+                <input type="text" class="form-control table-search-bar pull-right" name="search" placeholder="Arama" value="{{ request()->search }}">
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                   {{-- TYPE SELECTOR --}}
@@ -86,8 +86,10 @@
                       <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['per_page' => 500])) }}">500</a></li>
                     </ul>
                   </div>
-                  <a href="{{ route('admin.blood.index', array_merge(request()->all(), ['csv' => 'true'])) }}" class="btn btn-default" target="_blank"><i class="fa fa-download"></i></a>
-
+                  <a href="{{ route('admin.blood.index', array_merge(request()->all(), ['csv' => 'true'])) }}" class="btn btn-primary" target="_blank">
+                    <i class="fa fa-download"></i>
+                  </a>
+                  <a href="{{ route('admin.blood.create') }}" class="btn btn-success"><i class="fa fa-plus"></i></a>
                 </div>
               </div>
             </form>
@@ -112,14 +114,14 @@
                   <td>{{ $blood->id }}</td>
                   <td>{{ $blood->blood_type }}</td>
                   <td>{{ $blood->rh }}</td>
-                  <td>{{ $blood->mobile }}</td>
+                  <td>{{ $blood->mobile_formatted }}</td>
                   <td>{{ $blood->city }}</td>
                   <td>
                     <div class="btn-group">
-                      <a class="edit btn btn-flat btn-warning btn-xs" href="{{ route("admin.blood.edit", $blood->id) }}">
+                      <a class="edit btn btn-warning btn-xs" href="{{ route("admin.blood.edit", $blood->id) }}">
                         <i class="fa fa-pencil"></i>
                       </a>
-                      <a class="delete btn btn-flat btn-danger btn-xs" blood-id="{{ $blood->id }}" blood-mobile="{{ $blood->mobile }}"  href="javascript:;"><i class="fa fa-trash"></i></a>
+                      <a class="delete btn btn-danger btn-xs" blood-id="{{ $blood->id }}" blood-mobile="{{ $blood->mobile }}"  href="javascript:;"><i class="fa fa-trash"></i></a>
                     </div>
 
                 </td>

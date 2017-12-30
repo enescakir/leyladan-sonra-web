@@ -8,7 +8,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Leyla'dan Sonra | @yield('title')</title>
+  <title>@yield('title') | Leyla'dan Sonra</title>
 
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">

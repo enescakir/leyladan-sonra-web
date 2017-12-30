@@ -46,19 +46,19 @@ class LoginController extends Controller
      */
     protected function authenticated($request, $user)
     {
-      if($user->email_token != null) {
-        session_info("E-posta adresinizi doğrulamamışsınız. <br> Tekrardan doğrulama kodu e-postanıza gönderildi.");
-        $user->sendEmailActivationNotification();
-        $this->guard()->logout();
-        return back()->withInput($request->only('email', 'remember'));
-      } else if($user->approved_at == null){
-        session_info("Hesabınızın fakülte yöneticiniz tarafından onaylanması gerekiyor.");
-        $this->guard()->logout();
-        return back()->withInput($request->only('email', 'remember'));
-      } else {
-        $user->last_login = date("Y-m-d H:i:s");
-        $user->save();
-        return redirect()->intended(route('admin.dashboard'));
-      }
+        if ($user->email_token != null) {
+            session_info("E-posta adresinizi doğrulamamışsınız. <br> Tekrardan doğrulama kodu e-postanıza gönderildi.");
+            $user->sendEmailActivationNotification();
+            $this->guard()->logout();
+            return back()->withInput($request->only('email', 'remember'));
+        } elseif ($user->approved_at == null) {
+            session_info("Hesabınızın fakülte yöneticiniz tarafından onaylanması gerekiyor.");
+            $this->guard()->logout();
+            return back()->withInput($request->only('email', 'remember'));
+        } else {
+            $user->last_login = date("Y-m-d H:i:s");
+            $user->save();
+            return redirect()->intended(route('admin.dashboard'));
+        }
     }
 }
