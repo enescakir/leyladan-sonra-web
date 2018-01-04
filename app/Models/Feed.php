@@ -2,25 +2,30 @@
 
 namespace App\Models;
 
-class Feed extends BaseModel
+use Illuminate\Database\Eloquent\Model;
+
+use App\Traits\Base;
+
+class Feed extends Model
 {
-  // Properties
-  protected $table    = 'feeds';
-  protected $fillable = ['title', 'desc', 'icon', 'link', 'faculty_id'];
+    use Base;
+    // Properties
+    protected $table    = 'feeds';
+    protected $fillable = ['title', 'desc', 'icon', 'link', 'faculty_id'];
 
-  // Relations
-  public function faculty()
-  {
-    return $this->belongsTo(Faculty::class);
-  }
+    // Relations
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class);
+    }
 
-  // Scopes
+    // Scopes
 
-  // Accessors
-  public function getIconLabelAttribute()
-  {
-    $icon_code = $this->attributes['icon'];
-    switch ($icon_code) {
+    // Accessors
+    public function getIconLabelAttribute()
+    {
+        $icon_code = $this->attributes['icon'];
+        switch ($icon_code) {
       case "1":
         $result = ["warning", "child"];
       break;
@@ -37,6 +42,6 @@ class Feed extends BaseModel
         $result = ["", ""];
       break;
     }
-    return '<div class="label label-sm label-' . $result[0] . '"> <i class="fa fa-' . $result[1] . '"></i></div>';
-  }
+        return '<div class="label label-sm label-' . $result[0] . '"> <i class="fa fa-' . $result[1] . '"></i></div>';
+    }
 }

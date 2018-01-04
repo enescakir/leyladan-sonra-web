@@ -2,9 +2,14 @@
 
 namespace App\Models;
 
-class Subscriber extends BaseModel
+use Illuminate\Database\Eloquent\Model;
+
+use App\Traits\Base;
+
+class Subscriber extends Model
 {
-  // Properties
-  protected $table    = 'subscribers';
-  protected $fillable = ['notification_toke'];
+    use Base;
+    // Properties
+    protected $table    = 'subscribers';
+    protected $fillable = ['notification_toke'];
 }

@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
-class News extends BaseModel
-{
-  protected $table    = 'news';
-  protected $fillable = ['title', 'desc', 'link', 'channel_id'];
+use Illuminate\Database\Eloquent\Model;
 
-  public function channel()
-  {
-    return $this->belongsTo(Channel::class);
-  }
+use App\Traits\Base;
+
+class News extends Model
+{
+    use Base;
+    protected $table    = 'news';
+    protected $fillable = ['title', 'desc', 'link', 'channel_id'];
+
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
+    }
 }

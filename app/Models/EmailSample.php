@@ -2,9 +2,14 @@
 
 namespace App\Models;
 
-class EmailSample extends BaseModel
+use Illuminate\Database\Eloquent\Model;
+
+use App\Traits\Base;
+
+class EmailSample extends Model
 {
-  // Properties
-  protected $table    = 'email_samples';
-  protected $fillable = ['name', 'category', 'text'];
+    use Base;
+    // Properties
+    protected $table    = 'email_samples';
+    protected $fillable = ['name', 'category', 'text'];
 }

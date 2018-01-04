@@ -2,17 +2,21 @@
 
 namespace App\Models;
 
-class BlogCategory extends BaseModel
+use Illuminate\Database\Eloquent\Model;
+
+use App\Traits\Base;
+
+class BlogCategory extends Model
 {
-  // Properties
-  protected $table    = 'blog_categories';
-  protected $fillable = ['title', 'slug', 'desc'];
-  protected $slugKeys = ['title'];
+    use Base;
+    // Properties
+    protected $table    = 'blog_categories';
+    protected $fillable = ['title', 'slug', 'desc'];
+    protected $slugKeys = ['title'];
 
-  // Relations
-  public function blogs()
-  {
-    return $this->belongsToMany(Blog::class, 'blog_category', 'category_id', 'blog_id')->withTimestamps();
-  }
-
+    // Relations
+    public function blogs()
+    {
+        return $this->belongsToMany(Blog::class, 'blog_category', 'category_id', 'blog_id')->withTimestamps();
+    }
 }

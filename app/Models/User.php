@@ -13,93 +13,83 @@ use App\Scopes\LeftScope;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\Birthday;
 use App\Traits\Mobile;
+use App\Traits\Base;
 use Auth;
 
 class User extends Authenticatable
 {
-  use Birthday, Mobile;
-  use SoftDeletes;
-  use Notifiable;
+    use Base;
+    use Birthday;
+    use Mobile;
+    use Notifiable;
 
-  // Properties
-  protected $table    = 'users';
-  protected $fillable = [
-    'first_name', 'last_name', 'email', 'password', 'birthday', 'mobile',
-    'year', 'title', 'profile_photo', 'faculty_id', 'gender', 'email_token',
-    'left_at', 'graduated_at'
-  ];
-  protected $hidden   = ['password', 'remember_token'];
-  protected $appends  = ['full_name'];
-  protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'birthday', 'left_at', 'graduated_at'];
+    // Properties
+    protected $table    = 'users';
+    protected $fillable = [
+        'first_name', 'last_name', 'email', 'password', 'birthday', 'mobile',
+        'year', 'title', 'profile_photo', 'faculty_id', 'gender', 'email_token',
+        'left_at', 'graduated_at'
+    ];
+    protected $hidden   = ['password', 'remember_token'];
+    protected $appends  = ['full_name'];
+    protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'birthday', 'left_at', 'graduated_at'];
 
-  public static function boot()
-  {
-    parent::boot();
-    static::updating(function ($model) {
-      if(Auth::user()) $model->updated_by = Auth::user()->id;
-    });
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new GraduateScope);
+        static::addGlobalScope(new LeftScope);
+    }
 
-    static::deleting(function ($model) {
-      if(Auth::user()) $model->deleted_by = Auth::user()->id;
-    });
+    // Relations
+    public function children()
+    {
+        return $this->belongsToMany(Child::class);
+    }
 
-    static::creating(function ($model) {
-      if(Auth::user()) $model->created_by = Auth::user()->id;
-    });
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class);
+    }
 
-    static::addGlobalScope(new GraduateScope);
-    static::addGlobalScope(new LeftScope);
-  }
+    public function processes()
+    {
+        return $this->hasMany(Process::class, 'created_by');
+    }
 
-  // Relations
-  public function children()
-  {
-    return $this->belongsToMany(Child::class);
-  }
+    public function answers()
+    {
+        return $this->hasMany(Message::class, 'answered_by');
+    }
 
-  public function faculty()
-  {
-    return $this->belongsTo(Faculty::class);
-  }
+    public function visits()
+    {
+        return $this->hasMany(Process::class, 'created_by')->where('desc', ProcessType::Visit);
+    }
 
-  public function processes()
-  {
-    return $this->hasMany(Process::class, 'created_by');
-  }
+    // Scopes
+    public function scopeTitle($query, $title)
+    {
+        $query->where('title', $title);
+    }
 
-  public function answers()
-  {
-    return $this->hasMany(Message::class, 'answered_by');
-  }
+    // Accessors
+    public function getFullNameAttribute()
+    {
+        return $this->attributes['first_name'] . " " . $this->attributes['last_name'];
+    }
 
-  public function visits()
-  {
-    return $this->hasMany(Process::class, 'created_by')->where('desc', ProcessType::Visit);
-  }
+    // Notifications
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
 
-  // Scopes
-  public function scopeTitle($query, $title)
-  {
-    $query->where('title', $title);
-  }
-
-  // Accessors
-  public function getFullNameAttribute()
-  {
-    return $this->attributes['first_name'] . " " . $this->attributes['last_name'];
-  }
-
-  // Notifications
-  public function sendPasswordResetNotification($token)
-  {
-    $this->notify(new ResetPasswordNotification($token));
-  }
-
-  public function sendEmailActivationNotification()
-  {
-    $token = hash_hmac('sha256', str_random(40), $this->email);
-    $this->email_token = $token;
-    $this->save();
-    $this->notify(new ActivateEmailNotification($token));
-  }
+    public function sendEmailActivationNotification()
+    {
+        $token = hash_hmac('sha256', str_random(40), $this->email);
+        $this->email_token = $token;
+        $this->save();
+        $this->notify(new ActivateEmailNotification($token));
+    }
 }
