@@ -31,4 +31,8 @@ return [
         'create' => '<strong>:name</strong> isimli destekçi başarıyla sisteme kaydedildi.',
         'update' => '<strong>:name</strong> isimli destekçi başarıyla güncellendi.',
     ],
+    'testimonial' => [
+        'create' => '<strong>:name</strong> isimli referans başarıyla sisteme kaydedildi.',
+        'update' => '<strong>:name</strong> isimli referans başarıyla güncellendi.',
+    ],
 ];

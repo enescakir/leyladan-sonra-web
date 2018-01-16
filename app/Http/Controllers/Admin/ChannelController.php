@@ -19,21 +19,11 @@ class ChannelController extends Controller
     public function index(Request $request)
     {
         $channels = Channel::orderBy('id', 'DESC');
-        if ($request->has('search')) {
-            $channels = $channels
-            ->where('name', 'like', '%' . $request->search . '%')
-            ->orWhere('category', 'like', '%' . $request->search . '%');
+        if ($request->filled('search')) {
+            $channels = $channels->search($request->search);
         }
-        if ($request->has('csv')) {
-            $channels = $channels->get(['id', 'name', 'category', 'logo', 'created_at']);
-            Excel::create('LS_HaberKanallari_' . date("d_m_Y"), function ($excel) use ($channels) {
-                $channels = $channels->each(function ($item, $key) {
-                    $item->logo = asset(upload_path("channel", $item->logo));
-                });
-                $excel->sheet('Kanallar', function ($sheet) use ($channels) {
-                    $sheet->fromArray($channels, null, 'A1', true);
-                });
-            })->download('xlsx');
+        if ($request->filled('download')) {
+            Channel::download($channels);
         }
         $channels = $channels->withCount('news')->paginate(25);
         return view('admin.channel.index', compact('channels'));

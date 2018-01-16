@@ -37,7 +37,7 @@ Tüm Haber Kanalları
               <input type="text" class="form-control pull-right table-search-bar" name="search" placeholder="Arama" value="{{ request()->search }}">
               <div class="input-group-btn">
                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                <a href="{{ route('admin.channel.index', array_merge(request()->all(), ['csv' => 'true'])) }}" class="btn btn-primary" target="_blank">
+                <a href="{{ route('admin.channel.index', array_merge(request()->all(), ['download' => 'true'])) }}" class="btn btn-primary" target="_blank">
                   <i class="fa fa-download"></i>
                 </a>
                 <a href="{{ route('admin.channel.create') }}" class="btn btn-success">
@@ -76,7 +76,7 @@ Tüm Haber Kanalları
                   <a class="edit btn btn-warning btn-xs" href="{{ route("admin.channel.edit", $channel->id) }}">
                     <i class="fa fa-pencil"></i>
                   </a>
-                  <a class="delete btn btn-danger btn-xs" channel-id="{{ $channel->id }}" channel-name="{{ $channel->name }}"  href="javascript:;">
+                  <a class="delete btn btn-danger btn-xs" delete-id="{{ $channel->id }}" delete-name="{{ $channel->name }}" href="javascript:;">
                     <i class="fa fa-trash"></i>
                   </a>
                 </div>
@@ -106,6 +106,6 @@ Tüm Haber Kanalları
 
   @section('scripts')
   <script type="text/javascript">
-    deleteItem("channel", "channel-id", "channel-name", "isimli haber kanalını silmek istediğinize emin misiniz?");
+    deleteItem("channel", "isimli haber kanalını silmek istediğinize emin misiniz?");
   </script>
   @endsection

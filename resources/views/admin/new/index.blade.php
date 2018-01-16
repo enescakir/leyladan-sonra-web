@@ -37,7 +37,7 @@
                 <input type="text" class="form-control table-search-bar pull-right" name="search" placeholder="Arama" value="{{ request()->search }}">
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                  <a href="{{ route('admin.new.index', array_merge(request()->all(), ['csv' => 'true'])) }}" class="btn btn-primary" target="_blank">
+                  <a href="{{ route('admin.new.index', array_merge(request()->all(), ['download' => 'true'])) }}" class="btn btn-primary" target="_blank">
                     <i class="fa fa-download"></i>
                   </a>
                   <a href="{{ route('admin.new.create') }}" class="btn btn-success">
@@ -75,7 +75,7 @@
                       <a class="edit btn btn-warning btn-xs" href="{{ route("admin.new.edit", $new->id) }}">
                         <i class="fa fa-pencil"></i>
                       </a>
-                      <a class="delete btn btn-danger btn-xs" new-id="{{ $new->id }}" new-title="{{ $new->title }}"  href="javascript:;">
+                      <a class="delete btn btn-danger btn-xs" delete-id="{{ $new->id }}" delete-name="{{ $new->title }}"  href="javascript:;">
                         <i class="fa fa-trash"></i>
                       </a>
                     </div>
@@ -104,6 +104,6 @@
 
 @section('scripts')
   <script type="text/javascript">
-    deleteItem("new", "new-id", "new-title", "isimli haberi silmek istediğinize emin misiniz?");
+    deleteItem("new", "isimli haberi silmek istediğinize emin misiniz?");
   </script>
 @endsection

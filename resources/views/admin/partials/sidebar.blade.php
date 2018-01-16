@@ -140,7 +140,7 @@
         </li>
       </ul>
     </li>
-    <li class="treeview">
+    {{-- <li class="treeview">
       <a href="#"><i class="fa fa-book"></i> <span>Blog</span>
         <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
@@ -151,16 +151,20 @@
         <li><a href="#"><i class="fa fa-folder-open-o"></i> <span>Tüm Yazılar</span></a></li>
         <li><a href="#"><i class="fa fa-tags"></i> <span>Yazı Kategorileri</span></a></li>
       </ul>
-    </li>
-    <li class="treeview">
+    </li> --}}
+    <li class="treeview {{ set_active('*testimonial*', 'menu-open active') }}">
       <a href="#"><i class="fa fa-comment-o"></i> <span>Referanslar</span>
         <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
       </a>
       <ul class="treeview-menu">
-        <li><a href="#"><i class="fa fa-plus"></i> <span>Yeni Referans Ekle</span></a></li>
-        <li><a href="#"><i class="fa fa-comments-o"></i> <span>Tüm Referanslar</span></a></li>
+        <li class="{{ set_active('*admin/testimonial/create*') }}">
+            <a href="{{ route('admin.testimonial.create') }}"><i class="fa fa-plus"></i> <span>Yeni Referans Ekle</span></a>
+        </li>
+        <li class="{{ set_active('*admin/testimonial') }}">
+            <a href="{{ route('admin.testimonial.index') }}"><i class="fa fa-comments-o"></i> <span>Tüm Referanslar</span></a>
+        </li>
       </ul>
     </li>
     <li class="treeview {{ set_active('*sponsor*', 'menu-open active') }}">

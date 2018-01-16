@@ -37,7 +37,7 @@
                 <input type="text" class="form-control table-search-bar pull-right" name="search" placeholder="Arama" value="{{ request()->search }}">
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                  <a href="{{ route('admin.sponsor.index', array_merge(request()->all(), ['csv' => 'true'])) }}" class="btn btn-primary" target="_blank">
+                  <a href="{{ route('admin.sponsor.index', array_merge(request()->all(), ['download' => 'true'])) }}" class="btn btn-primary" target="_blank">
                     <i class="fa fa-download"></i>
                   </a>
                   <a href="{{ route('admin.sponsor.create') }}" class="btn btn-success">
@@ -79,7 +79,7 @@
                       <a class="edit btn btn-warning btn-xs" href="{{ route("admin.sponsor.edit", $sponsor->id) }}">
                         <i class="fa fa-pencil"></i>
                       </a>
-                      <a class="delete btn btn-danger btn-xs" sponsor-id="{{ $sponsor->id }}" sponsor-name="{{ $sponsor->name }}"  href="javascript:;"><i class="fa fa-trash"></i></a>
+                      <a class="delete btn btn-danger btn-xs" delete-id="{{ $sponsor->id }}" delete-name="{{ $sponsor->name }}"  href="javascript:;"><i class="fa fa-trash"></i></a>
                     </div>
 
                 </td>
@@ -107,6 +107,6 @@
 
 @section('scripts')
   <script type="text/javascript">
-    deleteItem("sponsor", "sponsor-id", "sponsor-name", "isimli destekçiyi silmek istediğinize emin misiniz?");
+    deleteItem("sponsor", "isimli destekçiyi silmek istediğinize emin misiniz?");
   </script>
 @endsection

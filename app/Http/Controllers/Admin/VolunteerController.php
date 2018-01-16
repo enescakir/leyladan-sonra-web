@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests;
-use App\Volunteer, App\Child, Datatables;
+use App\Volunteer;
+use App\Child;
+use Datatables;
 
 class VolunteerController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth');
@@ -33,7 +34,7 @@ class VolunteerController extends Controller
 //                <a class="edit btn btn-success btn-sm" href="{{ route("admin.volunteer.edit", $id) }}"><i class="fa fa-pencil"></i></a>
 //                <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>
 //           ')
-            ->addColumn('operations','')
+            ->addColumn('operations', '')
             ->make(true);
     }
 

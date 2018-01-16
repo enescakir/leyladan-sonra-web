@@ -11,7 +11,6 @@ use App\Models\Sms;
 use App\Models\User;
 use App\Enums\UserTitle;
 use Auth;
-use Excel;
 
 class BloodController extends Controller
 {
@@ -23,30 +22,20 @@ class BloodController extends Controller
     public function index(Request $request)
     {
         $bloods = Blood::orderBy('id', 'DESC');
-        if ($request->has('blood_type')) {
+        if ($request->filled('blood_type')) {
             $bloods = $bloods->where('blood_type', $request->blood_type);
         }
-        if ($request->has('rh')) {
+        if ($request->filled('rh')) {
             $bloods = $bloods->where('rh', $request->rh);
         }
-        if ($request->has('city')) {
+        if ($request->filled('city')) {
             $bloods = $bloods->where('city', $request->city);
         }
-        if ($request->has('search')) {
-            $bloods = $bloods
-            ->where(function ($query) use ($request) {
-                $query->where('id', $request->search)
-                ->orWhere('mobile', 'like', '%' . $request->search . '%')
-                ->orWhere('city', 'like', '%' . $request->search . '%');
-            });
+        if ($request->filled('search')) {
+            $bloods = $bloods->search($request->search);
         }
-        if ($request->has('csv')) {
-            $bloods = $bloods->get(['id', 'blood_type', 'rh', 'mobile', 'city', 'created_at']);
-            Excel::create('LS_KanBagisici_' . date("d_m_Y"), function ($excel) use ($bloods) {
-                $excel->sheet('Bagiscilar', function ($sheet) use ($bloods) {
-                    $sheet->fromArray($bloods, null, 'A1', true);
-                });
-            })->download('xlsx');
+        if ($request->filled('download')) {
+            Blood::download($bloods);
         }
         $bloods = $bloods->paginate($request->per_page ?: 25);
         return view('admin.blood.index', compact('bloods'));

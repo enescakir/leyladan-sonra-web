@@ -86,7 +86,7 @@ Tüm Bağışçılar
                       <li><a href="{{ route('admin.blood.index', array_merge(request()->all(), ['per_page' => 500])) }}">500</a></li>
                     </ul>
                   </div>
-                  <a href="{{ route('admin.blood.index', array_merge(request()->all(), ['csv' => 'true'])) }}" class="btn btn-primary" target="_blank">
+                  <a href="{{ route('admin.blood.index', array_merge(request()->all(), ['download' => 'true'])) }}" class="btn btn-primary" target="_blank">
                     <i class="fa fa-download"></i>
                   </a>
                   <a href="{{ route('admin.blood.create') }}" class="btn btn-success"><i class="fa fa-plus"></i></a>
@@ -121,7 +121,7 @@ Tüm Bağışçılar
                       <a class="edit btn btn-warning btn-xs" href="{{ route("admin.blood.edit", $blood->id) }}">
                         <i class="fa fa-pencil"></i>
                       </a>
-                      <a class="delete btn btn-danger btn-xs" blood-id="{{ $blood->id }}" blood-mobile="{{ $blood->mobile }}"  href="javascript:;"><i class="fa fa-trash"></i></a>
+                      <a class="delete btn btn-danger btn-xs" delete-id="{{ $blood->id }}" delete-name="{{ $blood->mobile }}" href="javascript:;"><i class="fa fa-trash"></i></a>
                     </div>
 
                 </td>
@@ -153,6 +153,6 @@ Tüm Bağışçılar
 
 @section('scripts')
   <script type="text/javascript">
-    deleteItem("blood", "blood-id", "blood-mobile", "numaralı bağışçıyı silmek istediğinize emin misiniz?");
+    deleteItem("blood", "numaralı bağışçıyı silmek istediğinize emin misiniz?");
   </script>
 @endsection

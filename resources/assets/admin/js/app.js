@@ -74,10 +74,10 @@ $(function () {
 });
 
 $.ajaxSetup({ headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') }});
-function deleteItem(slug, idAttr, nameAttr, message, deleteClass = "delete") {
+function deleteItem(slug, message, deleteClass = "delete") {
   $('.' + deleteClass).on('click', function (e) {
-    var id = $(this).attr(idAttr);
-    var name = $(this).attr(nameAttr);
+    var id = $(this).attr('delete-id');
+    var name = $(this).attr('delete-name');
     swal({
       title: "Emin misin?",
       text:  "'" + name + "' " + message,
@@ -86,7 +86,6 @@ function deleteItem(slug, idAttr, nameAttr, message, deleteClass = "delete") {
       confirmButtonText: "Evet, sil!",
       showCancelButton: true,
       cancelButtonText: "Hayır",
-      closeOnConfirm: false,
       showLoaderOnConfirm: true,
       preConfirm: function (email) {
         return new Promise(function (resolve, reject) {
@@ -98,7 +97,6 @@ function deleteItem(slug, idAttr, nameAttr, message, deleteClass = "delete") {
               resolve()
             },
             error: function (xhr, ajaxOptions, thrownError) {
-              reject('Bir hata ile karşılaşıldı.')
               ajaxError(xhr, ajaxOptions, thrownError);
             }
           });
@@ -116,15 +114,72 @@ function deleteItem(slug, idAttr, nameAttr, message, deleteClass = "delete") {
   });
 }
 
+function approveItem(slug, approveMessage, unapproveMessage, approveClass = "approve") {
+  $('.' + approveClass).on('click', function (e) {
+    var id = $(this).attr('approve-id');
+    var name = $(this).attr('approve-name');
+    var approval = ($(this).attr('is-approve') == '1' ? 1 : 0);
+    swal({
+      title: "Emin misin?",
+      text:  "'" + name + "' " + approveMessage,
+      type: "warning",
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Evet, " + (approval ? 'onayla!' : 'onayı kaldır!'),
+      showCancelButton: true,
+      cancelButtonText: "Hayır",
+      showLoaderOnConfirm: true,
+      preConfirm: function () {
+        return new Promise(function (resolve, reject) {
+          $.ajax({
+            url: "/admin/" + slug + "/" + id + "/approve",
+            method: "PUT",
+            dataType: "json",
+            data: { 'approve': approval },
+            success: function(result){
+              resolve()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              ajaxError(xhr, ajaxOptions, thrownError);
+            }
+          });
+        })
+      },
+      allowOutsideClick: false,
+    }).then(function () {
+      if (approval) {
+        $("#approve-" + slug + "-" + id).addClass('hidden');
+        $("#unapprove-" + slug + "-" + id).removeClass('hidden');
+        swal({
+          title: "Başarıyla Onaylandı!",
+          type: "success",
+          confirmButtonText: "Tamam",
+        });
+      } else {
+        $("#approve-" + slug + "-" + id).removeClass('hidden');
+        $("#unapprove-" + slug + "-" + id).addClass('hidden');
+        swal({
+          title: "Başarıyla Onayı Kaldırıldı!",
+          type: "success",
+          confirmButtonText: "Tamam",
+        });
+      }
+    })
+  });
+}
+
 function ajaxError(xhr, ajaxOptions, thrownError) {
+  message = "Bir hata ile karşılaşıldı!";
   console.log("XHR:");
   console.log(xhr);
+  if (xhr.responseText) {
+    message = xhr.responseText;
+  }
   console.log("Ajax Options:");
   console.log(ajaxOptions);
   console.log("Thrown Error:");
   console.log(thrownError);
   swal({
-    title: "Bir hata ile karşılaşıldı!",
+    title: message,
     type: "error",
     confirmButtonText: "Tamam",
   });

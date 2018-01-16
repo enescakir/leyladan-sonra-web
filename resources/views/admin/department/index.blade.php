@@ -77,10 +77,10 @@
         $( this ).append(
           '<div class="btn-group" role="group">' +
             '<button type="button" department-id="' + id + '" department-name="' + name + '" department-desc="' + desc + '" class="edit btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>' +
-            '<button type="button" department-id="' + id + '" department-name="' + name + '" department-desc="' + desc + '" class="delete btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button>' +
+            '<button type="button" delete-id="' + id + '" delete-name="' + name + '" department-desc="' + desc + '" class="delete btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button>' +
           '</div>'
         );
-        deleteItem("department", "department-id", "department-name", "isimli departmanı silmek istediğinize emin misiniz?");
+        deleteItem("department", "isimli departmanı silmek istediğinize emin misiniz?");
         editDepartment(id, name, desc);
       },
       function() {

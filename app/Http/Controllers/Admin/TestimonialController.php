@@ -5,120 +5,63 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests;
-use App\Testimonial;
-use Session, Datatables;
+use App\Models\Testimonial;
+
 class TestimonialController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth');
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-//        $testimonials = Testimonial::all();
-        return view('admin.testimonial.index');
+        $testimonials = Testimonial::orderBy('id', 'DESC');
+        if ($request->filled('search')) {
+            $testimonials = $testimonials->search($request->search);
+        }
+        if ($request->filled('download')) {
+            Testimonial::download($testimonials);
+        }
+        $testimonials = $testimonials->paginate(25);
+        return view('admin.testimonial.index', compact(['testimonials']));
     }
 
-    public function indexData()
-    {
-        return Datatables::of(Testimonial::all())
-            ->addColumn('operations','
-                <a class="approve btn btn-success btn-sm" href="javascript:;"><i class="fa fa-check"></i></a>
-                <a class="edit btn btn-primary btn-sm" href="{{ route("admin.testimonial.edit", $id) }}"><i class="fa fa-pencil"></i> </a>
-                <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>
-           ')
-            ->editColumn('approved_at','@if ($approved_at != null)
-                                <span class="label label-success"> Onaylandı </span>
-                            @else
-                                <span class="label label-danger"> Onaylanmadı </span>
-                            @endif')
-            ->make(true);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('admin.testimonial.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        $this->validate($request, Testimonial::$validationRules, Testimonial::$validationMessages);
-        $testimonial = new Testimonial($request->except('next'));
-        if($testimonial->save()){
-            Session::flash('success_message', $testimonial->name . '\'in referansı başarıyla sisteme kaydedildi..');
-        }else{
-            Session::flash('error_message',  $testimonial->name . '\'in referansını eklerken bir sorun ile karşılaşıldı.');
-            return redirect()->back()->withInput();
-        }
-
-        if($request->next == 1){
-            return redirect()->route('admin.testimonial.create');
-        }
+        $this->validate($request, Testimonial::$rules);
+        $testimonial = Testimonial::create($request->all());
+        session_success(__('messages.testimonial.create', ['name' =>  $testimonial->name]));
         return redirect()->route('admin.testimonial.index');
-
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function edit(Testimonial $testimonial)
     {
-        //
+        return view('admin.testimonial.edit', compact(['testimonial']));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function update(Request $request, Testimonial $testimonial)
     {
-        //
+        $this->validate($request, Testimonial::$rules);
+        $testimonial->update($request->all());
+        session_success(__('messages.testimonial.update', ['name' =>  $testimonial->name]));
+        return redirect()->route('admin.testimonial.index');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function destroy(Testimonial $testimonial)
     {
-        //
+        $testimonial->delete();
+        return $testimonial;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function approve(Request $request, Testimonial $testimonial)
     {
-        if( Testimonial::destroy($id))
-            return http_response_code(200);
-
+        $testimonial->approve($request->approve);
+        return $testimonial;
     }
 }

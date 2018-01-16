@@ -19,30 +19,13 @@ class NewController extends Controller
     public function index(Request $request)
     {
         $news = News::orderBy('id', 'DESC');
-        if ($request->has('search')) {
-            $news = $news
-            ->where('title', 'like', '%' . $request->search . '%')
-            ->orWhere('desc', 'like', '%' . $request->search . '%');
+        if ($request->filled('search')) {
+            $news = $news->search($request->search);
         }
         $news = $news->with('channel');
 
-        if ($request->has('csv')) {
-            $news = $news->get();
-            Excel::create('LS_Haberler_' . date("d_m_Y"), function ($excel) use ($news) {
-                $newsData = $news->map(function ($item, $key) {
-                    return [
-                        "id"         => $item->id,
-                        "title"      => $item->title,
-                        "desc"       => $item->desc,
-                        "channel"    => $item->channel->name,
-                        "link"       => $item->link,
-                        "created_at" => $item->created_at,
-                    ];
-                });
-                $excel->sheet('Haberler', function ($sheet) use ($newsData) {
-                    $sheet->fromArray($newsData, null, 'A1', true);
-                });
-            })->download('xlsx');
+        if ($request->filled('download')) {
+            News::download($news);
         }
         $news = $news->paginate(25);
         return view('admin.new.index', compact(['news']));
