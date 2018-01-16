@@ -14,9 +14,9 @@ class Diagnosis extends Model
     protected $fillable = ['name', 'category', 'desc'];
 
     // Global Methods
-    public static function toSelect($empty = false)
+    public static function toSelect($placeholder = false)
     {
-        $res = Diagnosis::orderBy('name')->pluck('name', 'name');
-        return $empty ? collect(['' => ''])->merge($res) : $res;
+        $result = Diagnosis::orderBy('name')->pluck('name', 'name');
+        return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
     }
 }

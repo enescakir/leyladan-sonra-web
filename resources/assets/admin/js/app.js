@@ -114,7 +114,7 @@ function deleteItem(slug, message, deleteClass = "delete") {
   });
 }
 
-function approveItem(slug, approveMessage, unapproveMessage, approveClass = "approve") {
+function approveItem(slug, approveMessage, unapproveMessage, callback, approveClass = "approve") {
   $('.' + approveClass).on('click', function (e) {
     var id = $(this).attr('approve-id');
     var name = $(this).attr('approve-name');
@@ -146,6 +146,9 @@ function approveItem(slug, approveMessage, unapproveMessage, approveClass = "app
       },
       allowOutsideClick: false,
     }).then(function () {
+      if (typeof callback === "function") {
+        callback(approval, id, name)
+      }
       if (approval) {
         $("#approve-" + slug + "-" + id).addClass('hidden');
         $("#unapprove-" + slug + "-" + id).removeClass('hidden');

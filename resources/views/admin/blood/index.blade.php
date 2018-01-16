@@ -1,11 +1,6 @@
 @extends('admin.parent')
 
-@section('title')
-Tüm Bağışçılar
-@endsection
-
-@section('styles')
-@endsection
+@section('title', 'Tüm Bağışçılar')
 
 @section('header')
   <section class="content-header">

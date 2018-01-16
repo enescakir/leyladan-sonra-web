@@ -5,175 +5,86 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests;
-use App\Post, App\PostImage, Image, Auth, App\Process;
-use Carbon\Carbon, Datatables;
+use App\Models\Post;
+use App\Models\PostImage;
+use App\Models\Process;
+use App\Models\Faculty;
+
+use App\Enums\PostType;
+
+use Image;
+use Auth;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        return view('admin.post.index');
+        $posts = Post::with(['child', 'child.faculty', 'images'])->orderBy('id', 'DESC');
+        if ($request->filled('search')) {
+            $posts = $posts->search($request->search);
+        }
+        if ($request->filled('faculty_id')) {
+            $posts = $posts->faculty($request->faculty_id);
+        }
+        if ($request->filled('type')) {
+            $posts = $posts->type($request->type);
+        }
+        if ($request->filled('approval')) {
+            $posts = $posts->approved($request->approval);
+        }
+        $posts = $posts->paginate($request->per_page ?: 25);
+        $faculties = Faculty::toSelect('Hepsi');
+        $post_types = PostType::toSelect('Hepsi');
+        return view('admin.post.index', compact(['posts', 'faculties', 'post_types']));
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function indexData()
+    public function faculty(Request $request, Faculty $faculty)
     {
-        return Datatables::of(Post::with('child','child.faculty','images')->get())
-            ->addColumn('operations', '
-                <a class="approve btn btn-success btn-sm" href="javascript:;"><i class="fa fa-check"></i></a>
-                <a class="edit btn btn-primary btn-sm" href="{{ route("admin.post.edit", $id) }}"><i class="fa fa-pencil"></i> </a>
-                <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>')
-            ->editColumn('status',' @if ($approved_at != null)
-                            <span class="label label-success"> Yayınlandı </span>
-                        @else
-                            <span class="label label-danger"> Yayınlanmadı </span>
-                        @endif')
-            ->editColumn('images','
-                        @forelse ($images as $image)
-                            <img src="{{ asset("resources/admin/uploads/child_photos/". $image->name) }}" class="img-responsive"/>
-                        @empty
-                            <img src="{{ asset("resources/admin/media/child_no_image.jpg") }}" class="img-responsive"/>
-                        @endforelse
-                        ')
-            ->make(true);
+        $posts = $faculty->posts()->with(['child', 'child.faculty', 'images'])->orderBy('id', 'DESC');
+        if ($request->filled('search')) {
+            $posts = $posts->search($request->search);
+        }
+        if ($request->filled('type')) {
+            $posts = $posts->type($request->type);
+        }
+        if ($request->filled('approval')) {
+            $posts = $posts->approved($request->approval);
+        }
+        $posts = $posts->paginate($request->per_page ?: 25);
+        $post_types = PostType::toSelect('Hepsi');
+        return view('admin.post.faculty', compact(['posts', 'faculty', 'post_types']));
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $post = Post::whereId($id)->with('child','child.faculty','images')->first();
-        return view('admin.post.edit', compact(['post']));
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        Post::destroy($id);
-        return 'Success';
-    }
-
-    /**
-     * Display a listing of faculty's unapproved posts.
-     *
-     * @return Admin.Post.Unapproved view with faculty's unapproved posts
-     */
     public function unapproved()
     {
         $user = Auth::user();
-        $posts = Post::select('id', 'approved_at','text', 'type', 'faculty_id','child_id','image')->with('child')->where('faculty_id',$user->faculty_id)->whereNull('approved_at')->get();
+        $posts = Post::select('id', 'approved_at', 'text', 'type', 'faculty_id', 'child_id', 'image')->with('child')->where('faculty_id', $user->faculty_id)->whereNull('approved_at')->get();
         return view('admin.post.unapproved', compact(['posts']));
     }
 
-    /**
-     * Return number of faculty's unapproved posts. I am calling it with AJAX
-     *
-     * @return Number of faculty's unapproved posts
-     */
-    public function unapprovedCount()
+    public function edit(Post $post)
     {
-        $user = Auth::user();
-        return DB::table('posts')->where('faculty_id',$user->faculty_id)->whereNull('approved_at')->count();
+        $post = Post::whereId($id)->with('child', 'child.faculty', 'images')->first();
+        return view('admin.post.edit', compact(['post']));
     }
 
-    /**
-     * Approve the selected post in database.
-     *
-     * @param  int  $id (Post's id)
-     * @return Success message
-     */
-    public function approve(Request $request)
+    public function destroy(Post $post)
     {
-        $post = Post::whereId($request->post_id)->with('child')->first();
-        if ($post->approved_at == null) {
-            $post->approved_by = Auth::user()->id;
-            $post->approved_at = new Carbon();
-            $post->save();
+        $post->images()->delete();
+        $post->delete();
+        return $post;
+    }
 
-            $process = new Process;
-            $process->child_id = $post->child->id;
-            $process->created_by = Auth::user()->id;
-            $process->desc = "Çocuğun yazısı onaylandı.";
-            $process->save();
-
-            return 1;
-        }
-        else {
-            $post->approved_by = null;
-            $post->approved_at = null;
-            $post->save();
-
-            $process = new Process;
-            $process->child_id = $post->child->id;
-            $process->created_by = Auth::user()->id;
-            $process->desc = "Çocuğun yazısının onayı kaldırıldı.";
-            $process->save();
-
-            return 0;
-        }
+    public function approve(Request $request, Post $post)
+    {
+        $post->approve($request->approve);
+        return $request->approve;
     }
 
 
@@ -183,28 +94,27 @@ class PostController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
         $post = Post::whereId($id)->with('child')->first();
         $post->text = $request->get('post_text');
-        if($request->hasFile('post_image') ){
+        if ($request->hasFile('post_image')) {
             $imageSize = 800;
-            if ($request->ratio == '2/3'){
+            if ($request->ratio == '2/3') {
                 $imageSize = 400;
             }
 
-            if( count($post->images) == 0){
+            if (count($post->images) == 0) {
                 $postImage = new PostImage();
                 $postImage->post_id = $post->id;
-                if($post->type == 'Tanışma'){
+                if ($post->type == 'Tanışma') {
                     $postImage->name = $post->child->id . '_1.jpg';
-                }
-                elseif($post->type == 'Hediye'){
+                } elseif ($post->type == 'Hediye') {
                     $postImage->name = $post->child->id . '_2.jpg';
                 }
                 $postImage->ratio = $request->ratio;
                 $postImage->save();
-            }else{
+            } else {
                 $postImage = $post->images()->first();
                 $postImage->ratio = $request->ratio;
                 $postImage->save();
@@ -220,7 +130,7 @@ class PostController extends Controller
         }
         $post->save();
 
-        if($request->get('approve') == 1){
+        if ($request->get('approve') == 1) {
             $post->approved_by = Auth::user()->id;
             $post->approved_at = new Carbon();
             $post->save();
@@ -234,5 +144,4 @@ class PostController extends Controller
 
         return redirect()->route('admin.faculty.posts', $post->child->faculty_id);
     }
-
 }

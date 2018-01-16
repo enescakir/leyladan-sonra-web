@@ -14,19 +14,19 @@ class Faculty extends Model
     // Properties
     protected $table    = 'faculties';
     protected $fillable = [
-    'full_name', 'slug', 'latitude', 'longitude', 'address',
+    'name', 'slug', 'latitude', 'longitude', 'address',
     'city', 'code', 'started_at'
   ];
     protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'started_at'];
 
     // Validation rules
     public static $createRules = [
-    'full_name' =>'required|max:255',
-    'slug'      =>'required|max:255',
-    'latitude'  =>'numeric',
-    'longitude' =>'numeric',
-    'city'      =>'required|max:255'
-  ];
+        'name' =>'required|max:255',
+        'slug'      =>'required|max:255',
+        'latitude'  =>'numeric',
+        'longitude' =>'numeric',
+        'city'      =>'required|max:255'
+    ];
 
     // Relations
     public function feeds()
@@ -66,12 +66,12 @@ class Faculty extends Model
         return $empty ? array_merge($res, ['' => '']) : $res;
     }
 
-    public static function toSelect($empty = false)
+    public static function toSelect($placeholder = '')
     {
-        $res = Faculty::orderBy('full_name')->pluck('full_name', 'id')->map(function ($name) {
+        $result = Faculty::orderBy('name')->pluck('name', 'id')->map(function ($name) {
             return $name . ' Tıp Fakültesi';
         });
-        return $empty ? collect(['' => ''])->merge($res) : $res;
+        return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
     }
 
     // Scopes
@@ -90,5 +90,10 @@ class Faculty extends Model
     public function getStartedAtLabelAttribute()
     {
         return $this->attributes['started_at'] ? null : date("d.m.Y", strtotime($this->attributes['started_at']));
+    }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->attributes['name']} Tıp Fakültesi";
     }
 }

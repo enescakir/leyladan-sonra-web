@@ -24,4 +24,10 @@ class PostImage extends Model
     {
         $query->where('ratio', $ratio);
     }
+
+    // Getters
+    public function getPathAttribute()
+    {
+        return asset(upload_path("child", $this->name));
+    }
 }

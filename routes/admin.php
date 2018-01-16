@@ -24,11 +24,6 @@ Route::prefix('vote')->group(function () {
     Route::post('/', 'Admin\DashboardController@voteStore')->name('vote.store');
 });
 
-Route::prefix('dashboard')->group(function () {
-    Route::get('/', 'Admin\DashboardController@dashboard')->name('dashboard');
-    Route::get('/count', 'Admin\DashboardController@count')->name('dashboard.count');
-    Route::get('/data', 'Admin\DashboardController@data')->name('dashboard.data');
-});
 
 
 Route::prefix('statistic')->as('statistics.')->group(function () {
@@ -66,14 +61,6 @@ Route::prefix('statistic')->as('statistics.')->group(function () {
 
 Route::resource('emailsample', 'Admin\EmailSampleController');
 
-Route::prefix('post')->as('post.')->group(function () {
-    Route::get('/data', 'Admin\PostController@indexData')->name('index.data');
-    Route::get('unapprovedCount', 'Admin\PostController@unapprovedCount')->name('unapprovedCount');
-    Route::post('approve', 'Admin\PostController@approve')->name('approve');
-});
-Route::resource('post', 'Admin\PostController');
-
-
 Route::prefix('user')->as('user.')->group(function () {
     Route::prefix('{id}')->group(function () {
         Route::get('children', 'Admin\UserController@children')->name('children');
@@ -93,7 +80,6 @@ Route::prefix('child')->as('child.')->group(function () {
         Route::get('chats/opens', 'Admin\ChildController@chatsOpens')->name('chats.opens');
     });
 });
-Route::resource('child', 'Admin\ChildController');
 
 Route::prefix('faculty')->as('faculty.')->group(function () {
     Route::prefix('{id}')->group(function () {
@@ -150,18 +136,6 @@ Route::post('mobile-notification/{id}/send', 'Admin\MobileNotificationController
 
 Route::resource('blog', 'Admin\BlogController');
 
-Route::prefix('log')->middleware('auth')->group(function () {
-    Route::get('/', [ 'as'        => 'log-viewer::dashboard', 'uses'   => 'Admin\LogController@index',]);
-    Route::get('/lists', [ 'as'   => 'log-viewer::logs.list', 'uses'   => 'Admin\LogController@listLogs',]);
-    Route::delete('delete', ['as' => 'log-viewer::logs.delete', 'uses' => 'Admin\LogController@delete',]);
-    Route::group([ 'prefix'    => '{date}',], function () {
-        Route::get('/', ['as'        => 'log-viewer::logs.show', 'uses'     => 'Admin\LogController@show',]);
-        Route::get('download', ['as' => 'log-viewer::logs.download', 'uses' => 'Admin\LogController@download',]);
-        Route::get('{level}', ['as'  => 'log-viewer::logs.filter', 'uses'   => 'Admin\LogController@showByLevel',]);
-    });
-});
-
-
 /*
 |--------------------------------------------------------------------------
 | Refactored Routes
@@ -173,6 +147,11 @@ Route::get('/', function () {
     return redirect('/admin/login');
 })->name('home');
 
+Route::prefix('dashboard')->group(function () {
+    Route::get('/', 'Admin\DashboardController@dashboard')->name('dashboard');
+    Route::get('/data', 'Admin\DashboardController@data')->name('dashboard.data');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Auth Routes
@@ -180,6 +159,38 @@ Route::get('/', function () {
 */
 Auth::routes();
 Route::get('/email/activation/{token}', 'Auth\ActivateEmailController@activate')->name('email.activate');
+
+/*
+|--------------------------------------------------------------------------
+| Children Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('child', 'Admin\ChildController');
+
+/*
+|--------------------------------------------------------------------------
+| Post Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('post')->as('post.')->group(function () {
+    Route::prefix('{post}')->group(function () {
+        Route::put('approve', 'Admin\PostController@approve')->name('approve');
+    });
+});
+Route::resource('post', 'Admin\PostController');
+
+/*
+|--------------------------------------------------------------------------
+| Faculty Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('faculty')->as('faculty.')->group(function () {
+    Route::prefix('{faculty}')->group(function () {
+        Route::get('post', 'Admin\PostController@faculty')->name('post');
+    });
+});
+Route::resource('faculty', 'Admin\FacultyController');
+
 
 /*
 |--------------------------------------------------------------------------

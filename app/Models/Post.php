@@ -5,12 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Traits\Base;
+use App\Traits\Approval;
 
 use App\Enums\ImageRatio;
+
+use Carbon\Carbon;
+use Auth;
 
 class Post extends Model
 {
     use Base;
+    use Approval;
     // Properties
     protected $table    = 'posts';
     protected $fillable = ['child_id', 'approved_by', 'approved_at', 'text', 'type'];
@@ -34,6 +39,29 @@ class Post extends Model
     }
 
     // Scopes
+    public function scopeSearch($query, $search)
+    {
+        $query->where(function ($query2) use ($search) {
+            $query2->where('id', $search)
+                ->orWhere('text', 'like', '%' . $search . '%')
+                ->orWhereHas('child', function ($query3) use ($search) {
+                    $query3->search($search);
+                });
+        });
+    }
+
+    public function scopeFaculty($query, $id)
+    {
+        $query->whereHas('child', function ($query2) use ($id) {
+            $query2->where('faculty_id', $id);
+        });
+    }
+
+    public function scopeType($query, $type)
+    {
+        $query->where('type', $type);
+    }
+
     public function scopeMeetingPost($query, $id)
     {
         $query->where('type', PostType::Meeting)->where('child_id', $id);
@@ -44,12 +72,33 @@ class Post extends Model
         $query->where('type', PostType::Delivery)->where('child_id', $id);
     }
 
-    public function scopeApproved($query)
+    // Helpers
+    public function approve($approval)
     {
-        $query->whereNotNull('approved_at');
+        if ($approval) {
+            $this->approved_at = Carbon::now();
+            $this->approved_by = Auth::user()->id;
+            $this->child->processes()->create([
+                'desc' => 'Çocuğun yazısı onaylandı.'
+            ]);
+        } else {
+            $this->approved_at = null;
+            $this->approved_by = null;
+            $this->child->processes()->create([
+                'desc' => 'Çocuğun yazısının onayı kaldırıldı.'
+            ]);
+        }
+        return $this->save();
     }
 
-    // Helpers
+    public function getApprovalLabelAttribute()
+    {
+        if ($this->isApproved()) {
+            return "<span class='label label-success'> Onaylandı </span>";
+        }
+        return "<span class='label label-danger'> Onaylanmadı </span>";
+    }
+
     public function addImage($file, $data)
     {
         $postImage = PostImage::create([
@@ -63,12 +112,12 @@ class Post extends Model
         ini_set('max_execution_time', 300);
         ini_set('memory_limit', '-1');
         Image::make($file)
-    ->rotate(-$data['rotation'])
-    ->crop($data['w'], $data['h'], $data['x'], $data['y'])
-    ->resize($imageWidth, null, function ($constraint) {
-        $constraint->aspectRatio();
-    })
-    ->save(upload_path('child') . '/' . $postImage->name, 90);
+        ->rotate(-$data['rotation'])
+        ->crop($data['w'], $data['h'], $data['x'], $data['y'])
+        ->resize($imageWidth, null, function ($constraint) {
+            $constraint->aspectRatio();
+        })
+        ->save(upload_path('child') . '/' . $postImage->name, 90);
         ini_restore("memory_limit");
         ini_restore("max_execution_time");
     }

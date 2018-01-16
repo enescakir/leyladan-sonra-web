@@ -1,21 +1,4 @@
 <style>
-    html {
-        position: relative;
-        min-height: 100%;
-    }
-
-    body {
-        padding-top: 50px;
-        /* Margin bottom by footer height */
-        margin-bottom: 50px;
-        font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, sans-serif;
-        font-weight: 600;
-    }
-
-    h1, h2, h3 {
-        font-family: 'Montserrat', 'Helvetica Neue', Helvetica, sans-serif;
-    }
-
     .sub-header {
         padding-bottom: 10px;
         border-bottom: 1px solid #EEE;
@@ -52,22 +35,6 @@
         margin-top: 0;
     }
 
-    footer.main-footer {
-        position: absolute;
-        padding: 10px 0;
-        bottom: 0;
-        width: 100%;
-        background-color: #e8eaf6;
-        font-weight: 600;
-    }
-
-    footer.main-footer p {
-        margin: 0;
-    }
-
-    footer.main-footer i.fa.fa-heart {
-        color: #C62828;
-    }
 
     .pagination {
         margin: 0;
@@ -83,15 +50,23 @@
     .table-condensed > thead > tr > td.stack {
         padding: 0;
         border-top: none;
+        background-color: #F6F6F6;
+        border-top: 1px solid #D1D1D1;
+        max-width: 0;
+        overflow-x: auto;
+    }
+
+    .table-condensed > tbody > tr > td > p {
+      margin: 0;
     }
 
     .stack-content {
         padding: 8px;
-        background-color: #F6F6F6;
-        border-top: 1px solid #D1D1D1;
         color: #AE0E0E;
-        font-family: consolas,sans-serif;
+        font-family: consolas, Menlo, Courier, monospace;
         font-size: 12px;
+        font-weight: 400;
+        white-space: pre-line;
     }
 
     .info-box.level {

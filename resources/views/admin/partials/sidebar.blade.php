@@ -5,7 +5,7 @@
       <img src="{{ admin_asset('img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
     </div>
     <div class="pull-left info">
-      <p>Enes Çakır</p>
+      <p>{{ $authUser->full_name }}</p>
       <!-- Status -->
       <a href="#"><i class="fa fa-black-tie"></i> Site Sorumlusu</a>
     </div>
@@ -17,17 +17,21 @@
       <a href="{{ route('admin.dashboard') }}"><i class="fa fa-compass"></i> <span>Kontrol Paneli</span></a>
     </li>
     <li><a href="#"><i class="fa fa-address-book-o"></i> <span>Arkadaşlarım</span></a></li>
-    <li class="treeview">
+    <li class="treeview {{ set_active('*child*', 'menu-open active') }}">
       <a href="#"><i class="fa fa-child"></i> <span>Çocuklar</span>
         <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
       </a>
       <ul class="treeview-menu">
-        <li><a href="#"><i class="fa fa-plus"></i> <span>Yeni Çocuk Ekle</span></a></li>
+        <li class="{{ set_active('*admin/child/create*') }}">
+          <a href="{{ route('admin.child.create') }}"><i class="fa fa-plus"></i> <span>Yeni Çocuk Ekle</span></a>
+        </li>
         <li><a href="#"><i class="fa fa-heart"></i> <span>Kendi Çocuklarım</span></a></li>
         <li><a href="#"><i class="fa fa-bars"></i> <span>Fakülte Çocukları</span></a></li>
-        <li><a href="#"><i class="fa fa-list"></i> <span>Bütün Çocukları</span></a></li>
+        <li class="{{ set_active('*admin/child') }}">
+          <a href="{{ route('admin.child.index') }}"><i class="fa fa-list"></i> <span>Bütün Çocuklar</span></a>
+        </li>
       </ul>
     </li>
     <li class="treeview">
@@ -63,16 +67,22 @@
         </li>
       </ul>
     </li>
-    <li class="treeview">
+    <li class="treeview {{ set_active('*post*', 'menu-open active') }}">
       <a href="#"><i class="fa fa-pencil"></i> <span>Yazılar</span>
         <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
       </a>
       <ul class="treeview-menu">
-        <li><a href="#"><i class="fa fa-folder-o"></i> <span>Fakülte Yazılar</span></a></li>
-        <li><a href="#"><i class="fa fa-thumbs-o-up"></i> <span>Onay Bekleyenler</span></a></li>
-        <li><a href="#"><i class="fa fa-folder-open-o"></i> <span>Tüm Yazılar</span></a></li>
+        <li>
+          <a href="{{ route('admin.faculty.post', [$authUser->faculty_id, 'approval' => '0']) }}"><i class="fa fa-thumbs-o-up"></i> <span>Onay Bekleyenler</span></a>
+        </li>
+        <li class="{{ set_active('*admin/faculty/*/post') }}">
+          <a href="{{ route('admin.faculty.post', $authUser->faculty_id) }}"><i class="fa fa-folder-o"></i> <span>Fakülte Yazılar</span></a>
+        </li>
+        <li class="{{ set_active('*admin/post') }}">
+          <a href="{{ route('admin.post.index') }}"><i class="fa fa-folder-open-o"></i> <span>Tüm Yazılar</span></a>
+        </li>
       </ul>
     </li>
     <li class="treeview">
@@ -182,16 +192,8 @@
         </li>
       </ul>
     </li>
-    <li class="treeview">
-      <a href="#"><i class="fa fa-wrench"></i> <span>Hata Girdileri</span>
-        <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-      </a>
-      <ul class="treeview-menu">
-        <li><a href="#"><i class="fa fa-tachometer"></i> <span>Genel Görünüm</span></a></li>
-        <li><a href="#"><i class="fa fa-list"></i> <span>Ayrıntılı Liste</span></a></li>
-      </ul>
+    <li class="{{ set_active('*admin/logs*') }}">
+      <a href="{{ route('log-viewer::logs.list') }}"><i class="fa fa-tachometer"></i> <span>Hata Girdileri</span></a>
     </li>
     <li class="header">Diğer</li>
     <li class="treeview">

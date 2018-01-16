@@ -9,8 +9,11 @@ use App\Traits\Birthday;
 
 use App\Enums\PostType;
 use App\Enums\ChatStatus;
+use App\Enums\GiftStatus;
 
 use Carbon\Carbon;
+use Excel;
+use DB;
 
 class Child extends Model
 {
@@ -77,6 +80,38 @@ class Child extends Model
         $query->where('gift_state', $gift_state);
     }
 
+    public function scopeDepartment($query, $department)
+    {
+        $query->where('department', $department);
+    }
+
+    public function scopeDiagnosis($query, $diagnosis)
+    {
+        $query->where('diagnosis', $diagnosis);
+    }
+
+    public function scopeSearch($query, $search)
+    {
+        $query->where(function ($query2) use ($search) {
+            $query2->where('id', $search)
+                ->orWhere('first_name', 'like', '%' . $search . '%')
+                ->orWhere('last_name', 'like', '%' . $search . '%')
+                ->orWhere(DB::raw('CONCAT_WS(" ", first_name, last_name)'), 'like', '%' . $search . '%');
+        });
+    }
+
+    // Global Methods
+    public static function download($children)
+    {
+        $children = $children->get();
+        Excel::create('LS_Cocuklar_' . date("d_m_Y"), function ($excel) use ($children) {
+            $excel->sheet('Cocuklar', function ($sheet) use ($children) {
+                $sheet->fromArray($children, null, 'A1', true);
+            });
+        })->download('xlsx');
+    }
+
+
     // Accessors
     public function getUserNameListAttribute()
     {
@@ -88,6 +123,23 @@ class Child extends Model
         return $this->users->pluck('id');
     }
 
+    public function getGiftStateLabelAttribute()
+    {
+        $status = $this->attributes['gift_state'];
+        switch ($status) {
+            case GiftStatus::Waiting:
+                return "<span class='label label-danger'>{$status}</span>";
+            case GiftStatus::OnRoad:
+                return "<span class='label label-warning'>{$status}</span>";
+            case GiftStatus::Arrived:
+                return "<span class='label label-primary'>{$status}</span>";
+            case GiftStatus::Delivered:
+                return "<span class='label label-success'>{$status}</span>";
+            default:
+                return "<span class='label label-default'>{$status}</span>";
+        }
+    }
+
     public function getFullNameAttribute()
     {
         return $this->attributes['first_name'] . " " . $this->attributes['last_name'];
@@ -96,6 +148,11 @@ class Child extends Model
     public function getMeetingDayHumanAttribute()
     {
         return date("d.m.Y", strtotime($this->attributes['meeting_day']));
+    }
+
+    public function getBirthdayHumanAttribute()
+    {
+        return date("d.m.Y", strtotime($this->attributes['birthday']));
     }
 
     public function getUntilHumanAttribute()
