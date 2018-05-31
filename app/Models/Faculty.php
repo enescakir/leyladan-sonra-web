@@ -3,29 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\Traits\Base;
-
 use Carbon\Carbon;
 
 class Faculty extends Model
 {
     use Base;
     // Properties
-    protected $table    = 'faculties';
+    protected $table = 'faculties';
     protected $fillable = [
     'name', 'slug', 'latitude', 'longitude', 'address',
     'city', 'code', 'started_at'
   ];
-    protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'started_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at', 'started_at'];
 
     // Validation rules
     public static $createRules = [
-        'name' =>'required|max:255',
-        'slug'      =>'required|max:255',
-        'latitude'  =>'numeric',
-        'longitude' =>'numeric',
-        'city'      =>'required|max:255'
+        'name'      => 'required|max:255',
+        'slug'      => 'required|max:255',
+        'latitude'  => 'numeric',
+        'longitude' => 'numeric',
+        'city'      => 'required|max:255'
     ];
 
     // Relations
@@ -60,16 +58,10 @@ class Faculty extends Model
     }
 
     // Methods
-    public function usersToSelect($empty = false)
+    public static function toSelect($placeholder = null)
     {
-        $res = $this->users()->orderby('first_name')->get()->pluck('fullname', 'id');
-        return $empty ? array_merge($res, ['' => '']) : $res;
-    }
-
-    public static function toSelect($placeholder = '')
-    {
-        $result = Faculty::orderBy('name')->pluck('name', 'id')->map(function ($name) {
-            return $name . ' Tıp Fakültesi';
+        $result = static::orderBy('name')->pluck('name', 'id')->map(function ($name) {
+            return "{$name} Tıp Fakültesi";
         });
         return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
     }
@@ -89,7 +81,7 @@ class Faculty extends Model
     // Accessors
     public function getStartedAtLabelAttribute()
     {
-        return $this->attributes['started_at'] ? null : date("d.m.Y", strtotime($this->attributes['started_at']));
+        return $this->attributes['started_at'] ? null : Carbon::parse($this->attributes['started_at'])->parse('d.m.Y');
     }
 
     public function getFullNameAttribute()

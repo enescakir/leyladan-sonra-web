@@ -192,9 +192,6 @@
         </li>
       </ul>
     </li>
-    <li class="{{ set_active('*admin/logs*') }}">
-      <a href="{{ route('log-viewer::logs.list') }}"><i class="fa fa-tachometer"></i> <span>Hata Girdileri</span></a>
-    </li>
     <li class="header">Diğer</li>
     <li class="treeview">
       <a href="#"><i class="fa fa-bar-chart"></i> <span>İstatistikler</span>

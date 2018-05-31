@@ -6,9 +6,25 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Requests\VolunteerMessageRequest;
-use App\Child, App\Post, App\Faculty, App\News, App\Channel, App\User;
-use App\Volunteer, App\Chat, App\Message, App\Testimonial, App\Blood, App\Sponsor;
-use Log, DB, Validator, Cache, Mail, Carbon\Carbon, Newsletter;
+use App\Models\Child;
+use App\Models\Post;
+use App\Models\Faculty;
+use App\Models\News;
+use App\Models\Channel;
+use App\Models\User;
+use App\Models\Volunteer;
+use App\Models\Chat;
+use App\Models\Message;
+use App\Models\Testimonial;
+use App\Models\Blood;
+use App\Models\Sponsor;
+use Log;
+use DB;
+use Validator;
+use Cache;
+use Mail;
+use Carbon\Carbon;
+use Newsletter;
 
 class FrontController extends Controller
 {
@@ -60,8 +76,7 @@ class FrontController extends Controller
                     ->get();
 
                 return view('front.protected.waitings', compact(['children']));
-            }
-            else {
+            } else {
                 return view('front.protected.login')->with('flash_message', 'Maalesef gizli kelimeyi bilemedin.');
             }
         }
@@ -69,7 +84,6 @@ class FrontController extends Controller
         if ($request->isMethod('get')) {
             return view('front.protected.login');
         }
-
     }
 
     public function news()
@@ -83,7 +97,6 @@ class FrontController extends Controller
 
     public function us()
     {
-
         $totalChildren = Cache::remember('totalChildren', 15, function () {
             return DB::table('children')->count();
         });
@@ -110,10 +123,10 @@ class FrontController extends Controller
 
     public function bloodStore(Request $request)
     {
-
         $blood = Blood::where('mobile', $request->mobile)->first();
-        if ($blood != null)
+        if ($blood != null) {
             return array('alert' => 'error', 'message' => '<span style="font-size: 24px"><br> Verdiğiniz telefon numarası zaten SMS sistemimizde kayıtlı.<br></br></span>');
+        }
 
 //        $validator = Validator::make($request->all(), Blood::$validationRules, Blood::$validationMessages);
 
@@ -158,15 +171,15 @@ class FrontController extends Controller
         $text = '<span style="font-size: 24px"><br>Mesajınız tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong>' . $request->email . '</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!<br></br></span>';
 
         return array('alert' => 'success', 'message' => $text);
-
     }
 
     public function newsletter(Request $request)
     {
         $text = '<span style="font-size: 24px"><br> Bu e-posta adresi zaten e-posta listemize kayıtlıdır. <br> İyilikle Kalın!<br></br></span>';
 
-        if (Newsletter::hasMember($request->email))
+        if (Newsletter::hasMember($request->email)) {
             return array('alert' => 'success', 'message' => $text);
+        }
 
         Newsletter::subscribe($request->email);
 
@@ -174,18 +187,16 @@ class FrontController extends Controller
             $text = '<span style="font-size: 24px"><br><strong>' . $request->email . '</strong> e-posta adresi listemize başarıyla eklendi. <br> İyilikle Kalın!<br></br></span>';
 
             return array('alert' => 'success', 'message' => $text);
-        }
-        else {
+        } else {
             $text = '<span style="font-size: 24px"><br Maalesef bir hata ile karşılaşıldı.<br> İyilikle Kalın!<br></br></span>';
 
             return array('alert' => 'success', 'message' => $text);
         }
-
     }
 
     public function sponsors()
     {
-      $sponsors = Sponsor::orderBy('order', 'DESC')->get();
+        $sponsors = Sponsor::orderBy('order', 'DESC')->get();
         // $channels = Cache::remember('channels', 60, function () {
         //     return Channel::with('news')->get();
         // });
@@ -237,11 +248,11 @@ class FrontController extends Controller
 
     public function appLanding()
     {
-        $totalChildren = Cache::remember('totalChildren', 15, function() {
+        $totalChildren = Cache::remember('totalChildren', 15, function () {
             return DB::table('children')->count();
         });
 
-        $totalFaculties = Cache::remember('activeFaculties', 15, function() {
+        $totalFaculties = Cache::remember('activeFaculties', 15, function () {
             return DB::table('faculties')->whereNotNull('started_at')->count();
         });
 
@@ -281,7 +292,6 @@ class FrontController extends Controller
 
     public function faculty(Request $request, $facultyName)
     {
-
         $faculty = Faculty::where('slug', $facultyName)->first();
         if ($faculty == null) {
             abort(404);
@@ -307,7 +317,6 @@ class FrontController extends Controller
 
     public function child($facultyName, $childSlug)
     {
-
         $child = Cache::remember('child-' . $childSlug, 30, function () use ($childSlug) {
             return Child::where('slug', $childSlug)->with('faculty', 'posts', 'posts.images')->first();
         });
@@ -316,7 +325,7 @@ class FrontController extends Controller
             abort(404);
         }
 
-        if($child->until < Carbon::now()){
+        if ($child->until < Carbon::now()) {
             return view('front.childExpired');
         }
         $children = Cache::remember('childRandom-' . $childSlug, 30, function () {
@@ -324,7 +333,9 @@ class FrontController extends Controller
                 ->with([
                     'meetingPosts',
                     'faculty',
-                    'meetingPosts.images' => function ($query) { $query->where('ratio', '4/3'); }])
+                    'meetingPosts.images' => function ($query) {
+                        $query->where('ratio', '4/3');
+                    }])
                 ->whereHas('posts', function ($query) {
                     $query->where('type', 'Tanışma')->approved();
                 })
@@ -372,7 +383,7 @@ class FrontController extends Controller
 
 //        $users = User::where('faculty_id', $child->faculty->id)->whereIn('title', ['Fakülte Sorumlusu', 'İletişim Sorumlusu'])->get();
         $users = User::where('faculty_id', $child->faculty->id)->where('title', 'İletişim Sorumlusu')->get();
-        if(count($users) == 0){
+        if (count($users) == 0) {
             $users = User::where('faculty_id', $child->faculty->id)->where('title', 'Fakülte Sorumlusu')->get();
         }
 
@@ -383,7 +394,6 @@ class FrontController extends Controller
                     ->from('teknik@leyladansonra.com', 'Leyla\'dan Sonra Sistem')
                     ->subject('Fakültenizde yeni mesaj var!');
             });
-
         }
 
         $text = '<span style="font-size: 24px"><br><strong>' . $child->first_name . '</strong> isimli miniğimizin hediyesi ile ilgili talebiniz tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong>' . $volunteer->email . '</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!<br></br></span>';
@@ -407,8 +417,7 @@ class FrontController extends Controller
                     if (!array_has($colored, $city->code)) {
                         $colored[ $city->code ] = '#fcd5ae';
                     }
-                }
-                else {
+                } else {
                     $colored[ $city->code ] = '#339999';
                 }
             }
@@ -425,6 +434,4 @@ class FrontController extends Controller
 
         return $cities;
     }
-
-
 }

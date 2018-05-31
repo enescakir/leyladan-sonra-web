@@ -1,6 +1,5 @@
 <?php
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Mail Driver
@@ -54,7 +53,10 @@ return [
     |
     */
 
-    'from' => ['address' => 'sistem@leyladansonra.com', 'name' => 'Leyla\'dan Sonra Sistem'],
+    'from' => [
+        'address' => 'sistem@leyladansonra.com',
+        'name'    => 'Leyla\'dan Sonra Sistem'
+    ],
 
     /*
     |--------------------------------------------------------------------------

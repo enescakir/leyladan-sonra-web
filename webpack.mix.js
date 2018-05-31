@@ -34,6 +34,7 @@ let mix = require('laravel-mix');
   'node_modules/sweetalert2/dist/sweetalert2.min.css', // Sweet Alert 2
   'node_modules/fullcalendar/dist/fullcalendar.min.css', // Full Calendar
   'node_modules/multiselect/css/multi-select.css', // Multi Select
+  'node_modules/cropperjs/dist/cropper.min.css', // CropperJS
 ], 'public/admin/css/plugins.min.css');
 
  mix.scripts([
@@ -57,6 +58,7 @@ let mix = require('laravel-mix');
   'node_modules/block-ui/jquery.blockUI.js', // JQuery Block UI
   'node_modules/bootstrap-filestyle/src/bootstrap-filestyle.min.js', // Bootstrap File Style
   'node_modules/chart.js/Chart.min.js', // Chart.js
+  'node_modules/cropperjs/dist/cropper.min.js', // CropperJS
  ], 'public/admin/js/plugins.min.js');
 
 mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.eot', 'public/admin/fonts/');

@@ -6,10 +6,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use App\Notifications\ActivateEmail as ActivateEmailNotification;
-
 use App\Scopes\GraduateScope;
 use App\Scopes\LeftScope;
-
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\Birthday;
 use App\Traits\Mobile;
@@ -24,15 +22,15 @@ class User extends Authenticatable
     use Notifiable;
 
     // Properties
-    protected $table    = 'users';
+    protected $table = 'users';
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'birthday', 'mobile',
         'year', 'title', 'profile_photo', 'faculty_id', 'gender', 'email_token',
         'left_at', 'graduated_at'
     ];
-    protected $hidden   = ['password', 'remember_token'];
-    protected $appends  = ['full_name'];
-    protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'birthday', 'left_at', 'graduated_at'];
+    protected $hidden = ['password', 'remember_token'];
+    protected $appends = ['full_name'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at', 'birthday', 'left_at', 'graduated_at'];
 
     public static function boot()
     {
@@ -76,7 +74,14 @@ class User extends Authenticatable
     // Accessors
     public function getFullNameAttribute()
     {
-        return $this->attributes['first_name'] . " " . $this->attributes['last_name'];
+        return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+    }
+
+    // Helpers
+    public static function toSelect($placeholder = null)
+    {
+        $res = static::orderBy('id', 'DESC')->get()->pluck('full_name', 'id');
+        return $placeholder ? collect(['' => $placeholder])->union($res) : $res;
     }
 
     // Notifications

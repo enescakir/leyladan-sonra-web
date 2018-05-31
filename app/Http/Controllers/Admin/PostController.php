@@ -61,39 +61,11 @@ class PostController extends Controller
         return view('admin.post.faculty', compact(['posts', 'faculty', 'post_types']));
     }
 
-    public function unapproved()
-    {
-        $user = Auth::user();
-        $posts = Post::select('id', 'approved_at', 'text', 'type', 'faculty_id', 'child_id', 'image')->with('child')->where('faculty_id', $user->faculty_id)->whereNull('approved_at')->get();
-        return view('admin.post.unapproved', compact(['posts']));
-    }
-
     public function edit(Post $post)
     {
-        $post = Post::whereId($id)->with('child', 'child.faculty', 'images')->first();
+        $post->load('child', 'child.faculty', 'child.users', 'images');
         return view('admin.post.edit', compact(['post']));
     }
-
-    public function destroy(Post $post)
-    {
-        $post->images()->delete();
-        $post->delete();
-        return $post;
-    }
-
-    public function approve(Request $request, Post $post)
-    {
-        $post->approve($request->approve);
-        return $request->approve;
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
     public function update(Request $request, Post $post)
     {
         $post = Post::whereId($id)->with('child')->first();
@@ -143,5 +115,18 @@ class PostController extends Controller
         }
 
         return redirect()->route('admin.faculty.posts', $post->child->faculty_id);
+    }
+
+    public function destroy(Post $post)
+    {
+        $post->images()->delete();
+        $post->delete();
+        return $post;
+    }
+
+    public function approve(Request $request, Post $post)
+    {
+        $post->approve($request->approve);
+        return $request->approve;
     }
 }

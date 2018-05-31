@@ -8,13 +8,10 @@ use App\Enums\GiftStatus;
 use App\Enums\PostType;
 use App\Enums\UserTitle;
 use App\Http\Requests\CreateChildRequest;
-
 use App\Models\Child;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\Diagnosis;
-
-
 use App\User;
 use App\Post;
 use App\PostImage;
@@ -62,7 +59,7 @@ class ChildController extends Controller
     public function create()
     {
         $faculties = Faculty::all();
-        $users = $authUser->faculty->usersToSelect();
+        $users = $authUser->faculty->users->toSelect();
         $diagnosis = Diagnosis::toSelect(true);
         return view('admin.child.create', compact(['faculties', 'users', 'diagnosis']));
     }
@@ -81,8 +78,8 @@ class ChildController extends Controller
         }
         $post = $this->createPost($request, $child);
         $post->addImage(
-          $request->file('website_image'),
-          $request->only(['ratio', 'rotation', 'w', 'h', 'x', 'y'])
+            $request->file('website_image'),
+            $request->only(['ratio', 'rotation', 'w', 'h', 'x', 'y'])
         );
         success_message($child->first_name . ' başarıyla sisteme eklendi.');
 
@@ -94,9 +91,9 @@ class ChildController extends Controller
         // TODO: Check processes save
         Feed::create([
           'faculty_id' => $child->faculty_id,
-          'title' => UserTitle::All,
-          'desc' =>  $child->full_name . " ile tanışıldı.",
-          'icon' => 1
+          'title'      => UserTitle::All,
+          'desc'       => $child->full_name . ' ile tanışıldı.',
+          'icon'       => 1
         ]);
         return redirect()->route('admin.user.children', $user->id);
     }
@@ -112,7 +109,7 @@ class ChildController extends Controller
         $child->load('faculty', 'users', 'processes')->find($id);
         $meeting_post = Post::meetingPost($child->id)->with('images')->first();
         $gift_post = Post::giftPost($child->id)->with('images')->first();
-        return view('admin.child.show', compact(['child','meeting_post', 'gift_post']));
+        return view('admin.child.show', compact(['child', 'meeting_post', 'gift_post']));
     }
 
     /**
@@ -132,7 +129,7 @@ class ChildController extends Controller
         $meeting_post = Post::meetingPost($child->id)->with('images')->first();
         $gift_post = Post::giftPost($child->id)->with('images')->first();
         $selectedUser = $child->users->pluck('id')->toArray();
-        return view('admin.child.edit', compact(['authUser','users','faculties', 'child','faculty','meeting_post', 'gift_post','selectedUser', 'diagnosis']));
+        return view('admin.child.edit', compact(['authUser', 'users', 'faculties', 'child', 'faculty', 'meeting_post', 'gift_post', 'selectedUser', 'diagnosis']));
     }
 
     /**
@@ -144,14 +141,14 @@ class ChildController extends Controller
     */
     public function update(Request $request, Child $child)
     {
-        $child->update($request->except(['users', 'website_text', 'website_image','delivered_text','delivered_image', 'ratio1', 'rotation1','x1','y1','w1','h1', 'ratio2', 'rotation2','x2','y2','w2','h2','verification_doc']));
+        $child->update($request->except(['users', 'website_text', 'website_image', 'delivered_text', 'delivered_image', 'ratio1', 'rotation1', 'x1', 'y1', 'w1', 'h1', 'ratio2', 'rotation2', 'x2', 'y2', 'w2', 'h2', 'verification_doc']));
         $child->users()->sync($request->get('users'));
 
         $meeting_post = Post::meetingPost($child->id)->first();
         if ($meeting_post == null) {
             $meeting_post = new Post();
             $meeting_post->child_id = $child->id;
-            $meeting_post->type = "Tanışma";
+            $meeting_post->type = 'Tanışma';
         }
         $meeting_post->text = $request->website_text;
         $meeting_post->save();
@@ -174,7 +171,7 @@ class ChildController extends Controller
                 $meetingPostImage->save();
             }
 
-            ini_set("memory_limit", "-1");
+            ini_set('memory_limit', '-1');
 
             $imgPost = Image::make($request->file('website_image'))
 ->rotate(-$request->rotation1)
@@ -184,7 +181,7 @@ class ChildController extends Controller
 })
 ->save('resources/admin/uploads/child_photos/' . $meetingPostImage->name, 80);
 
-            ini_restore("memory_limit");
+            ini_restore('memory_limit');
         }
         $meeting_post->save();
 
@@ -192,7 +189,7 @@ class ChildController extends Controller
         if ($gift_post == null && ($request->delivered_text != null && $request->delivered_text != '')) {
             $gift_post = new Post;
             $gift_post->child_id = $child->id;
-            $gift_post->type = "Hediye";
+            $gift_post->type = 'Hediye';
             $gift_post->text = $request->get('delivered_text');
             $gift_post->save();
         } elseif ($request->delivered_text != null && $request->delivered_text != '') {
@@ -200,13 +197,12 @@ class ChildController extends Controller
             $gift_post->save();
         }
 
-
         if ($request->hasFile('delivered_image')) {
             $child->gift_state = 'Teslim Edildi';
             if ($gift_post == null) {
                 $gift_post = new Post;
                 $gift_post->child_id = $child->id;
-                $gift_post->type = "Hediye";
+                $gift_post->type = 'Hediye';
                 $gift_post->text = '';
                 $gift_post->save();
             }
@@ -223,8 +219,7 @@ class ChildController extends Controller
                 $giftPostImage->save();
             }
 
-
-            ini_set("memory_limit", "-1");
+            ini_set('memory_limit', '-1');
             $imgPost = Image::make($request->file('delivered_image'))
 ->rotate(-$request->rotation2)
 ->crop($request->w2, $request->h2, $request->x2, $request->y2)
@@ -232,7 +227,7 @@ class ChildController extends Controller
     $constraint->aspectRatio();
 })
 ->save('resources/admin/uploads/child_photos/' . $giftPostImage->name, 80);
-            ini_restore("memory_limit");
+            ini_restore('memory_limit');
         }
 
         if ($request->hasFile('verification_doc')) {
@@ -260,12 +255,12 @@ class ChildController extends Controller
         }
         File::delete('resources/admin/uploads/verification_docs/' . $child->verification_doc);
         Process::where('child_id', $id)->delete();
-        $desc = Auth::user()->full_name . ", " . $child->full_name . " isimli çocuğunuzu sildi.";
+        $desc = Auth::user()->full_name . ', ' . $child->full_name . ' isimli çocuğunuzu sildi.';
         $feed = new Feed([
-'desc' => $desc,
-'icon' => '4',
+'desc'       => $desc,
+'icon'       => '4',
 'faculty_id' => $child->faculty_id,
-'title' => 'All'
+'title'      => 'All'
 ]);
         $feed->save();
 
@@ -289,12 +284,11 @@ class ChildController extends Controller
             $process = new Process;
             $process->created_by = Auth::user()->id;
             $process->child_id = $child->id;
-            $process->desc = $volunteer->first_name . ' ' . $volunteer->last_name .' gönüllü olarak belirlendi.';
+            $process->desc = $volunteer->first_name . ' ' . $volunteer->last_name . ' gönüllü olarak belirlendi.';
             $process->save();
         }
 
-
-        return json_encode(['message' => $child->first_name . " gönüllüsü " . $volunteer->first_name . " olarak güncellendi."]);
+        return json_encode(['message' => $child->first_name . ' gönüllüsü ' . $volunteer->first_name . ' olarak güncellendi.']);
     }
 
     public function chats(Request $request, $id)
@@ -341,12 +335,11 @@ class ChildController extends Controller
 // });
             }
 
-
             $feed = new Feed;
-            $feed->desc = $child->full_name . " hediyesi geldi.";
+            $feed->desc = $child->full_name . ' hediyesi geldi.';
             $feed->icon = 3;
             $feed->faculty_id = $child->faculty_id;
-            $feed->title = "All";
+            $feed->title = 'All';
             $feed->save();
         } elseif ($request->type == 2) {
             $child = Child::find($process->child_id);
@@ -354,10 +347,10 @@ class ChildController extends Controller
             $child->save();
 
             $feed = new Feed;
-            $feed->desc = $child->full_name . " için gönüllü bulundu.";
+            $feed->desc = $child->full_name . ' için gönüllü bulundu.';
             $feed->icon = 2;
             $feed->faculty_id = $child->faculty_id;
-            $feed->title = "All";
+            $feed->title = 'All';
             $feed->save();
         } elseif ($request->type == 3) {
             $child = Child::find($process->child_id);
@@ -365,10 +358,10 @@ class ChildController extends Controller
             $child->save();
 
             $feed = new Feed;
-            $feed->desc = $child->full_name . " hediyesi teslim edildi.";
+            $feed->desc = $child->full_name . ' hediyesi teslim edildi.';
             $feed->icon = 2;
             $feed->faculty_id = $child->faculty_id;
-            $feed->title = "All";
+            $feed->title = 'All';
             $feed->save();
         } elseif ($request->type == 4) {
             $child = Child::find($process->child_id);
@@ -379,7 +372,7 @@ class ChildController extends Controller
             $feed->desc = $child->full_name . ' hediye durumu "Bekleniyor" olarak güncellendi.';
             $feed->icon = 2;
             $feed->faculty_id = $child->faculty_id;
-            $feed->title = "All";
+            $feed->title = 'All';
             $feed->save();
         }
         return Process::whereId($process->id)->with('creator')->first();
@@ -389,69 +382,66 @@ class ChildController extends Controller
     public function createChild(Request $request)
     {
         return Child::create([
-'faculty_id'       => $request->faculty_id,
-'department'       => $request->department,
-'first_name'       => $request->first_name,
-'last_name'        => $request->last_name,
-'diagnosis'        => $request->diagnosis,
-'diagnosis_desc'   => $request->diagnosis_desc,
-'taken_treatment'  => $request->taken_treatment,
-'child_state'      => $request->child_state,
-'child_state_desc' => $request->child_state_desc,
-'gender'           => $request->gender,
-'meeting_day'      => Carbon::createFromFormat('d.m.Y', $request->meeting_day),
-'birthday'         => Carbon::createFromFormat('d.m.Y', $request->birthday),
-'wish'             => $request->wish,
-'g_first_name'     => $request->g_first_name,
-'g_last_name'      => $request->g_last_name,
-'g_mobile'         => $request->g_mobile,
-'g_email'          => $request->g_email,
-'province'         => $request->province,
-'city'             => $request->city,
-'address'          => $request->address,
-'extra_info'       => $request->extra_info,
-'gift_state'       => GiftStatus::Waiting,
-'until'            => Carbon::createFromFormat('d.m.Y', $request->meeting_day)->addYear(),
-]);
+            'faculty_id'       => $request->faculty_id,
+            'department'       => $request->department,
+            'first_name'       => $request->first_name,
+            'last_name'        => $request->last_name,
+            'diagnosis'        => $request->diagnosis,
+            'diagnosis_desc'   => $request->diagnosis_desc,
+            'taken_treatment'  => $request->taken_treatment,
+            'child_state'      => $request->child_state,
+            'child_state_desc' => $request->child_state_desc,
+            'gender'           => $request->gender,
+            'meeting_day'      => Carbon::createFromFormat('d.m.Y', $request->meeting_day),
+            'birthday'         => Carbon::createFromFormat('d.m.Y', $request->birthday),
+            'wish'             => $request->wish,
+            'g_first_name'     => $request->g_first_name,
+            'g_last_name'      => $request->g_last_name,
+            'g_mobile'         => $request->g_mobile,
+            'g_email'          => $request->g_email,
+            'province'         => $request->province,
+            'city'             => $request->city,
+            'address'          => $request->address,
+            'extra_info'       => $request->extra_info,
+            'gift_state'       => GiftStatus::Waiting,
+            'until'            => Carbon::createFromFormat('d.m.Y', $request->meeting_day)->addYear(),
+        ]);
     }
 
     public function createPost(Request $request, Child $child)
     {
         return Post::create([
-'child_id' => $child->id,
-'text'     => $request->website_text,
-'type'     => PostType::Meeting,
-]);
+            'child_id' => $child->id,
+            'text'     => $request->website_text,
+            'type'     => PostType::Meeting,
+        ]);
     }
 
     // HELPERS
     public function checkSimilarChildren(Request $request)
     {
-        return
-$request->accepted == '0' &&
-count($this->getSimilarChildren($request->first_name, $request->last_name)) > 0 ;
+        return $request->accepted == '0' && $this->getSimilarChildren($request->first_name, $request->last_name)->isNotEmpty() ;
     }
 
     public function getSimilarChildren($first_name, $last_name)
     {
-        return Child::
-where('first_name', 'like', '%' . $first_name . '%')
-->where('last_name', 'like', '%' . $last_name . '%')
-->with('users', 'faculty')
-->get();
+        return Child::where('first_name', 'like', '%' . $first_name . '%')
+            ->where('last_name', 'like', '%' . $last_name . '%')
+            ->with('users', 'faculty')
+            ->get();
     }
 
     public function sendSimilarChildrenResponse(Request $request)
     {
         $similarChildren = $this->getSimilarChildren($request->first_name, $request->last_name);
-        $message = "";
+        $message = '';
         foreach ($similarChildren as $similarChild) {
-            $message .= "<p>";
-            $message .= "<strong>Çocuk: </strong>" . $similarChild->full_name . "<br>";
-            $message .= "<strong>Fakülte: </strong>" . $similarChild->faculty->full_name . " Tıp Fakültesi<br>";
-            $message .= "<strong>Sorumlular: </strong>";
-            $message .= $similarChild->users->implode(", ", "full_name");
-            $message .= "</p>";
+            $message .= '<p>';
+            $message .= '<strong>Çocuk: </strong>' . $similarChild->full_name . '<br>';
+            $message .= '<strong>Fakülte: </strong>' . $similarChild->faculty->full_name . ' Tıp Fakültesi<br>';
+            $message .= '<strong>Sorumlular: </strong>';
+            $message .= $similarChild->users->implode(', ', 'full_name');
+            $message .= '</p>';
         }
         error_message('Bu isimde çocuk var.');
         return redirect()->back()->withInput()->with('similarChildren', $message);

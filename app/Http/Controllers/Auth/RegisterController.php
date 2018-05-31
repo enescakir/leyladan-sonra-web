@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-
 use App\Models\User;
 use App\Models\Faculty;
 
@@ -48,15 +47,15 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm()
     {
-        $faculties = Faculty::orderby('full_name')->get();
+        $faculties = Faculty::get()->sortBy('full_name');
         return view('auth.register', compact(['faculties']));
     }
 
     protected function registered($request, $user)
     {
-        $user->sendEmailActivationNotification();
         $this->guard()->logout();
-        session_info("E-posta adresinize doğrulama kodu gönderilmiştir.");
+        session_info('E-posta adresinize doğrulama kodu gönderilmiştir.');
+        $user->sendEmailActivationNotification();
         return redirect($this->redirectPath());
     }
 
@@ -96,7 +95,7 @@ class RegisterController extends Controller
             'password'   => bcrypt($data['password']),
             'birthday'   => $data['birthday'],
             'faculty_id' => intval($data['faculty_id']),
-            'mobile'     => make_mobile($data['mobile']),
+            'mobile'     => $data['mobile'],
             'year'       => $data['year'],
             'title'      => $data['title'],
         ]);

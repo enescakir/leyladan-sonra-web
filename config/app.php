@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -134,7 +133,6 @@ return [
     */
 
     'providers' => [
-
         /*
          * Laravel Framework Service Providers...
          */
@@ -164,17 +162,17 @@ return [
         /*
          * Thirdparty Service Providers...
          */
-        Collective\Html\HtmlServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
-        Arcanedev\LogViewer\LogViewerServiceProvider::class,
-        Spatie\Newsletter\NewsletterServiceProvider::class,
-        Spatie\Analytics\AnalyticsServiceProvider::class,
-        Barryvdh\Debugbar\ServiceProvider::class,
-        Laravel\Passport\PassportServiceProvider::class,
-        Laravel\Tinker\TinkerServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class,
-        Spatie\LaravelImageOptimizer\ImageOptimizerServiceProvider::class,
-        Jenssegers\Agent\AgentServiceProvider::class,
+        // Collective\Html\HtmlServiceProvider::class,
+        // Intervention\Image\ImageServiceProvider::class,
+        // Arcanedev\LogViewer\LogViewerServiceProvider::class,
+        // Spatie\Newsletter\NewsletterServiceProvider::class,
+        // Spatie\Analytics\AnalyticsServiceProvider::class,
+        // Barryvdh\Debugbar\ServiceProvider::class,
+        // Laravel\Passport\PassportServiceProvider::class,
+        // Laravel\Tinker\TinkerServiceProvider::class,
+        // Maatwebsite\Excel\ExcelServiceProvider::class,
+        // Spatie\LaravelImageOptimizer\ImageOptimizerServiceProvider::class,
+        // Jenssegers\Agent\AgentServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -183,7 +181,6 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
     ],
 
     /*
@@ -234,17 +231,15 @@ return [
         /*
          * Thirdparty Facades...
          */
-        'Form' => Collective\Html\FormFacade::class,
-        'Html' => Collective\Html\HtmlFacade::class,
-        'Image' => Intervention\Image\Facades\Image::class,
-        'Newsletter' => Spatie\Newsletter\NewsletterFacade::class,
-        'Analytics' => Spatie\Analytics\AnalyticsFacade::class,
-        'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        // 'Form' => Collective\Html\FormFacade::class,
+        // 'Html' => Collective\Html\HtmlFacade::class,
+        // 'Image' => Intervention\Image\Facades\Image::class,
+        // 'Newsletter' => Spatie\Newsletter\NewsletterFacade::class,
+        // 'Analytics' => Spatie\Analytics\AnalyticsFacade::class,
+        // 'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'DataManager' => App\Models\DataManager::class,
-        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        'ImageOptimizer' => Spatie\LaravelImageOptimizer\Facades\ImageOptimizer::class,
-        'Agent' => Jenssegers\Agent\Agent::class,
-
+        // 'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        // 'ImageOptimizer' => Spatie\LaravelImageOptimizer\Facades\ImageOptimizer::class,
+        // 'Agent' => Jenssegers\Agent\Agent::class,
     ],
-
 ];
