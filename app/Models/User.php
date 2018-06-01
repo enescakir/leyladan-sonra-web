@@ -84,6 +84,11 @@ class User extends Authenticatable
         return $this->roles->pluck('display')->implode(', ');
     }
 
+    public function getThumbPathAttribute()
+    {
+        return asset(upload_path('profile', $this->profile_photo . '_s.jpg'));
+    }
+
     // Helpers
     public static function toSelect($placeholder = null)
     {

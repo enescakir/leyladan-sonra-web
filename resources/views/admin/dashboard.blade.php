@@ -1,8 +1,6 @@
 @extends('admin.parent')
 
-@section('title')
-Kontrol Paneli
-@endsection
+@section('title', 'Kontrol Paneli')
 
 @section('styles')
 <!-- JQVMap -->
@@ -508,18 +506,18 @@ Kontrol Paneli
       success: function(result){
         $('#calendar-loading').remove();
         $('#calendar').fullCalendar({
-          contentHeight: 500,
+          contentHeight: 600,
           events       : result,
           buttonIcons  : {
             prev     : 'ion ion-chevron-left',
             next     : 'ion ion-chevron-right',
           },
-          validRange   : function(nowDate) {
-            return {
-              start: nowDate.clone().subtract(1, 'months').startOf('month'),
-              end  : nowDate.clone().add(1, 'months').endOf('month')
-            };
-          },
+          // validRange   : function(nowDate) {
+          //   return {
+          //     start: nowDate.clone().subtract(1, 'months').startOf('month'),
+          //     end  : nowDate.clone().add(1, 'months').endOf('month')
+          //   };
+          // },
           eventMouseover: function(calEvent, jsEvent, view) {
             $(this).popover({
               title     : function() {

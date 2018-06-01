@@ -2,12 +2,12 @@
   <!-- Sidebar user panel (optional) -->
   <div class="user-panel">
     <div class="pull-left image">
-      <img src="{{ admin_asset('img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
+      <img src="{{ $authUser->thumb_path }}" class="img-circle" alt="{{ $authUser->full_name }}">
     </div>
     <div class="pull-left info">
       <p>{{ $authUser->full_name }}</p>
       <!-- Status -->
-      <a href="#"><i class="fa fa-black-tie"></i> Site Sorumlusu</a>
+      <a href="#"><i class="fa fa-black-tie"></i> {{ $authUser->role_displays }}</a>
     </div>
   </div>
 

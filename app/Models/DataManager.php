@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Cache;
 use DB;
 use App\Models\Child;
@@ -61,12 +60,12 @@ class DataManager extends Model
     public static function facultyCount($status = 'started')
     {
         switch ($status) {
-        case "all":
+        case 'all':
           return Cache::remember('faculty-count', 15, function () {
               return Faculty::count();
           });
           break;
-        case "not-started":
+        case 'not-started':
           return Cache::remember('faculty-count-notstarted', 15, function () {
               return Faculty::count() - Faculty::started()->count();
           });
@@ -87,24 +86,28 @@ class DataManager extends Model
 
     public static function birthday($faculty_id = null)
     {
-        return Cache::remember('birthday-' . $faculty_id, 60, function () use ($faculty_id) {
+        return Cache::remember('birthday-' . $faculty_id, 600, function () use ($faculty_id) {
             $birthdays = [];
-            $users = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM users WHERE faculty_id = " . $faculty_id . " AND MONTH(birthday) = " . date("n"));
-            $children = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM children WHERE faculty_id = " . $faculty_id . " AND MONTH(birthday) = " . date("n"));
+            // $users = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM users WHERE faculty_id = {$faculty_id} AND MONTH(birthday) IN (" . date('n') . ')');
+            // $children = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM children WHERE faculty_id = {$faculty_id} AND MONTH(birthday) IN (" . date('n') . ')');
+            $users = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM users WHERE faculty_id = {$faculty_id}");
+            $children = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM children WHERE faculty_id = {$faculty_id}");
 
             foreach ($users as $key => $value) {
                 $object = new \stdClass();
-                $object->title = $value->first_name . " " . $value->last_name;
-                $object->start = date("Y") . substr($value->birthday, 4);
-                $object->backgroundColor = "#F3565D";
+                $object->title = $value->first_name . ' ' . $value->last_name;
+                $object->start = date('Y') . substr($value->birthday, 4);
+                $object->backgroundColor = '#F3565D';
+                $object->repeat = 2;
                 array_push($birthdays, $object);
             }
 
             foreach ($children as $key => $value) {
                 $object = new \stdClass();
-                $object->title = $value->first_name . " " . $value->last_name;
-                $object->start = date("Y") . substr($value->birthday, 4);
-                $object->backgroundColor = "#1bbc9b";
+                $object->title = $value->first_name . ' ' . $value->last_name;
+                $object->start = date('Y') . substr($value->birthday, 4);
+                $object->backgroundColor = '#1bbc9b';
+                $object->repeat = 2;
                 array_push($birthdays, $object);
             }
             return $birthdays;
