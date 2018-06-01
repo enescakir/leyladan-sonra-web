@@ -17,6 +17,7 @@
     "lodash": "^4.17.10",
     "vue": "^2.1.10"
   },
+  
   "dependencies": {
     "ajv": "^5.5.2",
     "ajv-keywords": "^2.1.1",

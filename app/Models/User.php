@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use App\Notifications\ActivateEmail as ActivateEmailNotification;
+use Spatie\Permission\Traits\HasRoles;
 use App\Scopes\GraduateScope;
 use App\Scopes\LeftScope;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,6 +21,7 @@ class User extends Authenticatable
     use Birthday;
     use Mobile;
     use Notifiable;
+    use HasRoles;
 
     // Properties
     protected $table = 'users';
@@ -75,6 +77,11 @@ class User extends Authenticatable
     public function getFullNameAttribute()
     {
         return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+    }
+
+    public function getRoleDisplaysAttribute()
+    {
+        return $this->roles->pluck('display')->implode(', ');
     }
 
     // Helpers

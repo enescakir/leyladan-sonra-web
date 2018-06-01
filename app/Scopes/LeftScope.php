@@ -19,4 +19,16 @@ class LeftScope implements Scope
     {
         $builder->whereNull('left_at');
     }
+
+    /**
+     * Extend the query builder with the needed functions.
+     *
+     * @param Builder $builder
+     */
+    public function extend(Builder $builder)
+    {
+        $builder->macro('withLefts', function (Builder $builder) {
+            return $builder->withoutGlobalScope($this);
+        });
+    }
 }
