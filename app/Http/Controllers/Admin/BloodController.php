@@ -78,9 +78,26 @@ class BloodController extends Controller
         return api_success();
     }
 
+    public function indexSMS(Request $request)
+    {
+        $messages = Sms::where('category', 'Kan Bağışı')->orderBy('id', 'DESC')->with('sender');
+        if ($request->filled('sent_by')) {
+            $messages->where('sent_by', $request->sent_by);
+        }
+        if ($request->filled('search')) {
+            $messages->search($request->search);
+        }
+        if ($request->filled('download')) {
+            Sms::download($messages);
+        }
+        $senders = Sms::toSenderSelect('Hepsi', 'Kan Bağışı');
+        $messages = $messages->paginate($request->per_page ?: 25);
+        return view('admin.blood.sms', compact(['messages', 'senders']));
+    }
+
     public function showSMS()
     {
-        return view('admin.blood.sms');
+        return view('admin.blood.send');
     }
 
     public function previewSMS(Request $request)
@@ -134,9 +151,9 @@ class BloodController extends Controller
 
         if ($sms->save()) {
             $sms->send(make_mobile($request->number));
-            return $sms;
+            return api_success($sms);
         } else {
-            return 'Bir hata ile karşılaşıldı.';
+            return api_error('Bir hata ile karşılaşıldı.');
         }
     }
 

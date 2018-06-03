@@ -59,8 +59,11 @@
         <li class="{{ set_active('*admin/blood') }}">
           <a href="{{ route('admin.blood.index') }}"><i class="fa fa-users"></i> <span>Tüm Bağışçılar</span></a>
         </li>
-        <li class="{{ set_active('*admin/blood/sms*') }}">
+        <li class="{{ set_active('*admin/blood/sms/send*') }}">
           <a href="{{ route('admin.blood.sms.send') }}"><i class="fa fa-paper-plane"></i> <span>SMS Gönder</span></a>
+        </li>
+        <li class="{{ set_active('*admin/blood/sms*') }}">
+          <a href="{{ route('admin.blood.sms.index') }}"><i class="fa fa-envelope"></i> <span>Gönderilen Mesajlar</span></a>
         </li>
         <li class="{{ set_active('*admin/blood/people*') }}">
           <a href="{{ route('admin.blood.people.edit') }}"><i class="fa fa-user-circle-o"></i> <span>Görevliler</span></a>

@@ -3,46 +3,85 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\Traits\Base;
+use Excel;
+use App\Models\User;
 
 class Sms extends Model
 {
-    use Base;
     // Properties
-    protected $table    = 'sms';
-    protected $fillable = ['title', 'message', 'category', 'receiver_count', 'sent_by'];
+    protected $table = 'sms';
+    protected $fillable = [
+        'title', 'message', 'category', 'receiver_count', 'sent_by'
+    ];
+
+    // Relations
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'sent_by');
+    }
+
+    // Scopes
+    public function scopeSearch($query, $search)
+    {
+        $query->where(function ($query2) use ($search) {
+            $query2->where('id', $search)
+                ->orWhere('title', 'like', "%{$search}%")
+                ->orWhere('category', 'like', "%{$search}%")
+                ->orWhere('message', 'like', "%{$search}%");
+        });
+    }
+
+    // Accessors
+
+    // Mutators
 
     // Methods
+    public static function toSenderSelect($placeholder = null, $category = '')
+    {
+        $result = static::where('category', $category)->with('sender')->orderBy('id', 'DESC')->get()->pluck('sender.full_name', 'sender.id')->sort();
+        return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
+    }
+
+    public static function download($messages)
+    {
+        $messages = $messages->get();
+        Excel::create('LS_Mesajlar_' . date('d_m_Y'), function ($excel) use ($messages) {
+            $excel->sheet('Mesajlar', function ($sheet) use ($messages) {
+                $sheet->fromArray($messages, null, 'A1', true);
+            });
+        })->download('xlsx');
+    }
+
     public function send($people)
     {
         $to = is_array($people) ?
-    array_reduce($people, function ($reduced, $person) {
-        return $reduced . "<number>" . $person . "</number>";
-    }, "")
-    : "<number>" . $people . "</number>";
+            array_reduce($people, function ($reduced, $person) {
+                return $reduced . '<number>' . $person . '</number>';
+            }, '') :
+            '<number>' . $people . '</number>';
 
-        $username = env('ILETI_USERNAME');
-        $password = env('ILETI_PASSWORD');
+        $username = config('services.iletimerkezi.username');
+        $password = config('services.iletimerkezi.password');
 
-        $xml = "<request>
-    <authentication>
-    <username>" . $username . "</username>
-    <password>" . $password . "</password>
-    </authentication>
-    <order>
-    <sender>" . $this->attributes['title'] . "</sender>
-    <sendDateTime>01/05/2013 18:00</sendDateTime>
-    <message>
-    <text><![CDATA[" . $this->attributes['message'] . "]]></text>
-    <receipents>
-    " . $to . "
-    </receipents>
-    </message>
-    </order>
-    </request>";
+        $xml = "
+        <request>
+            <authentication>
+                <username>{$username}</username>
+                <password>{$password}</password>
+            </authentication>
+            <order>
+                <sender>{$this->attributes['title']}</sender>
+                <sendDateTime>01/05/2013 18:00</sendDateTime>
+                <message>
+                    <text><![CDATA[{$this->attributes['message']}]]></text>
+                    <receipents>{$to}</receipents>
+                </message>
+            </order>
+        </request>
+        ";
 
-        $site_name = env('ILETI_URL') . "/send-sms";
+        $site_name = config('services.iletimerkezi.url') . '/send-sms';
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $site_name);
@@ -60,17 +99,19 @@ class Sms extends Model
 
     public static function checkBalance()
     {
-        $username = env('ILETI_USERNAME');
-        $password = env('ILETI_PASSWORD');
+        $username = config('services.iletimerkezi.username');
+        $password = config('services.iletimerkezi.password');
 
-        $xml = "<request>
-    <authentication>
-    <username>" . $username . "</username>
-    <password>" . $password . "</password>
-    </authentication>
-    </request>";
+        $xml = "
+        <request>
+            <authentication>
+                <username>{$username}</username>
+                <password>{$password}</password>
+            </authentication>
+        </request>
+        ";
 
-        $site_name = env('ILETI_URL') . "/get-balance";
+        $site_name = config('services.iletimerkezi.url') . '/get-balance';
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $site_name);

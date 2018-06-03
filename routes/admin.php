@@ -189,11 +189,12 @@ Route::resource('faculty', 'Admin\FacultyController');
 Route::prefix('blood')->as('blood.')->group(function () {
     Route::get('/people', 'Admin\BloodController@editPeople')->name('people.edit');
     Route::post('/people', 'Admin\BloodController@updatePeople')->name('people.update');
-    Route::get('/sms', 'Admin\BloodController@showSMS')->name('sms.show');
+    Route::get('/sms', 'Admin\BloodController@indexSMS')->name('sms.index');
+    Route::get('/sms/send', 'Admin\BloodController@showSMS')->name('sms.show');
+    Route::post('/sms/send', 'Admin\BloodController@sendSMS')->name('sms.send');
     Route::get('/sms/balance', 'Admin\BloodController@checkBalance')->name('sms.balance');
     Route::post('/sms/preview', 'Admin\BloodController@previewSMS')->name('sms.preview');
     Route::post('/sms/test', 'Admin\BloodController@testSMS')->name('sms.test');
-    Route::post('/sms', 'Admin\BloodController@sendSMS')->name('sms.send');
 });
 Route::resource('blood', 'Admin\BloodController');
 
