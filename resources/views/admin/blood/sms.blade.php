@@ -1,12 +1,7 @@
 @extends('admin.parent')
 
-@section('title')
-  SMS Gönder
-@endsection
-
-@section('styles')
-@endsection
-
+@section('title', 'SMS Gönder')
+  
 @section('header')
   <section class="content-header">
     <h1>
@@ -108,7 +103,7 @@
           method: "GET",
           dataType: "json",
           success: function(result){
-              $('#sms_balance').html(result.balance + " adet SMS hakkınız kalmıştır.")
+              $('#sms_balance').html(result.data.balance + " adet SMS hakkınız kalmıştır.")
           },
           error: function (xhr, ajaxOptions, thrownError) {
             ajaxError(xhr, ajaxOptions, thrownError);

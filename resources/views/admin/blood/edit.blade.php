@@ -1,16 +1,11 @@
 @extends('admin.parent')
 
-@section('title')
-  Bağışçı Düzenle
-@endsection
-
-@section('styles')
-@endsection
-
+@section('title', 'Kan Bağışçısı Düzenle')
+  
 @section('header')
   <section class="content-header">
     <h1>
-      Bağışçı Düzenle
+        Kan Bağışçısı Düzenle
       <small>Bu sayfadan ilgili kan bağışçısını düzenleyebilirsiniz</small>
     </h1>
     <ol class="breadcrumb">
@@ -92,7 +87,4 @@
       </div>
     </div>
   </div>
-@endsection
-
-@section('scripts')
 @endsection

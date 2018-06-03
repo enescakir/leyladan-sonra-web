@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
 use App\Http\Requests;
 use App\Models\Blood;
 use App\Models\Sms;
 use App\Models\User;
-use App\Enums\UserTitle;
 use Auth;
 
 class BloodController extends Controller
@@ -22,22 +20,27 @@ class BloodController extends Controller
     public function index(Request $request)
     {
         $bloods = Blood::orderBy('id', 'DESC');
+
         if ($request->filled('blood_type')) {
-            $bloods = $bloods->where('blood_type', $request->blood_type);
+            $bloods->where('blood_type', $request->blood_type);
         }
         if ($request->filled('rh')) {
-            $bloods = $bloods->where('rh', $request->rh);
+            $bloods->where('rh', $request->rh);
         }
         if ($request->filled('city')) {
-            $bloods = $bloods->where('city', $request->city);
+            $bloods->where('city', $request->city);
         }
         if ($request->filled('search')) {
-            $bloods = $bloods->search($request->search);
+            $bloods->search($request->search);
         }
         if ($request->filled('download')) {
             Blood::download($bloods);
         }
         $bloods = $bloods->paginate($request->per_page ?: 25);
+        if ($request->has('page') && $request->page != 1 && $request->page > $bloods->lastPage()) {
+            return redirect($request->fullUrlWithQuery(array_merge(request()->all(), ['page' => $bloods->lastPage()])));
+        }
+
         return view('admin.blood.index', compact('bloods'));
     }
 
@@ -72,9 +75,8 @@ class BloodController extends Controller
     public function destroy(Blood $blood)
     {
         $blood->delete();
-        return $blood;
+        return api_success();
     }
-
 
     public function showSMS()
     {
@@ -91,9 +93,9 @@ class BloodController extends Controller
         ]);
 
         $blood_types = $request->blood_types;
-        $rhs         = $request->rhs;
-        $cities      = $request->cities;
-        $message     = $request->message;
+        $rhs = $request->rhs;
+        $cities = $request->cities;
+        $message = $request->message;
 
         $bloods = Blood::whereIn('city', $cities)->whereIn('blood_type', $blood_types)->whereIn('rh', $rhs)->get();
 
@@ -123,11 +125,11 @@ class BloodController extends Controller
     public function testSMS(Request $request)
     {
         $sms = new Sms([
-          'title' => 'LEYLADANSNR',
-          'message' => $request->message,
-          'category' => 'Kan Bağışı Test',
+          'title'          => 'LEYLADANSNR',
+          'message'        => $request->message,
+          'category'       => 'Kan Bağışı Test',
           'receiver_count' => 1,
-          'sent_by' => Auth::user()->id,
+          'sent_by'        => Auth::user()->id,
         ]);
 
         if ($sms->save()) {
@@ -140,20 +142,20 @@ class BloodController extends Controller
 
     public function checkBalance()
     {
-        return ["balance" => Sms::checkBalance()];
+        return  api_success(['balance' => Sms::checkBalance()]);
     }
 
     public function editPeople()
     {
         $users = User::orderby('first_name')->get()->pluck('fullname', 'id');
-        $responsibles = User::title(UserTitle::BloodMember)->get()->pluck('id');
+        $responsibles = User::role('blood')->get()->pluck('id');
         return view('admin.blood.people', compact('users', 'responsibles'));
     }
 
     public function updatePeople(Request $request)
     {
-        User::title(UserTitle::BloodMember)->update(['title' => UserTitle::NormalMember]);
-        User::whereIn('id', $request->users)->update(['title' => UserTitle::BloodMember]);
+        User::role('blood')->get()->each->removeRole('blood');
+        User::whereIn('id', $request->users)->get()->each->assignRole('blood');
         session_success(__('messages.blood.people'));
         return redirect()->route('admin.blood.people.edit');
     }

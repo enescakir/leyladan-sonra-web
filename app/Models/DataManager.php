@@ -128,7 +128,7 @@ class DataManager extends Model
 
     public static function childCountMonthly($faculty_id = null, $limit = 10)
     {
-        return cache()->remember('child-count-monthly', 0, function () use ($faculty_id, $limit) {
+        return cache()->remember('child-count-monthly', 15, function () use ($faculty_id, $limit) {
             $general = Child::get()->groupBy(function ($d) {
                 return $d->meeting_day->format('Y-m');
             })->map(function ($count) {

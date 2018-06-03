@@ -46,13 +46,17 @@ class DashboardController extends Controller
         } elseif ($request->type == 'birthday') {
             $response = DataManager::birthday($request->faculty_id);
         } elseif ($request->type == 'cities') {
-            $response = Faculty::all()->groupBy('code')->map(function ($faculties) {
-                return $faculties->where('started_at', '<>', null)->isEmpty() ?
-                  '#fcd5ae' :
-                  '#339999' ;
+            $response = cache()->remember('cities', 600, function () {
+                return Faculty::all()->groupBy('code')->map(function ($faculties) {
+                    return $faculties->where('started_at', '<>', null)->isEmpty() ?
+                      '#fcd5ae' :
+                      '#339999' ;
+                });
             });
         } elseif ($request->type == 'city') {
-            $response = Faculty::where('code', $request->city_code)->get(['name', 'started_at']);
+            $response = cache()->remember("city-{$request->city_code}", 600, function () use ($request) {
+                return Faculty::where('code', $request->city_code)->get(['name', 'started_at']);
+            });
         }
         return api_success($response);
     }

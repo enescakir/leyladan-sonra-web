@@ -147,7 +147,7 @@ function make_mobile($mobile)
     return substr(str_replace(['\0', '+', ')', '(', '-', ' ', '\t'], '', $mobile), -10);
 }
 
-function citiesToSelect($code = false, $empty = false)
+function citiesToSelect($code = false, $placeholder = null)
 {
     $cities = collect();
     $cities->push(collect(['name' => 'Adana', 'code' => 1]));
@@ -237,5 +237,6 @@ function citiesToSelect($code = false, $empty = false)
     } else {
         $result = $cities->pluck('name', 'name');
     }
-    return $empty ? collect(['' => ''])->merge($result) : $result;
+
+    return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
 }
