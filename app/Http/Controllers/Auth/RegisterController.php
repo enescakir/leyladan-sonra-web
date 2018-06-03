@@ -48,7 +48,7 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $faculties = Faculty::get()->sortBy('full_name');
-        return view('auth.register', compact(['faculties']));
+        return view('admin.auth.register', compact(['faculties']));
     }
 
     protected function registered($request, $user)

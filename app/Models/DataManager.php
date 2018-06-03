@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Cache;
 use DB;
 use App\Models\Child;
 use App\Models\Blood;
@@ -19,41 +18,41 @@ class DataManager extends Model
     {
         if ($faculty_id) {
             if ($gift_state) {
-                return Cache::remember('child-count-' . $faculty_id . '-' . $gift_state, 15, function () use ($faculty_id, $gift_state) {
+                return cache()->remember('child-count-' . $faculty_id . '-' . $gift_state, 15, function () use ($faculty_id, $gift_state) {
                     return Child::where('faculty_id', $faculty_id)->gift($gift_state)->count();
                 });
             }
-            return Cache::remember('child-count-' . $faculty_id, 15, function () use ($faculty_id) {
+            return cache()->remember('child-count-' . $faculty_id, 15, function () use ($faculty_id) {
                 return Child::where('faculty_id', $faculty_id)->count();
             });
         }
         if ($gift_state) {
-            return Cache::remember('child-count-' . $gift_state, 15, function () use ($gift_state) {
+            return cache()->remember('child-count-' . $gift_state, 15, function () use ($gift_state) {
                 return Child::gift($gift_state)->count();
             });
         }
-        return Cache::remember('child-count', 15, function () {
+        return cache()->remember('child-count', 15, function () {
             return Child::count();
         });
     }
 
     public static function bloodCount()
     {
-        return Cache::remember('blood-count', 15, function () {
+        return cache()->remember('blood-count', 15, function () {
             return Blood::count();
         });
     }
 
     public static function volunteerCount()
     {
-        return Cache::remember('volunteer-count', 15, function () {
+        return cache()->remember('volunteer-count', 15, function () {
             return Volunteer::count();
         });
     }
 
     public static function userCount()
     {
-        return Cache::remember('user-count', 15, function () {
+        return cache()->remember('user-count', 15, function () {
             return User::count();
         });
     }
@@ -62,17 +61,17 @@ class DataManager extends Model
     {
         switch ($status) {
         case 'all':
-          return Cache::remember('faculty-count', 15, function () {
+          return cache()->remember('faculty-count', 15, function () {
               return Faculty::count();
           });
           break;
         case 'not-started':
-          return Cache::remember('faculty-count-notstarted', 15, function () {
-              return Faculty::count() - Faculty::started()->count();
+          return cache()->remember('faculty-count-notstarted', 15, function () {
+              return static::facultyCount('all') - static::facultyCount('started') ;
           });
           break;
         default:
-          return Cache::remember('faculty-count-started', 15, function () {
+          return cache()->remember('faculty-count-started', 15, function () {
               return Faculty::started()->count();
           });
       }
@@ -80,14 +79,14 @@ class DataManager extends Model
 
     public static function cityCount()
     {
-        return Cache::remember('city-count', 15, function () {
+        return cache()->remember('city-count', 15, function () {
             return Faculty::started()->groupBy('code')->get()->count();
         });
     }
 
     public static function birthday($faculty_id = null)
     {
-        return Cache::remember('birthday-' . $faculty_id, 600, function () use ($faculty_id) {
+        return cache()->remember('birthday-' . $faculty_id, 600, function () use ($faculty_id) {
             $birthdays = [];
             // $users = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM users WHERE faculty_id = {$faculty_id} AND MONTH(birthday) IN (" . date('n') . ')');
             // $children = DB::select("SELECT first_name,last_name,birthday,faculty_id FROM children WHERE faculty_id = {$faculty_id} AND MONTH(birthday) IN (" . date('n') . ')');
@@ -118,11 +117,11 @@ class DataManager extends Model
     public static function feeds($faculty_id = null, $limit = 15)
     {
         if ($faculty_id) {
-            return Cache::remember('feed-' . $faculty_id, 5, function () use ($faculty_id, $limit) {
+            return cache()->remember('feed-' . $faculty_id, 5, function () use ($faculty_id, $limit) {
                 return Feed::where('faculty_id', $faculty_id)->orderby('id', 'desc')->with('creator')->limit($limit)->get();
             });
         }
-        return Cache::remember('feed', 5, function () use ($limit) {
+        return cache()->remember('feed', 5, function () use ($limit) {
             return Feed::orderby('id', 'desc')->limit($limit)->with('creator')->get();
         });
     }

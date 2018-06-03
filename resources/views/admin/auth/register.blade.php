@@ -1,4 +1,4 @@
-@extends('auth.parent')
+@extends('admin.auth.parent')
 
 @section('title', 'Kayıt Ol')
 

@@ -1,8 +1,6 @@
-@extends('auth.parent')
+@extends('admin.auth.parent')
 
-@section('title')
-    Şifremi Unuttum?
-@stop
+@section('title', 'Şifremi Unuttum?')
 
 @section('content')
   <h3 class="login-box-msg">Şifreni mi unuttun?</h3>
