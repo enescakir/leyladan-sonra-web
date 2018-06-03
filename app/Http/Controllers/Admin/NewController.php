@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
 use App\Models\News;
 use App\Models\Channel;
 use Excel;
@@ -18,16 +17,16 @@ class NewController extends Controller
 
     public function index(Request $request)
     {
-        $news = News::orderBy('id', 'DESC');
+        $news = News::orderBy('id', 'DESC')->with('channel');
         if ($request->filled('search')) {
-            $news = $news->search($request->search);
+            $news->search($request->search);
         }
-        $news = $news->with('channel');
 
         if ($request->filled('download')) {
             News::download($news);
         }
-        $news = $news->paginate(25);
+
+        $news = $news->paginate($request->per_page ?: 25);
         return view('admin.new.index', compact(['news']));
     }
 
@@ -62,7 +61,7 @@ class NewController extends Controller
     public function destroy(News $new)
     {
         $new->delete();
-        return $new;
+        return api_success($new);
     }
 
     private function validateNew(Request $request)

@@ -1,12 +1,7 @@
 @extends('admin.parent')
 
-@section('title')
-  Haber Güncelleme
-@endsection
-
-@section('styles')
-@endsection
-
+@section('title', 'Haber Güncelleme')
+  
 @section('header')
   <section class="content-header">
     <h1>
