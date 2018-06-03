@@ -1,1 +1,42 @@
-tr .four-button{width:120px;min-width:120px;max-width:120px}tr .three-button{width:90px;min-width:90px;max-width:90px}tr .two-button{width:60px;min-width:60px;max-width:60px}.scrollable-menu{height:auto;max-height:200px;overflow-x:hidden}.table-img-xs{max-height:25px}.table-img-sm{max-height:50px}.table-img-md{max-height:100px}.table-img-lg{max-height:150px}.table-search-bar{max-width:100px}
+tr .four-button {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+}
+tr .three-button {
+  width: 90px;
+  min-width: 90px;
+  max-width: 90px;
+}
+
+tr .two-button {
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+}
+
+.scrollable-menu {
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+}
+
+.table-img-xs {
+  max-height: 25px;
+}
+
+.table-img-sm {
+  max-height: 50px;
+}
+
+.table-img-md {
+  max-height: 100px;
+}
+
+.table-img-lg {
+  max-height: 150px;
+}
+
+.table-search-bar {
+  max-width: 100px;
+}

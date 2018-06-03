@@ -1,8 +1,6 @@
 @extends('auth.parent')
 
-@section('title')
-  Kayıt Ol
-@stop
+@section('title', 'Kayıt Ol')
 
 @section('content')
   <h2 class="login-box-msg">Kayıt Ol</h2>
@@ -91,15 +89,15 @@
     </div>
     <div class="row">
       <div class="col-xs-6">
-        <a href="{{ url('/admin/login') }}" class="btn btn-danger btn-block btn-flat" > Geri</a>
+        <a href="{{ url('/admin/login') }}" class="btn btn-danger btn-block" > Geri</a>
       </div>
       <!-- /.col -->
       <div class="col-xs-6">
-        {!! Form::submit('Kayıt ol', array('class' => 'btn btn-ls btn-block btn-flat')) !!}
+        {!! Form::submit('Kayıt ol', array('class' => 'btn btn-ls btn-block')) !!}
       </div>
       <!-- /.col -->
     </div>
   {!!	Form::close() !!}
   <p></p>
-  <a href="{{ url('/admin/login') }}" class="btn btn-ls-dark btn-flat btn-full"> Zaten Üyeyim </a>
+  <a href="{{ url('/admin/login') }}" class="btn btn-ls-dark btn-flat btn-full btn-bottom"> Zaten Üyeyim </a>
 @endsection

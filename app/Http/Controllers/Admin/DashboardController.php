@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
-use Auth, DB, PDF, Cache;
+use Auth;
+use DB;
+use PDF;
+use Cache;
 use App\Models\Faculty;
 use App\Models\Feed;
 use DataManager;
@@ -30,32 +32,44 @@ class DashboardController extends Controller
 
     public function blank()
     {
-      return view('admin.blank');
+        return view('admin.blank');
     }
 
     public function data(Request $request)
     {
-      if ($request->type == "child-count-monthly") {
-        return DataManager::childCountMonthly($request->faculty_id);
-      } else if ($request->type == "birthday") {
-        return DataManager::birthday($request->faculty_id);
-      }
-      return [];
+        $response = [];
+        if ($request->type == 'child-count-monthly') {
+            $response = [
+                'faculty' => Faculty::find($request->faculty_id)->full_name ?? null,
+                'counts'  => DataManager::childCountMonthly($request->faculty_id)
+            ];
+        } elseif ($request->type == 'birthday') {
+            $response = DataManager::birthday($request->faculty_id);
+        } elseif ($request->type == 'cities') {
+            $response = Faculty::all()->groupBy('code')->map(function ($faculties) {
+                return $faculties->where('started_at', '<>', null)->isEmpty() ?
+                  '#fcd5ae' :
+                  '#339999' ;
+            });
+        } elseif ($request->type == 'city') {
+            $response = Faculty::where('code', $request->city_code)->get(['name', 'started_at']);
+        }
+        return api_success($response);
     }
 
     public function materials()
     {
-      return view('admin.materials');
+        return view('admin.materials');
     }
 
     public function manual()
     {
-      return view('admin.manual');
+        return view('admin.manual');
     }
 
     public function createForm()
     {
-      return view('admin.createForm');
+        return view('admin.createForm');
     }
 
     public function storeForm(Request $request)
@@ -116,30 +130,29 @@ class DashboardController extends Controller
 
     public function test()
     {
-
     }
 
     public function vote()
     {
-      return view('admin.oylama');
+        return view('admin.oylama');
     }
 
     public function voteStore(Request $request)
     {
-      $user = Auth::user();
-      $votes = DB::select('select * from votes where used_by = ?', [$user->id]);
-      if (count($votes) > 0) {
-        session_error('Daha önceden oy kullanmışsınız');
-        return redirect()->back()->withInput();
-      }
-      if( !($request->has('first') && $request->has('second')) ){
-        session_error('Lütfen bütün tarihleri oylayınız');
-        return redirect()->back()->withInput();
-      }
+        $user = Auth::user();
+        $votes = DB::select('select * from votes where used_by = ?', [$user->id]);
+        if (count($votes) > 0) {
+            session_error('Daha önceden oy kullanmışsınız');
+            return redirect()->back()->withInput();
+        }
+        if (!($request->has('first') && $request->has('second'))) {
+            session_error('Lütfen bütün tarihleri oylayınız');
+            return redirect()->back()->withInput();
+        }
 
-      session_succes('Başarıyla oy kullandınız');
-      DB::insert('insert into votes (used_by, faculty_name, first, second) values (?, ?, ?, ?)', [$user->id, $user->faculty->slug, $request->first, $request->second ]);
+        session_succes('Başarıyla oy kullandınız');
+        DB::insert('insert into votes (used_by, faculty_name, first, second) values (?, ?, ?, ?)', [$user->id, $user->faculty->slug, $request->first, $request->second]);
 
-      return view('admin.vote');
+        return view('admin.vote');
     }
 }

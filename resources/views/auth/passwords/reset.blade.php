@@ -32,11 +32,11 @@
     </div>
     <div class="row">
       <div class="col-xs-6">
-        <a href="{{ url('/admin/login') }}" class="btn btn-danger btn-block btn-flat" > Giriş Yap</a>
+        <a href="{{ url('/admin/login') }}" class="btn btn-danger btn-block" > Giriş Yap</a>
       </div>
       <!-- /.col -->
       <div class="col-xs-6">
-        {!! Form::submit('Sıfırla', array('class' => 'btn btn-ls btn-block btn-flat')) !!}
+        {!! Form::submit('Sıfırla', array('class' => 'btn btn-ls btn-block')) !!}
       </div>
       <!-- /.col -->
     </div>

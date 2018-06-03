@@ -11,7 +11,6 @@
 |
 */
 
-
 Route::get('/blank', 'Admin\DashboardController@blank')->name('blank');
 Route::get('/manual', 'Admin\DashboardController@manual')->name('manual');
 Route::get('/test', 'Admin\DashboardController@test');
@@ -23,8 +22,6 @@ Route::prefix('vote')->group(function () {
     Route::get('/', 'Admin\DashboardController@vote')->name('vote');
     Route::post('/', 'Admin\DashboardController@voteStore')->name('vote.store');
 });
-
-
 
 Route::prefix('statistic')->as('statistics.')->group(function () {
     Route::get('volunteer', 'Admin\StatisticController@volunteer')->name('volunteer');
@@ -41,7 +38,6 @@ Route::prefix('statistic')->as('statistics.')->group(function () {
         Route::get('/active', 'Admin\StatisticController@websiteActive')->name('website.active');
     });
 
-
     Route::get('child', 'Admin\StatisticController@child')->name('child');
     Route::get('child/department', 'Admin\StatisticController@childDepartment')->name('child.department');
 
@@ -50,7 +46,6 @@ Route::prefix('statistic')->as('statistics.')->group(function () {
         Route::get('/rh', 'Admin\StatisticController@bloodRh')->name('blood.rh');
         Route::get('/type', 'Admin\StatisticController@bloodType')->name('blood.type');
     });
-
 
     Route::get('user', 'Admin\StatisticController@user')->name('user');
     Route::get('user/horoscope', 'Admin\StatisticController@userHoroscope')->name('user.horoscope');
@@ -101,8 +96,6 @@ Route::prefix('faculty')->as('faculty.')->group(function () {
         Route::get('sendmail', 'Admin\FacultyController@createMail')->name('mail.create');
         Route::post('sendmail', 'Admin\FacultyController@sendMail')->name('mail.send');
     });
-    Route::get('cities', 'Admin\FacultyController@cities')->name('cities');
-    Route::get('city/{code}', 'Admin\FacultyController@city')->name('city');
 });
 Route::resource('faculty', 'Admin\FacultyController');
 
@@ -120,7 +113,6 @@ Route::prefix('message')->as('message.')->group(function () {
 });
 Route::resource('message', 'Admin\MessageController');
 
-
 Route::prefix('volunteer')->as('volunteer.')->group(function () {
     Route::get('unanswered', 'Admin\VolunteerController@unanswered')->name('unanswered');
     Route::post('unanswered', 'Admin\VolunteerController@childUnanswered')->name('unanswered');
@@ -129,7 +121,6 @@ Route::prefix('volunteer')->as('volunteer.')->group(function () {
 Route::resource('volunteer', 'Admin\VolunteerController');
 
 Route::post('/process', 'Admin\ChildController@createProcess')->name('process.store');
-
 
 Route::resource('mobile-notification', 'Admin\MobileNotificationController');
 Route::post('mobile-notification/{id}/send', 'Admin\MobileNotificationController@send')->name('mobile-notification.send');
@@ -141,7 +132,6 @@ Route::resource('blog', 'Admin\BlogController');
 | Refactored Routes
 |--------------------------------------------------------------------------
 */
-
 
 Route::get('/', function () {
     return redirect('/admin/login');
@@ -190,7 +180,6 @@ Route::prefix('faculty')->as('faculty.')->group(function () {
     });
 });
 Route::resource('faculty', 'Admin\FacultyController');
-
 
 /*
 |--------------------------------------------------------------------------

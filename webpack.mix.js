@@ -57,7 +57,7 @@ let mix = require('laravel-mix');
   'node_modules/bootstrap-maxlength/bootstrap-maxlength.min.js', // Max Length
   'node_modules/block-ui/jquery.blockUI.js', // JQuery Block UI
   'node_modules/bootstrap-filestyle/src/bootstrap-filestyle.min.js', // Bootstrap File Style
-  'node_modules/chart.js/Chart.min.js', // Chart.js
+  'node_modules/chart.js/dist/Chart.min.js', // Chart.js
   'node_modules/cropperjs/dist/cropper.min.js', // CropperJS
  ], 'public/admin/js/plugins.min.js');
 

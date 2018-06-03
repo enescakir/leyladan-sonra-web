@@ -61,6 +61,31 @@ function session_info($text)
     Session::flash('info_message', $text);
 }
 
+// Api Helpers
+function api_success($data = null)
+{
+    return response()->json([
+        'status'  => 'success',
+        'data'    => $data
+    ]);
+}
+
+function api_error($message)
+{
+    return response()->json([
+        'status'    => 'error',
+        'message'   => $message
+    ]);
+}
+
+function api_fail($data)
+{
+    return response()->json([
+        'status'    => 'fail',
+        'data'      => $data
+    ]);
+}
+
 // Migration Schema Helpers
 function BaseActions(Illuminate\Database\Schema\Blueprint $table)
 {

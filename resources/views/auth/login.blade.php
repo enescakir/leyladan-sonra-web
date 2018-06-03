@@ -1,8 +1,6 @@
 @extends('auth.parent')
 
-@section('title')
-    Giriş
-@stop
+@section('title', 'Giriş Yap')
 
 @section('content')
     <h3 class="login-box-msg">Hesaba Giriş</h3>
@@ -31,11 +29,11 @@
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          {!! Form::submit('Giriş', ['class' => 'btn btn-ls btn-block btn-flat']) !!}
+          {!! Form::submit('Giriş', ['class' => 'btn btn-ls btn-block']) !!}
         </div>
         <!-- /.col -->
       </div>
     {!!	Form::close() !!}
     <p><a href="{{ url('/admin/password/reset') }}">Şifremi unuttum?</a></p>
-    <a href="{{ url('/admin/register') }}" class="btn btn-ls-dark btn-flat btn-full"> Yeni hesap oluştur </a>
+    <a href="{{ url('/admin/register') }}" class="btn btn-ls-dark btn-flat btn-full btn-bottom"> Yeni hesap oluştur </a>
 @endsection

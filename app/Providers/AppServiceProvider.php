@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Carbon::setLocale('tr');
+        setlocale(LC_ALL, 'tr_TR.utf8') or setlocale(LC_ALL, 'tr_TR.utf-8');
 
         view()->composer('admin.parent', function ($view) {
             $authUser = Auth::user();

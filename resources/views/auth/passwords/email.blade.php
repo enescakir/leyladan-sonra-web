@@ -17,11 +17,11 @@
     </div>
     <div class="row">
       <div class="col-xs-6">
-        <a href="{{ url('/admin/login') }}" class="btn btn-danger btn-block btn-flat" > Geri</a>
+        <a href="{{ url('/admin/login') }}" class="btn btn-danger btn-block" > Geri</a>
       </div>
       <!-- /.col -->
       <div class="col-xs-6">
-        {!! Form::submit('Gönder', array('class' => 'btn btn-ls btn-block btn-flat')) !!}
+        {!! Form::submit('Gönder', array('class' => 'btn btn-ls btn-block')) !!}
       </div>
       <!-- /.col -->
     </div>

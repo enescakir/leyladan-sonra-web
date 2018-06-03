@@ -36,37 +36,29 @@ Contact: enes@cakir.web.tr
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic&amp;subset=latin-ext">
+  <style>
+    .login-box-body  {
+      border-radius: 5px;
+      -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-bottom {
+      border-radius: 0 0 5px 5px !important;
+    }
+  </style>
   @yield('styles')
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
     <a href="{{ url('/admin/login') }}">
-      <img src="{{ admin_asset('img/logo_login.png') }}" alt="Leyla'dan Sonrar Login Logo">
+      <img src="{{ admin_asset('img/logo_login.png') }}" alt="Leyla'dan Sonra Giriş">
     </a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    @if (Session::has('success_message'))
-        <div class="alert alert-success fade in">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-            {!! Session::get('success_message') !!}
-        </div>
-    @endif
-
-    @if (Session::has('error_message'))
-        <div class="alert alert-danger fade in">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-            {!! Session::get('error_message') !!}
-        </div>
-    @endif
-
-    @if (Session::has('info_message'))
-        <div class="alert alert-info fade in">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-            {!! Session::get('info_message') !!}
-        </div>
-    @endif
+    @include('admin.partials.messages')
 
     @yield('content')
   </div>

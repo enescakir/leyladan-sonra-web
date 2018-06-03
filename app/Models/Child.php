@@ -3,14 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\Traits\Base;
 use App\Traits\Birthday;
-
 use App\Enums\PostType;
 use App\Enums\ChatStatus;
 use App\Enums\GiftStatus;
-
 use Carbon\Carbon;
 use Excel;
 use DB;
@@ -21,7 +18,7 @@ class Child extends Model
     use Birthday;
 
     // Properties
-    protected $table    = 'children';
+    protected $table = 'children';
     protected $fillable = [
       'faculty_id', 'department', 'first_name', 'last_name', 'diagnosis',
       'diagnosis_desc', 'taken_treatment', 'child_state', 'child_state_desc',
@@ -29,8 +26,8 @@ class Child extends Model
       'g_mobile', 'g_email', 'province', 'city', 'address', 'extra_info',
       'volunteer_id', 'verification_doc', 'gift_state', 'on_hospital', 'until', 'slug'
     ];
-    protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'meeting_day', 'birthday', 'until'];
-    protected $appends  = ['full_name'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at', 'meeting_day', 'birthday', 'until'];
+    protected $appends = ['full_name'];
     protected $slugKeys = ['first_name', 'id'];
 
     // Relations
@@ -104,18 +101,17 @@ class Child extends Model
     public static function download($children)
     {
         $children = $children->get();
-        Excel::create('LS_Cocuklar_' . date("d_m_Y"), function ($excel) use ($children) {
+        Excel::create('LS_Cocuklar_' . date('d_m_Y'), function ($excel) use ($children) {
             $excel->sheet('Cocuklar', function ($sheet) use ($children) {
                 $sheet->fromArray($children, null, 'A1', true);
             });
         })->download('xlsx');
     }
 
-
     // Accessors
     public function getUserNameListAttribute()
     {
-        return implode(", ", $this->users->pluck('full_name')->toArray());
+        return implode(', ', $this->users->pluck('full_name')->toArray());
     }
 
     public function getUserListAttribute()
@@ -142,22 +138,22 @@ class Child extends Model
 
     public function getFullNameAttribute()
     {
-        return $this->attributes['first_name'] . " " . $this->attributes['last_name'];
+        return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
     }
 
     public function getMeetingDayHumanAttribute()
     {
-        return date("d.m.Y", strtotime($this->attributes['meeting_day']));
+        return date('d.m.Y', strtotime($this->attributes['meeting_day']));
     }
 
     public function getBirthdayHumanAttribute()
     {
-        return date("d.m.Y", strtotime($this->attributes['birthday']));
+        return date('d.m.Y', strtotime($this->attributes['birthday']));
     }
 
     public function getUntilHumanAttribute()
     {
-        return date("d.m.Y", strtotime($this->attributes['until']));
+        return date('d.m.Y', strtotime($this->attributes['until']));
     }
 
     // Mutators

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Cache;
 use DB;
 use App\Models\Child;
@@ -118,37 +119,40 @@ class DataManager extends Model
     {
         if ($faculty_id) {
             return Cache::remember('feed-' . $faculty_id, 5, function () use ($faculty_id, $limit) {
-                return Feed::where('faculty_id', $faculty_id)->orderby('id', 'desc')->limit($limit)->get();
+                return Feed::where('faculty_id', $faculty_id)->orderby('id', 'desc')->with('creator')->limit($limit)->get();
             });
         }
         return Cache::remember('feed', 5, function () use ($limit) {
-            return Feed::orderby('id', 'desc')->limit($limit)->get();
+            return Feed::orderby('id', 'desc')->limit($limit)->with('creator')->get();
         });
     }
 
     public static function childCountMonthly($faculty_id = null, $limit = 10)
     {
-        $faculties = [];
-        if ($faculty_id) {
-            $faculties = Cache::remember('child-count-monthly-' . $faculty_id, 15, function () use ($faculty_id, $limit) {
-                $facultiesRaw = DB::select('SELECT COUNT(*) as faculty, CONCAT(YEAR(meeting_day), "-", MONTH(meeting_day)) as month FROM children WHERE faculty_id = ' . $faculty_id . ' GROUP BY month ORDER BY meeting_day DESC LIMIT ' . $limit . ';');
-                foreach ($facultiesRaw as $value) {
-                    $faculties[$value->month] = ['faculty' => $value->faculty];
-                }
-                return $faculties;
+        return cache()->remember('child-count-monthly', 0, function () use ($faculty_id, $limit) {
+            $general = Child::get()->groupBy(function ($d) {
+                return $d->meeting_day->format('Y-m');
+            })->map(function ($count) {
+                return $count->count();
             });
-        }
-        $general = Cache::remember('child-count-monthly', 15, function () use ($limit) {
-            $generalRaw = DB::select('SELECT COUNT(*) as general, CONCAT(YEAR(meeting_day), "-", MONTH(meeting_day)) as month FROM children GROUP BY month ORDER BY meeting_day DESC LIMIT ' . $limit . ';');
-            foreach ($generalRaw as $value) {
-                $general[$value->month] = ['general' => $value->general];
+            $faculty = Child::where('faculty_id', $faculty_id)->get()->groupBy(function ($d) {
+                return $d->meeting_day->format('Y-m');
+            })->map(function ($count) {
+                return $count->count();
+            });
+            $result = [];
+            for ($i = $limit; $i > 0; $i--) {
+                // Don't forget to remove subYear
+                $month = now()->startOfMonth()->subYear()->subMonths($i);
+                $key = $month->format('Y-m');
+                $result[$key] = [
+                    'month'    => $month->formatLocalized('%B'),
+                    'year'     => $month->format('Y'),
+                    'faculty'  => $faculty->get($key, 0),
+                    'general'  => $general->get($key, 0),
+                ];
             }
-            return $general;
+            return $result;
         });
-        if ($faculties) {
-            return array_slice(array_merge_recursive($general, $faculties), 0, $limit, true);
-        } else {
-            return $general;
-        }
     }
 }
