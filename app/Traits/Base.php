@@ -14,6 +14,7 @@ use App\Jobs\OptimizeImage;
 trait Base
 {
     use SoftDeletes;
+
     // protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     // protected $slugKeys = null;
     public static function boot()
@@ -60,12 +61,12 @@ trait Base
 
     public function getCreatedAtLabelAttribute()
     {
-        return date("d.m.Y H:i", strtotime($this->attributes['created_at']));
+        return date('d.m.Y H:i', strtotime($this->attributes['created_at']));
     }
 
     public function getUpdatedAtLabelAttribute()
     {
-        return date("d.m.Y H:i", strtotime($this->attributes['updated_at']));
+        return date('d.m.Y H:i', strtotime($this->attributes['updated_at']));
     }
 
     public function updateSlug()
@@ -100,23 +101,29 @@ trait Base
         return false;
     }
 
-    public function uploadImage($file, $attribute, $location, $size = 1000, $quality = 80, $format = "jpg", $resize = true)
+    // public function uploadImage($file, $attribute, $location, $size = 1000, $quality = 80, $format = "jpg", $resize = true)
+    // {
+    //     $imageName = $this->attributes['id'] . str_random(5) . "." . $format ;
+    //     $imageLocation = upload_path($location);
+    //     $this->attributes[$attribute] = $imageName;
+    //     if ($resize) {
+    //         Image::make($file)
+    //         ->resize($size, null, function ($constraint) {
+    //             $constraint->aspectRatio();
+    //         })
+    //         ->save($imageLocation . '/' . $imageName, $quality);
+    //     } else {
+    //         Image::make($file)
+    //         ->save($imageLocation . '/' . $imageName, $quality);
+    //     }
+    //     dispatch(new OptimizeImage($imageLocation . '/' . $imageName));
+    //     return $this->save();
+    // }
+    public function uploadMedia($file, $collection = 'default')
     {
-        $imageName = $this->attributes['id'] . str_random(5) . "." . $format ;
-        $imageLocation = upload_path($location);
-        $this->attributes[$attribute] = $imageName;
-        if ($resize) {
-            Image::make($file)
-            ->resize($size, null, function ($constraint) {
-                $constraint->aspectRatio();
-            })
-            ->save($imageLocation . '/' . $imageName, $quality);
-        } else {
-            Image::make($file)
-            ->save($imageLocation . '/' . $imageName, $quality);
-        }
-        dispatch(new OptimizeImage($imageLocation . '/' . $imageName));
-        return $this->save();
+        $this->addMedia($file)->sanitizingFileName(function ($fileName) {
+            return $this->id . str_random(5) . '.' . explode('.', $fileName)[1];
+        })->toMediaCollection($collection);
     }
 
     public function deleteImage($attribute, $location, $null = false)

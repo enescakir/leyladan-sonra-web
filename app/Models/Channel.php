@@ -3,22 +3,37 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Spatie\MediaLibrary\Models\Media;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\Image\Manipulations;
 use App\Traits\Base;
-
 use Excel;
 
-class Channel extends Model
+class Channel extends Model implements HasMedia
 {
     use Base;
+    use HasMediaTrait;
+
     // Properties
-    protected $table    = 'channels';
+    protected $table = 'channels';
     protected $fillable = ['name', 'logo', 'category'];
 
     // Relations
     public function news()
     {
         return $this->hasMany(News::class);
+    }
+
+    // Accessors
+    public function getLogoUrlAttribute()
+    {
+        return $this->getFirstMediaUrl('default', 'optimized');
+    }
+
+    public function getThumbUrlAttribute()
+    {
+        return $this->getFirstMediaUrl('default', 'thumb');
     }
 
     // Scopes
@@ -32,9 +47,9 @@ class Channel extends Model
     public static function download($channels)
     {
         $channels = $channels->get(['id', 'name', 'category', 'logo', 'created_at']);
-        Excel::create('LS_HaberKanallari_' . date("d_m_Y"), function ($excel) use ($channels) {
+        Excel::create('LS_HaberKanallari_' . date('d_m_Y'), function ($excel) use ($channels) {
             $channels = $channels->each(function ($item, $key) {
-                $item->logo = asset(upload_path("channel", $item->logo));
+                $item->logo = $item->logo_url;
             });
             $excel->sheet('Kanallar', function ($sheet) use ($channels) {
                 $sheet->fromArray($channels, null, 'A1', true);
@@ -46,5 +61,17 @@ class Channel extends Model
     {
         $res = Channel::orderBy('name')->pluck('name', 'id');
         return $empty ? collect(['' => ''])->merge($res) : $res;
+    }
+
+    public static function toCategorySelect($placeholder = null)
+    {
+        $result = static::orderBy('category')->pluck('category', 'category');
+        return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
+    }
+
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('thumb')->width(100)->height(75);
+        $this->addMediaConversion('optimized')->width(400)->height(300);
     }
 }

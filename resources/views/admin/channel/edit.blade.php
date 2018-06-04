@@ -1,12 +1,7 @@
 @extends('admin.parent')
 
-@section('title')
-  Haber Kanalını Güncelle
-@endsection
-
-@section('styles')
-@endsection
-
+@section('title', 'Haber Kanalını Güncelle')
+ 
 @section('header')
   <section class="content-header">
     <h1>
@@ -48,7 +43,7 @@
             {!! Form::label('logo', 'Logo', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
               <p>
-                <img class="table-img-lg" src="/{{ upload_path( "channel", $channel->logo ) }}" alt="{{ $channel->name }}">
+                <img class="table-img-lg" src="{{ $channel->logo_url }}" alt="{{ $channel->name }}">
               </p>
               {!! Form::file('logo') !!}
               <p class="help-block">Haber kanalının logosu 400x300 piksel boyutunda ve JPEG formatında olmalıdır</p>
@@ -66,7 +61,4 @@
       </div>
     </div>
   </div>
-@endsection
-
-@section('scripts')
 @endsection

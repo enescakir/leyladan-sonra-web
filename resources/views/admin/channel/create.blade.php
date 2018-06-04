@@ -1,12 +1,7 @@
 @extends('admin.parent')
 
-@section('title')
-  Haber Kanalı Ekle
-@endsection
-
-@section('styles')
-@endsection
-
+@section('title', 'Haber Kanalı Ekle')
+  
 @section('header')
   <section class="content-header">
     <h1>
@@ -67,7 +62,4 @@
       </div>
     </div>
   </div>
-@endsection
-
-@section('scripts')
 @endsection

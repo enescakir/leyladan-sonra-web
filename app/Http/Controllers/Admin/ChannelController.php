@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
 use App\Http\Requests;
 use App\Models\Channel;
 use Excel;
@@ -18,15 +17,23 @@ class ChannelController extends Controller
 
     public function index(Request $request)
     {
-        $channels = Channel::orderBy('id', 'DESC');
+        $channels = Channel::orderBy('id', 'DESC')->with('media')->withCount('news');
+
         if ($request->filled('search')) {
-            $channels = $channels->search($request->search);
+            $channels->search($request->search);
         }
+
+        if ($request->filled('category')) {
+            $channels->where('category', $request->category);
+        }
+
         if ($request->filled('download')) {
             Channel::download($channels);
         }
-        $channels = $channels->withCount('news')->paginate(25);
-        return view('admin.channel.index', compact('channels'));
+
+        $channels = $channels->paginate($request->per_page ?: 25);
+        $categories = Channel::toCategorySelect('Hepsi');
+        return view('admin.channel.index', compact(['channels', 'categories']));
     }
 
     public function create()
@@ -40,8 +47,8 @@ class ChannelController extends Controller
         $channel = Channel::create([
           'name'     => $request->name,
           'category' => $request->category,
-      ]);
-        $channel->uploadImage($request->logo, 'logo', 'channel', 400, 100);
+        ]);
+        $channel->uploadMedia($request->logo);
         session_success(__('messages.channel.create', ['name' =>  $channel->name]));
         return redirect()->route('admin.channel.index');
     }
@@ -57,10 +64,10 @@ class ChannelController extends Controller
         $channel->update([
           'name'     => $request->name,
           'category' => $request->category,
-      ]);
+        ]);
         if ($request->hasFile('logo')) {
-            $channel->deleteImage('logo', 'channel', true);
-            $channel->uploadImage($request->logo, 'logo', 'channel', 400, 100);
+            $channel->clearMediaCollection();
+            $channel->uploadMedia($request->logo);
         }
         session_success(__('messages.channel.update', ['name' =>  $channel->name]));
         return redirect()->route('admin.channel.index');
@@ -68,7 +75,7 @@ class ChannelController extends Controller
 
     public function destroy(Channel $channel)
     {
-        $channel->deleteImage('logo', 'channel', true);
+        $channel->clearMediaCollection();
         $channel->news()->delete();
         $channel->delete();
         return $channel;
@@ -79,7 +86,7 @@ class ChannelController extends Controller
         $this->validate($request, [
           'name'     => 'required|string|max:255',
           'category' => 'required|string|max:255',
-          'logo'     => 'image'. ($isUpdate ? '' : '|required'),
+          'logo'     => 'image' . ($isUpdate ? '' : '|required'),
       ]);
     }
 }

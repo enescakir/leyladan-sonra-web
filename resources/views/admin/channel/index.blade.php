@@ -1,111 +1,108 @@
 @extends('admin.parent')
 
-@section('title')
-Tüm Haber Kanalları
-@endsection
-
-@section('styles')
-@endsection
+@section('title', 'Tüm Haber Kanalları')
 
 @section('header')
-<section class="content-header">
-  <h1>
-    Tüm Haber Kanalları
-    <small>Sistemimize kayıtlı tüm haber kanallarına buradan ulaşabilirsiniz</small>
-  </h1>
-  <ol class="breadcrumb">
-    <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home"></i> Anasayfa</a></li>
-    <li class="active">Haber Kanalları</li>
-  </ol>
-</section>
+  <section class="content-header">
+    <h1>
+      Tüm Haber Kanalları
+      <small>Sayfa {{ $channels->currentPage() . "/" . $channels->lastPage() }}</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li>
+        <a href="{{ route('admin.dashboard') }}">
+          <i class="fa fa-home"></i> Anasayfa</a>
+      </li>
+      <li class="active">Haber Kanalları</li>
+    </ol>
+  </section>
 @endsection
 
 @section('content')
-<div class="row">
-  <div class="col-xs-12">
-    <div class="box">
-      <div class="box-header">
-        <h3 class="box-title">{{ $channels->total() }} Haber Kanalı</h3>
-        <div class="box-tools">
-          <form action="{{ url()->current() }}" method="GET">
-            @foreach (request()->all() as $key => $val)
-            @if ($key != "search")
-            <input type="hidden" name="{{ $key }}" value="{{ $val }}">
-            @endif
-            @endforeach
-            <div class="input-group input-group-sm">
-              <input type="text" class="form-control pull-right table-search-bar" name="search" placeholder="Arama" value="{{ request()->search }}">
-              <div class="input-group-btn">
-                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                <a href="{{ route('admin.channel.index', array_merge(request()->all(), ['download' => 'true'])) }}" class="btn btn-primary" target="_blank">
-                  <i class="fa fa-download"></i>
-                </a>
-                <a href="{{ route('admin.channel.create') }}" class="btn btn-success">
-                  <i class="fa fa-plus"></i>
-                </a>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <!-- /.box-header -->
-      <div class="box-body table-responsive no-padding">
-        <table class="table table-striped table-hover table-bordered table-condensed">
-          <thead>
-            <tr>
+  <div class="row">
+    <div class="col-xs-12">
+      @component('admin.partials.box.default')
+        @slot('title', "{$channels->total()} Haber Kanalı")
+  
+        @slot('search', true)
+    
+        @slot('filters')
+          {{-- TYPE SELECTOR --}}
+          @include('admin.partials.selectors.default', [
+            'selector' => [
+              'id'        => 'category-selector',
+              'class'     => 'btn-default',
+              'icon'      => 'fa fa-files-o',
+              'current'   => request()->category,
+              'values'    => $categories,
+              'default'   => 'Kategori',
+              'parameter' => 'category'
+            ]
+          ])
+
+          {{-- ROW PER PAGE --}}
+          @include('admin.partials.selectors.page')
+
+          {{-- OTHER BUTTONS --}}
+          <a class="btn btn-filter btn-primary" target="_blank"  href="javascript:;" filter-param="download" filter-value="true"><i class="fa fa-download"></i></a>
+          <a href="{{ route('admin.channel.create') }}" class="btn btn-success"><i class="fa fa-plus"></i></a>
+        @endslot
+  
+        @slot('body')
+          @component('admin.partials.box.table')
+            @slot('head')
               <th>ID</th>
               <th>Ad</th>
               <th>Kategori</th>
               <th>Logo</th>
               <th>Haber Sayısı</th>
               <th class="two-button">İşlem</th>
-            </tr>
-          </thead>
-          <tbody>
-            @forelse ($channels as $channel)
-            <tr id="channel-{{ $channel->id }}">
-              <td>{{ $channel->id }}</td>
-              <td>{{ $channel->name }}</td>
-              <td>{{ $channel->category }}</td>
-              <td>
-                <img class="table-img-sm" src="/{{ upload_path( "channel", $channel->logo ) }}" alt="{{ $channel->name }}">
-              </td>
-              <td>{{ $channel->news_count }}</td>
-              <td>
-                <div class="btn-group">
-                  <a class="edit btn btn-warning btn-xs" href="{{ route("admin.channel.edit", $channel->id) }}">
-                    <i class="fa fa-pencil"></i>
-                  </a>
-                  <a class="delete btn btn-danger btn-xs" delete-id="{{ $channel->id }}" delete-name="{{ $channel->name }}" href="javascript:;">
-                    <i class="fa fa-trash"></i>
-                  </a>
-                </div>
+            @endslot
 
-              </td>
-            </tr>
-            @empty
-            <tr>
-              <td colspan="6">Haber kanalı bulunmamaktadır.</td>
-            </tr>
-            @endforelse
-          </tbody>
-        </table>
-      </div>
-      <!-- /.box-body -->
-      <div class="box-footer">
-        {{ $channels->appends([
-          'search' => request()->search,
+            @slot('body')
+              @forelse($channels as $channel)
+                <tr id="channel-{{ $channel->id }}">
+                  <td>{{ $channel->id }}</td>
+                  <td>{{ $channel->name }}</td>
+                  <td>{{ $channel->category }}</td>
+                  <td>
+                    <img class="table-img-sm" src="{{ $channel->thumb_url }}" alt="{{ $channel->name }}">
+                  </td>
+                  <td>{{ $channel->news_count }}</td>
+                  <td>
+                    <div class="btn-group">
+                      <a class="edit btn btn-warning btn-xs" href="{{ route("admin.channel.edit", $channel->id) }}">
+                        <i class="fa fa-pencil"></i>
+                      </a>
+                      <a class="delete btn btn-danger btn-xs" delete-id="{{ $channel->id }}" delete-name="{{ $channel->name }}" href="javascript:;">
+                        <i class="fa fa-trash"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                @empty
+                <tr>
+                  <td colspan="6">Haber kanalı bulunmamaktadır.</td>
+                </tr>
+              @endforelse
+            @endslot
+          @endcomponent
+        @endslot
+
+        @slot('footer')
+          {{ $channels->appends([
+              'search'   => request()->search,
+              'per_page' => request()->per_page,
+              'category' => request()->category,
           ])->links() }}
-        </div>
-        <!-- /.box-footer -->
-      </div>
-      <!-- /.box -->
+        @endslot
+      @endcomponent
     </div>
   </div>
-  @endsection
+@endsection
 
-  @section('scripts')
+@section('scripts')
   <script type="text/javascript">
     deleteItem("channel", "isimli haber kanalını silmek istediğinize emin misiniz?");
   </script>
-  @endsection
+@endsection

@@ -1,12 +1,11 @@
 <?php
 
 return [
-
     /*
      * The disk on which to store added files and derived images by default. Choose
      * one or more of the disks you've configured in config/filesystems.php.
      */
-    'disk_name' => 'public',
+    'disk_name' => 'media',
 
     /*
      * The maximum file size of an item in bytes.
@@ -29,7 +28,7 @@ return [
         /*
          * The domain that should be prepended when generating urls.
          */
-        'domain' => 'https://'.env('AWS_BUCKET').'.s3.amazonaws.com',
+        'domain' => 'https://' . env('AWS_BUCKET') . '.s3.amazonaws.com',
     ],
 
     'remote' => [
@@ -47,7 +46,6 @@ return [
     ],
 
     'responsive_images' => [
-
         /*
         * This class is responsible for calculating the target widths of the responsive
         * images. By default we optimize for filesize and create variations that each are 20%
@@ -130,7 +128,7 @@ return [
      * thumbnails and have installed the php-ffmpeg/php-ffmpeg composer
      * dependency.
      */
-    'ffmpeg_path' => env('FFMPEG_PATH', '/usr/bin/ffmpeg'),
+    'ffmpeg_path'  => env('FFMPEG_PATH', '/usr/bin/ffmpeg'),
     'ffprobe_path' => env('FFPROBE_PATH', '/usr/bin/ffprobe'),
 
     /*

@@ -3,13 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\Traits\Base;
 
 class News extends Model
 {
     use Base;
-    protected $table    = 'news';
+    protected $table = 'news';
     protected $fillable = ['title', 'desc', 'link', 'channel_id'];
 
     // Relations
@@ -26,18 +25,19 @@ class News extends Model
     }
 
     // Global Methods
+
     public static function download($news)
     {
         $news = $news->get();
-        Excel::create('LS_Haberler_' . date("d_m_Y"), function ($excel) use ($news) {
+        Excel::create('LS_Haberler_' . date('d_m_Y'), function ($excel) use ($news) {
             $newsData = $news->map(function ($item, $key) {
                 return [
-                    "id"         => $item->id,
-                    "title"      => $item->title,
-                    "desc"       => $item->desc,
-                    "channel"    => $item->channel->name,
-                    "link"       => $item->link,
-                    "created_at" => $item->created_at,
+                    'id'         => $item->id,
+                    'title'      => $item->title,
+                    'desc'       => $item->desc,
+                    'channel'    => $item->channel->name,
+                    'link'       => $item->link,
+                    'created_at' => $item->created_at,
                 ];
             });
             $excel->sheet('Haberler', function ($sheet) use ($newsData) {
