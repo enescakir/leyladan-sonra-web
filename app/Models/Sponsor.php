@@ -25,8 +25,10 @@ class Sponsor extends Model implements HasMedia
     // Scopes
     public function scopeSearch($query, $search)
     {
-        $query->where('name', 'like', '%' . $search . '%')
-            ->orWhere('link', 'like', '%' . $search . '%');
+        $query->where(function ($query2) use ($search) {
+            $query2->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('link', 'like', '%' . $search . '%');
+        });
     }
 
     // Accessors

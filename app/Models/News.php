@@ -20,8 +20,10 @@ class News extends Model
     // Scopes
     public function scopeSearch($query, $search)
     {
-        $query->where('title', 'like', '%' . $search . '%')
-            ->orWhere('desc', 'like', '%' . $search . '%');
+        $query->where(function ($query2) use ($search) {
+            $query2->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('desc', 'like', '%' . $search . '%');
+        });
     }
 
     // Global Methods

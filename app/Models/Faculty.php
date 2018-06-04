@@ -12,9 +12,9 @@ class Faculty extends Model
     // Properties
     protected $table = 'faculties';
     protected $fillable = [
-    'name', 'slug', 'latitude', 'longitude', 'address',
-    'city', 'code', 'started_at'
-  ];
+        'name', 'slug', 'latitude', 'longitude', 'address',
+        'city', 'code', 'started_at'
+    ];
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'started_at'];
 
     // Validation rules
