@@ -78,7 +78,7 @@ class ChannelController extends Controller
         $channel->clearMediaCollection();
         $channel->news()->delete();
         $channel->delete();
-        return $channel;
+        return api_success($channel);
     }
 
     private function validateChannel(Request $request, $isUpdate = false)

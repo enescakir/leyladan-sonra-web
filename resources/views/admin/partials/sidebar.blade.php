@@ -196,7 +196,7 @@
       </ul>
     </li>
     <li class="treeview {{ set_active('*question*', 'menu-open active') }}">
-      <a href="#"><i class="fa fa-question-circle-o"></i> <span>Sıkça Sorulan Sorular</span>
+      <a href="#"><i class="fa fa-question-circle-o"></i> <span>Sorular</span>
         <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
@@ -227,7 +227,9 @@
       </ul>
     </li>
     <li><a href="#"><i class="fa fa-bullhorn"></i> <span>Tanıtım Materyalleri</span></a></li>
-    <li><a href="#"><i class="fa fa-envelope-open-o"></i> <span>E-posta Örnekleri</span></a></li>
+    <li class="{{ set_active('*admin/emailsample*') }}">
+      <a href="{{ route('admin.emailsample.index') }}"><i class="fa fa-envelope-open-o"></i> <span>E-posta Örnekleri</span></a>
+    </li>
     <li><a href="#"><i class="fa fa-graduation-cap"></i> <span>Kullanma Kılavuzu</span></a></li>
   </ul>
   <!-- /.sidebar-menu -->

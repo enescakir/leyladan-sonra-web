@@ -54,8 +54,6 @@ Route::prefix('statistic')->as('statistics.')->group(function () {
     Route::get('children/count/faculty/{id}', 'Admin\StatisticController@children_by_faculty')->name('children.count.faculty');
 });
 
-Route::resource('emailsample', 'Admin\EmailSampleController');
-
 Route::prefix('user')->as('user.')->group(function () {
     Route::prefix('{id}')->group(function () {
         Route::get('children', 'Admin\UserController@children')->name('children');
@@ -217,3 +215,10 @@ Route::resource('sponsor', 'Admin\SponsorController');
 Route::resource('question', 'Admin\QuestionController');
 Route::put('/testimonial/{testimonial}/approve', 'Admin\TestimonialController@approve');
 Route::resource('testimonial', 'Admin\TestimonialController');
+
+/*
+|--------------------------------------------------------------------------
+| Other Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('emailsample', 'Admin\EmailSampleController');

@@ -38,4 +38,8 @@ return [
         'create' => '<strong>:name</strong> sorusu başarıyla sisteme kaydedildi.',
         'update' => '<strong>:name</strong> sorusu başarıyla güncellendi.',
     ],
+    'emailsample' => [
+        'create' => '<strong>:name</strong> isimli e-posta örneği başarıyla sisteme kaydedildi.',
+        'update' => '<strong>:name</strong> isimli e-posta örneği başarıyla güncellendi.',
+    ],
 ];
