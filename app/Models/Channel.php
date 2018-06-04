@@ -39,8 +39,10 @@ class Channel extends Model implements HasMedia
     // Scopes
     public function scopeSearch($query, $search)
     {
-        $query->where('name', 'like', '%' . $search . '%')
-            ->orWhere('category', 'like', '%' . $search . '%');
+        $query->where(function ($query2) use ($search) {
+            $query2->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('channel', 'like', '%' . $search . '%');
+        });
     }
 
     // Global Methods
