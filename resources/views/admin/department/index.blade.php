@@ -1,12 +1,7 @@
 @extends('admin.parent')
 
-@section('title')
-  Departmanlar
-@endsection
-
-@section('styles')
-@endsection
-
+@section('title', 'Departmanlar')
+  
 @section('header')
   <section class="content-header">
     <h1>
