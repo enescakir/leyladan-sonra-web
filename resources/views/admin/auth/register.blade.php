@@ -54,17 +54,10 @@
           <span class="help-block"><strong>{{ $errors->first('birthday') }}</strong></span>
       @endif
     </div>
-    <div class="form-group {{ $errors->has('title') ? ' has-error' : '' }}">
-        {!! Form::select('title', [
-          'Fakülte Sorumlusu'      => 'Fakülte Sorumlusu',
-          'Fakülte Yönetim Kurulu' => 'Fakülte Yönetim Kurulu',
-          'İletişim Sorumlusu'     => 'İletişim Sorumlusu',
-          'Hediye Sorumlusu'       => 'Hediye Sorumlusu',
-          'Site Sorumlusu'         => 'Site Sorumlusu',
-          'Normal Üye'             => 'Normal Üye'
-          ], null, ['class' => 'form-control select2-no-search', 'required' => 'required', 'placeholder' => 'Görev']) !!}
-          @if ($errors->has('title'))
-              <span class="help-block"><strong>{{ $errors->first('title') }}</strong></span>
+    <div class="form-group {{ $errors->has('role') ? ' has-error' : '' }}">
+        {!! Form::select('role', $roles, null, ['class' => 'form-control select2-no-search', 'required' => 'required', 'placeholder' => 'Görev']) !!}
+          @if ($errors->has('role'))
+              <span class="help-block"><strong>{{ $errors->first('role') }}</strong></span>
           @endif
     </div>
     <div class="form-group {{ $errors->has('faculty_id') ? 'has-error' : '' }}">

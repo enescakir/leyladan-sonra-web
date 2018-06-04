@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Models\User;
 use App\Models\Faculty;
+use App\Models\Role;
 
 class RegisterController extends Controller
 {
@@ -48,7 +49,8 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $faculties = Faculty::get()->sortBy('full_name');
-        return view('admin.auth.register', compact(['faculties']));
+        $roles = Role::toSelect();
+        return view('admin.auth.register', compact(['faculties', 'roles']));
     }
 
     protected function registered($request, $user)
@@ -76,7 +78,7 @@ class RegisterController extends Controller
           'birthday'   => 'required|max:255',
           'mobile'     => 'required|max:255',
           'year'       => 'required|max:255',
-          'title'      => 'required|max:255',
+          'role'       => 'required|max:255',
       ]);
     }
 
@@ -88,7 +90,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'first_name' => $data['first_name'],
             'last_name'  => $data['last_name'],
             'email'      => str_replace(' ', '', $data['email']),
@@ -97,7 +99,8 @@ class RegisterController extends Controller
             'faculty_id' => intval($data['faculty_id']),
             'mobile'     => $data['mobile'],
             'year'       => $data['year'],
-            'title'      => $data['title'],
         ]);
+        $user->assignRole($data['role']);
+        return $user;
     }
 }

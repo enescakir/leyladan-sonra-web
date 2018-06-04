@@ -79,7 +79,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // create roles and assign created permissions
 
-        $manager = Role::updateOrCreate(['name' => 'manager', 'display' => 'Fakülte Sorumlusu']);
+        $manager = Role::updateOrCreate(['name' => 'manager', 'display' => 'Fakülte Sorumlusu', 'public' => true]);
         $manager->syncPermissions([
             'create child', 'edit child', 'delete child', 'list own children', 'list faculty children detail', 'list children basic',
             'list diagnosises',
@@ -90,7 +90,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'send faculty email'
         ]);
 
-        $board = Role::updateOrCreate(['name' => 'board', 'display' => 'Fakülte Yönetim Kurulu']);
+        $board = Role::updateOrCreate(['name' => 'board', 'display' => 'Fakülte Yönetim Kurulu', 'public' => true]);
         $board->syncPermissions([
             'create child', 'edit child', 'list own children', 'list faculty children detail',
             'list diagnosises',
@@ -100,20 +100,20 @@ class RolesAndPermissionsSeeder extends Seeder
             'list volunteers', 'list faculty chats'
         ]);
 
-        $relation = Role::updateOrCreate(['name' => 'relation', 'display' => 'İletişim Sorumlusu']);
+        $relation = Role::updateOrCreate(['name' => 'relation', 'display' => 'İletişim Sorumlusu', 'public' => true]);
         $relation->syncPermissions([
             'create child', 'edit child', 'list own children', 'list faculty children basic', 'list children basic',
             'list faculties',
             'create volunteer', 'edit volunteer', 'list volunteers', 'list faculty chats', 'edit chats'
         ]);
 
-        $gift = Role::updateOrCreate(['name' => 'gift', 'display' => 'Hediye Sorumlusu']);
+        $gift = Role::updateOrCreate(['name' => 'gift', 'display' => 'Hediye Sorumlusu', 'public' => true]);
         $manager->syncPermissions([
             'create child', 'edit child', 'list own children', 'list faculty children basic',
             'list volunteers'
         ]);
 
-        $website = Role::updateOrCreate(['name' => 'website', 'display' => 'Site Sorumlusu']);
+        $website = Role::updateOrCreate(['name' => 'website', 'display' => 'Site Sorumlusu', 'public' => true]);
         $website->syncPermissions([
             'create child', 'edit child', 'list own children', 'list faculty children detail',
             'list faculty posts', 'edit post', 'approve post', 'delete post',
@@ -125,7 +125,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'create blog', 'edit blog', 'delete blog', 'list blog'
         ]);
 
-        $normal = Role::updateOrCreate(['name' => 'normal', 'display' => 'Normal Üye']);
+        $normal = Role::updateOrCreate(['name' => 'normal', 'display' => 'Normal Üye', 'public' => true]);
         $normal->syncPermissions([
             'create child', 'edit child', 'list own children'
         ]);
