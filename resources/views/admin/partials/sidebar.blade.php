@@ -195,6 +195,21 @@
         </li>
       </ul>
     </li>
+    <li class="treeview {{ set_active('*question*', 'menu-open active') }}">
+      <a href="#"><i class="fa fa-question-circle-o"></i> <span>Sıkça Sorulan Sorular</span>
+        <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+      </a>
+      <ul class="treeview-menu">
+        <li class="{{ set_active('*admin/question/create*') }}">
+          <a href="{{ route('admin.question.create') }}"><i class="fa fa-plus"></i> <span>Yeni Soru Ekle</span></a>
+        </li>
+        <li class="{{ set_active('*admin/question') }}">
+          <a href="{{ route('admin.question.index') }}"><i class="fa fa-question"></i> <span>Tüm Sorular</span></a>
+        </li>
+      </ul>
+    </li>
     <li class="header">Diğer</li>
     <li class="treeview">
       <a href="#"><i class="fa fa-bar-chart"></i> <span>İstatistikler</span>

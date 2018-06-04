@@ -28,9 +28,11 @@ class Testimonial extends Model
     // Scopes
     public function scopeSearch($query, $search)
     {
-        $query->where('name', 'like', '%' . $search . '%')
-            ->orWhere('text', 'like', '%' . $search . '%')
-            ->orWhere('email', 'like', '%' . $search . '%');
+        $query->where(function ($query2) {
+            $query2->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('text', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+        });
     }
 
     // Global Methods

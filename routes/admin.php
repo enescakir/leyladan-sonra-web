@@ -214,5 +214,6 @@ Route::resource('department', 'Admin\DepartmentController');
 Route::resource('new', 'Admin\NewController');
 Route::resource('channel', 'Admin\ChannelController');
 Route::resource('sponsor', 'Admin\SponsorController');
+Route::resource('question', 'Admin\QuestionController');
 Route::put('/testimonial/{testimonial}/approve', 'Admin\TestimonialController@approve');
 Route::resource('testimonial', 'Admin\TestimonialController');

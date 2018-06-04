@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'blood' => [
         'create' => '<strong>:mobile</strong> numaralı bağışçı başarıyla sisteme kaydedildi.',
         'update' => '<strong>:mobile</strong> numaralı bağışçı başarıyla güncellendi.',
@@ -34,5 +33,9 @@ return [
     'testimonial' => [
         'create' => '<strong>:name</strong> isimli referans başarıyla sisteme kaydedildi.',
         'update' => '<strong>:name</strong> isimli referans başarıyla güncellendi.',
+    ],
+    'question' => [
+        'create' => '<strong>:name</strong> sorusu başarıyla sisteme kaydedildi.',
+        'update' => '<strong>:name</strong> sorusu başarıyla güncellendi.',
     ],
 ];
