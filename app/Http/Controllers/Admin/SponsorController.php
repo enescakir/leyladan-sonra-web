@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
 use App\Models\Sponsor;
 
 class SponsorController extends Controller
@@ -16,14 +15,14 @@ class SponsorController extends Controller
 
     public function index(Request $request)
     {
-        $sponsors = Sponsor::orderBy('order', 'DESC');
+        $sponsors = Sponsor::orderBy('order', 'DESC')->with('media');
         if ($request->filled('search')) {
-            $sponsors = $sponsors->search($request->search);
+            $sponsors->search($request->search);
         }
         if ($request->filled('download')) {
             Sponsor::download($sponsors);
         }
-        $sponsors = $sponsors->paginate(25);
+        $sponsors = $sponsors->paginate($request->per_page ?: 25);
         return view('admin.sponsor.index', compact('sponsors'));
     }
 
@@ -39,8 +38,8 @@ class SponsorController extends Controller
           'name'  => $request->name,
           'link'  => $request->link,
           'order' => $request->order,
-      ]);
-        $sponsor->uploadImage($request->logo, 'logo', 'sponsor', 400, 100, 'png');
+        ]);
+        $sponsor->uploadMedia($request->logo);
         session_success(__('messages.sponsor.create', ['name' =>  $sponsor->name]));
         return redirect()->route('admin.sponsor.index');
     }
@@ -59,8 +58,8 @@ class SponsorController extends Controller
             'order' => $request->order,
         ]);
         if ($request->hasFile('logo')) {
-            $sponsor->deleteImage('logo', 'sponsor', true);
-            $sponsor->uploadImage($request->logo, 'logo', 'sponsor', 400, 100, 'png');
+            $sponsor->clearMediaCollection();
+            $sponsor->uploadMedia($request->logo);
         }
         session_success(__('messages.sponsor.update', ['name' =>  $sponsor->name]));
         return redirect()->route('admin.sponsor.index');
@@ -68,7 +67,7 @@ class SponsorController extends Controller
 
     public function destroy(Sponsor $sponsor)
     {
-        $sponsor->deleteImage('logo', 'sponsor', true);
+        $channel->clearMediaCollection();
         $sponsor->delete();
         return $sponsor;
     }
@@ -79,7 +78,7 @@ class SponsorController extends Controller
           'name'  => 'required|string|max:255',
           'link'  => 'required|string',
           'order' => 'required|integer',
-          'logo'  => 'image'. ($isUpdate ? '' : '|required'),
+          'logo'  => 'image' . ($isUpdate ? '' : '|required'),
       ]);
     }
 }

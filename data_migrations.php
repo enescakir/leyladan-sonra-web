@@ -17,6 +17,22 @@ $channels->each(function ($channel) {
     }
 });
 
+## SPONSOR MIGRATIONS
+$sponsors = App\Models\Sponsor::whereNotNull('logo')->get();
+$sponsors->each(function ($sponsor) {
+    try {
+        $sponsor
+            ->addMedia(storage_path('app/public/sponsor/' . $sponsor->logo))
+            ->sanitizingFileName(function ($fileName) use ($sponsor) {
+                return $sponsor->id . str_random(5) . '.' . explode('.', $fileName)[1];
+            })
+            ->toMediaCollection();
+    } catch (\Exception $e) {
+        echo 'Message: ' . $e->getMessage() . "\n";
+        echo 'Sponsor #' . $sponsor->id . "\n";
+    }
+});
+
 ## USER MIGRATIONS
 $users = App\Models\User::get();
 $users->each(function ($user) {
