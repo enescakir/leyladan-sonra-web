@@ -2,7 +2,7 @@
   <!-- Sidebar user panel (optional) -->
   <div class="user-panel">
     <div class="pull-left image">
-      <img src="{{ $authUser->thumb_path }}" class="img-circle" alt="{{ $authUser->full_name }}">
+      <img src="{{ $authUser->photo_small_url }}" class="img-circle" alt="{{ $authUser->full_name }}">
     </div>
     <div class="pull-left info">
       <p>{{ $authUser->full_name }}</p>

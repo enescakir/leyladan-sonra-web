@@ -26,7 +26,6 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('admin.parent', function ($view) {
             $authUser = Auth::user();
-
             $view->with([
                 'authUser' => $authUser
             ]);

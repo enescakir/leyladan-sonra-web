@@ -71,14 +71,14 @@
         <!-- Menu Toggle Button -->
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
           <!-- The user image in the navbar-->
-          <img src="{{ $authUser->thumb_path }}" class="user-image" alt="User Image">
+          <img src="{{ $authUser->photo_small_url }}" class="user-image" alt="User Image">
           <!-- hidden-xs hides the username on small devices so only the image appears. -->
           <span class="hidden-xs">{{ $authUser->full_name }}</span>
         </a>
         <ul class="dropdown-menu">
           <!-- The user image in the menu -->
           <li class="user-header">
-            <img src="{{ $authUser->thumb_path }}" class="img-circle" alt="{{ $authUser->full_name }}">
+            <img src="{{ $authUser->photo_small_url }}" class="img-circle" alt="{{ $authUser->full_name }}">
 
             <p>
               {{ $authUser->full_name }}
