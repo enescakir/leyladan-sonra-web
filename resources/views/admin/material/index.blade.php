@@ -28,22 +28,18 @@
               <button id="search-btn" class="btn btn-default" type="submit">
                 <i class="fa fa-search"></i> Ara
               </button>
-                        {{-- TYPE SELECTOR --}}
-          @include('admin.partials.selectors.default', [
-            'selector' => [
-              'id'        => 'category-selector',
-              'class'     => 'btn-default',
-              'icon'      => 'fa fa-files-o',
-              'current'   => request()->category,
-              'values'    => $categories,
-              'default'   => 'Kategori',
-              'parameter' => 'category'
-            ]
-          ])
-
-              @isset($filters)
-                {{ $filters }}
-              @endisset
+                {{-- CATEGORY SELECTOR --}}
+                @include('admin.partials.selectors.default', [
+                  'selector' => [
+                    'id'        => 'category-selector',
+                    'class'     => 'btn-default',
+                    'icon'      => 'fa fa-files-o',
+                    'current'   => request()->category,
+                    'values'    => $categories,
+                    'default'   => 'Kategori',
+                    'parameter' => 'category'
+                  ]
+                ])
               <a href="{{ route('admin.material.create') }}" class="btn btn-success"><i class="fa fa-plus"></i></a>
             </div>
           </div>        

@@ -46,4 +46,8 @@ return [
         'create' => '<strong>:name</strong> isimli tanıtım materyali başarıyla sisteme kaydedildi.',
         'update' => '<strong>:name</strong> isimli tanıtım materyali başarıyla güncellendi.',
     ],
+    'tutorial' => [
+        'create' => '<strong>:name</strong> isimli eğitim videosu başarıyla sisteme kaydedildi.',
+        'update' => '<strong>:name</strong> isimli eğitim videosu başarıyla güncellendi.',
+    ],
 ];

@@ -232,7 +232,9 @@
     <li class="{{ set_active('*admin/emailsample*') }}">
       <a href="{{ route('admin.emailsample.index') }}"><i class="fa fa-envelope-open-o"></i> <span>E-posta Örnekleri</span></a>
     </li>
-    <li><a href="#"><i class="fa fa-graduation-cap"></i> <span>Kullanma Kılavuzu</span></a></li>
+    <li class="{{ set_active('*admin/tutorial*') }}">
+      <a href="{{ route('admin.tutorial.index') }}"><i class="fa fa-graduation-cap"></i> <span>Kullanma Kılavuzu</span></a>
+    </li>
   </ul>
   <!-- /.sidebar-menu -->
 </section>
