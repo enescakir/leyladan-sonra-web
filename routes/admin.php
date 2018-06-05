@@ -222,3 +222,4 @@ Route::resource('testimonial', 'Admin\TestimonialController');
 |--------------------------------------------------------------------------
 */
 Route::resource('emailsample', 'Admin\EmailSampleController');
+Route::resource('material', 'Admin\MaterialController');

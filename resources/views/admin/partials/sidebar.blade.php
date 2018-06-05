@@ -226,7 +226,9 @@
         <li><a href="#"><i class="fa fa-globe"></i> <span>Site Ziyareti</span></a></li>
       </ul>
     </li>
-    <li><a href="#"><i class="fa fa-bullhorn"></i> <span>Tanıtım Materyalleri</span></a></li>
+    <li class="{{ set_active('*admin/material*') }}">
+      <a href="{{ route('admin.material.index') }}"><i class="fa fa-bullhorn"></i> <span>Tanıtım Materyalleri</span></a>
+    </li>
     <li class="{{ set_active('*admin/emailsample*') }}">
       <a href="{{ route('admin.emailsample.index') }}"><i class="fa fa-envelope-open-o"></i> <span>E-posta Örnekleri</span></a>
     </li>

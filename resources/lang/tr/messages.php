@@ -42,4 +42,8 @@ return [
         'create' => '<strong>:name</strong> isimli e-posta örneği başarıyla sisteme kaydedildi.',
         'update' => '<strong>:name</strong> isimli e-posta örneği başarıyla güncellendi.',
     ],
+    'material' => [
+        'create' => '<strong>:name</strong> isimli tanıtım materyali başarıyla sisteme kaydedildi.',
+        'update' => '<strong>:name</strong> isimli tanıtım materyali başarıyla güncellendi.',
+    ],
 ];

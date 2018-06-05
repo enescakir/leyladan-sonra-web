@@ -67,7 +67,7 @@ class SponsorController extends Controller
 
     public function destroy(Sponsor $sponsor)
     {
-        $channel->clearMediaCollection();
+        $sponsor->clearMediaCollection();
         $sponsor->delete();
         return $sponsor;
     }
