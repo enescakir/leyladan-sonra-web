@@ -5,10 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Auth;
-use DB;
-use Log;
-use Cache;
-use App;
+use App\Models\DataManager;
 use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,24 +22,15 @@ class AppServiceProvider extends ServiceProvider
         setlocale(LC_ALL, 'tr_TR.utf8') or setlocale(LC_ALL, 'tr_TR.utf-8');
 
         view()->composer('admin.parent', function ($view) {
-            $authUser = Auth::user();
             $view->with([
-                'authUser' => $authUser
+                'authUser' => Auth::user()
             ]);
         });
 
         view()->composer('front.parent', function ($view) {
-            $totalChildren = Cache::remember('totalChildren', 15, function () {
-                return DB::table('children')->count();
-            });
-
-            $totalFaculties = Cache::remember('activeFaculties', 15, function () {
-                return DB::table('faculties')->whereNotNull('started_at')->count();
-            });
-
             $view->with([
-                'totalChildren'  => $totalChildren,
-                'totalFaculties' => $totalFaculties
+                'totalChildren'  => DataManager::childCount(),
+                'totalFaculties' => DataManager::facultyCount('started')
             ]);
         });
     }

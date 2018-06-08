@@ -54,16 +54,6 @@ Route::prefix('statistic')->as('statistics.')->group(function () {
     Route::get('children/count/faculty/{id}', 'Admin\StatisticController@children_by_faculty')->name('children.count.faculty');
 });
 
-Route::prefix('user')->as('user.')->group(function () {
-    Route::prefix('{id}')->group(function () {
-        Route::get('children', 'Admin\UserController@children')->name('children');
-        Route::get('children/data', 'Admin\UserController@childrenData')->name('children.data');
-    });
-    Route::get('/data', 'Admin\UserController@indexData')->name('index.data');
-    Route::post('approve', 'Admin\UserController@approve')->name('approve');
-});
-Route::resource('user', 'Admin\UserController');
-
 Route::prefix('child')->as('child.')->group(function () {
     Route::get('/data', 'Admin\ChildController@indexData')->name('index.data');
     Route::prefix('{id}')->group(function () {
@@ -195,6 +185,21 @@ Route::prefix('blood')->as('blood.')->group(function () {
     Route::post('/sms/test', 'Admin\BloodController@testSMS')->name('sms.test');
 });
 Route::resource('blood', 'Admin\BloodController');
+
+/*
+|--------------------------------------------------------------------------
+| User Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('user')->as('user.')->group(function () {
+    Route::prefix('{user}')->group(function () {
+        Route::put('approve', 'Admin\UserController@approve')->name('approve');
+
+        Route::get('children', 'Admin\UserController@children')->name('children');
+        Route::get('children/data', 'Admin\UserController@childrenData')->name('children.data');
+    });
+});
+Route::resource('user', 'Admin\UserController');
 
 /*
 |--------------------------------------------------------------------------

@@ -11,7 +11,7 @@ class Role extends BaseRole
     {
         $result = static::orderBy('display')->when(!is_null($public), function ($query) use ($public) {
             $query->where('public', $public);
-        })->pluck('display', 'id');
+        })->pluck('display', 'name');
         return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
     }
 }

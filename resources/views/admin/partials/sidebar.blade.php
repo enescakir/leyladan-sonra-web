@@ -7,7 +7,7 @@
     <div class="pull-left info">
       <p>{{ $authUser->full_name }}</p>
       <!-- Status -->
-      <a href="#"><i class="fa fa-black-tie"></i> {{ $authUser->role_displays }}</a>
+      <a href="#"><i class="fa fa-black-tie"></i> {{ $authUser->role_display }}</a>
     </div>
   </div>
 
@@ -111,7 +111,9 @@
       <ul class="treeview-menu">
         <li><a href="#"><i class="fa fa-thumbs-o-up"></i> <span>Onay Bekleyenler</span></a></li>
         <li><a href="#"><i class="fa fa-user"></i> <span>Fakülte Üyeleri</span></a></li>
-        <li><a href="#"><i class="fa fa-users"></i> <span>Tüm Üyeler</span></a></li>
+        <li class="{{ set_active('*admin/user*') }}">
+          <a href="{{ route('admin.user.index') }}"><i class="fa fa-users"></i> <span>Tüm Üyeler</span></a>
+        </li>
         <li><a href="#"><i class="fa fa-paper-plane"></i> <span>E-posta Gönder</span></a></li>
       </ul>
     </li>
