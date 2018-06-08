@@ -13,6 +13,8 @@ trait Birthday
 
     public function getBirthdayLabelAttribute()
     {
-        return Carbon::parse($this->attributes['birthday'])->parse('d.m.Y');
+        return $this->attributes['birthday']
+        ? Carbon::parse($this->attributes['birthday'])->format('d.m.Y')
+        : '';
     }
 }

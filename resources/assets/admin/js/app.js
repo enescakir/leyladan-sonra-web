@@ -119,59 +119,89 @@ function deleteItem(slug, message, deleteClass = "delete") {
   });
 }
 
-function approveItem(slug, approveMessage, unapproveMessage, callback, approveClass = "approve") {
-  $('.' + approveClass).on('click', function (e) {
-    var id = $(this).attr('approve-id');
-    var name = $(this).attr('approve-name');
-    var approval = ($(this).attr('is-approve') == '1' ? 1 : 0);
-    swal({
-      title: "Emin misin?",
-      text:  "'" + name + "' " + approveMessage,
-      type: "warning",
-      confirmButtonColor: "#DD6B55",
-      confirmButtonText: "Evet, " + (approval ? 'onayla!' : 'onayı kaldır!'),
-      showCancelButton: true,
-      cancelButtonText: "Hayır",
-      showLoaderOnConfirm: true,
-      preConfirm: function () {
-        return new Promise(function (resolve, reject) {
-          $.ajax({
-            url: "/admin/" + slug + "/" + id + "/approve",
-            method: "PUT",
-            dataType: "json",
-            data: { 'approve': approval },
-            success: function(result){
-              resolve()
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-              ajaxError(xhr, ajaxOptions, thrownError);
-            }
-          });
-        })
-      },
-      allowOutsideClick: false,
-    }).then(function () {
-      if (typeof callback === "function") {
-        callback(approval, id, name)
-      }
-      if (approval) {
-        $("#approve-" + slug + "-" + id).addClass('hidden');
-        $("#unapprove-" + slug + "-" + id).removeClass('hidden');
-        swal({
-          title: "Başarıyla Onaylandı!",
-          type: "success",
-          confirmButtonText: "Tamam",
-        });
-      } else {
-        $("#approve-" + slug + "-" + id).removeClass('hidden');
-        $("#unapprove-" + slug + "-" + id).addClass('hidden');
-        swal({
-          title: "Başarıyla Onayı Kaldırıldı!",
-          type: "success",
-          confirmButtonText: "Tamam",
-        });
-      }
+function setApprovalButton(elem, approval) {
+  if (approval) {
+    $(elem)
+      .html('<i class="fa fa-check-square-o"></i>')
+      .addClass('btn-success')
+      .removeClass('btn-default')
+        .closest("tr")
+          .addClass('success')
+          .removeClass('warning')
+  } else {
+    $(elem)
+      .html('<i class="fa fa-square-o"></i>')
+      .addClass('btn-default')
+      .removeClass('btn-success')
+        .closest("tr")
+          .addClass('warning')
+          .removeClass('success')
+
+  }
+}
+
+function sendApproval(slug, id, name, approval, callback) {
+  $.ajax({
+    url: "/admin/" + slug + "/" + id + "/approve",
+    method: "PUT",
+    dataType: "json",
+    data: {
+      'approval': approval
+    },
+  }).done(function (response) {
+    callback(response)
+  }).fail(function (xhr, ajaxOptions, thrownError) {
+    ajaxError(xhr, ajaxOptions, thrownError);
+  });
+}
+
+function approveItem(slug, approveMessage, unapproveMessage, callback, popup = true, approveClass = "approval") {
+  $(function () {
+    $('.approval').each(function () {
+      setApprovalButton(this, $(this).attr('approved') == 1)
     })
+  });
+
+  $('.' + approveClass).on('click', function (e) {
+    var button = $(this)
+    var id = button.attr('approval-id');
+    var name = button.attr('approval-name');
+    var approval = (button.attr('approved') == '1' ? 0 : 1);
+    if (popup) {
+      swal({
+        title: "Emin misin?",
+        text: "'" + name + "' " + (approval ? approveMessage : unapproveMessage),
+        type: "warning",
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Evet, " + (approval ? 'onayla!' : 'onayı kaldır!'),
+        showCancelButton: true,
+        cancelButtonText: "Hayır",
+        showLoaderOnConfirm: true,
+        preConfirm: function () {
+          return new Promise(function (resolve, reject) {
+            sendApproval(slug, id, name, approval, function (response) {
+              resolve(response)
+            });
+          })
+        },
+        allowOutsideClick: false,
+      }).then(function (response) {
+        button.attr('approved', approval);
+        setApprovalButton(button, response.data.approval)
+        if (typeof callback === "function") {
+          callback(approval, id, name)
+        }
+      });
+
+    } else {
+      sendApproval(slug, id, name, approval, function (response) {
+        button.attr('approved', approval);
+        setApprovalButton(button, response.data.approval)
+        if (typeof callback === "function") {
+          callback(approval, id, name)
+        }
+      });
+    }
   });
 }
 

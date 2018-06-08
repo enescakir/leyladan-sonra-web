@@ -70,6 +70,8 @@ mix.copy('node_modules/ionicons/fonts/ionicons.ttf', 'public/admin/fonts/');
 mix.copy('node_modules/ionicons/fonts/ionicons.woff', 'public/admin/fonts/');
 mix.copy('node_modules/icheck/skins/flat/red.png', 'public/admin/css/');
 mix.copy('node_modules/icheck/skins/flat/red@2x.png', 'public/admin/css/');
+mix.copy('node_modules/bootstrap/dist/css/bootstrap.min.css.map', 'public/admin/css/');
+mix.copy('node_modules/jquery.quicksearch/dist/jquery.quicksearch.min.js.map', 'public/admin/js/');
 
 // JQVMap
 mix.copy('node_modules/jqvmap/dist/jqvmap.min.css', 'public/admin/css/');

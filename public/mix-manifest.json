@@ -13,6 +13,8 @@
     "/admin/fonts/ionicons.woff": "/admin/fonts/ionicons.woff",
     "/admin/css/red.png": "/admin/css/red.png",
     "/admin/css/red@2x.png": "/admin/css/red@2x.png",
+    "/admin/css/bootstrap.min.css.map": "/admin/css/bootstrap.min.css.map",
+    "/admin/js/jquery.quicksearch.min.js.map": "/admin/js/jquery.quicksearch.min.js.map",
     "/admin/css/jqvmap.min.css": "/admin/css/jqvmap.min.css",
     "/admin/js/jqvmap.min.js": "/admin/js/jqvmap.min.js",
     "/admin/js/fullcalendar.min.js": "/admin/js/fullcalendar.min.js"
