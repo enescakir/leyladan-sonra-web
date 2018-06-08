@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Notifications\NewUser as NewUserNotification;
 use App\Models\User;
 
 class ActivateEmailController extends Controller
@@ -13,19 +12,17 @@ class ActivateEmailController extends Controller
     {
         $user = User::where('email_token', $token)->first();
         if ($user) {
-            $users = $user->faculty->users()->title('Fakülte Sorumlusu')->get();
+            $users = $user->faculty->users()->role('manager')->get();
 
             // If it's a new faculty, there is no manager. So send notification to admins
             if ($users->isEmpty()) {
-                $users = User::title('Yönetici')->get();
+                $users = User::role('admin')->get();
             }
 
-            foreach ($users as $u) {
-                $u->notify(new NewUserNotification($user));
-            }
+            $users->each->sendNewUserNotification($user);
 
-            $user->email_token = null;
-            $user->save();
+            $user->activateEmail();
+
             session_info('Fakülte yöneticiniz üyeliğinizi onayladıktan sonra giriş yapabilirsiniz.');
         } else {
             session_error('Geçersiz e-posta aktivasyon linki kullanıldı.');

@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use App\Notifications\ActivateEmail as ActivateEmailNotification;
+use App\Notifications\NewUser as NewUserNotification;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -16,13 +17,16 @@ use App\Scopes\LeftScope;
 use App\Traits\Birthday;
 use App\Traits\Mobile;
 use App\Traits\Base;
+use App\Traits\Approval;
 use Auth;
+use Excel;
 
 class User extends Authenticatable implements HasMedia
 {
     use Base;
     use Birthday;
     use Mobile;
+    use Approval;
     use Notifiable;
     use HasRoles;
     use HasMediaTrait;
@@ -32,11 +36,11 @@ class User extends Authenticatable implements HasMedia
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'birthday', 'mobile',
         'year', 'title', 'profile_photo', 'faculty_id', 'gender', 'email_token',
-        'left_at', 'graduated_at'
+        'left_at', 'graduated_at', 'approved_at', 'approved_by'
     ];
     protected $hidden = ['password', 'remember_token'];
     protected $appends = ['full_name'];
-    protected $dates = ['created_at', 'updated_at', 'deleted_at', 'birthday', 'left_at', 'graduated_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at', 'birthday', 'left_at', 'graduated_at', 'approved_at'];
 
     public static function boot()
     {
@@ -94,7 +98,7 @@ class User extends Authenticatable implements HasMedia
         return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
     }
 
-    public function getRoleDisplaysAttribute()
+    public function getRoleDisplayAttribute()
     {
         return $this->roles->pluck('display')->implode(', ');
     }
@@ -115,10 +119,38 @@ class User extends Authenticatable implements HasMedia
     }
 
     // Helpers
+    public function activateEmail()
+    {
+        $this->email_token = null;
+        return $this->save();
+    }
+
     public static function toSelect($placeholder = null)
     {
         $res = static::orderBy('id', 'DESC')->get()->pluck('full_name', 'id');
         return $placeholder ? collect(['' => $placeholder])->union($res) : $res;
+    }
+
+    public static function download($users)
+    {
+        $users = $users->get();
+        Excel::create('LS_Uyeler_' . date('d_m_Y'), function ($excel) use ($users) {
+            $usersData = $users->map(function ($item, $key) {
+                return [
+                    'ID'           => $item->id,
+                    'Ad'           => $item->first_name,
+                    'Soyad'        => $item->last_name,
+                    'E-posta'      => $item->email,
+                    'Telefon'      => $item->mobile,
+                    'Fakülte'      => $item->faculty->name,
+                    'Görev'        => $item->role_display,
+                    'Kayıt Tarihi' => $item->created_at,
+                ];
+            });
+            $excel->sheet('Uyeler', function ($sheet) use ($usersData) {
+                $sheet->fromArray($usersData, null, 'A1', true);
+            });
+        })->download('xlsx');
     }
 
     // Notifications
@@ -133,6 +165,11 @@ class User extends Authenticatable implements HasMedia
         $this->email_token = $token;
         $this->save();
         $this->notify(new ActivateEmailNotification($token));
+    }
+
+    public function sendNewUserNotification($user)
+    {
+        $this->notify(new NewUserNotification($user));
     }
 
     // Image conversions
