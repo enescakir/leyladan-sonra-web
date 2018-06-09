@@ -17,7 +17,7 @@ $(function () {
     autoclose: true
   })
 
-  $(":file").filestyle({
+  $(":file").not('.swal2-file').filestyle({
     buttonText: "Dosya seç",
     iconName: "fa fa-folder-open",
     placeholder: "Dosya seçilmedi",
@@ -124,6 +124,7 @@ function setApprovalButton(elem, approval) {
     $(elem)
       .html('<i class="fa fa-check-square-o"></i>')
       .addClass('btn-success')
+      .attr('title', 'Onayı Kaldır')
       .removeClass('btn-default')
         .closest("tr")
           .addClass('success')
@@ -132,6 +133,7 @@ function setApprovalButton(elem, approval) {
     $(elem)
       .html('<i class="fa fa-square-o"></i>')
       .addClass('btn-default')
+      .attr('title', 'Onayla')
       .removeClass('btn-success')
         .closest("tr")
           .addClass('warning')
@@ -235,9 +237,12 @@ function ajaxError(xhr, ajaxOptions, thrownError) {
   message = "Bir hata ile karşılaşıldı!";
   console.log("XHR:");
   console.log(xhr);
-  if (xhr.responseText) {
-    message = xhr.responseText;
-  }
+  // if (xhr.responseJSON.message) {
+  //   message = xhr.responseJSON.message;
+  //   if (xhr.responseJSON.errors) {
+  //     message += "\n\n" + xhr.responseJSON.errors;
+  //   }
+  // }
   console.log("Ajax Options:");
   console.log(ajaxOptions);
   console.log("Thrown Error:");
