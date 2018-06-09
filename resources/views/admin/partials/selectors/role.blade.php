@@ -2,7 +2,7 @@
     'selector' => [
       'id'        => 'role-type-selector',
       'class'     => 'btn-default',
-      'icon'      => 'fa fa-tint',
+      'icon'      => 'fa fa-briefcase',
       'current'   => request()->role_name,
       'values'    => App\Models\Role::toSelect('Hepsi', null),
       'default'   => 'Görev',

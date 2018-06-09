@@ -72,13 +72,19 @@ class UserController extends Controller
         return view('admin.user.edit', compact('user'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::findOrFail($id);
-        $user->fill($request->all());
-        $user->save();
-        if ($request->has('form')) {
-            return redirect()->route('admin.user.edit', $id);
+        $this->validate($request, [
+            'first_name' => 'string',
+            'last_name'  => 'string',
+            'email'      => 'email',
+            'mobile'     => 'string',
+        ]);
+
+        $user->update($request->all());
+
+        if ($request->filled('role')) {
+            $user->syncRoles($request->role);
         }
 
         if ($request->hasFile('photo')) {
@@ -103,7 +109,9 @@ class UserController extends Controller
             return redirect()->route('admin.user.edit', $id);
         }
 
-        return http_response_code(200);
+        return $request->ajax()
+            ? api_success(['role' => $user->role_display])
+            : redirect()->route('admin.user.edit', $user->id);
     }
 
     public function destroy($id)
@@ -128,15 +136,14 @@ class UserController extends Controller
     public function approve(Request $request, User $user)
     {
         $user->approve($request->approval);
-        // TODO:
-        // Send notification
-        // \Mail::send('email.admin.activation', ['user' => $user], function ($message) use ($user) {
-        //     $message
-        //         ->to($user->email)
-        //         ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
-        //         ->subject('Hesabınız artık aktif!');
-        // });
 
-        return api_success(['approval' => (int) $user->isApproved(), 'user' => $user]);
+        if ($request->approval) {
+            $user->sendApprovedUserNotification();
+        }
+
+        return api_success([
+            'approval' => (int) $user->isApproved(),
+            'user'     => $user
+        ]);
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use App\Notifications\ActivateEmail as ActivateEmailNotification;
 use App\Notifications\NewUser as NewUserNotification;
+use App\Notifications\ApprovedUser as ApprovedUserNotification;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -170,6 +171,11 @@ class User extends Authenticatable implements HasMedia
     public function sendNewUserNotification($user)
     {
         $this->notify(new NewUserNotification($user));
+    }
+
+    public function sendApprovedUserNotification()
+    {
+        $this->notify(new ApprovedUserNotification());
     }
 
     // Image conversions

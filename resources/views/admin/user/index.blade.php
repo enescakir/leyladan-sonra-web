@@ -59,12 +59,12 @@
               @forelse($users as $user)
                 <tr id="user-{{ $user->id }}"
                   class="{{ $user->isApproved() ? 'success' : 'warning' }}">
-                  <td>{{ $user->id }}</td>
-                  <td>{{ $user->full_name }}</td>
-                  <td>{{ $user->faculty->name }}</td>
-                  <td>{{ $user->role_display }}</td>
-                  <td>{{ $user->email }}</td>
-                  <td>{{ $user->mobile }}</td>
+                  <td itemprop="id">{{ $user->id }}</td>
+                  <td itemprop="name">{{ $user->full_name }}</td>
+                  <td itemprop="faculty">{{ $user->faculty->name }}</td>
+                  <td itemprop="role">{{ $user->role_display }}</td>
+                  <td itemprop="email">{{ $user->email }}</td>
+                  <td itemprop="mobile">{{ $user->mobile }}</td>
                   <td>{{ $user->birthday_label }}</td>
                   <td>{{ $user->year }}</td>
                   <td>
@@ -77,15 +77,20 @@
                       <a class="edit btn btn-warning btn-xs" href="{{ route("admin.user.edit", $user->id) }}"  title="Düzenle">
                         <i class="fa fa-pencil"></i>
                       </a>
+                      <button 
+                          class="role btn btn-primary btn-xs"
+                          item-id="{{ $user->id }}" title="Görev Seç">
+                          <i class="fa fa-briefcase"></i>
+                      </button>  
                       <a class="delete btn btn-danger btn-xs" delete-id="{{ $user->id }}" delete-name="{{ $user->mobile }}" href="javascript:;" title="Sil">
                         <i class="fa fa-trash"></i>
                       </a>
-                    </div>                      
+                    </div>
                   </td>
                 </tr>
               @empty
                 <tr>
-                  <td colspan="6">Üye bulunmamaktadır.</td>
+                  <td colspan="9">Üye bulunmamaktadır.</td>
                 </tr>
               @endforelse
             @endslot
@@ -108,6 +113,57 @@
 
 @section('scripts')
   <script type="text/javascript">
+  var roles = {!! json_encode(App\Models\Role::toSelect('Yeni Görev', null)) !!}
+
+  function selectRole(slug, roles, buttonClass = "role") {
+    $('.' + buttonClass).on('click', function (e) {
+      var id = $(this).attr('item-id');
+      var row = "#" + slug + "-" + id;
+      var name = $(row).children('[itemprop=name]').html();
+      var role = $(row).children('[itemprop=role]').html();
+      swal({
+        title: "Üye Yetkilendirme",
+        html: "<h3><strong>Ad:</strong> " + name + "</h3>" +
+              "<h3><strong>Aktif Görev:</strong> " + role + "</h3>",
+        input: 'select',
+        inputOptions: roles,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Değiştir!",
+        showCancelButton: true,
+        cancelButtonText: "İptal",
+        showLoaderOnConfirm: true,
+        onOpen: function() {
+          $('.swal2-select').select2({
+            minimumResultsForSearch: Infinity,
+            dropdownCss: { 'z-index':9999999 }
+          });
+        },
+        preConfirm: function (role) {
+          return new Promise(function (resolve, reject) {
+            if (role) {
+              $.ajax({
+                url: "/admin/" + slug + "/" + id,
+                method: "PUT",
+                data: { role: role}
+              })
+              .done(function(response){
+                  resolve(response)
+              })
+              .fail(function (xhr, ajaxOptions, thrownError) {
+                  ajaxError(xhr, ajaxOptions, thrownError);
+              });
+            } else {
+                reject('Yeni görev seçmeniz gerekiyor')
+            }
+          });
+        },
+        allowOutsideClick: false,
+      }).then(function (response) {
+        $(row).children('[itemprop=role]').text(response.data.role)
+      })
+    });
+  }
+    selectRole('user', roles)
     approveItem('user',
       'isimli üyeyinin hesabını onaylamak istediğinize emin misiniz?',
       'isimli üyeyinin hesabının onayını kaldırmak istediğinize emin misiniz'
