@@ -44,7 +44,8 @@ class ActivateEmail extends Notification
     {
         return (new MailMessage)
           ->subject('E-posta Doğrulama İşlemi')
-          ->line('E-posta adresinizi doğrulamak için aşağıdaki linke tıklayınız.')
+          ->greeting("Merhaba {$notifiable->first_name},")
+          ->line('E-posta adresini doğrulamak için aşağıdaki bağlantıya tıklaman gerekiyor.')
           ->action('Doğrula', url('admin/email/activation', $this->token))
           ->line('Eğer bu e-posta adresiniz ile Leyla\'dan Sonra Sistemi\'ne kayıt olmadıysanız bu e-postayı önemsemeyin.');
     }

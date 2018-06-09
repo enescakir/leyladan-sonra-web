@@ -25,7 +25,7 @@ $style = [
 
     /* Masthead ----------------------- */
 
-    'email-masthead' => 'padding: 25px 0; text-align: center;',
+    'email-masthead' => 'padding: 25px 0; text-align: center; background-color: #309A9A !important',
     'email-masthead_name' => 'font-size: 16px; font-weight: bold; color: #2F3133; text-decoration: none; text-shadow: 0 1px 0 white;',
 
     'email-body' => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid #EDEFF2; border-bottom: 1px solid #EDEFF2; background-color: #FFF;',
@@ -56,7 +56,7 @@ $style = [
 
     'button--green' => 'background-color: #22BC66;',
     'button--red' => 'background-color: #dc4d2f;',
-    'button--blue' => 'background-color: #3869D4;',
+    'button--blue' => 'background-color: #309A9A;',
 ];
 ?>
 
@@ -71,7 +71,7 @@ $style = [
                     <tr>
                         <td style="{{ $style['email-masthead'] }}">
                             <a style="{{ $fontFamily }} {{ $style['email-masthead_name'] }}" href="{{ url('/') }}" target="_blank">
-                                <img src="http://www.leyladansonra.com/resources/admin/media/mail_logo.png" width="200" alt="" border="0">
+                                <img src="http://www.leyladansonra.com/resources/admin/media/logo_login.png" width="200" alt="" border="0">
                             </a>
                         </td>
                     </tr>

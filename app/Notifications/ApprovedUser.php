@@ -7,20 +7,17 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class NewUser extends Notification
+class ApprovedUser extends Notification
 {
     use Queueable;
-
-    public $user;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct()
     {
-        $this->user = $user;
     }
 
     /**
@@ -43,11 +40,11 @@ class NewUser extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Fakültenden onay bekleyen üyeler var!')
-                    ->greeting("Merhaba {$notifiable->first_name},")
-                    ->line('Fakültene kayıtlı <strong>' . $this->user->full_name . '</strong> sistemimize <strong><em>' . $this->user->role_display . '</strong></em> olarak ' . $this->user->email . ' e-posta adresi ile kayıt oldu.')
-                    ->line('Sisteme giriş yaparak "Üyeler > Onay Bekleyen Üyeler" sayfasından üyeliği onaylayabilirsin.')
-                    ->action('Üyeyi Onayla', route('admin.faculty.users.unapproved', $this->user->faculty_id));
+            ->subject('Hesabın artık aktif! 🎉')
+            ->greeting("Merhaba {$notifiable->first_name},")
+            ->line('Üyeliğin fakülte yöneticin tarafından onaylandı.')
+            ->line('Artık sisteme giriş yapıp çocuk eklemeye başlayabilirsin.')
+            ->action('Giriş Yap', route('admin.login'));
     }
 
     /**
