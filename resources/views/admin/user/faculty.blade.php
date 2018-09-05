@@ -1,11 +1,11 @@
 @extends('admin.parent')
 
-@section('title', 'Tüm Üyeler')
+@section('title', "{$faculty->full_name} Üyeleri")
 
 @section('header')
   <section class="content-header">
     <h1>
-      Tüm Üyeler
+      {{ $faculty->full_name }} Üyeleri
       <small>Sayfa {{ $users->currentPage() . "/" . $users->lastPage() }}</small>
     </h1>
     <ol class="breadcrumb">
@@ -27,9 +27,6 @@
           {{-- ROLE SELECTOR --}}
           @include('admin.partials.selectors.role')
 
-          {{-- FACULTY SELECTOR --}}
-          @include('admin.partials.selectors.faculty')
-
           {{-- APPROVAL SELECTOR --}}
           @include('admin.partials.selectors.approval')
 
@@ -46,7 +43,6 @@
             @slot('head')
               <th>ID</th>
               <th>Ad Soyad</th>
-              <th>Fakülte</th>
               <th>Görev</th>
               <th>E-posta</th>
               <th>Telefon</th>
@@ -61,7 +57,6 @@
                   class="{{ $user->isApproved() ? 'success' : 'warning' }}">
                   <td itemprop="id">{{ $user->id }}</td>
                   <td itemprop="name">{{ $user->full_name }}</td>
-                  <td itemprop="faculty">{{ $user->faculty->name }}</td>
                   <td itemprop="role">{{ $user->role_display }}</td>
                   <td itemprop="email">{{ $user->email }}</td>
                   <td itemprop="mobile">{{ $user->mobile }}</td>
@@ -82,9 +77,6 @@
                           item-id="{{ $user->id }}" title="Görev Seç">
                           <i class="fa fa-briefcase"></i>
                       </button>  
-                      <a class="delete btn btn-danger btn-xs" delete-id="{{ $user->id }}" delete-name="{{ $user->mobile }}" href="javascript:;" title="Sil">
-                        <i class="fa fa-trash"></i>
-                      </a>
                     </div>
                   </td>
                 </tr>
@@ -113,12 +105,11 @@
 
 @section('scripts')
   <script type="text/javascript">
-    var roles = {!! json_encode(App\Models\Role::toSelect('Yeni Görev', null)) !!}
+    var roles = {!! json_encode(App\Models\Role::toSelect('Yeni Görev')) !!}
     selectRole('user', roles)
     approveItem('user',
-      'isimli üyenin hesabını onaylamak istediğinize emin misiniz?',
-      'isimli üyenin hesabının onayını kaldırmak istediğinize emin misiniz'
+      'isimli üyeyinin hesabını onaylamak istediğinize emin misiniz?',
+      'isimli üyeyinin hesabının onayını kaldırmak istediğinize emin misiniz'
     );
-    deleteItem("user", "numaralı bağışçıyı silmek istediğinize emin misiniz?");
   </script>
 @endsection

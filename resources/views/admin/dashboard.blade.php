@@ -2,17 +2,6 @@
 
 @section('title', 'Kontrol Paneli')
 
-@section('styles')
-<!-- JQVMap -->
-<link rel="stylesheet" href="{{ admin_asset('css/jqvmap.min.css') }}">
-<style>
-  .jqvmap-zoomin, .jqvmap-zoomout {
-    height: 15px;
-    width: 15px;
-  }
-</style>
-@endsection
-
 @section('header')
 <section class="content-header">
   <h1>
@@ -280,11 +269,11 @@
 @endsection
 
 @section('scripts')
-<!-- JQVMap -->
-<script src="{{ admin_asset('js/jqvmap.min.js') }}" type="text/javascript"></script>
-
 <!-- Full Calendar -->
 <script src="{{ admin_asset('js/fullcalendar.min.js') }}" type="text/javascript"></script>
+
+<!-- JQVMap -->
+<script src="{{ admin_asset('js/jqvmap.min.js') }}" type="text/javascript"></script>
 
 <!-- Custom Scripts -->
 <script type="text/javascript">

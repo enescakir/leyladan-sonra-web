@@ -42,7 +42,7 @@ class ForgotPasswordController extends Controller
         return view('admin.auth.passwords.email');
     }
 
-    protected function sendResetLinkResponse($response)
+    protected function sendResetLinkResponse($request, $response)
     {
         return back()->with('success_message', 'Şifrenizi sıfırlamak için ilgili talimatlar e-posta adresinize gönderilmiştir.');
     }

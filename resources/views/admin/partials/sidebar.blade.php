@@ -110,7 +110,9 @@
       </a>
       <ul class="treeview-menu">
         <li><a href="#"><i class="fa fa-thumbs-o-up"></i> <span>Onay Bekleyenler</span></a></li>
-        <li><a href="#"><i class="fa fa-user"></i> <span>Fakülte Üyeleri</span></a></li>
+        <li class="{{ set_active('*admin/faculty/user*') }}">
+          <a href="{{ route('admin.faculty.user', $authUser->faculty_id) }}"><i class="fa fa-user"></i> <span>Fakülte Üyeleri</span></a>
+        </li>
         <li class="{{ set_active('*admin/user*') }}">
           <a href="{{ route('admin.user.index') }}"><i class="fa fa-users"></i> <span>Tüm Üyeler</span></a>
         </li>

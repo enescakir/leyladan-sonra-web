@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Child;
 use App\Models\Process;
+use App\Models\Faculty;
 use Auth;
 
 class UserController extends Controller
@@ -18,7 +19,7 @@ class UserController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Request $request)
+    public function index(Request $request, Faculty $faculty)
     {
         $users = User::orderBy('id', 'DESC')->with(['roles', 'faculty']);
 
@@ -27,6 +28,11 @@ class UserController extends Controller
         }
         if ($request->filled('role_name')) {
             $users->role($request->role_name);
+            if ($request->role_name == 'left') {
+                $users->withLefts();
+            } elseif ($request->role_name == 'graduated') {
+                $users->withGraduateds();
+            }
         }
         if ($request->filled('faculty_id')) {
             $users->where('faculty_id', $request->faculty_id);
@@ -42,6 +48,34 @@ class UserController extends Controller
             return redirect($request->fullUrlWithQuery(array_merge(request()->all(), ['page' => $users->lastPage()])));
         }
         return view('admin.user.index', compact(['users']));
+    }
+
+    public function faculty(Request $request, Faculty $faculty)
+    {
+        $users = $faculty->users()->orderBy('id', 'DESC')->with(['roles', 'faculty']);
+
+        if ($request->filled('approval')) {
+            $users->approved($request->approval);
+        }
+        if ($request->filled('role_name')) {
+            $users->role($request->role_name);
+            if ($request->role_name == 'left') {
+                $users->withLefts();
+            } elseif ($request->role_name == 'graduated') {
+                $users->withGraduateds();
+            }
+        }
+        if ($request->filled('search')) {
+            $users->search($request->search);
+        }
+        if ($request->filled('download')) {
+            User::download($users);
+        }
+        $users = $users->paginate($request->per_page ?: 25);
+        if ($request->has('page') && $request->page != 1 && $request->page > $users->lastPage()) {
+            return redirect($request->fullUrlWithQuery(array_merge(request()->all(), ['page' => $users->lastPage()])));
+        }
+        return view('admin.user.faculty', compact(['users', 'faculty']));
     }
 
     public function create()
@@ -85,6 +119,11 @@ class UserController extends Controller
 
         if ($request->filled('role')) {
             $user->syncRoles($request->role);
+            if ($request->role == 'left') {
+                $user->left();
+            } elseif ($request->role == 'graduated') {
+                $user->graduate();
+            }
         }
 
         if ($request->hasFile('photo')) {

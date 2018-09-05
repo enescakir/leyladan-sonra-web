@@ -12,4 +12,16 @@ class GraduateScope implements Scope
     {
         $builder->whereNull('graduated_at');
     }
+
+    /**
+     * Extend the query builder with the needed functions.
+     *
+     * @param Builder $builder
+     */
+    public function extend(Builder $builder)
+    {
+        $builder->macro('withGraduateds', function (Builder $builder) {
+            return $builder->withoutGlobalScope($this);
+        });
+    }
 }

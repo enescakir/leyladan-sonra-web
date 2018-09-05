@@ -126,6 +126,20 @@ class User extends Authenticatable implements HasMedia
         return $this->save();
     }
 
+    public function left($left = true)
+    {
+        $this->left_at = $left ? now() : null;
+
+        return $this->save();
+    }
+
+    public function graduate($graduate = true)
+    {
+        $this->graduated_at = $graduate ? now() : null;
+
+        return $this->save();
+    }
+
     public static function toSelect($placeholder = null)
     {
         $res = static::orderBy('id', 'DESC')->get()->pluck('full_name', 'id');

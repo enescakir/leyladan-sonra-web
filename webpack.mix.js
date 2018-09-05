@@ -1,43 +1,25 @@
 let mix = require('laravel-mix');
 
+
 /*
  |--------------------------------------------------------------------------
- | Mix Asset Management
+ | AdminLTE Resource
  |--------------------------------------------------------------------------
- |
- | Mix provides a clean, fluent API for defining some Webpack build steps
- | for your Laravel application. By default, we are compiling the Sass
- | file for the application as well as bundling up all the JS files.
- |
  */
+mix.less('resources/admin/adminlte/less/AdminLTE.less', 'public/admin/css/AdminLTE.min.css');
+mix.js('resources/admin/adminlte/js/AdminLTE.js', 'public/admin/js/AdminLTE.min.js');
 
- mix.less('resources/assets/adminlte/less/AdminLTE.less', 'public/admin/css/AdminLTE.min.css');
 
-
- mix.styles('resources/assets/admin/css/app.css', 'public/admin/css/app.min.css');
- mix.babel('resources/assets/admin/js/app.js', 'public/admin/js/app.min.js');
-
- /*
-  |--------------------------------------------------------------------------
-  | Plugins
-  |--------------------------------------------------------------------------
-  |
-  */
-
- mix.styles([
-  'node_modules/bootstrap/dist/css/bootstrap.min.css', // Bootstrap 3.3.7
-  'node_modules/font-awesome/css/font-awesome.min.css', // Font Awesome
-  'node_modules/ionicons/css/ionicons.min.css', // Ionicons
-  'node_modules/icheck/skins/flat/red.css', // iCheck
-  'node_modules/select2/dist/css/select2.min.css', // Select2
-  'node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css', // Datepicker
-  'node_modules/sweetalert2/dist/sweetalert2.min.css', // Sweet Alert 2
-  'node_modules/fullcalendar/dist/fullcalendar.min.css', // Full Calendar
-  'node_modules/multiselect/css/multi-select.css', // Multi Select
-  'node_modules/cropperjs/dist/cropper.min.css', // CropperJS
-], 'public/admin/css/plugins.min.css');
-
- mix.scripts([
+/*
+ |--------------------------------------------------------------------------
+ | 3rd Party Libraries
+ |--------------------------------------------------------------------------
+ */
+mix.sass('resources/admin/css/vendor.scss', 'public/admin/css/vendor.min.css');
+// mix.js('resources/admin/js/vendor.js', 'public/admin/js/vendor.min.js').autoload({
+//   jquery: ['$', 'window.jQuery', 'jQuery'],
+// });;
+mix.scripts([
   'node_modules/jquery/dist/jquery.min.js', // jQuery 3
   'node_modules/bootstrap/dist/js/bootstrap.min.js', // Bootstrap 3.3.7
   'node_modules/icheck/icheck.min.js', // iCheck
@@ -59,27 +41,18 @@ let mix = require('laravel-mix');
   'node_modules/bootstrap-filestyle/src/bootstrap-filestyle.min.js', // Bootstrap File Style
   'node_modules/chart.js/dist/Chart.min.js', // Chart.js
   'node_modules/cropperjs/dist/cropper.min.js', // CropperJS
- ], 'public/admin/js/plugins.min.js');
+ ], 'public/admin/js/vendor.min.js');
 
-mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.eot', 'public/admin/fonts/');
-mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.svg', 'public/admin/fonts/');
-mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf', 'public/admin/fonts/');
-mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff', 'public/admin/fonts/');
-mix.copy('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2', 'public/admin/fonts/');
-mix.copy('node_modules/ionicons/fonts/ionicons.ttf', 'public/admin/fonts/');
-mix.copy('node_modules/ionicons/fonts/ionicons.woff', 'public/admin/fonts/');
-mix.copy('node_modules/icheck/skins/flat/red.png', 'public/admin/css/');
-mix.copy('node_modules/icheck/skins/flat/red@2x.png', 'public/admin/css/');
-mix.copy('node_modules/bootstrap/dist/css/bootstrap.min.css.map', 'public/admin/css/');
-mix.copy('node_modules/jquery.quicksearch/dist/jquery.quicksearch.min.js.map', 'public/admin/js/');
+
+mix.styles('resources/admin/css/app.css', 'public/admin/css/app.min.css');
+mix.babel('resources/admin/js/functions.js', 'public/admin/js/app.min.js');
+
 
 // JQVMap
-mix.copy('node_modules/jqvmap/dist/jqvmap.min.css', 'public/admin/css/');
 mix.scripts([
   'node_modules/jqvmap/dist/jquery.vmap.min.js',
   'node_modules/jqvmap/dist/maps/jquery.vmap.turkey.js',
 ], 'public/admin/js/jqvmap.min.js');
-
 
 // Full Calendar
 mix.scripts([

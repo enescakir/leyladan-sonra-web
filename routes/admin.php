@@ -76,11 +76,6 @@ Route::prefix('faculty')->as('faculty.')->group(function () {
         Route::get('posts/unapproved/data', 'Admin\FacultyController@postsUnapprovedData')->name('posts.unapproved.data');
         Route::get('posts/unapproved/count', 'Admin\FacultyController@postsUnapprovedCount')->name('posts.unapproved.count');
         Route::get('profiles', 'Admin\FacultyController@profiles')->name('profiles');
-        Route::get('users', 'Admin\FacultyController@users')->name('users');
-        Route::get('users/data', 'Admin\FacultyController@usersData')->name('users.data');
-        Route::get('users/unapproved', 'Admin\FacultyController@unapproved')->name('users.unapproved');
-        Route::get('users/unapproved/data', 'Admin\FacultyController@unapprovedData')->name('users.unapproved.data');
-        Route::get('users/unapproved/count', 'Admin\FacultyController@unapprovedCount')->name('users.unapproved.count');
         Route::get('sendmail', 'Admin\FacultyController@createMail')->name('mail.create');
         Route::post('sendmail', 'Admin\FacultyController@sendMail')->name('mail.send');
     });
@@ -135,7 +130,7 @@ Route::prefix('dashboard')->group(function () {
 | Auth Routes
 |--------------------------------------------------------------------------
 */
-Auth::routes();
+Auth::routes(['verify' => true]);
 Route::get('/email/activation/{token}', 'Auth\ActivateEmailController@activate')->name('email.activate');
 
 /*
@@ -165,9 +160,15 @@ Route::resource('post', 'Admin\PostController');
 Route::prefix('faculty')->as('faculty.')->group(function () {
     Route::prefix('{faculty}')->group(function () {
         Route::get('post', 'Admin\PostController@faculty')->name('post');
+        Route::get('user', 'Admin\UserController@faculty')->name('user');
     });
 });
 Route::resource('faculty', 'Admin\FacultyController');
+
+// Route::get('users/data', 'Admin\FacultyController@usersData')->name('users.data');
+// Route::get('users/unapproved', 'Admin\FacultyController@unapproved')->name('users.unapproved');
+// Route::get('users/unapproved/data', 'Admin\FacultyController@unapprovedData')->name('users.unapproved.data');
+// Route::get('users/unapproved/count', 'Admin\FacultyController@unapprovedCount')->name('users.unapproved.count');
 
 /*
 |--------------------------------------------------------------------------
