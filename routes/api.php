@@ -17,13 +17,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
 
-
-Route::group(['prefix' => 'admin'], function () {
-    Route::get('log', 'Admin\ApiAdminController@log')->name('api.admin.logs');
-    Route::get('log/{date}', 'Admin\ApiAdminController@logDaily')->name('api.admin.logs.daily');
-});
-
-Route::get('children', 'Admin\ApiController@children')->name('api.children');
-Route::get('child/{id}', 'Admin\ApiController@child')->name('api.child');
-Route::post('child/form', 'Admin\ApiController@childForm')->name('api.child.form');
-Route::post('token', 'Admin\ApiController@token')->name('api.token');
+Route::get('children', 'Front\Api\ApiController@children')->name('api.children');
+Route::get('child/{id}', 'Front\Api\ApiController@child')->name('api.child');
+Route::post('child/form', 'Front\Api\ApiController@childForm')->name('api.child.form');
+Route::post('token', 'Front\Api\ApiController@token')->name('api.token');

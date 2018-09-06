@@ -21,7 +21,7 @@ Contact: enes@cakir.web.tr
   <meta name="author" content="Enes Çakır" />
 
   <!-- Plugin styles, Bootstrap etc. -->
-  <link rel="stylesheet" href="{{ admin_asset('css/plugins.min.css') }}">
+  <link rel="stylesheet" href="{{ admin_asset('css/vendor.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ admin_asset('css/AdminLTE.min.css') }}">
   <!-- Theme style -->
@@ -69,7 +69,7 @@ Contact: enes@cakir.web.tr
 
 <!-- REQUIRED JS SCRIPTS -->
 <!-- Plugins - JQuery, Bootstrap etc. -->
-<script src="{{ admin_asset('js/plugins.min.js') }}"></script>
+<script src="{{ admin_asset('js/vendor.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ admin_asset('js/adminlte.min.js') }}"></script>
 <!-- App -->

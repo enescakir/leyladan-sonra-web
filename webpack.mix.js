@@ -15,7 +15,7 @@ mix.js('resources/admin/adminlte/js/AdminLTE.js', 'public/admin/js/AdminLTE.min.
  | 3rd Party Libraries
  |--------------------------------------------------------------------------
  */
-mix.sass('resources/admin/css/vendor.scss', 'public/admin/css/vendor.min.css');
+mix.less('resources/admin/css/vendor.less', 'public/admin/css/vendor.min.css');
 // mix.js('resources/admin/js/vendor.js', 'public/admin/js/vendor.min.js').autoload({
 //   jquery: ['$', 'window.jQuery', 'jQuery'],
 // });;
@@ -44,8 +44,11 @@ mix.scripts([
  ], 'public/admin/js/vendor.min.js');
 
 
+ // Custom
+
 mix.styles('resources/admin/css/app.css', 'public/admin/css/app.min.css');
 mix.babel('resources/admin/js/functions.js', 'public/admin/js/app.min.js');
+mix.copy('resources/admin/img/*', 'public/admin/img/');
 
 
 // JQVMap

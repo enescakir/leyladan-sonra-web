@@ -5,6 +5,11 @@
     "/admin/js/vendor.min.js": "/admin/js/vendor.min.js",
     "/admin/css/app.min.css": "/admin/css/app.min.css",
     "/admin/js/app.min.js": "/admin/js/app.min.js",
+    "/admin/img/icons.png": "/admin/img/icons.png",
+    "/admin/img/logo_login.png": "/admin/img/logo_login.png",
+    "/admin/img/user-default-large.png": "/admin/img/user-default-large.png",
+    "/admin/img/user-default-medium.png": "/admin/img/user-default-medium.png",
+    "/admin/img/user-default-small.png": "/admin/img/user-default-small.png",
     "/admin/js/jqvmap.min.js": "/admin/js/jqvmap.min.js",
     "/admin/js/fullcalendar.min.js": "/admin/js/fullcalendar.min.js"
 }

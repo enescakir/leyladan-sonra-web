@@ -69,6 +69,11 @@ trait Base
         return date('d.m.Y H:i', strtotime($this->attributes['updated_at']));
     }
 
+    public function getPerPage()
+    {
+        return request('per_page', 25);
+    }
+
     public function updateSlug()
     {
         return $this->slugKeys ?

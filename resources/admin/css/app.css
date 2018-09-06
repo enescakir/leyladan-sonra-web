@@ -47,3 +47,7 @@ tr .two-button {
   height: 15px;
   width: 15px;
 }
+
+.dropdown-menu {
+  min-width: 60px !important;
+}
