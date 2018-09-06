@@ -1,7 +1,5 @@
 <?php
 
-// TypeFilter.php
-
 namespace App\Filters;
 
 use App\Models\Child;

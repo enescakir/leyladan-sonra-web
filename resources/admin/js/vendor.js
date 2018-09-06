@@ -65,3 +65,6 @@ import 'chart.js/dist/Chart.min.js'
 
 // CropperJS
 import 'cropperjs/dist/cropper.min.js'
+
+// Clipboard JS
+import 'clipboard/dist/clipboard.min.js'

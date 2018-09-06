@@ -7,7 +7,7 @@ use Excel;
 
 trait Downloadable
 {
-    public static function download(Builder $builder, $dataMapper)
+    public static function download(Builder $builder, $dataMapper = null)
     {
         $elements = $builder->get();
         $classname = __('download.' . static::class);

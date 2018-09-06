@@ -1,7 +1,5 @@
 <?php
 
-// AbstractFilter.php
-
 namespace App\Filters;
 
 use Illuminate\Http\Request;
@@ -42,7 +40,7 @@ abstract class Filter
      * @param  \Illuminate\Database\Eloquent\Builder $builder
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function apply($builder)
+    public function apply(Builder $builder)
     {
         $this->builder = $builder;
         foreach ($this->getFilters() as $filter => $value) {

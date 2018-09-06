@@ -13,7 +13,7 @@
     "axios": "^0.16.2",
     "bootstrap-sass": "^3.3.7",
     "cross-env": "^5.1.6",
-    "laravel-mix": "^2.1.11",
+    "laravel-mix": "^2.1.14",
     "lodash": "^4.17.10",
     "vue": "^2.1.10"
   },
@@ -30,6 +30,7 @@
     "bootstrap-timepicker": "^0.5.2",
     "chart.js": "^2.7.2",
     "ckeditor": "^4.9.2",
+    "clipboard": "^2.0.1",
     "cropperjs": "^1.4.0",
     "fastclick": "^1.0.6",
     "font-awesome": "^4.7.0",

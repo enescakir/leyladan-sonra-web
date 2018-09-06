@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Resource;
 
+use App\Filters\EmailSampleFilter;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 use App\Models\EmailSample;
@@ -13,23 +14,13 @@ class EmailSampleController extends AdminController
         $this->middleware('auth');
     }
 
-    public function index(Request $request)
+    public function index(EmailSampleFilter $filters)
     {
         $samples = EmailSample::orderBy('category')->with('creator');
 
-        if ($request->filled('search')) {
-            $samples->search($request->search);
-        }
+        $samples->filter($filters);
 
-        if ($request->filled('category')) {
-            $samples->where('category', $request->category);
-        }
-
-        if ($request->filled('download')) {
-            EmailSample::download($samples);
-        }
-
-        $samples = $samples->paginate($request->per_page ?: 25);
+        $samples = $samples->paginate();
 
         $categories = EmailSample::toCategorySelect('Hepsi');
         return view('admin.emailsample.index', compact('samples', 'categories'));
@@ -54,7 +45,7 @@ class EmailSampleController extends AdminController
 
     public function edit(EmailSample $emailsample)
     {
-        return view('admin.emailsample.edit', compact(['emailsample']));
+        return view('admin.emailsample.edit', compact('emailsample'));
     }
 
     public function update(Request $request, EmailSample $emailsample)
@@ -70,7 +61,11 @@ class EmailSampleController extends AdminController
 
     public function destroy(EmailSample $emailsample)
     {
-        $emailsample->delete();
+        try {
+            $emailsample->delete();
+        } catch (\Exception $exception) {
+            return api_error('E-posta örneği silinemedi');
+        }
         return api_success($emailsample);
     }
 }
