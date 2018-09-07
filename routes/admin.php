@@ -105,8 +105,8 @@ Route::resource('volunteer', 'Admin\Volunteer\VolunteerController');
 
 Route::post('/process', 'Admin\Child\ChildController@createProcess')->name('process.store');
 
-Route::resource('mobile-notification', 'Admin\Resource\MobileNotificationController');
-Route::post('mobile-notification/{id}/send', 'Admin\Resource\MobileNotificationController@send')->name('mobile-notification.send');
+Route::resource('mobile-notification', 'Admin\Volunteer\MobileNotificationController');
+Route::post('mobile-notification/{id}/send', 'Admin\Volunteer\MobileNotificationController@send')->name('mobile-notification.send');
 
 Route::resource('blog', 'Admin\Content\BlogController');
 

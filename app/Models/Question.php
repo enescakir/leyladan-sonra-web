@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Base;
+use App\Traits\BaseActions;
 use Excel;
 
 class Question extends Model
 {
-    use Base;
+    use BaseActions;
 
     // Properties
     protected $table = 'questions';

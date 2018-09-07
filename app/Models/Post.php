@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\Base;
-use App\Traits\Approval;
+use App\Traits\BaseActions;
+use App\Traits\Approvable;
 
 use App\Enums\ImageRatio;
 
@@ -14,8 +14,8 @@ use Auth;
 
 class Post extends Model
 {
-    use Base;
-    use Approval;
+    use BaseActions;
+    use Approvable;
     // Properties
     protected $table    = 'posts';
     protected $fillable = ['child_id', 'approved_by', 'approved_at', 'text', 'type'];

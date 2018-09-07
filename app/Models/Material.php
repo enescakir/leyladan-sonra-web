@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\Image\Manipulations;
-use App\Traits\Base;
+use App\Traits\BaseActions;
+use App\Traits\Filterable;
+use App\Traits\HasMediaTrait;
 
 class Material extends Model implements HasMedia
 {
-    use Base;
+    use BaseActions;
     use HasMediaTrait;
+    use Filterable;
 
     // Properties
     protected $table = 'materials';
@@ -20,6 +21,7 @@ class Material extends Model implements HasMedia
         'name', 'category', 'link'
     ];
 
+    // Accessors
     public function getImageUrlAttribute()
     {
         return $this->getFirstMediaUrl('default', 'optimized');
@@ -30,19 +32,27 @@ class Material extends Model implements HasMedia
         return $this->getFirstMediaUrl('default', 'thumb');
     }
 
-    // Helpers
+    // Scopes
+    public function scopeCategory($query, $category)
+    {
+        return $query->where('category', $category);
+    }
+
     public function scopeSearch($query, $search)
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('link', 'like', '%' . $search . '%');
+                    ->orWhere('link', 'like', '%' . $search . '%');
         });
     }
 
+    // Helpers
     public static function toCategorySelect($placeholder = null)
     {
         $result = static::orderBy('category')->pluck('category', 'category');
-        return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
+        return $placeholder
+            ? collect(['' => $placeholder])->union($result)
+            : $result;
     }
 
     public function registerMediaConversions(Media $media = null)

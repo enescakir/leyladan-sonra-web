@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\Base;
+use App\Traits\BaseActions;
 
 class Feed extends Model
 {
-    use Base;
+    use BaseActions;
     // Properties
     protected $table    = 'feeds';
     protected $fillable = ['title', 'desc', 'icon', 'link', 'faculty_id'];

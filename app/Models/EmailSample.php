@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Base;
+use App\Traits\BaseActions;
 use App\Traits\Filterable;
 use App\Traits\Downloadable;
 
 class EmailSample extends Model
 {
-    use Base;
+    use BaseActions;
     use Filterable;
     use Downloadable;
 
@@ -38,7 +38,7 @@ class EmailSample extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('text', 'like', '%' . $search . '%');
+                    ->orWhere('text', 'like', '%' . $search . '%');
         });
     }
 
@@ -46,6 +46,8 @@ class EmailSample extends Model
     public static function toCategorySelect($placeholder = null)
     {
         $result = static::orderBy('category')->pluck('category', 'category');
-        return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
+        return $placeholder
+            ? collect(['' => $placeholder])->union($result)
+            : $result;
     }
 }

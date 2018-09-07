@@ -2,29 +2,22 @@
 
 namespace App\Http\Controllers\Admin\Resource;
 
+use App\Filters\TutorialFilter;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 use App\Models\Tutorial;
 
 class TutorialController extends AdminController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
-    public function index(Request $request)
+    public function index(TutorialFilter $filters)
     {
         $tutorials = Tutorial::orderBy('id', 'DESC');
-        if ($request->filled('search')) {
-            $tutorials->search($request->search);
-        }
-        if ($request->filled('category')) {
-            $tutorials->where('category', $request->category);
-        }
-        $tutorials = $tutorials->paginate($request->per_page ?: 25);
+        $tutorials->filter($filters);
+        $tutorials = $tutorials->paginate();
+
         $categories = Tutorial::toCategorySelect('Hepsi');
-        return view('admin.tutorial.index', compact(['tutorials', 'categories']));
+        return view('admin.tutorial.index', compact('tutorials', 'categories'));
     }
 
     public function create()
@@ -46,7 +39,7 @@ class TutorialController extends AdminController
 
     public function edit(Tutorial $tutorial)
     {
-        return view('admin.tutorial.edit', compact(['tutorial']));
+        return view('admin.tutorial.edit', compact('tutorial'));
     }
 
     public function update(Request $request, Tutorial $tutorial)

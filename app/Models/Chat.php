@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\Base;
+use App\Traits\BaseActions;
 use App\Enums\ChatStatus;
 
 use Carbon\Carbon;
 
 class Chat extends Model
 {
-    use Base;
+    use BaseActions;
     // Properties
     protected $table    = 'chats';
     protected $fillable = ['volunteer_id', 'faculty_id', 'child_id', 'via', 'status'];

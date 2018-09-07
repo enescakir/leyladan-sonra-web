@@ -48,6 +48,8 @@ abstract class Filter
                 $this->builder->$filter($value);
             } elseif (method_exists($this, $filter)) {
                 $this->$filter($value);
+            } else {
+                $this->builder->where($filter, $value);
             }
         }
         return $this->builder;

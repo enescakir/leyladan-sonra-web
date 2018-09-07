@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Base;
-use App\Traits\Birthday;
+use App\Traits\BaseActions;
+use App\Traits\HasBirthday;
 use App\Enums\PostType;
 use App\Enums\ChatStatus;
 use App\Enums\GiftStatus;
@@ -14,8 +14,8 @@ use DB;
 
 class Child extends Model
 {
-    use Base;
-    use Birthday;
+    use BaseActions;
+    use HasBirthday;
 
     // Properties
     protected $table = 'children';

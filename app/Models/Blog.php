@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\Base;
+use App\Traits\BaseActions;
 
 class Blog extends Model
 {
-    use Base;
+    use BaseActions;
     // Properties
     protected $table    = 'blogs';
     protected $fillable = ['title', 'text', 'thumb', 'slug', 'type', 'link'];

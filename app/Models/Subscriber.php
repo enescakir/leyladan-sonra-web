@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\Base;
+use App\Traits\BaseActions;
 
 class Subscriber extends Model
 {
-    use Base;
+    use BaseActions;
     // Properties
     protected $table    = 'subscribers';
     protected $fillable = ['notification_toke'];

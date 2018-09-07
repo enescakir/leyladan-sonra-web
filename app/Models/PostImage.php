@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\Base;
+use App\Traits\BaseActions;
 
 class PostImage extends Model
 {
-    use Base;
+    use BaseActions;
     // Properties
     protected $table    = 'post_images';
     protected $fillable = ['name', 'ratio', 'post_id'];

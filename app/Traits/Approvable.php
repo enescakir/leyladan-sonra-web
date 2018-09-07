@@ -2,17 +2,17 @@
 
 namespace App\Traits;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Auth;
-use App\Models\User;
 
-trait Approval
+trait Approvable
 {
     public function approve($approval = true)
     {
         if ($approval) {
             $this->approved_at = Carbon::now();
-            $this->approved_by = Auth::user()->id;
+            $this->approved_by = Auth::id();
         } else {
             $this->approved_at = null;
             $this->approved_by = null;
@@ -36,7 +36,7 @@ trait Approval
 
     public function getApprovedAtLabelAttribute()
     {
-        return date("d.m.Y H:i", strtotime($this->attributes['approved_at']));
+        return date('d.m.Y H:i', strtotime($this->attributes['approved_at']));
     }
 
     public function approver()

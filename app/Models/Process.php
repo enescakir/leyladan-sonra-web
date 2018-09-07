@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\Base;
+use App\Traits\BaseActions;
 
 class Process extends Model
 {
-    use Base;
+    use BaseActions;
     // Properties
     protected $table    = 'processes';
     protected $fillable = ['child_id', 'desc'];

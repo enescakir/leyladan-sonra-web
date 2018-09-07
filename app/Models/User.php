@@ -15,19 +15,19 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\Image\Manipulations;
 use App\Scopes\GraduateScope;
 use App\Scopes\LeftScope;
-use App\Traits\Birthday;
-use App\Traits\Mobile;
-use App\Traits\Base;
-use App\Traits\Approval;
+use App\Traits\HasBirthday;
+use App\Traits\HasMobile;
+use App\Traits\BaseActions;
+use App\Traits\Approvable;
 use Auth;
 use Excel;
 
 class User extends Authenticatable implements HasMedia
 {
-    use Base;
-    use Birthday;
-    use Mobile;
-    use Approval;
+    use BaseActions;
+    use HasBirthday;
+    use HasMobile;
+    use Approvable;
     use Notifiable;
     use HasRoles;
     use HasMediaTrait;

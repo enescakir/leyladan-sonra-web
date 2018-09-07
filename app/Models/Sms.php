@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Base;
+use App\Traits\BaseActions;
 use Excel;
 use App\Models\User;
 

@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\Base;
-use App\Traits\Mobile;
+use App\Traits\BaseActions;
+use App\Traits\HasMobile;
 use Excel;
 
 class Blood extends Model
 {
-    use Base;
-    use Mobile;
+    use BaseActions;
+    use HasMobile;
 
     // Properties
     protected $table    = 'bloods';

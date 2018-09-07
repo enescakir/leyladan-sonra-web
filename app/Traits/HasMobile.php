@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait Mobile
+trait HasMobile
 {
     public function setMobileAttribute($mobile)
     {

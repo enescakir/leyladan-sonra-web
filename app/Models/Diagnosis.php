@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Base;
+use App\Traits\BaseActions;
 use Excel;
 
 class Diagnosis extends Model
 {
-    use Base;
+    use BaseActions;
     // Properties
     protected $table = 'diagnoses';
     protected $fillable = ['name', 'category', 'desc'];

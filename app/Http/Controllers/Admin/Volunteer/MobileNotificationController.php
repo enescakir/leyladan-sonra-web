@@ -1,23 +1,19 @@
 <?php
+// TODO: Refactor Mobile Notifications
 
-namespace App\Http\Controllers\Admin\Resource;
+namespace App\Http\Controllers\Admin\Volunteer;
 
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
-use App\Http\Requests;
 use PushNotification;
-use App\MobileNotification;
+use App\Models\MobileNotification;
 use Carbon\Carbon;
 use Log;
-use App\Subscriber;
+use App\Models\Subscriber;
 use Auth;
 
 class MobileNotificationController extends AdminController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function index()
     {

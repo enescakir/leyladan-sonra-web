@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Base;
+use App\Traits\BaseActions;
 
 class News extends Model
 {
-    use Base;
+    use BaseActions;
     protected $table = 'news';
     protected $fillable = ['title', 'desc', 'link', 'channel_id'];
 

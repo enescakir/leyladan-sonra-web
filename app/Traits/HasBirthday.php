@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Carbon\Carbon;
 
-trait Birthday
+trait HasBirthday
 {
     public function setBirthdayAttribute($date)
     {

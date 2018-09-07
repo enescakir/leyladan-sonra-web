@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Base;
+use App\Traits\BaseActions;
 
 class Tutorial extends Model
 {
-    use Base;
+    use BaseActions;
+    use Filterable;
 
     // Properties
     protected $table = 'tutorials';
@@ -15,7 +17,12 @@ class Tutorial extends Model
         'name', 'category', 'link'
     ];
 
-    // Helpers
+    // Scopes
+    public function scopeCategory($query, $category)
+    {
+        return $query->where('category', $category);
+    }
+
     public function scopeSearch($query, $search)
     {
         $query->where(function ($query2) use ($search) {
@@ -24,6 +31,7 @@ class Tutorial extends Model
         });
     }
 
+    // Helpers
     public static function toCategorySelect($placeholder = null)
     {
         $result = static::orderBy('category')->pluck('category', 'category');

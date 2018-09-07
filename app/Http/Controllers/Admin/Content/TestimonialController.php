@@ -2,35 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Content;
 
+use App\Filters\TestimonialFilter;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 use App\Models\Testimonial;
 
 class TestimonialController extends AdminController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
-    public function index(Request $request)
+    public function index(TestimonialFilter $filters)
     {
         $testimonials = Testimonial::orderBy('id', 'DESC');
-        if ($request->filled('search')) {
-            $testimonials = $testimonials->search($request->search);
-        }
-        if ($request->filled('priority')) {
-            $testimonials = $testimonials->where('priority', $request->priority);
-        }
-        if ($request->filled('via')) {
-            $testimonials = $testimonials->where('via', $request->via);
-        }
-        if ($request->filled('download')) {
-            Testimonial::download($testimonials);
-        }
-        $testimonials = $testimonials->paginate($request->per_page ?: 25);
+        $testimonials->filter($filters);
+        $testimonials = $testimonials->paginate();
         $sources = Testimonial::toSourceSelect('Hepsi');
-        return view('admin.testimonial.index', compact(['testimonials', 'sources']));
+        return view('admin.testimonial.index', compact('testimonials', 'sources'));
     }
 
     public function create()
@@ -48,7 +34,7 @@ class TestimonialController extends AdminController
 
     public function edit(Testimonial $testimonial)
     {
-        return view('admin.testimonial.edit', compact(['testimonial']));
+        return view('admin.testimonial.edit', compact('testimonial'));
     }
 
     public function update(Request $request, Testimonial $testimonial)

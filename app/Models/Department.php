@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Base;
+use App\Traits\BaseActions;
 use Excel;
 
 class Department extends Model
 {
-    use Base;
+    use BaseActions;
     // Properties
     protected $table = 'departments';
     protected $fillable = ['name', 'desc', 'slug'];

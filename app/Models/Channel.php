@@ -7,12 +7,12 @@ use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\Image\Manipulations;
-use App\Traits\Base;
+use App\Traits\BaseActions;
 use Excel;
 
 class Channel extends Model implements HasMedia
 {
-    use Base;
+    use BaseActions;
     use HasMediaTrait;
 
     // Properties

@@ -2,29 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Resource;
 
+use App\Filters\MaterialFilter;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 use App\Models\Material;
 
 class MaterialController extends AdminController
 {
-    public function __construct()
+    public function index(MaterialFilter $filters)
     {
-        $this->middleware('auth');
-    }
+        $materials = Material::latest()->with('media');
+        $materials->filter($filters);
+        $materials = $materials->paginate();
 
-    public function index(Request $request)
-    {
-        $materials = Material::orderBy('id', 'DESC')->with('media');
-        if ($request->filled('search')) {
-            $materials->search($request->search);
-        }
-        if ($request->filled('category')) {
-            $materials->where('category', $request->category);
-        }
-        $materials = $materials->paginate($request->per_page ?: 25);
         $categories = Material::toCategorySelect('Hepsi');
-        return view('admin.material.index', compact(['materials', 'categories']));
+        return view('admin.material.index', compact('materials', 'categories'));
     }
 
     public function create()
@@ -40,14 +32,14 @@ class MaterialController extends AdminController
           'link'     => $request->link,
           'category' => $request->category,
         ]);
-        $material->uploadMedia($request->image);
+        $material->addMedia($request->image);
         session_success(__('messages.material.create', ['name' =>  $material->name]));
         return redirect()->route('admin.material.index');
     }
 
     public function edit(Material $material)
     {
-        return view('admin.material.edit', compact(['material']));
+        return view('admin.material.edit', compact('material'));
     }
 
     public function update(Request $request, Material $material)
@@ -60,7 +52,7 @@ class MaterialController extends AdminController
         ]);
         if ($request->hasFile('image')) {
             $material->clearMediaCollection();
-            $material->uploadMedia($request->image);
+            $material->addMedia($request->image);
         }
         session_success(__('messages.material.update', ['name' =>  $material->name]));
         return redirect()->route('admin.material.index');
