@@ -191,14 +191,14 @@ Route::post('/form', 'Admin\Miscellaneous\FormController@store')->name('form.sto
 |--------------------------------------------------------------------------
 */
 Route::prefix('blood')->as('blood.')->group(function () {
-    Route::get('/people', 'Admin\Blood\BloodController@editPeople')->name('people.edit');
-    Route::post('/people', 'Admin\Blood\BloodController@updatePeople')->name('people.update');
-    Route::get('/sms', 'Admin\Blood\BloodController@indexSMS')->name('sms.index');
-    Route::get('/sms/send', 'Admin\Blood\BloodController@showSMS')->name('sms.show');
-    Route::post('/sms/send', 'Admin\Blood\BloodController@sendSMS')->name('sms.send');
-    Route::get('/sms/balance', 'Admin\Blood\BloodController@checkBalance')->name('sms.balance');
-    Route::post('/sms/preview', 'Admin\Blood\BloodController@previewSMS')->name('sms.preview');
-    Route::post('/sms/test', 'Admin\Blood\BloodController@testSMS')->name('sms.test');
+    Route::get('/people', 'Admin\Blood\BloodUserController@edit')->name('people.edit');
+    Route::post('/people', 'Admin\Blood\BloodUserController@update')->name('people.update');
+    Route::get('/sms', 'Admin\Blood\SmsController@index')->name('sms.index');
+    Route::get('/sms/send', 'Admin\Blood\SmsController@show')->name('sms.show');
+    Route::post('/sms/send', 'Admin\Blood\SmsController@send')->name('sms.send');
+    Route::get('/sms/balance', 'Admin\Blood\SmsController@checkBalance')->name('sms.balance');
+    Route::post('/sms/preview', 'Admin\Blood\SmsController@preview')->name('sms.preview');
+    Route::post('/sms/test', 'Admin\Blood\SmsController@test')->name('sms.test');
 });
 Route::resource('blood', 'Admin\Blood\BloodController');
 

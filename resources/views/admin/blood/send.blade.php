@@ -77,7 +77,7 @@
               {!! Form::label('message', 'Metin:', ['class' => 'col-sm-3 control-label']) !!}
               <div class="col-sm-9">
                   {!! Form::textarea('message', null, ['class' => 'form-control max-length', 'maxlength' => 150, 'rows' => 3, 'required' => 'required']) !!}
-                  <span class="help-block">Bu SMS'in gönüllülerimize gideceğini unutmayınız. <br> Lütfen imla kurallarına ve Türkçe karakterler dikkat ediniz.</span>
+                  <span class="help-block">Bu SMS'in gönüllülerimize gideceğini unutmayınız. <br> Lütfen imla kurallarına ve Türkçe karakterlere dikkat ediniz.</span>
                   <small class="text-danger">{{ $errors->first('message') }}</small>
               </div>
           </div>

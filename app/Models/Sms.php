@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\Downloadable;
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\BaseActions;
 use Excel;
@@ -9,6 +11,9 @@ use App\Models\User;
 
 class Sms extends Model
 {
+    use Filterable;
+    use Downloadable;
+
     // Properties
     protected $table = 'sms';
     protected $fillable = [
@@ -41,16 +46,6 @@ class Sms extends Model
     {
         $result = static::where('category', $category)->with('sender')->orderBy('id', 'DESC')->get()->pluck('sender.full_name', 'sender.id')->sort();
         return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
-    }
-
-    public static function download($messages)
-    {
-        $messages = $messages->get();
-        Excel::create('LS_Mesajlar_' . date('d_m_Y'), function ($excel) use ($messages) {
-            $excel->sheet('Mesajlar', function ($sheet) use ($messages) {
-                $sheet->fromArray($messages, null, 'A1', true);
-            });
-        })->download('xlsx');
     }
 
     public function send($people)

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Downloadable;
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\BaseActions;
 use App\Traits\HasBirthday;
 use App\Enums\PostType;
 use App\Enums\ChatStatus;
 use App\Enums\GiftStatus;
-use Carbon\Carbon;
 use Excel;
 use DB;
 
@@ -16,6 +17,8 @@ class Child extends Model
 {
     use BaseActions;
     use HasBirthday;
+    use Filterable;
+    use Downloadable;
 
     // Properties
     protected $table = 'children';

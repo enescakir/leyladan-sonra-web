@@ -24,7 +24,7 @@ class CacheManager
                 'faculty'   => Faculty::started()->count(),
                 'child'     => Child::count(),
                 'user'      => User::count(),
-                'city'      => Faculty::started()->groupBy('code')->count()
+                'city'      => Faculty::started()->get()->groupBy('code')->count()
             ];
         });
     }

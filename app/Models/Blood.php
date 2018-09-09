@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\Downloadable;
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
-
 use App\Traits\BaseActions;
 use App\Traits\HasMobile;
-use Excel;
 
 class Blood extends Model
 {
     use BaseActions;
     use HasMobile;
+    use Filterable;
+    use Downloadable;
 
     // Properties
     protected $table    = 'bloods';
@@ -25,16 +27,5 @@ class Blood extends Model
                 ->orWhere('mobile', 'like', '%' . $search . '%')
                 ->orWhere('city', 'like', '%' . $search . '%');
         });
-    }
-
-    // Global Methods
-    public static function download($bloods)
-    {
-        $bloods = $bloods->get(['id', 'blood_type', 'rh', 'mobile', 'city', 'created_at']);
-        Excel::create('LS_KanBagisici_' . date("d_m_Y"), function ($excel) use ($bloods) {
-            $excel->sheet('Bagiscilar', function ($sheet) use ($bloods) {
-                $sheet->fromArray($bloods, null, 'A1', true);
-            });
-        })->download('xlsx');
     }
 }
