@@ -50,14 +50,14 @@ class LoginController extends AdminController
     /**
      * The user has been authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
+     * @param  \Illuminate\Http\Request $request
+     * @param  mixed                    $user
      * @return mixed
      */
     protected function authenticated($request, $user)
     {
         if ($user->email_token != null) {
-            session_info('E-posta adresinizi doğrulamamışsınız. <br> Tekrardan doğrulama kodu e-postanıza gönderildi.');
+            session_info('E-posta adresinizi doğrulamamışsınız. <br> Doğrulama kodu e-postanıza tekrardan gönderildi.');
             $user->sendEmailActivationNotification();
             $this->guard()->logout();
             return back()->withInput($request->only('email', 'remember'));

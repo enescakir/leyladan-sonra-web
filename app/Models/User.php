@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\Downloadable;
+use App\Traits\Filterable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
@@ -19,8 +21,6 @@ use App\Traits\HasBirthday;
 use App\Traits\HasMobile;
 use App\Traits\BaseActions;
 use App\Traits\Approvable;
-use Auth;
-use Excel;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -31,6 +31,8 @@ class User extends Authenticatable implements HasMedia
     use Notifiable;
     use HasRoles;
     use HasMediaTrait;
+    use Filterable;
+    use Downloadable;
 
     // Properties
     protected $table = 'users';
@@ -119,7 +121,26 @@ class User extends Authenticatable implements HasMedia
         return $this->getFirstMediaUrl('default', 'large') ?: admin_asset('img/user-default-large.png');
     }
 
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = bcrypt($password);
+        return $this;
+    }
+
     // Helpers
+    public function changeRole($role)
+    {
+        if ($role) {
+            $this->syncRoles($role);
+            if ($role == 'left') {
+                $this->left();
+            } elseif ($role == 'graduated') {
+                $this->graduate();
+            }
+        }
+
+    }
+
     public function activateEmail()
     {
         $this->email_token = null;
@@ -144,28 +165,6 @@ class User extends Authenticatable implements HasMedia
     {
         $res = static::orderBy('id', 'DESC')->get()->pluck('full_name', 'id');
         return $placeholder ? collect(['' => $placeholder])->union($res) : $res;
-    }
-
-    public static function download($users)
-    {
-        $users = $users->get();
-        Excel::create('LS_Uyeler_' . date('d_m_Y'), function ($excel) use ($users) {
-            $usersData = $users->map(function ($item, $key) {
-                return [
-                    'ID'           => $item->id,
-                    'Ad'           => $item->first_name,
-                    'Soyad'        => $item->last_name,
-                    'E-posta'      => $item->email,
-                    'Telefon'      => $item->mobile,
-                    'Fakülte'      => $item->faculty->name,
-                    'Görev'        => $item->role_display,
-                    'Kayıt Tarihi' => $item->created_at,
-                ];
-            });
-            $excel->sheet('Uyeler', function ($sheet) use ($usersData) {
-                $sheet->fromArray($usersData, null, 'A1', true);
-            });
-        })->download('xlsx');
     }
 
     // Notifications

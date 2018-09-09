@@ -2,173 +2,109 @@
 
 namespace App\Http\Controllers\Admin\Management;
 
+use App\Filters\UserFilter;
 use App\Http\Controllers\Admin\AdminController;
+use App\Models\Faculty;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Child;
-use App\Models\Process;
-use App\Models\Faculty;
-use Auth;
 
 class UserController extends AdminController
 {
-    public function __construct()
+    public function index(UserFilter $filters)
     {
-        $this->middleware('auth');
-    }
+        $users = User::latest()->with(['roles', 'faculty']);
+        $users->filter($filters);
+        $users = $this->paginate($users);
 
-    public function index(Request $request, Faculty $faculty)
-    {
-        $users = User::orderBy('id', 'DESC')->with(['roles', 'faculty']);
+        $roles = Role::toSelect('Yeni Görev', null);
 
-        if ($request->filled('approval')) {
-            $users->approved($request->approval);
-        }
-        if ($request->filled('role_name')) {
-            $users->role($request->role_name);
-            if ($request->role_name == 'left') {
-                $users->withLefts();
-            } elseif ($request->role_name == 'graduated') {
-                $users->withGraduateds();
-            }
-        }
-        if ($request->filled('faculty_id')) {
-            $users->where('faculty_id', $request->faculty_id);
-        }
-        if ($request->filled('search')) {
-            $users->search($request->search);
-        }
-        if ($request->filled('download')) {
-            User::download($users);
-        }
-        $users = $users->paginate($request->per_page ?: 25);
-        if ($request->has('page') && $request->page != 1 && $request->page > $users->lastPage()) {
-            return redirect($request->fullUrlWithQuery(array_merge(request()->all(), ['page' => $users->lastPage()])));
-        }
-        return view('admin.user.index', compact(['users']));
-    }
-
-    public function faculty(Request $request, Faculty $faculty)
-    {
-        $users = $faculty->users()->orderBy('id', 'DESC')->with(['roles', 'faculty']);
-
-        if ($request->filled('approval')) {
-            $users->approved($request->approval);
-        }
-        if ($request->filled('role_name')) {
-            $users->role($request->role_name);
-            if ($request->role_name == 'left') {
-                $users->withLefts();
-            } elseif ($request->role_name == 'graduated') {
-                $users->withGraduateds();
-            }
-        }
-        if ($request->filled('search')) {
-            $users->search($request->search);
-        }
-        if ($request->filled('download')) {
-            User::download($users);
-        }
-        $users = $users->paginate($request->per_page ?: 25);
-        if ($request->has('page') && $request->page != 1 && $request->page > $users->lastPage()) {
-            return redirect($request->fullUrlWithQuery(array_merge(request()->all(), ['page' => $users->lastPage()])));
-        }
-        return view('admin.user.faculty', compact(['users', 'faculty']));
+        return view('admin.user.index', compact('users', 'roles'));
     }
 
     public function create()
     {
-        //
+        $faculties = Faculty::toSelect('Fakülte seçiniz');
+        $roles = Role::toSelect('Görev seçiniz', null);
+
+        return view('admin.user.create', compact('faculties', 'roles'));
     }
 
     public function store(Request $request)
     {
-        //
+        $this->validateUser($request);
+
+        $user = User::create($request->only([
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'faculty_id',
+            'birthday',
+            'mobile',
+            'year'
+        ]));
+        $user->changeRole($request->role);
+        session_success("<strong>{$user->full_name}</strong> başarıyla oluşturuldu. <br><strong>{$user->email}</strong> e-posta adresine doğrulama kodu gönderildi");
+        $user->approve();
+        $user->sendEmailActivationNotification();
+
+        return redirect()->route('admin.user.index');
     }
 
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
-        $user->child_count = $user->children()->count();
-        $user->visit_count = Process::where('created_by', $user->id)->where('desc', 'Ziyaret edildi.')->count();
-        $user->child_delivered_count = $user->children()->where('gift_state', 'Teslim Edildi')->count();
         return view('admin.user.show', compact('user'));
     }
 
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = User::findOrFail($id);
-        $user->child_count = $user->children()->count();
-        $user->visit_count = Process::where('created_by', $user->id)->where('desc', 'Ziyaret edildi.')->count();
-        $user->child_delivered_count = $user->children()->where('gift_state', 'Teslim Edildi')->count();
-        return view('admin.user.edit', compact('user'));
+        $faculties = Faculty::toSelect('Fakülte seçiniz');
+        $roles = Role::toSelect('Görev seçiniz', null);
+
+        return view('admin.user.edit', compact('user', 'faculties', 'roles'));
     }
 
     public function update(Request $request, User $user)
     {
-        $this->validate($request, [
-            'first_name' => 'string',
-            'last_name'  => 'string',
-            'email'      => 'email',
-            'mobile'     => 'string',
-        ]);
-
-        $user->update($request->all());
-
-        if ($request->filled('role')) {
-            $user->syncRoles($request->role);
-            if ($request->role == 'left') {
-                $user->left();
-            } elseif ($request->role == 'graduated') {
-                $user->graduate();
-            }
+        if (!$request->ajax()) {
+            $this->validateUser($request, $user->id);
         }
 
-        if ($request->hasFile('photo')) {
-            ini_set('memory_limit', '-1');
-            // $smallPhoto = Image::make($request->file('photo'))
-            //     ->rotate(-$request->rotation)
-            //     ->crop($request->w, $request->h, $request->x, $request->y)
-            //     ->resize(100, 100)
-            //     ->save('resources/admin/uploads/profile_photos/' . $user->id . '_s.jpg', 80);
+        $user->fill($request->only([
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'faculty_id',
+            'birthday',
+            'mobile',
+            'year'
+        ]));
+        if ($user->isDirty('email')) {
+            $user->approved_at = null;
+            $user->sendEmailActivationNotification();
+        }
+        if ($user->isDirty('faculty_id')) {
+            $user->children()->detach();
+        }
+        $user->save();
+        $user->changeRole($request->role);
 
-            // $largePhoto = Image::make($request->file('photo'))
-            //     ->rotate(-$request->rotation)
-            //     ->crop($request->w, $request->h, $request->x, $request->y)
-            //     ->resize(600, 600)
-            //     ->save('resources/admin/uploads/profile_photos/' . $user->id . '_l.jpg', 80);
-
-            ini_restore('memory_limit');
-
-            $user->profile_photo = $user->id;
-            $user->save();
-
-            return redirect()->route('admin.user.edit', $id);
+        if ($request->ajax()) {
+            return api_success(['user' => $user, 'role' => $user->role_display]);
         }
 
-        return $request->ajax()
-            ? api_success(['role' => $user->role_display])
-            : redirect()->route('admin.user.edit', $user->id);
+        session_success("<strong>{$user->full_name}</strong> başarıyla güncellendi.");
+        return redirect()->route('admin.user.edit', $user->id);
+
     }
 
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
-    }
+        $user->delete();
 
-    public function children($id)
-    {
-        $user = User::findOrFail($id);
-        $user->child_count = $user->children()->count();
-        $user->visit_count = Process::where('created_by', $user->id)->where('desc', 'Ziyaret edildi.')->count();
-        $user->child_delivered_count = $user->children()->where('gift_state', 'Teslim Edildi')->count();
-        $children = $user->children()->get();
-        return view('admin.user.children', compact('children', 'user'));
-    }
-
-    public function childrenData($id)
-    {
+        return api_success(['user' => $user]);
     }
 
     public function approve(Request $request, User $user)
@@ -182,6 +118,25 @@ class UserController extends AdminController
         return api_success([
             'approval' => (int) $user->isApproved(),
             'user'     => $user
+        ]);
+    }
+
+    public function validateUser(Request $request, $userId = null)
+    {
+        return $this->validate($request, [
+            'first_name' => 'required|max:255',
+            'last_name'  => 'required|max:255',
+            'email'      => 'required|max:255|email|unique:users' . ($userId
+                    ? ',email,' . $userId
+                    : ''),
+            'password'   => 'min:6|confirmed' . ($userId
+                    ? '|nullable'
+                    : '|required'),
+            'faculty_id' => 'required',
+            'birthday'   => 'required|max:255',
+            'mobile'     => 'required|max:255',
+            'year'       => 'required|max:255',
+            'role'       => 'required|max:255'
         ]);
     }
 }

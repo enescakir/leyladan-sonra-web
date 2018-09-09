@@ -61,7 +61,7 @@
           @endif
     </div>
     <div class="form-group {{ $errors->has('faculty_id') ? 'has-error' : '' }}">
-        {!! Form::select('faculty_id', App\Models\Faculty::toSelect() , null, ['class' => 'form-control select2', 'required' => 'required', 'placeholder' => 'Fakülte']) !!}
+        {!! Form::select('faculty_id', $faculties, null, ['class' => 'form-control select2', 'required' => 'required', 'placeholder' => 'Fakülte']) !!}
         @if ($errors->has('faculty_id'))
             <span class="help-block"><strong>{{ $errors->first('faculty_id') }}</strong></span>
         @endif

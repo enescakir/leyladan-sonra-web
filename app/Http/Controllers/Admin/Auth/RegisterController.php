@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Admin\AdminController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Models\User;
@@ -48,12 +49,12 @@ class RegisterController extends AdminController
      */
     public function showRegistrationForm()
     {
-        $faculties = Faculty::get()->sortBy('full_name');
+        $faculties = Faculty::toSelect();
         $roles = Role::toSelect();
-        return view('admin.auth.register', compact(['faculties', 'roles']));
+        return view('admin.auth.register', compact('faculties', 'roles'));
     }
 
-    protected function registered($request, $user)
+    protected function registered(Request $request, $user)
     {
         $this->guard()->logout();
         session_info('E-posta adresinize doğrulama kodu gönderilmiştir.');
@@ -90,16 +91,7 @@ class RegisterController extends AdminController
      */
     protected function create(array $data)
     {
-        $user = User::create([
-            'first_name' => $data['first_name'],
-            'last_name'  => $data['last_name'],
-            'email'      => str_replace(' ', '', $data['email']),
-            'password'   => bcrypt($data['password']),
-            'birthday'   => $data['birthday'],
-            'faculty_id' => intval($data['faculty_id']),
-            'mobile'     => $data['mobile'],
-            'year'       => $data['year'],
-        ]);
+        $user = User::create($data);
         $user->assignRole($data['role']);
         return $user;
     }

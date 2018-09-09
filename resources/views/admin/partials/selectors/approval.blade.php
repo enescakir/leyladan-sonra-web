@@ -6,8 +6,8 @@
         'current'   => request()->approval,
         'values'    => [
             ""  => "Hepsi",
-            true => "Aktif",
-            false => "Pasif",
+            true => "Onaylanmış",
+            false => "Onaylanmamış",
         ],
         'default'   => 'Onay Durumu',
         'parameter' => 'approval'

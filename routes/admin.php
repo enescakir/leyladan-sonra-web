@@ -171,7 +171,7 @@ Route::resource('post', 'Admin\Child\PostController');
 Route::prefix('faculty')->as('faculty.')->group(function () {
     Route::prefix('{faculty}')->group(function () {
         Route::get('post', 'Admin\Child\PostController@faculty')->name('post');
-        Route::get('user', 'Admin\Management\UserController@faculty')->name('user');
+        Route::get('user', 'Admin\Management\FacultyUserController@index')->name('user');
     });
 });
 Route::resource('faculty', 'Admin\Management\FacultyController');
