@@ -15,8 +15,6 @@ Route::get('/blank', 'Admin\Miscellaneous\DashboardController@blank')->name('bla
 Route::get('/manual', 'Admin\Miscellaneous\DashboardController@manual')->name('manual');
 Route::get('/test', 'Admin\Miscellaneous\DashboardController@test');
 Route::get('/materials', 'Admin\Miscellaneous\DashboardController@materials')->name('materials');
-Route::get('/form/create', 'Admin\Miscellaneous\DashboardController@createForm')->name('form.create');
-Route::post('/form', 'Admin\Miscellaneous\DashboardController@storeForm')->name('form.store');
 
 Route::prefix('vote')->group(function () {
     Route::get('/', 'Admin\Miscellaneous\DashboardController@vote')->name('vote');
@@ -121,7 +119,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::prefix('dashboard')->group(function () {
-    Route::get('/', 'Admin\Miscellaneous\DashboardController@dashboard')->name('dashboard');
+    Route::get('/', 'Admin\Miscellaneous\DashboardController@index')->name('dashboard');
     Route::get('/data', 'Admin\Miscellaneous\DashboardController@data')->name('dashboard.data');
 });
 
@@ -130,12 +128,12 @@ Route::prefix('dashboard')->group(function () {
 | Auth Routes
 |--------------------------------------------------------------------------
 */
-
-Route::prefix('email')->as('verification.')->group(function () {
-    Route::get('resend', 'Admin\Auth\VerificationController@resend')->name('resend');
-    Route::get('verify', 'Admin\Auth\VerificationController@show')->name('notice');
-    Route::get('verify/{id}', 'Admin\Auth\VerificationController@verify')->name('verify');
-});
+// TODO: Uncomment on Laravel 5.7
+//Route::prefix('email')->as('verification.')->group(function () {
+//    Route::get('resend', 'Admin\Auth\VerificationController@resend')->name('resend');
+//    Route::get('verify', 'Admin\Auth\VerificationController@show')->name('notice');
+//    Route::get('verify/{id}', 'Admin\Auth\VerificationController@verify')->name('verify');
+//});
 Route::prefix('password')->as('password.')->group(function () {
     Route::post('email', 'Admin\Auth\ForgotPasswordController@sendResetLinkEmail')->name('email');
     Route::get('reset', 'Admin\Auth\ForgotPasswordController@showLinkRequestForm')->name('request');
@@ -162,11 +160,7 @@ Route::resource('child', 'Admin\Child\ChildController');
 | Post Routes
 |--------------------------------------------------------------------------
 */
-Route::prefix('post')->as('post.')->group(function () {
-    Route::prefix('{post}')->group(function () {
-        Route::put('approve', 'Admin\Child\PostController@approve')->name('approve');
-    });
-});
+Route::approve('post', 'Admin\Child\PostController');
 Route::resource('post', 'Admin\Child\PostController');
 
 /*
@@ -181,6 +175,10 @@ Route::prefix('faculty')->as('faculty.')->group(function () {
     });
 });
 Route::resource('faculty', 'Admin\Management\FacultyController');
+
+Route::get('/form/create', 'Admin\Miscellaneous\FormController@create')->name('form.create');
+Route::post('/form', 'Admin\Miscellaneous\FormController@store')->name('form.store');
+
 
 // Route::get('users/data', 'Admin\Management\FacultyController@usersData')->name('users.data');
 // Route::get('users/unapproved', 'Admin\Management\FacultyController@unapproved')->name('users.unapproved');
@@ -209,10 +207,9 @@ Route::resource('blood', 'Admin\Blood\BloodController');
 | User Routes
 |--------------------------------------------------------------------------
 */
+Route::approve('user', 'Admin\Management\UserController');
 Route::prefix('user')->as('user.')->group(function () {
     Route::prefix('{user}')->group(function () {
-        Route::put('approve', 'Admin\Management\UserController@approve')->name('approve');
-
         Route::get('children', 'Admin\Management\UserController@children')->name('children');
         Route::get('children/data', 'Admin\Management\UserController@childrenData')->name('children.data');
     });
@@ -229,19 +226,19 @@ Route::resource('department', 'Admin\Child\DepartmentController');
 
 /*
 |--------------------------------------------------------------------------
-| Website Routes
+| Content Routes
 |--------------------------------------------------------------------------
 */
 Route::resource('new', 'Admin\Content\NewController');
 Route::resource('channel', 'Admin\Content\ChannelController');
 Route::resource('sponsor', 'Admin\Content\SponsorController');
 Route::resource('question', 'Admin\Content\QuestionController');
-Route::put('/testimonial/{testimonial}/approve', 'Admin\Content\TestimonialController@approve');
+Route::approve('testimonial', 'Admin\Content\TestimonialController');
 Route::resource('testimonial', 'Admin\Content\TestimonialController');
 
 /*
 |--------------------------------------------------------------------------
-| Other Routes
+| Resource Routes
 |--------------------------------------------------------------------------
 */
 Route::resource('emailsample', 'Admin\Resource\EmailSampleController');

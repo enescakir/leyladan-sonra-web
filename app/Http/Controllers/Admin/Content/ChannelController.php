@@ -2,36 +2,22 @@
 
 namespace App\Http\Controllers\Admin\Content;
 
+use App\Filters\ChannelFilter;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 use App\Models\Channel;
 
 class ChannelController extends AdminController
 {
-    public function __construct()
+    public function index(ChannelFilter $filters)
     {
-        $this->middleware('auth');
-    }
+        $channels = Channel::latest()->with('media')->withCount('news');
+        $channels->filter($filters);
+        $channels = $channels->paginate();
 
-    public function index(Request $request)
-    {
-        $channels = Channel::orderBy('id', 'DESC')->with('media')->withCount('news');
-
-        if ($request->filled('search')) {
-            $channels->search($request->search);
-        }
-
-        if ($request->filled('category')) {
-            $channels->where('category', $request->category);
-        }
-
-        if ($request->filled('download')) {
-            Channel::download($channels);
-        }
-
-        $channels = $channels->paginate($request->per_page ?: 25);
         $categories = Channel::toCategorySelect('Hepsi');
-        return view('admin.channel.index', compact(['channels', 'categories']));
+
+        return view('admin.channel.index', compact('channels', 'categories'));
     }
 
     public function create()
@@ -42,40 +28,38 @@ class ChannelController extends AdminController
     public function store(Request $request)
     {
         $this->validateChannel($request);
-        $channel = Channel::create([
-          'name'     => $request->name,
-          'category' => $request->category,
-        ]);
-        $channel->uploadMedia($request->logo);
+        $channel = Channel::create($request->only(['name', 'channel']));
+        $channel->addMedia($request->logo);
+
         session_success(__('messages.channel.create', ['name' =>  $channel->name]));
+
         return redirect()->route('admin.channel.index');
     }
 
     public function edit(Channel $channel)
     {
-        return view('admin.channel.edit', compact(['channel']));
+        return view('admin.channel.edit', compact('channel'));
     }
 
     public function update(Request $request, Channel $channel)
     {
         $this->validateChannel($request, true);
-        $channel->update([
-          'name'     => $request->name,
-          'category' => $request->category,
-        ]);
+        $channel->update($request->only(['name', 'channel']));
         if ($request->hasFile('logo')) {
             $channel->clearMediaCollection();
-            $channel->uploadMedia($request->logo);
+            $channel->addMedia($request->logo);
         }
+
         session_success(__('messages.channel.update', ['name' =>  $channel->name]));
+
         return redirect()->route('admin.channel.index');
     }
 
     public function destroy(Channel $channel)
     {
-        $channel->clearMediaCollection();
         $channel->news()->delete();
         $channel->delete();
+
         return api_success($channel);
     }
 

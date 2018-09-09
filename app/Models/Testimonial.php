@@ -20,14 +20,6 @@ class Testimonial extends Model
     protected $fillable = ['name', 'text', 'email', 'via', 'priority', 'approved_at', 'approved_by'];
     protected $dates = ['approved_at'];
 
-    // Validation rules
-    public static $rules = [
-        'name'     => 'required|max:255',
-        'text'     => 'required',
-        'via'      => 'required',
-        'priority' => 'required|numeric'
-    ];
-
     // Scopes
     public function scopeSearch($query, $search)
     {

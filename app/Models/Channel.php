@@ -5,15 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\Image\Manipulations;
 use App\Traits\BaseActions;
-use Excel;
+use App\Traits\HasMediaTrait;
+use App\Traits\Filterable;
+use App\Traits\Downloadable;
 
 class Channel extends Model implements HasMedia
 {
     use BaseActions;
     use HasMediaTrait;
+    use Filterable;
+    use Downloadable;
 
     // Properties
     protected $table = 'channels';
@@ -40,35 +42,25 @@ class Channel extends Model implements HasMedia
     public function scopeSearch($query, $search)
     {
         $query->where(function ($query2) use ($search) {
-            $query2->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('channel', 'like', '%' . $search . '%');
+            $query2->where('name', 'like', '%' . $search . '%')->orWhere('channel', 'like', '%' . $search . '%');
         });
     }
 
-    // Global Methods
-    public static function download($channels)
+    // Helpers
+    public static function toSelect($placeholder = null)
     {
-        $channels = $channels->get(['id', 'name', 'category', 'logo', 'created_at']);
-        Excel::create('LS_HaberKanallari_' . date('d_m_Y'), function ($excel) use ($channels) {
-            $channels = $channels->each(function ($item, $key) {
-                $item->logo = $item->logo_url;
-            });
-            $excel->sheet('Kanallar', function ($sheet) use ($channels) {
-                $sheet->fromArray($channels, null, 'A1', true);
-            });
-        })->download('xlsx');
-    }
-
-    public static function toSelect($empty = false)
-    {
-        $res = Channel::orderBy('name')->pluck('name', 'id');
-        return $empty ? collect(['' => ''])->merge($res) : $res;
+        $result = Channel::orderBy('name')->pluck('name', 'id');
+        return $placeholder
+            ? collect(['' => $placeholder])->union($result)
+            : $result;
     }
 
     public static function toCategorySelect($placeholder = null)
     {
         $result = static::orderBy('category')->pluck('category', 'category');
-        return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
+        return $placeholder
+            ? collect(['' => $placeholder])->union($result)
+            : $result;
     }
 
     public function registerMediaConversions(Media $media = null)

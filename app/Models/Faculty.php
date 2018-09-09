@@ -12,8 +12,14 @@ class Faculty extends Model
     // Properties
     protected $table = 'faculties';
     protected $fillable = [
-        'name', 'slug', 'latitude', 'longitude', 'address',
-        'city', 'code', 'started_at'
+        'name',
+        'slug',
+        'latitude',
+        'longitude',
+        'address',
+        'city',
+        'code',
+        'started_at'
     ];
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'started_at'];
 
@@ -63,25 +69,33 @@ class Faculty extends Model
         $result = static::orderBy('name')->pluck('name', 'id')->map(function ($name) {
             return "{$name} Tıp Fakültesi";
         });
-        return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
+        return $placeholder
+            ? collect(['' => $placeholder])->union($result)
+            : $result;
     }
 
     // Scopes
-    public function scopeStarted($query)
+    public function scopeStarted($query, $started = true)
     {
-        $query->whereNotNull('started_at');
+        return $started
+            ? $query->whereNotNull('started_at')
+            : $query->whereNull('started_at');
     }
 
     // Mutators
     public function setStartedAtAttribute($date)
     {
-        $this->attributes['started_at'] = $date ? null : Carbon::createFromFormat('d.m.Y', $date)->toDateString();
+        $this->attributes['started_at'] = $date
+            ? null
+            : Carbon::createFromFormat('d.m.Y', $date)->toDateString();
     }
 
     // Accessors
     public function getStartedAtLabelAttribute()
     {
-        return $this->attributes['started_at'] ? null : Carbon::parse($this->attributes['started_at'])->parse('d.m.Y');
+        return $this->attributes['started_at']
+            ? null
+            : Carbon::parse($this->attributes['started_at'])->parse('d.m.Y');
     }
 
     public function getFullNameAttribute()

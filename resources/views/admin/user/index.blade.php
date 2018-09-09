@@ -114,7 +114,7 @@
 @section('scripts')
   <script type="text/javascript">
     var roles = {!! json_encode(App\Models\Role::toSelect('Yeni Görev', null)) !!}
-    selectRole('user', roles)
+    selectRole('user', roles);
     approveItem('user',
       'isimli üyenin hesabını onaylamak istediğinize emin misiniz?',
       'isimli üyenin hesabının onayını kaldırmak istediğinize emin misiniz'

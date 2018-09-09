@@ -2,75 +2,74 @@
 
 namespace App\Http\Controllers\Admin\Content;
 
+use App\Filters\NewFilter;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 use App\Models\News;
 use App\Models\Channel;
-use Excel;
 
 class NewController extends AdminController
 {
-    public function __construct()
+
+    public function index(NewFilter $filters)
     {
-        $this->middleware('auth');
-    }
+        $news = News::latest()->with('channel');
+        $news->filter($filters);
+        $news = $news->paginate();
 
-    public function index(Request $request)
-    {
-        $news = News::orderBy('id', 'DESC')->with('channel');
-        if ($request->filled('search')) {
-            $news->search($request->search);
-        }
+        $channels = Channel::toSelect('Hepsi');
 
-        if ($request->filled('download')) {
-            News::download($news);
-        }
-
-        $news = $news->paginate($request->per_page ?: 25);
-        return view('admin.new.index', compact(['news']));
+        return view('admin.new.index', compact('news', 'channels'));
     }
 
     public function create()
     {
         $channels = Channel::toSelect();
-        return view('admin.new.create', compact(['channels']));
+
+        return view('admin.new.create', compact('channels'));
     }
 
     public function store(Request $request)
     {
         $this->validateNew($request);
-        $new = News::create($request->all());
-        session_success(__('messages.new.create', ['name' =>  $new->title]));
+        $new = News::create($request->only(['title', 'desc', 'link', 'channel_id']));
+
+        session_success(__('messages.new.create', ['name' => $new->title]));
+
         return redirect()->route('admin.new.index');
     }
 
     public function edit(News $new)
     {
         $channels = Channel::toSelect();
-        return view('admin.new.edit', compact(['new', 'channels']));
+
+        return view('admin.new.edit', compact('new', 'channels'));
     }
 
     public function update(Request $request, News $new)
     {
         $this->validateNew($request);
-        $new->update($request->all());
-        session_success(__('messages.new.update', ['name' =>  $new->title]));
+        $new->update($request->only(['title', 'desc', 'link', 'channel_id']));
+
+        session_success(__('messages.new.update', ['name' => $new->title]));
+
         return redirect()->route('admin.new.index');
     }
 
     public function destroy(News $new)
     {
         $new->delete();
+
         return api_success($new);
     }
 
     private function validateNew(Request $request)
     {
         $this->validate($request, [
-          'title'      => 'required|string|max:191',
-          'desc'       => 'required|string',
-          'link'       => 'required|string|max:191',
-          'channel_id' => 'required|integer',
-      ]);
+            'title'      => 'required|string|max:191',
+            'desc'       => 'required|string',
+            'link'       => 'required|string|max:191',
+            'channel_id' => 'required|integer',
+        ]);
     }
 }

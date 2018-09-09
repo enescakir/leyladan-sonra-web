@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Macros\RouteMacro;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Auth;
@@ -33,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
                 'totalFaculties' => DataManager::facultyCount('started')
             ]);
         });
+
+        RouteMacro::registerMacros();
+
     }
 
     /**
@@ -42,6 +46,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 }

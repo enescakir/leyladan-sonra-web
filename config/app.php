@@ -237,7 +237,6 @@ return [
         // 'Newsletter' => Spatie\Newsletter\NewsletterFacade::class,
         // 'Analytics' => Spatie\Analytics\AnalyticsFacade::class,
         // 'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        'DataManager' => App\Models\DataManager::class,
         // 'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         // 'ImageOptimizer' => Spatie\LaravelImageOptimizer\Facades\ImageOptimizer::class,
         // 'Agent' => Jenssegers\Agent\Agent::class,

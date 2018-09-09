@@ -9,10 +9,6 @@ use App\Models\EmailSample;
 
 class EmailSampleController extends AdminController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function index(EmailSampleFilter $filters)
     {
@@ -33,13 +29,11 @@ class EmailSampleController extends AdminController
 
     public function store(Request $request)
     {
-        $sample = EmailSample::create([
-            'name'     => $request->name,
-            'category' => $request->category,
-            'text'     => $request->text
-        ]);
+        $this->validateEmailSample($request);
+        $sample = EmailSample::create($request->only(['name', 'category', 'text']));
 
         session_success(__('messages.emailsample.create', ['name' =>  $sample->name]));
+
         return redirect()->route('admin.emailsample.index');
     }
 
@@ -50,22 +44,28 @@ class EmailSampleController extends AdminController
 
     public function update(Request $request, EmailSample $emailsample)
     {
-        $emailsample->update([
-            'name'     => $request->name,
-            'category' => $request->category,
-            'text'     => $request->text
-        ]);
+        $this->validateEmailSample($request);
+        $emailsample->update($request->only(['name', 'category', 'text']));
+
         session_success(__('messages.emailsample.update', ['name' =>  $emailsample->name]));
+
         return redirect()->route('admin.emailsample.index');
     }
 
     public function destroy(EmailSample $emailsample)
     {
-        try {
-            $emailsample->delete();
-        } catch (\Exception $exception) {
-            return api_error('E-posta örneği silinemedi');
-        }
+        $emailsample->delete();
+
         return api_success($emailsample);
     }
+
+    private function validateEmailSample(Request $request, $isUpdate = false)
+    {
+        $this->validate($request, [
+            'name'     => 'required|string',
+            'category' => 'required|string',
+            'text'     => 'required|string'
+        ]);
+    }
+
 }

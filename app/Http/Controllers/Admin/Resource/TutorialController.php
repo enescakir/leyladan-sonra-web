@@ -12,7 +12,7 @@ class TutorialController extends AdminController
 
     public function index(TutorialFilter $filters)
     {
-        $tutorials = Tutorial::orderBy('id', 'DESC');
+        $tutorials = Tutorial::latest();
         $tutorials->filter($filters);
         $tutorials = $tutorials->paginate();
 
@@ -57,7 +57,8 @@ class TutorialController extends AdminController
     public function destroy(Tutorial $tutorial)
     {
         $tutorial->delete();
-        return $tutorial;
+
+        return api_success($tutorial);
     }
 
     private function validateTutorial(Request $request, $isUpdate = false)

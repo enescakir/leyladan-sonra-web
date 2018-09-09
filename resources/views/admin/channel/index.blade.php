@@ -57,7 +57,7 @@
                             <th>Kategori</th>
                             <th>Logo</th>
                             <th>Haber Sayısı</th>
-                            <th class="two-button">İşlem</th>
+                            <th class="three-button">İşlem</th>
                         @endslot
 
                         @slot('body')
@@ -67,18 +67,24 @@
                                     <td>{{ $channel->name }}</td>
                                     <td>{{ $channel->category }}</td>
                                     <td>
-                                        <img class="table-img-sm" src="{{ $channel->thumb_url }}"
-                                             alt="{{ $channel->name }}">
+                                        <a href="{{ $channel->logo_url }}" target="_blank">
+                                            <img class="table-img-sm" src="{{ $channel->thumb_url }}"
+                                                 alt="{{ $channel->name }}">
+                                        </a>
                                     </td>
                                     <td>{{ $channel->news_count }}</td>
                                     <td>
                                         <div class="btn-group">
+                                            <a class="btn btn-primary btn-xs"
+                                               href="{{ route("admin.new.index", ['channel_id' => $channel->id]) }}">
+                                                <i class="fa fa-list"></i>
+                                            </a>
                                             <a class="edit btn btn-warning btn-xs"
                                                href="{{ route("admin.channel.edit", $channel->id) }}">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
                                             <a class="delete btn btn-danger btn-xs" delete-id="{{ $channel->id }}"
-                                               delete-name="{{ $channel->name }}" href="javascript:;">
+                                               delete-name="{{ $channel->name }}" href="javascript:">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         </div>

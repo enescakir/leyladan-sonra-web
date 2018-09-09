@@ -12,7 +12,7 @@ class TestimonialController extends AdminController
 
     public function index(TestimonialFilter $filters)
     {
-        $testimonials = Testimonial::orderBy('id', 'DESC');
+        $testimonials = Testimonial::latest();
         $testimonials->filter($filters);
         $testimonials = $testimonials->paginate();
         $sources = Testimonial::toSourceSelect('Hepsi');
@@ -26,9 +26,11 @@ class TestimonialController extends AdminController
 
     public function store(Request $request)
     {
-        $this->validate($request, Testimonial::$rules);
-        $testimonial = Testimonial::create($request->all());
-        session_success(__('messages.testimonial.create', ['name' =>  $testimonial->name]));
+        $this->validateTestimonial($request);
+        $testimonial = Testimonial::create($request->only(['name', 'text', 'via', 'priority']));
+
+        session_success(__('messages.testimonial.create', ['name' => $testimonial->name]));
+
         return redirect()->route('admin.testimonial.index');
     }
 
@@ -39,21 +41,39 @@ class TestimonialController extends AdminController
 
     public function update(Request $request, Testimonial $testimonial)
     {
-        $this->validate($request, Testimonial::$rules);
-        $testimonial->update($request->all());
-        session_success(__('messages.testimonial.update', ['name' =>  $testimonial->name]));
+        $this->validateTestimonial($request);
+        $testimonial->update($request->only(['name', 'text', 'via', 'priority']));
+
+        session_success(__('messages.testimonial.update', ['name' => $testimonial->name]));
+
         return redirect()->route('admin.testimonial.index');
     }
 
     public function destroy(Testimonial $testimonial)
     {
         $testimonial->delete();
-        return $testimonial;
+
+        return api_success($testimonial);
     }
 
     public function approve(Request $request, Testimonial $testimonial)
     {
-        $testimonial->approve($request->approve);
-        return $testimonial;
+        $testimonial->approve($request->approval);
+
+        return api_success([
+            'approval'    => (int)$testimonial->isApproved(),
+            'testimonial' => $testimonial
+        ]);
     }
+
+    private function validateTestimonial(Request $request, $isUpdate = false)
+    {
+        $this->validate($request, [
+            'name'     => 'required|max:255',
+            'text'     => 'required',
+            'via'      => 'required',
+            'priority' => 'required|numeric'
+        ]);
+    }
+
 }

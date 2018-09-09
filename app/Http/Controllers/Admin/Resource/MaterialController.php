@@ -27,13 +27,11 @@ class MaterialController extends AdminController
     public function store(Request $request)
     {
         $this->validateMaterial($request);
-        $material = Material::create([
-          'name'     => $request->name,
-          'link'     => $request->link,
-          'category' => $request->category,
-        ]);
+        $material = Material::create($request->only(['name', 'link', 'category']));
         $material->addMedia($request->image);
+
         session_success(__('messages.material.create', ['name' =>  $material->name]));
+
         return redirect()->route('admin.material.index');
     }
 
@@ -45,24 +43,22 @@ class MaterialController extends AdminController
     public function update(Request $request, Material $material)
     {
         $this->validateMaterial($request, true);
-        $material->update([
-            'name'     => $request->name,
-            'link'     => $request->link,
-            'category' => $request->category,
-        ]);
+        $material->update($request->only(['name', 'link', 'category']));
         if ($request->hasFile('image')) {
             $material->clearMediaCollection();
             $material->addMedia($request->image);
         }
+
         session_success(__('messages.material.update', ['name' =>  $material->name]));
+
         return redirect()->route('admin.material.index');
     }
 
     public function destroy(Material $material)
     {
-        $material->clearMediaCollection();
         $material->delete();
-        return $material;
+
+        return api_success($material);
     }
 
     private function validateMaterial(Request $request, $isUpdate = false)

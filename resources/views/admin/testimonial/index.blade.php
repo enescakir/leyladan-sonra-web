@@ -92,19 +92,11 @@
                                     <td>{{ $testimonial->text }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <button id="approve-testimonial-{{ $testimonial->id }}"
-                                                    class="approve btn btn-default btn-xs @if($testimonial->isApproved()) hidden @endif"
-                                                    approve-id="{{ $testimonial->id }}"
-                                                    approve-name="{{ $testimonial->name }}" is-approve="1"
-                                                    title="Yayınla">
+                                            <button id="approval-testimonial-{{ $testimonial->id }}"
+                                                    class="approval btn btn-default btn-xs"
+                                                    approval-id="{{ $testimonial->id }}" approval-name="{{ $testimonial->name }}"
+                                                    approved="{{ (int) $testimonial->isApproved() }}">
                                                 <i class="fa fa-square-o"></i>
-                                            </button>
-                                            <button id="unapprove-testimonial-{{ $testimonial->id }}"
-                                                    class="approve btn btn-success btn-xs @unless($testimonial->isApproved()) hidden @endunless"
-                                                    approve-id="{{ $testimonial->id }}"
-                                                    approve-name="{{ $testimonial->name }}" is-approve="0"
-                                                    title="Yayından Çıkar">
-                                                <i class="fa fa-check-square-o"></i>
                                             </button>
                                             <a class="edit btn btn-warning btn-xs"
                                                href="{{ route("admin.testimonial.edit", $testimonial->id) }}">
@@ -144,8 +136,8 @@
     <script type="text/javascript">
         deleteItem("testimonial", "referansını silmek istediğinize emin misiniz?");
         approveItem("testimonial",
-            "isimli referansı onaylamak istediğinize emin misiniz?",
-            "isimli referansın onayını kaldırmak istediğinize emin misiniz?"
+            "isimli üyenin referansını onaylamak istediğinize emin misiniz?",
+            "isimli üyenin referansının onayını kaldırmak istediğinize emin misiniz?"
         );
     </script>
 @endsection

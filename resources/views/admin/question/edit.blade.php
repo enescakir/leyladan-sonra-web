@@ -45,7 +45,7 @@
         <div class="form-group{{ $errors->has('order') ? ' has-error' : '' }}">
             {!! Form::label('order', 'Sıralama *', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
-                {!! Form::number('order', 1, ['class' => 'form-control number', 'required' => 'required']) !!}
+                {!! Form::number('order', null, ['class' => 'form-control number', 'required' => 'required']) !!}
                 <small class="text-danger">{{ $errors->first('order') }}</small>
             </div>
           </div>
