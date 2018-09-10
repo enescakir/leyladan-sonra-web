@@ -10,7 +10,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home"></i> Anasayfa</a></li>
-            <li><a href="{{ route('admin.user.index') }}">Üyeler</a></li>
+            <li><a href="{{ route('admin.faculty.user.index', $faculty->id) }}">Fakülte Üyeleri</a></li>
             <li class="active">Üye Güncelleme</li>
         </ol>
     </section>
@@ -54,14 +54,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6 form-group{{ $errors->has('faculty_id') ? ' has-error' : '' }}">
-                            {!! Form::label('faculty_id', 'Fakülte *', ['class' => 'control-label']) !!}
-                            {!! Form::select('faculty_id', $faculties, null, ['class' => 'form-control select2', 'required' => 'required'])  !!}
-                            <small class="text-danger">{{ $errors->first('faculty_id') }}</small>
-                            <small class="help-block">Eğer üyenin fakültesini değiştirirseniz ilişik olduğu bütün çocuklarla ilişkisi kesilir</small>
-
-                        </div>
-                        <div class="col-md-6 form-group{{ $errors->has('role') ? ' has-error' : '' }}">
+                        <div class="col-md-12 form-group{{ $errors->has('role') ? ' has-error' : '' }}">
                             {!! Form::label('role', 'Görev *', ['class' => 'control-label']) !!}
                             {!! Form::select('role', $roles, optional($user->roles)->first()->name, ['class' => 'form-control select2-no-search', 'required' => 'required'])  !!}
                             <small class="text-danger">{{ $errors->first('role') }}</small>
@@ -103,20 +96,28 @@
                             {!! Form::label('graduated_at', 'Mezuniyet Tarihi', ['class' => 'control-label']) !!}
                             {!! Form::text('graduated_at', $user->graduated_at_label, ['class' => 'form-control date-picker date-mask']) !!}
                             <small class="text-danger">{{ $errors->first('graduated_at') }}</small>
-                            <small class="help-block">Bu tarihi doldurduğunuzda üye otomatik olarak "Mezun Üye" olarak yetkilendirilir</small>
+                            <small class="help-block">Bu tarihi doldurduğunuzda üye otomatik olarak "Mezun Üye" olarak
+                                yetkilendirilir
+                            </small>
                         </div>
                         <div class="col-md-6 form-group{{ $errors->has('left_at') ? ' has-error' : '' }}">
                             {!! Form::label('left_at', 'Ayrılık Tarihi', ['class' => 'control-label']) !!}
                             {!! Form::text('left_at', $user->left_at_label, ['class' => 'form-control date-picker date-mask']) !!}
                             <small class="text-danger">{{ $errors->first('left_at') }}</small>
-                            <small class="help-block">Eğer üye mezuniyetinden dolayı projeden ayrıldıysa sadece mezuniyet tarihi doldurun. Burayı boş bırakın</small>
-                            <small class="help-block">Bu tarihi doldurduğunuzda üye otomatik olarak "Ayrılmış Üye" olarak yetkilendirilir</small>
+                            <small class="help-block">Eğer üye mezuniyetinden dolayı projeden ayrıldıysa sadece
+                                mezuniyet tarihi doldurun. Burayı boş bırakın
+                            </small>
+                            <small class="help-block">Bu tarihi doldurduğunuzda üye otomatik olarak "Ayrılmış Üye"
+                                olarak yetkilendirilir
+                            </small>
                         </div>
                     </div>
+
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <a href="{{ route('admin.user.index') }}" class="btn btn-danger">Geri</a>
+                    {!! Form::hidden('redirect', route('admin.faculty.user.edit', [$faculty->id, $user->id])) !!}
+                    <a href="{{ route('admin.faculty.user.index', $faculty->id) }}" class="btn btn-danger">Geri</a>
                     {!! Form::submit("Güncelle", ['class' => 'btn btn-success pull-right']) !!}
                 </div>
                 <!-- /.box-footer -->

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Downloadable;
 use App\Traits\Filterable;
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
@@ -37,9 +38,22 @@ class User extends Authenticatable implements HasMedia
     // Properties
     protected $table = 'users';
     protected $fillable = [
-        'first_name', 'last_name', 'email', 'password', 'birthday', 'mobile',
-        'year', 'title', 'profile_photo', 'faculty_id', 'gender', 'email_token',
-        'left_at', 'graduated_at', 'approved_at', 'approved_by'
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'birthday',
+        'mobile',
+        'year',
+        'title',
+        'profile_photo',
+        'faculty_id',
+        'gender',
+        'email_token',
+        'left_at',
+        'graduated_at',
+        'approved_at',
+        'approved_by'
     ];
     protected $hidden = ['password', 'remember_token'];
     protected $appends = ['full_name'];
@@ -88,10 +102,10 @@ class User extends Authenticatable implements HasMedia
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('id', $search)
-                    ->orWhere('last_name', 'like', '%' . $search . '%')
-                    ->orWhere('email', 'like', '%' . $search . '%')
-                    ->orWhere('mobile', 'like', '%' . $search . '%')
-                    ->orWhere(\DB::raw('CONCAT_WS(" ", first_name, last_name)'), 'like', "%{$search}%");
+                   ->orWhere('last_name', 'like', '%' . $search . '%')
+                   ->orWhere('email', 'like', '%' . $search . '%')
+                   ->orWhere('mobile', 'like', '%' . $search . '%')
+                   ->orWhere(\DB::raw('CONCAT_WS(" ", first_name, last_name)'), 'like', "%{$search}%");
         });
     }
 
@@ -108,17 +122,48 @@ class User extends Authenticatable implements HasMedia
 
     public function getPhotoSmallUrlAttribute()
     {
-        return $this->getFirstMediaUrl('default', 'small') ?: admin_asset('img/user-default-small.png');
+        return $this->getFirstMediaUrl('default', 'small')
+            ?: admin_asset('img/user-default-small.png');
     }
 
     public function getPhotolUrlAttribute()
     {
-        return $this->getFirstMediaUrl('default', 'medium') ?: admin_asset('img/user-default-medium.png');
+        return $this->getFirstMediaUrl('default', 'medium')
+            ?: admin_asset('img/user-default-medium.png');
     }
 
     public function getPhotoLargeUrlAttribute()
     {
-        return $this->getFirstMediaUrl('default', 'large') ?: admin_asset('img/user-default-large.png');
+        return $this->getFirstMediaUrl('default', 'large')
+            ?: admin_asset('img/user-default-large.png');
+    }
+
+    public function getLeftAtLabelAttribute()
+    {
+        return $this->attributes['left_at']
+            ? Carbon::parse($this->attributes['left_at'])->format('d.m.Y')
+            : '';
+    }
+
+    public function getGraduatedAtLabelAttribute()
+    {
+        return $this->attributes['graduated_at']
+            ? Carbon::parse($this->attributes['graduated_at'])->format('d.m.Y')
+            : '';
+    }
+
+    public function setLeftAtAttribute($date)
+    {
+        return $this->attributes['left_at'] = is_null($date)
+            ? null
+            : Carbon::parse($date)->toDateString();
+    }
+
+    public function setGraduatedAtAttribute($date)
+    {
+        return $this->attributes['graduated_at'] = is_null($date)
+            ? null
+            : Carbon::parse($date)->toDateString();
     }
 
     public function setPasswordAttribute($password)
@@ -149,14 +194,18 @@ class User extends Authenticatable implements HasMedia
 
     public function left($left = true)
     {
-        $this->left_at = $left ? now() : null;
+        $this->left_at = $left
+            ? now()
+            : null;
 
         return $this->save();
     }
 
     public function graduate($graduate = true)
     {
-        $this->graduated_at = $graduate ? now() : null;
+        $this->graduated_at = $graduate
+            ? now()
+            : null;
 
         return $this->save();
     }
@@ -164,7 +213,9 @@ class User extends Authenticatable implements HasMedia
     public static function toSelect($placeholder = null)
     {
         $res = static::orderBy('id', 'DESC')->get()->pluck('full_name', 'id');
-        return $placeholder ? collect(['' => $placeholder])->union($res) : $res;
+        return $placeholder
+            ? collect(['' => $placeholder])->union($res)
+            : $res;
     }
 
     // Notifications
@@ -190,6 +241,7 @@ class User extends Authenticatable implements HasMedia
     {
         $this->notify(new ApprovedUserNotification());
     }
+
 
     // Image conversions
     public function registerMediaConversions(Media $media = null)

@@ -12,7 +12,7 @@ class AdminController extends Controller
         $this->middleware('auth');
     }
 
-    public function paginate(Builder $query)
+    public function paginate($query)
     {
         $currentPage = request('page');
         $result = $query->paginate();

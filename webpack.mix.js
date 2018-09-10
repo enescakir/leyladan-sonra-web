@@ -41,7 +41,8 @@ mix.scripts([
   'node_modules/bootstrap-filestyle/src/bootstrap-filestyle.min.js', // Bootstrap File Style
   'node_modules/chart.js/dist/Chart.min.js', // Chart.js
   'node_modules/cropperjs/dist/cropper.min.js', // CropperJS
-  'node_modules/clipboard/dist/clipboard.min.js' // Clipboard JS
+  'node_modules/clipboard/dist/clipboard.min.js', // Clipboard JS
+  'node_modules/summernote/dist/summernote.js' // Summernote
  ], 'public/admin/js/vendor.min.js');
 
 

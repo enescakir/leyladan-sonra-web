@@ -49,7 +49,7 @@ class UserController extends AdminController
         $user->approve();
         $user->sendEmailActivationNotification();
 
-        return redirect()->route('admin.user.index');
+        return redirect()->to(request('redirect', route('admin.user.index')));
     }
 
     public function show(User $user)
@@ -79,7 +79,9 @@ class UserController extends AdminController
             'faculty_id',
             'birthday',
             'mobile',
-            'year'
+            'year',
+            'graduated_at',
+            'left_at'
         ]));
         if ($user->isDirty('email')) {
             $user->approved_at = null;
@@ -89,14 +91,20 @@ class UserController extends AdminController
             $user->children()->detach();
         }
         $user->save();
-        $user->changeRole($request->role);
-
+        if ($request->filled('left_at')) {
+            $user->syncRoles('left');
+        } elseif ($request->filled('graduated_at')) {
+            $user->syncRoles('graduated');
+        } else {
+            $user->changeRole($request->role);
+        }
         if ($request->ajax()) {
             return api_success(['user' => $user, 'role' => $user->role_display]);
         }
 
         session_success("<strong>{$user->full_name}</strong> başarıyla güncellendi.");
-        return redirect()->route('admin.user.edit', $user->id);
+
+        return redirect()->to(request('redirect', route('admin.user.edit', $user->id)));
 
     }
 
@@ -132,7 +140,7 @@ class UserController extends AdminController
             'password'   => 'min:6|confirmed' . ($userId
                     ? '|nullable'
                     : '|required'),
-            'faculty_id' => 'required',
+            'faculty_id' => 'nullable',
             'birthday'   => 'required|max:255',
             'mobile'     => 'required|max:255',
             'year'       => 'required|max:255',

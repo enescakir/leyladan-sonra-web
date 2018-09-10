@@ -112,21 +112,33 @@
                 <li><a href="#"><i class="fa fa-bell-o"></i> <span>Bildirim Gönder</span></a></li>
             </ul>
         </li>
-        <li class="treeview">
+        <li class="treeview  {{ set_active('*user*', 'menu-open active') }}">
             <a href="#"><i class="fa fa-users"></i> <span>Üyeler</span>
                 <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
             </a>
             <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-thumbs-o-up"></i> <span>Onay Bekleyenler</span></a></li>
-                <li class="{{ set_active('*admin/faculty/user*') }}">
-                    <a href="{{ route('admin.faculty.user', $authUser->faculty_id) }}"><i class="fa fa-user"></i> <span>Fakülte Üyeleri</span></a>
+                <li class="">
+                    <a href="{{ route('admin.faculty.user.index', ['faculty_id' => $authUser->faculty_id, 'approval' => 0]) }}">
+                        <i class="fa fa-thumbs-o-up"></i>
+                        <span>Onay Bekleyenler</span>
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-red unapproved-user-count"></small>
+                        </span>
+                    </a>
+                </li>
+                <li class="{{ set_active('*admin/faculty/*/user*') }}">
+                    <a href="{{ route('admin.faculty.user.index', $authUser->faculty_id) }}"><i class="fa fa-user"></i>
+                        <span>Fakülte Üyeleri</span></a>
                 </li>
                 <li class="{{ set_active('*admin/user*') }}">
                     <a href="{{ route('admin.user.index') }}"><i class="fa fa-users"></i> <span>Tüm Üyeler</span></a>
                 </li>
-                <li><a href="#"><i class="fa fa-paper-plane"></i> <span>E-posta Gönder</span></a></li>
+                <li class="{{ set_active('*admin/faculty/*/email*') }}">
+                    <a href="{{ route('admin.faculty.email.create', $authUser->faculty_id) }}"><i class="fa fa-paper-plane"></i>
+                        <span>E-posta Gönder</span></a>
+                </li>
             </ul>
         </li>
         <li class="treeview {{ set_active(['*diagnosis*', '*department*'], 'menu-open active') }}">

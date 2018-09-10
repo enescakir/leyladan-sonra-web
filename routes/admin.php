@@ -11,11 +11,6 @@
 |
 */
 
-Route::get('/blank', 'Admin\Miscellaneous\DashboardController@blank')->name('blank');
-Route::get('/manual', 'Admin\Miscellaneous\DashboardController@manual')->name('manual');
-Route::get('/test', 'Admin\Miscellaneous\DashboardController@test');
-Route::get('/materials', 'Admin\Miscellaneous\DashboardController@materials')->name('materials');
-
 Route::prefix('vote')->group(function () {
     Route::get('/', 'Admin\Miscellaneous\DashboardController@vote')->name('vote');
     Route::post('/', 'Admin\Miscellaneous\DashboardController@voteStore')->name('vote.store');
@@ -23,7 +18,8 @@ Route::prefix('vote')->group(function () {
 
 Route::prefix('statistic')->as('statistics.')->group(function () {
     Route::get('volunteer', 'Admin\Miscellaneous\StatisticController@volunteer')->name('volunteer');
-    Route::get('volunteer/messages', 'Admin\Miscellaneous\StatisticController@volunteersAndMessages')->name('volunteer.messages');
+    Route::get('volunteer/messages', 'Admin\Miscellaneous\StatisticController@volunteersAndMessages')
+         ->name('volunteer.messages');
 
     Route::get('faculty', 'Admin\Miscellaneous\StatisticController@faculty')->name('faculty');
 
@@ -48,8 +44,10 @@ Route::prefix('statistic')->as('statistics.')->group(function () {
     Route::get('user', 'Admin\Miscellaneous\StatisticController@user')->name('user');
     Route::get('user/horoscope', 'Admin\Miscellaneous\StatisticController@userHoroscope')->name('user.horoscope');
 
-    Route::get('children/count/general', 'Admin\Miscellaneous\StatisticController@children_by_general')->name('children.count.general');
-    Route::get('children/count/faculty/{id}', 'Admin\Miscellaneous\StatisticController@children_by_faculty')->name('children.count.faculty');
+    Route::get('children/count/general', 'Admin\Miscellaneous\StatisticController@children_by_general')
+         ->name('children.count.general');
+    Route::get('children/count/faculty/{id}', 'Admin\Miscellaneous\StatisticController@children_by_faculty')
+         ->name('children.count.faculty');
 });
 
 Route::prefix('child')->as('child.')->group(function () {
@@ -65,14 +63,17 @@ Route::prefix('child')->as('child.')->group(function () {
 Route::prefix('faculty')->as('faculty.')->group(function () {
     Route::prefix('{id}')->group(function () {
         Route::get('messages', 'Admin\Management\FacultyController@messages')->name('messages');
-        Route::get('messages/unanswered', 'Admin\Management\FacultyController@messagesUnanswered')->name('messages.unanswered');
+        Route::get('messages/unanswered', 'Admin\Management\FacultyController@messagesUnanswered')
+             ->name('messages.unanswered');
         Route::get('children', 'Admin\Management\FacultyController@children')->name('children');
         Route::get('children/data', 'Admin\Management\FacultyController@childrenData')->name('children.data');
         Route::get('posts', 'Admin\Management\FacultyController@posts')->name('posts');
         Route::get('posts/data', 'Admin\Management\FacultyController@postsData')->name('posts.data');
         Route::get('posts/unapproved', 'Admin\Management\FacultyController@postsUnapproved')->name('posts.unapproved');
-        Route::get('posts/unapproved/data', 'Admin\Management\FacultyController@postsUnapprovedData')->name('posts.unapproved.data');
-        Route::get('posts/unapproved/count', 'Admin\Management\FacultyController@postsUnapprovedCount')->name('posts.unapproved.count');
+        Route::get('posts/unapproved/data', 'Admin\Management\FacultyController@postsUnapprovedData')
+             ->name('posts.unapproved.data');
+        Route::get('posts/unapproved/count', 'Admin\Management\FacultyController@postsUnapprovedCount')
+             ->name('posts.unapproved.count');
         Route::get('profiles', 'Admin\Management\FacultyController@profiles')->name('profiles');
         Route::get('sendmail', 'Admin\Management\FacultyController@createMail')->name('mail.create');
         Route::post('sendmail', 'Admin\Management\FacultyController@sendMail')->name('mail.send');
@@ -104,7 +105,8 @@ Route::resource('volunteer', 'Admin\Volunteer\VolunteerController');
 Route::post('/process', 'Admin\Child\ChildController@createProcess')->name('process.store');
 
 Route::resource('mobile-notification', 'Admin\Volunteer\MobileNotificationController');
-Route::post('mobile-notification/{id}/send', 'Admin\Volunteer\MobileNotificationController@send')->name('mobile-notification.send');
+Route::post('mobile-notification/{id}/send', 'Admin\Volunteer\MobileNotificationController@send')
+     ->name('mobile-notification.send');
 
 Route::resource('blog', 'Admin\Content\BlogController');
 
@@ -122,6 +124,8 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/', 'Admin\Miscellaneous\DashboardController@index')->name('dashboard');
     Route::get('/data', 'Admin\Miscellaneous\DashboardController@data')->name('dashboard.data');
 });
+
+Route::get('sidebar/data', 'Admin\Miscellaneous\SidebarController@data')->name('sidebar.data');
 
 /*
 |--------------------------------------------------------------------------
@@ -171,14 +175,16 @@ Route::resource('post', 'Admin\Child\PostController');
 Route::prefix('faculty')->as('faculty.')->group(function () {
     Route::prefix('{faculty}')->group(function () {
         Route::get('post', 'Admin\Child\PostController@faculty')->name('post');
-        Route::get('user', 'Admin\Management\FacultyUserController@index')->name('user');
+        Route::resource('email', 'Admin\Management\FacultyEmailController')->only(['create', 'store']);
+        Route::resource('user', 'Admin\Management\FacultyUserController')->parameters([
+            'user' => 'any_user'
+        ]);
     });
 });
 Route::resource('faculty', 'Admin\Management\FacultyController');
 
 Route::get('/form/create', 'Admin\Miscellaneous\FormController@create')->name('form.create');
 Route::post('/form', 'Admin\Miscellaneous\FormController@store')->name('form.store');
-
 
 // Route::get('users/data', 'Admin\Management\FacultyController@usersData')->name('users.data');
 // Route::get('users/unapproved', 'Admin\Management\FacultyController@unapproved')->name('users.unapproved');
@@ -214,7 +220,9 @@ Route::prefix('user')->as('user.')->group(function () {
         Route::get('children/data', 'Admin\Management\UserController@childrenData')->name('children.data');
     });
 });
-Route::resource('user', 'Admin\Management\UserController');
+Route::resource('user', 'Admin\Management\UserController')->parameters([
+    'user' => 'any_user'
+]);
 
 /*
 |--------------------------------------------------------------------------

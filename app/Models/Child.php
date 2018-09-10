@@ -100,17 +100,6 @@ class Child extends Model
         });
     }
 
-    // Global Methods
-    public static function download($children)
-    {
-        $children = $children->get();
-        Excel::create('LS_Cocuklar_' . date('d_m_Y'), function ($excel) use ($children) {
-            $excel->sheet('Cocuklar', function ($sheet) use ($children) {
-                $sheet->fromArray($children, null, 'A1', true);
-            });
-        })->download('xlsx');
-    }
-
     // Accessors
     public function getUserNameListAttribute()
     {

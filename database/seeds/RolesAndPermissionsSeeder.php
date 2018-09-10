@@ -136,12 +136,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'create blood', 'edit blood', 'list bloods', 'send blood', 'auth blood'
         ]);
 
-        $graduated = Role::updateOrCreate(['name' => 'graduated', 'display' => 'Mezun']);
+        $graduated = Role::updateOrCreate(['name' => 'graduated', 'display' => 'Mezun', 'public' => true]);
         $graduated->syncPermissions([
             'list own children'
         ]);
 
-        $left = Role::updateOrCreate(['name' => 'left', 'display' => 'Ayrılmış Üye']);
+        $left = Role::updateOrCreate(['name' => 'left', 'display' => 'Ayrılmış Üye', 'public' => true]);
 
         $admin = Role::updateOrCreate(['name' => 'admin', 'display' => 'Yönetici']);
         $admin->syncPermissions(Permission::all());

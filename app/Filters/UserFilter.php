@@ -6,7 +6,7 @@ use App\Models\User;
 
 class UserFilter extends Filter
 {
-    protected $filters = ['approval', 'role_name', 'faculty_id', 'search', 'download'];
+    protected $filters = ['approval', 'role_name', 'faculty_id', 'year', 'search', 'download'];
 
     protected function faculty_id($faculty_id)
     {

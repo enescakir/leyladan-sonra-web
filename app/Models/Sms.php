@@ -44,7 +44,7 @@ class Sms extends Model
     // Methods
     public static function toSenderSelect($placeholder = null, $category = '')
     {
-        $result = static::where('category', $category)->with('sender')->orderBy('id', 'DESC')->get()->pluck('sender.full_name', 'sender.id')->sort();
+        $result = static::where('category', $category)->with('sender')->latest()->get()->pluck('sender.full_name', 'sender.id')->sort();
         return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
     }
 

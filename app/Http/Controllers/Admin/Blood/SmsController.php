@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 use App\Models\Blood;
 use App\Models\Sms;
-use Auth;
 
 class SmsController extends AdminController
 {
@@ -49,40 +48,34 @@ class SmsController extends AdminController
 
     public function send(Request $request)
     {
-        $sms = new Sms([
+        $sms = Sms::create([
             'title'          => 'LEYLADANSNR',
             'message'        => $request->message,
             'category'       => 'Kan Bağışı',
             'receiver_count' => count($request->bloods),
-            'sent_by'        => Auth::user()->id,
+            'sent_by'        => auth()->user()->id,
         ]);
+        $sms->send($request->bloods);
 
-        if ($sms->save()) {
-            $sms->send($request->bloods);
-            session_success(__('messages.blood.sms.successful', ['count' => count($request->bloods)]));
-            return redirect()->route('admin.blood.sms.show');
-        } else {
-            session_error(__('messages.blood.sms.error'));
-            return redirect()->back()->withInput();
-        }
+        session_success(__('messages.blood.sms.successful', ['count' => count($request->bloods)]));
+
+        return redirect()->route('admin.blood.sms.show');
+
     }
 
     public function test(Request $request)
     {
-        $sms = new Sms([
+        $sms = Sms::create([
             'title'          => 'LEYLADANSNR',
             'message'        => $request->message,
             'category'       => 'Kan Bağışı Test',
             'receiver_count' => 1,
-            'sent_by'        => Auth::user()->id,
+            'sent_by'        => auth()->user()->id,
         ]);
 
-        if ($sms->save()) {
-            $sms->send(make_mobile($request->number));
-            return api_success($sms);
-        } else {
-            return api_error('Bir hata ile karşılaşıldı.');
-        }
+        $sms->send(make_mobile($request->number));
+
+        return api_success($sms);
     }
 
     public function checkBalance()

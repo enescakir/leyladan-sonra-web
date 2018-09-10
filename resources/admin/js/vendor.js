@@ -68,3 +68,6 @@ import 'cropperjs/dist/cropper.min.js'
 
 // Clipboard JS
 import 'clipboard/dist/clipboard.min.js'
+
+// Summernote
+import 'summernote/dist/summernote.js'

@@ -64,4 +64,9 @@ abstract class Filter
     {
         return array_filter($this->request->only($this->filters), 'strlen');
     }
+
+    public static function getAppends()
+    {
+        return (new static(request()))->getFilters();
+    }
 }

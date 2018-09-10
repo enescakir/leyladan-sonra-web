@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Macros\RouteMacro;
+use App\Models\Child;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Auth;
-use App\Models\DataManager;
+use App\CacheManagers\ChildCacheManager;
+use App\CacheManagers\FacultyCacheManager;
 use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
@@ -30,8 +32,8 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('front.parent', function ($view) {
             $view->with([
-                'totalChildren'  => DataManager::childCount(),
-                'totalFaculties' => DataManager::facultyCount('started')
+                'totalChildren'  => ChildCacheManager::count(),
+                'totalFaculties' => FacultyCacheManager::count()
             ]);
         });
 

@@ -401,38 +401,4 @@ class FacultyController extends AdminController
         $children = $faculty->children()->has('openChats')->withCount('openChats', 'unansweredMessages')->orderBy('id', 'desc')->get();
         return view('admin.faculty.messages_unanswered', compact(['children', 'faculty', 'colors', 'authUser']));
     }
-
-    public function createMail($id)
-    {
-        $facultyId = $id;
-        return view('admin.faculty.send_mail', compact(['facultyId']));
-    }
-
-    public function sendMail(Request $request, $id)
-    {
-        $sender = Auth::user();
-        if (!($sender->title == 'Yönetici' || $sender->title == 'Fakülte Sorumlusu')) {
-            return redirect()->back()->withInput()->with('error_message', 'Fakülte üyelerine e-posta gönderme yetkisine sahip değilsiniz.');
-        }
-        $titles = $request->title;
-        $users = User::where('faculty_id', $id)->whereIn('title', $titles)->get();
-        $text = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i", '<$1$2>', strip_tags($request->text, '<p><br><i><b><u><ul><li><ol><h1><h2><h3><h4><h5>'));
-        $subject = $request->subject;
-        foreach ($users as $user) {
-            \Mail::send('email.admin.faculty', ['user' => $user, 'text' => $text, 'sender' => $sender], function ($message) use ($user, $subject) {
-                $message
-                    ->to($user->email)
-                    ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
-                    ->subject($subject);
-            });
-        }
-        $user = User::find(1);
-        \Mail::send('email.admin.faculty', ['user' => $user, 'text' => $text, 'sender' => $sender], function ($message) use ($user, $subject) {
-            $message
-                    ->to($user->email)
-                    ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
-                    ->subject($subject);
-        });
-        return redirect()->back()->with('success_message', count($users) . ' kişiye başarılı bir şekilde e-posta gönderildi.');
-    }
 }

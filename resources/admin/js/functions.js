@@ -1,44 +1,83 @@
+$.ajaxSetup({headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')}});
+
 $(function () {
-    moment.locale('tr');
+    initCheckbox();
+    initSelect2();
+    initDatePicker();
+    initFileInput();
+    initMaxLength();
+    initFilterButton();
+    initMask();
+    initMultiSelect();
+    initTabRemember();
+    initClipboard();
+    initNumberInput();
+    initSummernote();
+    initSidebar();
+    $('[data-toggle="popover"]').popover();
+    searchItem("search-btn", "search-input", "search");
+});
+
+// INITS
+function initCheckbox() {
     $('.icheck').iCheck({
-        checkboxClass: 'icheckbox_flat-red',
-        radioClass: 'iradio_flat-red',
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass: 'iradio_flat-green',
         increaseArea: '20%' // optional
     });
+}
 
+function initSelect2() {
     $('.select2').select2();
     $('.select2-no-search').select2({
         minimumResultsForSearch: Infinity,
     });
+}
+
+function initDatePicker() {
+    moment.locale('tr');
 
     $('.birthday-picker').datepicker({
         language: "tr",
         startView: 2,
         autoclose: true
-    })
+    });
 
+    $('.date-picker').datepicker({
+        language: "tr",
+        autoclose: true
+    });
+}
+
+function initFileInput() {
     $(":file").not('.swal2-file').filestyle({
         buttonText: "Dosya seç",
         iconName: "fa fa-folder-open",
         placeholder: "Dosya seçilmedi",
         buttonBefore: true
     });
+}
 
-    $('.date-picker').datepicker({
-        language: "tr",
-        autoclose: true
-    })
+function initMaxLength() {
     $('.max-length').maxlength({
         alwaysShow: true
     });
+}
+
+function initFilterButton() {
     $(".btn-filter").click(function (e) {
         e.preventDefault();
         insertParam($(this).attr('filter-param'), $(this).attr('filter-value'));
     });
+}
+
+function initMask() {
     $('.date-mask').inputmask('dd.mm.yyyy', {'placeholder': 'GG.AA.YYYY'});
     $('.mobile').inputmask('(999) 999 99 99', {'placeholder': '(___) ___ __ __'});
     $(".url-mask").inputmask({regex: "https?://.*"});
-    $('[data-toggle="popover"]').popover();
+}
+
+function initMultiSelect() {
     $('.multi-select').multiSelect({
         selectableHeader: "<input type='text' class='search-input' style='width: 100%; margin-bottom: 10px;' autocomplete='off' placeholder='Arama'>",
         selectionHeader: "<input type='text' class='search-input' style='width: 100%; margin-bottom: 10px;' autocomplete='off' placeholder='Arama'>",
@@ -75,8 +114,9 @@ $(function () {
             this.qs2.cache();
         }
     });
-    searchItem("search-btn", "search-input", "search");
+}
 
+function initTabRemember() {
     // Tab remember
     var hash = document.location.hash;
     var prefix = "tab_";
@@ -88,7 +128,9 @@ $(function () {
     $('.nav-tabs a').on('shown.bs.tab', function (e) {
         window.location.hash = e.target.hash.replace("#", "#" + prefix);
     });
+}
 
+function initClipboard(){
     var clipboard = new ClipboardJS('.clipboard-text');
     clipboard.on('success', function (e) {
         $(e.trigger).tooltip({
@@ -102,7 +144,9 @@ $(function () {
             e.clearSelection();
         }, 1000);
     });
+}
 
+function initNumberInput() {
     $(".number").keydown(function (e) {
         // Allow: backspace, delete, tab, escape, enter and .
         if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
@@ -121,12 +165,33 @@ $(function () {
         if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
             e.preventDefault();
         }
-    })
+    });
+}
 
-});
+function initSummernote() {
+    $('.summernote').summernote({
+        height: 300,
+        toolbar: [
+            ['style', ['style','bold', 'italic', 'underline', 'clear']],
+            ['fontsize', ['fontsize']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link']],
+            ['misc', ['fullscreen', 'codeview']]
+        ]
 
-$.ajaxSetup({headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')}});
+    });
+}
 
+function initSidebar(){
+    $.ajax({
+        url: "/admin/sidebar/data",
+        method: "GET"
+    }).done(function (response) {
+        $('.unapproved-user-count').text(response.data['unapproved-user-count'])
+    });
+}
+
+// HELPER FUNTIONS
 function deleteItem(slug, message, deleteClass = "delete") {
     $('.' + deleteClass).on('click', function (e) {
         var id = $(this).attr('delete-id');
@@ -355,7 +420,6 @@ function checkAll(check_id, check_class) {
         $('.' + check_class).prop("checked", this.checked);
     });
 }
-
 
 function insertParam(key, value) {
     key = encodeURI(key);
