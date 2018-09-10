@@ -35,15 +35,21 @@
                 </li>
             </ul>
         </li>
-        <li class="treeview">
+        <li class="treeview {{ set_active(['*admin/faculty', '*form*', '*admin/faculty/create', '*admin/faculty/*/edit'], 'menu-open active') }}">
             <a href="#"><i class="fa fa-university"></i> <span>Fakülteler</span>
                 <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
             </a>
             <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-plus"></i> <span>Yeni Fakülte Ekle</span></a></li>
-                <li><a href="#"><i class="fa fa-fort-awesome"></i> <span>Bütün Fakülteler</span></a></li>
+                <li class="{{ set_active('*admin/faculty/create') }}">
+                    <a href="{{ route('admin.faculty.create') }}"><i class="fa fa-plus"></i>
+                        <span>Yeni Fakülte Ekle</span></a>
+                </li>
+                <li class="{{ set_active('*admin/faculty') }}">
+                    <a href="{{ route('admin.faculty.index') }}"><i class="fa fa-fort-awesome"></i>
+                        <span>Bütün Fakülteler</span></a>
+                </li>
                 <li class="{{ set_active('*admin/form/create*') }}">
                     <a href="{{ route('admin.form.create') }}"><i class="fa fa-file-text-o"></i>
                         <span>Onam Formu Oluştur</span></a>

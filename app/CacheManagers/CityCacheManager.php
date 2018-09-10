@@ -29,7 +29,7 @@ class CityCacheManager extends CacheManager
     public static function faculties($cityCode)
     {
         return cache()->remember("city-faculties-{$cityCode}", static::LONG_TERM_MINUTES, function () use ($cityCode) {
-            return Faculty::where('code', $cityCode)->get(['name', 'started_at']);
+            return Faculty::where('code', $cityCode)->get(['id', 'name', 'started_at']);
         });
     }
 }

@@ -63,3 +63,15 @@ $users->each(function ($user) {
             break;
     }
 });
+
+
+## FACULTY MIGRATIONS
+$faculties = App\Models\Faculty::all();
+$faculties->each(function ($faculty) {
+    try {
+        $faculty->addMedia(storage_path('app/public/faculty/' . $faculty->slug . '.png'));
+    } catch (\Exception $e) {
+        echo 'Message: ' . $e->getMessage() . "\n";
+        echo 'Faculty #' . $faculty->id . "\n";
+    }
+});

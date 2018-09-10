@@ -28,7 +28,7 @@ class ChannelController extends AdminController
     public function store(Request $request)
     {
         $this->validateChannel($request);
-        $channel = Channel::create($request->only(['name', 'channel']));
+        $channel = Channel::create($request->only(['name', 'channel', 'category']));
         $channel->addMedia($request->logo);
 
         session_success(__('messages.channel.create', ['name' =>  $channel->name]));
@@ -44,7 +44,7 @@ class ChannelController extends AdminController
     public function update(Request $request, Channel $channel)
     {
         $this->validateChannel($request, true);
-        $channel->update($request->only(['name', 'channel']));
+        $channel->update($request->only(['name', 'channel', 'category']));
         if ($request->hasFile('logo')) {
             $channel->clearMediaCollection();
             $channel->addMedia($request->logo);

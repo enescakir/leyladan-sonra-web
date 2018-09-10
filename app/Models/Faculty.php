@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
+use App\Traits\Downloadable;
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\BaseActions;
 use Carbon\Carbon;
+use Spatie\MediaLibrary\Models\Media;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use App\Traits\HasMediaTrait;
 
-class Faculty extends Model
+class Faculty extends Model implements HasMedia
 {
     use BaseActions;
+    use Filterable;
+    use HasMediaTrait;
+    use Downloadable;
+
     // Properties
     protected $table = 'faculties';
     protected $fillable = [
@@ -22,15 +31,6 @@ class Faculty extends Model
         'started_at'
     ];
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'started_at'];
-
-    // Validation rules
-    public static $createRules = [
-        'name'      => 'required|max:255',
-        'slug'      => 'required|max:255',
-        'latitude'  => 'numeric',
-        'longitude' => 'numeric',
-        'city'      => 'required|max:255'
-    ];
 
     // Relations
     public function feeds()
@@ -48,9 +48,9 @@ class Faculty extends Model
         return $this->hasMany(Chat::class);
     }
 
-    public function responsibles()
+    public function managers()
     {
-        return $this->hasMany(User::class)->where('title', 'Fakülte Sorumlusu');
+        return $this->hasMany(User::class)->role('manager');
     }
 
     public function posts()
@@ -86,20 +86,42 @@ class Faculty extends Model
     public function setStartedAtAttribute($date)
     {
         $this->attributes['started_at'] = $date
-            ? null
-            : Carbon::createFromFormat('d.m.Y', $date)->toDateString();
+            ? Carbon::createFromFormat('d.m.Y', $date)->toDateString()
+            : null;
     }
 
     // Accessors
     public function getStartedAtLabelAttribute()
     {
         return $this->attributes['started_at']
-            ? null
-            : Carbon::parse($this->attributes['started_at'])->parse('d.m.Y');
+            ? Carbon::parse($this->attributes['started_at'])->format('d.m.Y')
+            : null;
     }
 
     public function getFullNameAttribute()
     {
         return "{$this->attributes['name']} Tıp Fakültesi";
+    }
+
+    public function getLogoUrlAttribute()
+    {
+        return $this->getFirstMediaUrl('default', 'optimized');
+    }
+
+    public function getThumbUrlAttribute()
+    {
+        return $this->getFirstMediaUrl('default', 'thumb');
+    }
+
+    public function isStarted()
+    {
+        return !is_null($this->started_at);
+    }
+
+    // Helpers
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('thumb')->width(100)->height(75);
+        $this->addMediaConversion('optimized')->width(320)->height(240);
     }
 }
