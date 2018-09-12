@@ -164,6 +164,15 @@ Route::resource('child', 'Admin\Child\ChildController');
 | Post Routes
 |--------------------------------------------------------------------------
 */
+Route::prefix('post')->as('post.')->group(function () {
+    Route::prefix('{post}')->group(function () {
+        Route::put('media/{media}/feature', 'Admin\Child\PostMediaController@feature')->name('media.feature');
+        Route::resource('media', 'Admin\Child\PostMediaController')->only(['store', 'destroy'])->parameters([
+            'media' => 'media'
+        ]);
+    });
+});
+
 Route::approve('post', 'Admin\Child\PostController');
 Route::resource('post', 'Admin\Child\PostController');
 

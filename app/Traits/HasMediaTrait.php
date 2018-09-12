@@ -10,10 +10,10 @@ trait HasMediaTrait
         addMedia as addMediaBase;
     }
 
-    public function addMedia($file, $collection = 'default')
+    public function addMedia($file, $custom = [], $collection = 'default')
     {
         return $this->addMediaBase($file)->sanitizingFileName(function ($fileName) {
             return $this->id . str_random(5) . '.' . explode('.', $fileName)[1];
-        })->toMediaCollection($collection);
+        })->withCustomProperties($custom)->toMediaCollection($collection);
     }
 }

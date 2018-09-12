@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Child;
 
+use App\Filters\PostFilter;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 use App\Models\Post;
@@ -15,58 +16,24 @@ use Carbon\Carbon;
 
 class PostController extends AdminController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
-    public function index(Request $request)
+    public function index(PostFilter $filters)
     {
-        $posts = Post::with(['child', 'child.faculty', 'images'])->orderBy('id', 'DESC');
-        if ($request->filled('search')) {
-            $posts = $posts->search($request->search);
-        }
-        if ($request->filled('faculty_id')) {
-            $posts = $posts->faculty($request->faculty_id);
-        }
-        if ($request->filled('type')) {
-            $posts = $posts->type($request->type);
-        }
-        if ($request->filled('approval')) {
-            $posts = $posts->approved($request->approval);
-        }
-        $posts = $posts->paginate($request->per_page ?: 25);
-        $faculties = Faculty::toSelect('Hepsi');
-        $post_types = PostType::toSelect('Hepsi');
-        return view('admin.post.index', compact(['posts', 'faculties', 'post_types']));
-    }
+        $posts = Post::with(['child', 'child.faculty', 'media'])->latest();
+        $posts->filter($filters);
+        $posts = $posts->paginate();
 
-    public function faculty(Request $request, Faculty $faculty)
-    {
-        $posts = $faculty->posts()->with(['child', 'child.faculty', 'images'])->orderBy('id', 'DESC');
-        if ($request->filled('search')) {
-            $posts = $posts->search($request->search);
-        }
-        if ($request->filled('type')) {
-            $posts = $posts->type($request->type);
-        }
-        if ($request->filled('approval')) {
-            $posts = $posts->approved($request->approval);
-        }
-        $posts = $posts->paginate($request->per_page ?: 25);
-        $post_types = PostType::toSelect('Hepsi');
-        return view('admin.post.faculty', compact(['posts', 'faculty', 'post_types']));
+        $postTypes = PostType::toSelect('Hepsi');
+        return view('admin.post.index', compact('posts', 'postTypes'));
     }
 
     public function edit(Post $post)
     {
-        $post->load('child', 'child.faculty', 'child.users', 'images');
-        return view('admin.post.edit', compact(['post']));
+        return view('admin.post.edit', compact('post'));
     }
 
     public function update(Request $request, Post $post)
     {
-        $post = Post::whereId($id)->with('child')->first();
         $post->text = $request->get('post_text');
         if ($request->hasFile('post_image')) {
             $imageSize = 800;
@@ -90,12 +57,12 @@ class PostController extends AdminController
                 $postImage->save();
             }
             $imgPost = Image::make($request->file('post_image'))
-                ->rotate(-$request->rotation)
-                ->crop($request->w, $request->h, $request->x, $request->y)
-                ->resize($imageSize, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                })
-                ->save('resources/admin/uploads/child_photos/' . $postImage->name, 80);
+                            ->rotate(-$request->rotation)
+                            ->crop($request->w, $request->h, $request->x, $request->y)
+                            ->resize($imageSize, null, function ($constraint) {
+                                $constraint->aspectRatio();
+                            })
+                            ->save('resources/admin/uploads/child_photos/' . $postImage->name, 80);
             $imgPost->destroy();
         }
         $post->save();
@@ -124,7 +91,12 @@ class PostController extends AdminController
 
     public function approve(Request $request, Post $post)
     {
-        $post->approve($request->approve);
-        return $request->approve;
+        $post->approve($request->approval);
+
+        return api_success([
+            'approval' => (int) $post->isApproved(),
+            'post'     => $post
+        ]);
+
     }
 }

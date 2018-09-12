@@ -2,20 +2,28 @@
 
 namespace App\Models;
 
+use App\Enums\PostType;
+use App\Traits\Downloadable;
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
-
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\Models\Media;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use App\Traits\HasMediaTrait;
 use App\Traits\BaseActions;
 use App\Traits\Approvable;
-
 use App\Enums\ImageRatio;
-
 use Carbon\Carbon;
 use Auth;
 
-class Post extends Model
+class Post extends Model implements HasMedia
 {
     use BaseActions;
     use Approvable;
+    use HasMediaTrait;
+    use Filterable;
+    use Downloadable;
+
     // Properties
     protected $table    = 'posts';
     protected $fillable = ['child_id', 'approved_by', 'approved_at', 'text', 'type'];
@@ -120,5 +128,16 @@ class Post extends Model
         ->save(upload_path('child') . '/' . $postImage->name, 90);
         ini_restore("memory_limit");
         ini_restore("max_execution_time");
+    }
+
+    // Helpers
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('thumb')
+             ->fit(Manipulations::FIT_CONTAIN, 200, 200);
+        $this->addMediaConversion('medium')
+             ->fit(Manipulations::FIT_CONTAIN, 500, 1000);
+        $this->addMediaConversion('large')
+             ->fit(Manipulations::FIT_CONTAIN, 1000, 1000);
     }
 }

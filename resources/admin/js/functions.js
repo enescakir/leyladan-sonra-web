@@ -15,6 +15,7 @@ $(function () {
     initSummernote();
     initSidebar();
     $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip();
     searchItem("search-btn", "search-input", "search");
 });
 
@@ -50,7 +51,7 @@ function initDatePicker() {
 }
 
 function initFileInput() {
-    $(":file").not('.swal2-file').filestyle({
+    $(":file").not('.swal2-file').not('.no-filestyle').filestyle({
         buttonText: "Dosya seç",
         iconName: "fa fa-folder-open",
         placeholder: "Dosya seçilmedi",
@@ -130,7 +131,7 @@ function initTabRemember() {
     });
 }
 
-function initClipboard(){
+function initClipboard() {
     var clipboard = new ClipboardJS('.clipboard-text');
     clipboard.on('success', function (e) {
         $(e.trigger).tooltip({
@@ -172,7 +173,7 @@ function initSummernote() {
     $('.summernote').summernote({
         height: 300,
         toolbar: [
-            ['style', ['style','bold', 'italic', 'underline', 'clear']],
+            ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
             ['fontsize', ['fontsize']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['insert', ['link']],
@@ -182,7 +183,7 @@ function initSummernote() {
     });
 }
 
-function initSidebar(){
+function initSidebar() {
     $.ajax({
         url: "/admin/sidebar/data",
         method: "GET"
@@ -192,7 +193,7 @@ function initSidebar(){
 }
 
 // HELPER FUNTIONS
-function deleteItem(slug, message, deleteClass = "delete") {
+function deleteItem(slug, message, deleteClass = "delete", url = null) {
     $('.' + deleteClass).on('click', function (e) {
         var id = $(this).attr('delete-id');
         var name = $(this).attr('delete-name');
@@ -207,8 +208,9 @@ function deleteItem(slug, message, deleteClass = "delete") {
             showLoaderOnConfirm: true,
             preConfirm: function (email) {
                 return new Promise(function (resolve, reject) {
+                    var path= url ? url.replace('[ID]', id) :  ("/admin/" + slug + "/" + id);
                     $.ajax({
-                        url: "/admin/" + slug + "/" + id,
+                        url: path,
                         method: "DELETE",
                         dataType: "json",
                         success: function (result) {
@@ -229,6 +231,27 @@ function deleteItem(slug, message, deleteClass = "delete") {
                 confirmButtonText: "Tamam",
             });
         })
+    });
+}
+
+function setFeaturedMedia(mediaId, selectorClass = 'feature-btn') {
+    $('.' + selectorClass).html('<i class="fa fa-star-o"></i></button>').addClass('btn-default').removeClass('btn-warning');
+    $('.' + selectorClass + '[feature-id=' + mediaId + ']').html('<i class="fa fa-star"></i></button>').addClass('btn-warning').removeClass('btn-default');
+}
+
+function featureItem(slug, message, buttonClass = "feature-btn", url = null){
+    $('.' + buttonClass).on('click', function () {
+        var id = $(this).attr('feature-id');
+        var path= url ? url.replace('[ID]', id) :  ("/admin/" + slug + "/" + id + "/feature");
+
+        $.ajax({
+            url: path,
+            method: "PUT"
+        }).done(function (response) {
+            setFeaturedMedia(response.data.media.id);
+        }).fail(function (xhr, ajaxOptions, thrownError) {
+            ajaxError(xhr, ajaxOptions, thrownError);
+        });
     });
 }
 

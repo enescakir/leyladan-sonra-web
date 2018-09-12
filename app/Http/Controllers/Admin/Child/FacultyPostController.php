@@ -26,6 +26,23 @@ use App\Filters\ChildFilter;
 
 class FacultyPostController extends AdminController
 {
+    public function faculty(Request $request, Faculty $faculty)
+    {
+        $posts = $faculty->posts()->with(['child', 'child.faculty', 'images'])->orderBy('id', 'DESC');
+        if ($request->filled('search')) {
+            $posts = $posts->search($request->search);
+        }
+        if ($request->filled('type')) {
+            $posts = $posts->type($request->type);
+        }
+        if ($request->filled('approval')) {
+            $posts = $posts->approved($request->approval);
+        }
+        $posts = $posts->paginate($request->per_page ?: 25);
+        $post_types = PostType::toSelect('Hepsi');
+        return view('admin.post.faculty', compact(['posts', 'faculty', 'post_types']));
+    }
+
     public function posts($id)
     {
         $faculty = Faculty::find($id);

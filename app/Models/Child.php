@@ -10,8 +10,8 @@ use App\Traits\HasBirthday;
 use App\Enums\PostType;
 use App\Enums\ChatStatus;
 use App\Enums\GiftStatus;
-use Excel;
 use DB;
+use Spatie\MediaLibrary\Models\Media;
 
 class Child extends Model
 {
@@ -23,11 +23,34 @@ class Child extends Model
     // Properties
     protected $table = 'children';
     protected $fillable = [
-      'faculty_id', 'department', 'first_name', 'last_name', 'diagnosis',
-      'diagnosis_desc', 'taken_treatment', 'child_state', 'child_state_desc',
-      'gender', 'meeting_day', 'birthday', 'wish', 'g_first_name', 'g_last_name',
-      'g_mobile', 'g_email', 'province', 'city', 'address', 'extra_info',
-      'volunteer_id', 'verification_doc', 'gift_state', 'on_hospital', 'until', 'slug'
+        'faculty_id',
+        'department',
+        'first_name',
+        'last_name',
+        'diagnosis',
+        'diagnosis_desc',
+        'taken_treatment',
+        'child_state',
+        'child_state_desc',
+        'gender',
+        'meeting_day',
+        'birthday',
+        'wish',
+        'g_first_name',
+        'g_last_name',
+        'g_mobile',
+        'g_email',
+        'province',
+        'city',
+        'address',
+        'extra_info',
+        'volunteer_id',
+        'verification_doc',
+        'gift_state',
+        'on_hospital',
+        'until',
+        'slug',
+        'featured_media_id'
     ];
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'meeting_day', 'birthday', 'until'];
     protected $appends = ['full_name'];
@@ -74,6 +97,11 @@ class Child extends Model
         return $this->hasMany(Process::class)->with(['creator']);
     }
 
+    public function featuredMedia()
+    {
+        return $this->belongsTo(Media::class);
+    }
+
     // Scopes
     public function scopeGift($query, $gift_state)
     {
@@ -94,9 +122,9 @@ class Child extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('id', $search)
-                ->orWhere('first_name', 'like', '%' . $search . '%')
-                ->orWhere('last_name', 'like', '%' . $search . '%')
-                ->orWhere(DB::raw('CONCAT_WS(" ", first_name, last_name)'), 'like', '%' . $search . '%');
+                   ->orWhere('first_name', 'like', '%' . $search . '%')
+                   ->orWhere('last_name', 'like', '%' . $search . '%')
+                   ->orWhere(DB::raw('CONCAT_WS(" ", first_name, last_name)'), 'like', '%' . $search . '%');
         });
     }
 

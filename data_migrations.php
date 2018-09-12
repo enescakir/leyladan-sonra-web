@@ -75,3 +75,17 @@ $faculties->each(function ($faculty) {
         echo 'Faculty #' . $faculty->id . "\n";
     }
 });
+
+## POST MIGRATIONS
+$posts = App\Models\Post::with('images')->get();
+$posts->each(function ($post) {
+    try {
+        $post->clearMediaCollection();
+
+        $post->images->each(function ($image) use ($post){
+            $post->addMedia(storage_path('app/public/child/' . $image->name), ['ratio' => $image->ratio]);
+        });
+    } catch (\Exception $e) {
+        echo $e->getMessage();
+    }
+});

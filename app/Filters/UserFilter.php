@@ -8,14 +8,10 @@ class UserFilter extends Filter
 {
     protected $filters = ['approval', 'role_name', 'faculty_id', 'year', 'search', 'download'];
 
-    protected function faculty_id($faculty_id)
-    {
-        return $this->builder->where('faculty_id', $faculty_id);
-    }
 
     protected function approval($approval)
     {
-        return $this->builder->Approved($approval);
+        return $this->builder->approved($approval);
     }
 
     protected function role_name($role)
