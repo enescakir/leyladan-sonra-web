@@ -6,9 +6,12 @@ use Carbon\Carbon;
 
 trait HasBirthday
 {
+
     public function setBirthdayAttribute($date)
     {
-        return $this->attributes['birthday'] = Carbon::parse($date)->toDateString();
+        $this->attributes['birthday'] = $date
+            ? Carbon::createFromFormat('d.m.Y', $date)->toDateString()
+            : null;
     }
 
     public function getBirthdayLabelAttribute()

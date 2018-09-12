@@ -30,14 +30,7 @@ class FacultyController extends AdminController
         $this->validateFaculty($request);
 
         $faculty = Faculty::create($request->only([
-            'name',
-            'slug',
-            'latitude',
-            'longitude',
-            'address',
-            'city',
-            'code',
-            'started_at'
+            'name', 'slug', 'latitude', 'longitude', 'address', 'city', 'code', 'started_at'
         ]));
         $faculty->addMedia($request->logo);
 
@@ -65,14 +58,7 @@ class FacultyController extends AdminController
         $this->validateFaculty($request, true);
 
         $faculty->update($request->only([
-            'name',
-            'slug',
-            'latitude',
-            'longitude',
-            'address',
-            'city',
-            'code',
-            'started_at'
+            'name', 'slug', 'latitude', 'longitude', 'address', 'city', 'code', 'started_at'
         ]));
         if ($request->hasFile('logo')) {
             $faculty->clearMediaCollection();
@@ -80,7 +66,8 @@ class FacultyController extends AdminController
         }
 
         $faculty->managers->each->removeRole('manager');
-        User::whereIn('id', $request->users ?: [])->get()->each->syncRoles('manager');
+        User::whereIn('id', $request->users
+            ?: [])->get()->each->syncRoles('manager');
 
         return redirect()->route('admin.faculty.show', $faculty->id);
     }
@@ -93,11 +80,8 @@ class FacultyController extends AdminController
     private function validateFaculty(Request $request, $isUpdate = false)
     {
         $this->validate($request, [
-            'name'      => 'required|max:255',
-            'slug'      => 'required|max:255',
-            'latitude'  => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'city'      => 'required|max:255'
+            'name'      => 'required|max:255', 'slug' => 'required|max:255', 'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric', 'city' => 'required|max:255'
         ]);
     }
 

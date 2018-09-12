@@ -89,3 +89,14 @@ $posts->each(function ($post) {
         echo $e->getMessage();
     }
 });
+
+$posts = App\Models\Post::with('child')->get();
+$posts->each(function ($post) {
+    if ($post->type == App\Enums\PostType::Meeting){
+        $post->child->meetingPost()->associate($post);
+        $post->child->save();
+    } elseif ($post->type == App\Enums\PostType::Delivery){
+        $post->child->deliveryPost()->associate($post);
+        $post->child->save();
+    }
+});

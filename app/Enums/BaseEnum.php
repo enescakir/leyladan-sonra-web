@@ -5,6 +5,7 @@ namespace App\Enums;
 abstract class BaseEnum
 {
     private static $constCacheArray = null;
+    private static $statusTexts = null;
 
     public static function getConstants()
     {
@@ -37,10 +38,25 @@ abstract class BaseEnum
         return in_array($value, $values, $strict);
     }
 
+    public static function getConstant($value)
+    {
+        return $value ?
+            array_search($value, static::getConstants()) :
+            null;
+    }
+
+    public static function getText($value)
+    {
+        return $value ?
+            static::$statusTexts[$value] :
+            null;
+    }
+
     public static function toSelect($placeholder = '')
     {
-        $values = array_values(self::getConstants());
-        $result =  array_combine($values, $values);
-        return $placeholder ? array_merge(['' => $placeholder], $result) : $result;
+            $keys = static::$statusTexts ? array_values(static::$statusTexts) : array_keys(static::getConstants());
+            $values = array_values(static::getConstants());
+            $result = array_combine($values, $keys);
+            return $placeholder ? (['' => $placeholder] + $result) : $result;
     }
 }

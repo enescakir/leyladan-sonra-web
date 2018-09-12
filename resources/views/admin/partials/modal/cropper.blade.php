@@ -102,6 +102,7 @@
                 cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
             }
         };
+        var aspectRatio = '4/3';
         var originalImageURL = image.src;
         var uploadedImageType = 'image/jpeg';
         var uploadedImageName = 'cropped.jpg';
@@ -116,8 +117,9 @@
         });
 
         $('.ratio-btn').on('change', function () {
-            var value = $(this).attr('value');
-            cropper.setAspectRatio(parseFloat(value));
+            var value = parseFloat($(this).attr('value'));
+            aspectRatio = value > 1 ? '4/3' : '2/3';
+            cropper.setAspectRatio(value);
         });
 
         $('.transform-btn').on('click', function () {
@@ -184,7 +186,7 @@
             canvas.toBlob(function (blob) {
                 var formData = new FormData();
                 formData.append('image', blob, 'child.jpg');
-                formData.append('ratio', '4/3');
+                formData.append('ratio', aspectRatio);
 
                 $.ajax('/admin/post/{{ $postId }}/media', {
                     method: 'POST',

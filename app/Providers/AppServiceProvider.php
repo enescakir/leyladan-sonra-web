@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Macros\RouteMacro;
-use App\Models\Child;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Auth;
@@ -38,6 +38,14 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RouteMacro::registerMacros();
+
+
+        Relation::morphMap([
+            'children'   => 'App\Models\Children',
+            'volunteers' => 'App\Models\Volunteer',
+            'users'      => 'App\Models\User',
+            'posts'      => 'App\Models\Post',
+        ]);
 
     }
 

@@ -11,7 +11,7 @@ class Feed extends Model
     use BaseActions;
     // Properties
     protected $table    = 'feeds';
-    protected $fillable = ['title', 'desc', 'icon', 'link', 'faculty_id'];
+    protected $fillable = ['role', 'desc', 'type', 'link', 'faculty_id'];
 
     // Relations
     public function faculty()
@@ -24,7 +24,7 @@ class Feed extends Model
     // Accessors
     public function getIconLabelAttribute()
     {
-        $icon_code = $this->attributes['icon'];
+        $icon_code = $this->attributes['type'];
         switch ($icon_code) {
       case "1":
         $result = ["warning", "child"];

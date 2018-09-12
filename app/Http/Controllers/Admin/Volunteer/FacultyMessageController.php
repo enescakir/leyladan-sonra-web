@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 use App\Enums\GiftStatus;
 use App\Enums\PostType;
-use App\Enums\UserTitle;
+use App\Enums\UserRole;
 use App\Http\Requests\CreateChildRequest;
 use App\Models\Child;
 use App\Models\Faculty;

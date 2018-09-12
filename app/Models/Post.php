@@ -82,29 +82,21 @@ class Post extends Model implements HasMedia
         $query->where('type', $type);
     }
 
-    public function scopeMeetingPost($query, $id)
+    public function scopeMeetingPost($query)
     {
-        $query->where('type', PostType::Meeting)->where('child_id', $id);
+        $query->where('type', PostType::Meeting);
     }
 
-    public function scopeGiftPost($query, $id)
+    public function scopeGiftPost($query)
     {
-        $query->where('type', PostType::Delivery)->where('child_id', $id);
+        $query->where('type', PostType::Delivery);
     }
 
     // Helpers
     public function approve($approval = true)
     {
         $this->approveTrait($approval);
-
-        $processDesc = $approval
-            ? 'Çocuğun yazısı onaylandı.'
-            : 'Çocuğun yazısının onayı kaldırıldı.';
-
-        $this->child->processes()->create([
-            'desc' => $processDesc
-        ]);
-
+        $this->child->createPostProcess($approval, $this);
         return $this->save();
     }
 

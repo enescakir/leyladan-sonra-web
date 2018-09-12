@@ -57,6 +57,11 @@ return [
             'url'        => env('APP_URL') . '/storage/media',
             'visibility' => 'public',
         ],
+        'verification' => [
+            'driver'     => 'local',
+            'root'       => storage_path('app/verification'),
+            'visibility' => 'private',
+        ],
         's3' => [
             'driver' => 's3',
             'key'    => 'your-key',

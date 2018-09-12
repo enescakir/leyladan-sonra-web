@@ -2,23 +2,30 @@
 
 namespace App\Models;
 
+use App\Enums\PostType;
 use App\Traits\Downloadable;
 use App\Traits\Filterable;
+use App\Traits\HasSlug;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\BaseActions;
 use App\Traits\HasBirthday;
-use App\Enums\PostType;
 use App\Enums\ChatStatus;
 use App\Enums\GiftStatus;
 use DB;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 
-class Child extends Model
+class Child extends Model implements HasMedia
 {
     use BaseActions;
     use HasBirthday;
     use Filterable;
     use Downloadable;
+    use HasSlug;
+    use HasMediaTrait;
 
     // Properties
     protected $table = 'children';
@@ -50,7 +57,9 @@ class Child extends Model
         'on_hospital',
         'until',
         'slug',
-        'featured_media_id'
+        'featured_media_id',
+        'meeting_post_id',
+        'delivery_post_id'
     ];
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'meeting_day', 'birthday', 'until'];
     protected $appends = ['full_name'];
@@ -72,9 +81,20 @@ class Child extends Model
         return $this->hasMany(Post::class);
     }
 
-    public function meetingPosts()
+    public function meetingPost()
     {
-        return $this->hasMany(Post::class)->where('type', PostType::Meeting);
+        return $this->belongsTo(Post::class, 'meeting_post_id')->withDefault([
+            'child_id' => $this->id,
+            'type'     => PostType::Meeting
+        ]);
+    }
+
+    public function deliveryPost()
+    {
+        return $this->belongsTo(Post::class, 'delivery_post_id')->withDefault([
+            'child_id' => $this->id,
+            'type'     => PostType::Delivery
+        ]);
     }
 
     public function chats()
@@ -121,8 +141,7 @@ class Child extends Model
     public function scopeSearch($query, $search)
     {
         $query->where(function ($query2) use ($search) {
-            $query2->where('id', $search)
-                   ->orWhere('first_name', 'like', '%' . $search . '%')
+            $query2->where('id', $search)->orWhere('first_name', 'like', '%' . $search . '%')
                    ->orWhere('last_name', 'like', '%' . $search . '%')
                    ->orWhere(DB::raw('CONCAT_WS(" ", first_name, last_name)'), 'like', '%' . $search . '%');
         });
@@ -177,8 +196,43 @@ class Child extends Model
     }
 
     // Mutators
+    public function setMeetingDayAttribute($date)
+    {
+        $this->attributes['meeting_day'] = $date
+            ? Carbon::createFromFormat('d.m.Y', $date)->toDateString()
+            : null;
+    }
+
+    public function setUntilAttribute($date)
+    {
+        $this->attributes['until'] = $date
+            ? Carbon::createFromFormat('d.m.Y', $date)->toDateString()
+            : null;
+    }
+
     public function setGMobileAttribute($g_mobile)
     {
         return $this->attributes['g_mobile'] = make_mobile($g_mobile);
+    }
+
+    // Helpers
+    public function registerMediaCollections()
+    {
+        $this->addMediaCollection('verification')->useDisk('verification')->singleFile();
+    }
+
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('optimized')->fit(Manipulations::FIT_CONTAIN, 1500, 2000)
+             ->performOnCollections('verification');
+    }
+
+    public function addVerificationDoc($file)
+    {
+        $media = $this->addMedia($file)->sanitizingFileName(function ($fileName) {
+            return $this->id . str_random(5) . '.' . explode('.', $fileName)[1];
+        })->toMediaCollection('verification');
+
+        return $media;
     }
 }
