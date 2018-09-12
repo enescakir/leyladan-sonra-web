@@ -183,7 +183,7 @@ Route::resource('post', 'Admin\Child\PostController');
 */
 Route::prefix('faculty')->as('faculty.')->group(function () {
     Route::prefix('{faculty}')->group(function () {
-        Route::get('post', 'Admin\Child\PostController@faculty')->name('post');
+        Route::resource('post', 'Admin\Child\FacultyPostController')->only(['index', 'edit']);
         Route::resource('email', 'Admin\Management\FacultyEmailController')->only(['create', 'store']);
         Route::resource('user', 'Admin\Management\FacultyUserController')->parameters([
             'user' => 'any_user'

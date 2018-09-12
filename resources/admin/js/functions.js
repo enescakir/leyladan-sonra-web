@@ -188,7 +188,8 @@ function initSidebar() {
         url: "/admin/sidebar/data",
         method: "GET"
     }).done(function (response) {
-        $('.unapproved-user-count').text(response.data['unapproved-user-count'])
+        $('.unapproved-user-count').text(response.data['unapproved-user-count']);
+        $('.unapproved-post-count').text(response.data['unapproved-post-count']);
     });
 }
 

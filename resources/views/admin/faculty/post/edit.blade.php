@@ -10,7 +10,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home"></i> Anasayfa</a></li>
-            <li><a href="{{ route('admin.post.index') }}">Tüm Yazılar</a></li>
+            <li><a href="{{ route('admin.faculty.post.index', $faculty->id) }}">{{ $faculty->full_name }} Yazıları</a></li>
             <li>Yazı Düzenleme</li>
             <li class="active">{{ $post->child->full_name }}</li>
         </ol>

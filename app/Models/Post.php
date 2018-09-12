@@ -12,22 +12,21 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use App\Traits\HasMediaTrait;
 use App\Traits\BaseActions;
 use App\Traits\Approvable;
-use App\Enums\ImageRatio;
-use Carbon\Carbon;
-use Auth;
 
 class Post extends Model implements HasMedia
 {
     use BaseActions;
-    use Approvable;
+    use Approvable {
+        approve as protected approveTrait;
+    }
     use HasMediaTrait;
     use Filterable;
     use Downloadable;
 
     // Properties
-    protected $table    = 'posts';
+    protected $table = 'posts';
     protected $fillable = ['child_id', 'approved_by', 'approved_at', 'text', 'type'];
-    protected $dates    = ['created_at', 'updated_at', 'deleted_at', 'approved_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at', 'approved_at'];
 
     // Relations
     public function child()
@@ -40,10 +39,23 @@ class Post extends Model implements HasMedia
         return $this->hasMany(PostImage::class);
     }
 
+    // Accessors
+    public function getApprovalLabelAttribute()
+    {
+        if ($this->isApproved()) {
+            return "<span class='label label-success'> Onaylandı </span>";
+        }
+        return "<span class='label label-danger'> Onaylanmadı </span>";
+    }
+
     // Mutators
     public function setTextAttribute($text)
     {
-        return $this->attributes['text'] = clean_text($text);
+        $text = trim(strip_tags($text))
+            ? clean_text($text)
+            : null;
+
+        return $this->attributes['text'] = $text;
     }
 
     // Scopes
@@ -51,10 +63,10 @@ class Post extends Model implements HasMedia
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('id', $search)
-                ->orWhere('text', 'like', '%' . $search . '%')
-                ->orWhereHas('child', function ($query3) use ($search) {
-                    $query3->search($search);
-                });
+                   ->orWhere('text', 'like', '%' . $search . '%')
+                   ->orWhereHas('child', function ($query3) use ($search) {
+                       $query3->search($search);
+                   });
         });
     }
 
@@ -81,63 +93,25 @@ class Post extends Model implements HasMedia
     }
 
     // Helpers
-    public function approve($approval)
+    public function approve($approval = true)
     {
-        if ($approval) {
-            $this->approved_at = Carbon::now();
-            $this->approved_by = Auth::user()->id;
-            $this->child->processes()->create([
-                'desc' => 'Çocuğun yazısı onaylandı.'
-            ]);
-        } else {
-            $this->approved_at = null;
-            $this->approved_by = null;
-            $this->child->processes()->create([
-                'desc' => 'Çocuğun yazısının onayı kaldırıldı.'
-            ]);
-        }
+        $this->approveTrait($approval);
+
+        $processDesc = $approval
+            ? 'Çocuğun yazısı onaylandı.'
+            : 'Çocuğun yazısının onayı kaldırıldı.';
+
+        $this->child->processes()->create([
+            'desc' => $processDesc
+        ]);
+
         return $this->save();
     }
 
-    public function getApprovalLabelAttribute()
-    {
-        if ($this->isApproved()) {
-            return "<span class='label label-success'> Onaylandı </span>";
-        }
-        return "<span class='label label-danger'> Onaylanmadı </span>";
-    }
-
-    public function addImage($file, $data)
-    {
-        $postImage = PostImage::create([
-          'post_id' => $this->id,
-          'name'    => $child->id . str_random(5) . '.jpg',
-          'ratio'   => $data['ratio'],
-        ]);
-
-        $imageWidth = $data['ratio'] == ImageRatio::Landscape ? 1000 : 800;
-        // Increase limits for image process
-        ini_set('max_execution_time', 300);
-        ini_set('memory_limit', '-1');
-        Image::make($file)
-        ->rotate(-$data['rotation'])
-        ->crop($data['w'], $data['h'], $data['x'], $data['y'])
-        ->resize($imageWidth, null, function ($constraint) {
-            $constraint->aspectRatio();
-        })
-        ->save(upload_path('child') . '/' . $postImage->name, 90);
-        ini_restore("memory_limit");
-        ini_restore("max_execution_time");
-    }
-
-    // Helpers
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('thumb')
-             ->fit(Manipulations::FIT_CONTAIN, 200, 200);
-        $this->addMediaConversion('medium')
-             ->fit(Manipulations::FIT_CONTAIN, 500, 1000);
-        $this->addMediaConversion('large')
-             ->fit(Manipulations::FIT_CONTAIN, 1000, 1000);
+        $this->addMediaConversion('thumb')->fit(Manipulations::FIT_CONTAIN, 200, 200);
+        $this->addMediaConversion('medium')->fit(Manipulations::FIT_CONTAIN, 500, 1000);
+        $this->addMediaConversion('large')->fit(Manipulations::FIT_CONTAIN, 1000, 1000);
     }
 }

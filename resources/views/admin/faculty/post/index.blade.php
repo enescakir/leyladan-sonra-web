@@ -1,17 +1,18 @@
 @extends('admin.parent')
 
-@section('title', 'Tüm Yazılar')
+@section('title', "{$faculty->full_name} Yazıları")
 
 @section('header')
     <section class="content-header">
         <h1>
-            {{ request()->approval != null ? (request()->approval ? 'Onaylanmışlar' : 'Onaylanmamışlar') : "Tüm"}}
-            {{ request()->type != null ? $postTypes[request()->type] : "Çocuk"}} Yazıları
+            {{ $faculty->full_name }}
+            {{ request()->approval != null ? (request()->approval ? 'Onaylanmışlar' : 'Onaylanmamışlar') : ""}}
+            {{ request()->type != null ? $postTypes[request()->type] : ""}} Yazıları
             <small>Sayfa {{ $posts->currentPage() . "/" . $posts->lastPage() }}</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home"></i> Anasayfa</a></li>
-            <li class="active">Yazılar</li>
+            <li class="active">{{ $faculty->full_name }} Yazıları</li>
         </ol>
     </section>
 @endsection
@@ -25,9 +26,6 @@
                 @slot('search', true)
 
                 @slot('filters')
-                    {{-- FACULTY SELECTOR --}}
-                    @include('admin.partials.selectors.faculty')
-
                     {{-- APPROVAL SELECTOR --}}
                     @include('admin.partials.selectors.approval')
 
@@ -57,7 +55,6 @@
                         @slot('head')
                             <th>ID</th>
                             <th>Çocuğun Adı</th>
-                            <th>Fakülte</th>
                             <th>Tür</th>
                             <th>Fotoğraf</th>
                             <th>Yazı</th>
@@ -70,7 +67,6 @@
                                 <tr id="post-{{ $post->id }}">
                                     <td>{{ $post->id }}</td>
                                     <td>{{ $post->child->full_name }} <strong>({{ $post->child->id }})</strong></td>
-                                    <td>{{ $post->child->faculty->name }}</td>
                                     <td>{{ $post->type }}</td>
                                     <td>
                                         @foreach($post->media->chunk(3) as $chunk)
@@ -94,7 +90,7 @@
                                                 <i class="fa fa-square-o"></i>
                                             </button>
                                             <a class="edit btn btn-warning btn-xs"
-                                               href="{{ route("admin.post.edit", $post->id) }}">
+                                               href="{{ route("admin.faculty.post.edit", [$faculty->id, $post->id]) }}">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
                                             <a class="delete btn btn-danger btn-xs"

@@ -91,11 +91,17 @@
             </a>
             <ul class="treeview-menu">
                 <li>
-                    <a href="{{ route('admin.faculty.post', [$authUser->faculty_id, 'approval' => '0']) }}"><i
-                                class="fa fa-thumbs-o-up"></i> <span>Onay Bekleyenler</span></a>
+                    <a href="{{ route('admin.faculty.post.index', [$authUser->faculty_id, 'approval' => '0']) }}"><i
+                                class="fa fa-thumbs-o-up"></i> <span>Onay Bekleyenler</span>
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-red unapproved-post-count"></small>
+                        </span>
+
+                    </a>
                 </li>
                 <li class="{{ set_active('*admin/faculty/*/post') }}">
-                    <a href="{{ route('admin.faculty.post', $authUser->faculty_id) }}"><i class="fa fa-folder-o"></i>
+                    <a href="{{ route('admin.faculty.post.index', $authUser->faculty_id) }}"><i
+                                class="fa fa-folder-o"></i>
                         <span>Fakülte Yazılar</span></a>
                 </li>
                 <li class="{{ set_active('*admin/post') }}">
@@ -142,7 +148,8 @@
                     <a href="{{ route('admin.user.index') }}"><i class="fa fa-users"></i> <span>Tüm Üyeler</span></a>
                 </li>
                 <li class="{{ set_active('*admin/faculty/*/email*') }}">
-                    <a href="{{ route('admin.faculty.email.create', $authUser->faculty_id) }}"><i class="fa fa-paper-plane"></i>
+                    <a href="{{ route('admin.faculty.email.create', $authUser->faculty_id) }}"><i
+                                class="fa fa-paper-plane"></i>
                         <span>E-posta Gönder</span></a>
                 </li>
             </ul>
@@ -210,12 +217,12 @@
           </span>
             </a>
             <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-child"></i> <span>Çocuklar</span></a></li>
-                <li><a href="#"><i class="fa fa-university"></i> <span>Fakülteler</span></a></li>
-                <li><a href="#"><i class="fa fa-trophy"></i> <span>Gönüllüler</span></a></li>
-                <li><a href="#"><i class="fa fa-tint"></i> <span>Kan Bağışçıları</span></a></li>
-                <li><a href="#"><i class="fa fa-users"></i> <span>Üyeler</span></a></li>
-                <li><a href="#"><i class="fa fa-globe"></i> <span>Site Ziyareti</span></a></li>
+                <li><a href="#"><i class="fa fa-child"></i> <span>çocuklar</span></a></li>
+                <li><a href="#"><i class="fa fa-university"></i> <span>fakülteler</span></a></li>
+                <li><a href="#"><i class="fa fa-trophy"></i> <span>gönüllüler</span></a></li>
+                <li><a href="#"><i class="fa fa-tint"></i> <span>kan bağışçıları</span></a></li>
+                <li><a href="#"><i class="fa fa-users"></i> <span>üyeler</span></a></li>
+                <li><a href="#"><i class="fa fa-globe"></i> <span>site ziyareti</span></a></li>
             </ul>
         </li>
         <li class="{{ set_active('*admin/material*') }}">
