@@ -6,7 +6,7 @@ use App\Models\Post;
 
 class PostFilter extends Filter
 {
-    protected $filters = ['faculty_id', 'type', 'approval', 'search', 'per_page', 'download'];
+    protected $filters = ['faculty_id', 'type', 'approval', 'search', 'download'];
 
     protected function faculty_id($faculty_id)
     {

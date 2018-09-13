@@ -5,12 +5,15 @@ namespace App\Enums;
 class UserRole extends BaseEnum
 {
     const All = null;
-    const Admin = 'Yönetici';
-    const FacultyManager = 'Fakülte Sorumlusu';
-    const FacultyBoardMember = 'Fakülte Yönetim Kurulu';
-    const CommunicationMember = 'İletişim Sorumlusu';
-    const GiftMember = 'Hediye Sorumlusu';
-    const WebsiteMember = 'Site Sorumlusu';
-    const NormalMember = 'Normal Üye';
-    const BloodMember = 'Kan Bağışı Görevlisi';
+    const Admin = 'admin';
+    const FacultyManager = 'manager';
+    const FacultyBoard = 'board';
+    const Relation = 'relation';
+    const Gift = 'gift';
+    const Website = 'website';
+    const Normal = 'normal';
+    const Blood = 'blood';
+    const Content = 'content';
+    const Graduated = 'graduated';
+    const Left = 'left';
 }

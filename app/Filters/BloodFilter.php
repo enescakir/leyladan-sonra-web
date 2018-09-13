@@ -6,7 +6,7 @@ use App\Models\Blood;
 
 class BloodFilter extends Filter
 {
-    protected $filters = ['blood_type', 'rh', 'city', 'search', 'per_page', 'download'];
+    protected $filters = ['blood_type', 'rh', 'city', 'search', 'download'];
 
 
     protected function download()

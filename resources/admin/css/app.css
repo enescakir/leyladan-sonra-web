@@ -108,3 +108,8 @@ tr .two-button {
     top: 35px;
     right: 10px;
 }
+
+.long-column {
+    max-width:400px !important;
+    white-space: normal !important;
+}

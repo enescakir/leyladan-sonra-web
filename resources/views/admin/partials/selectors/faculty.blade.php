@@ -2,7 +2,7 @@
     'selector' => [
         'id'        => 'faculty-selector',
         'class'     => 'btn-default',
-        'icon'      => 'fa fa-building',
+        'icon'      => 'fa fa-hospital-o',
         'current'   => request()->faculty_id,
         'values'    => App\Models\Faculty::toSelect('Hepsi'),
         'default'   => 'Fakülte',

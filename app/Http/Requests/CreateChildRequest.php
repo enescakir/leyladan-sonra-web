@@ -40,8 +40,7 @@ class CreateChildRequest extends Request
             'adress'           => 'required',
             'child_state'      => 'required',
             'child_state_desc' => 'required',
-            'website_text'     => 'required',
-            'website_image'    => 'required|image',
+            'meeting_text'     => 'required',
             'verification_doc' => 'image',
             'users'            => 'required'
         ];

@@ -108,7 +108,7 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
         $gift = Role::updateOrCreate(['name' => 'gift', 'display' => 'Hediye Sorumlusu', 'public' => true]);
-        $manager->syncPermissions([
+        $gift->syncPermissions([
             'create child', 'edit child', 'list own children', 'list faculty children basic',
             'list volunteers'
         ]);

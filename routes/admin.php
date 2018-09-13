@@ -65,21 +65,9 @@ Route::prefix('faculty')->as('faculty.')->group(function () {
         Route::get('messages', 'Admin\Management\FacultyController@messages')->name('messages');
         Route::get('messages/unanswered', 'Admin\Management\FacultyController@messagesUnanswered')
              ->name('messages.unanswered');
-        Route::get('children', 'Admin\Management\FacultyController@children')->name('children');
-        Route::get('children/data', 'Admin\Management\FacultyController@childrenData')->name('children.data');
-        Route::get('posts', 'Admin\Management\FacultyController@posts')->name('posts');
-        Route::get('posts/data', 'Admin\Management\FacultyController@postsData')->name('posts.data');
-        Route::get('posts/unapproved', 'Admin\Management\FacultyController@postsUnapproved')->name('posts.unapproved');
-        Route::get('posts/unapproved/data', 'Admin\Management\FacultyController@postsUnapprovedData')
-             ->name('posts.unapproved.data');
-        Route::get('posts/unapproved/count', 'Admin\Management\FacultyController@postsUnapprovedCount')
-             ->name('posts.unapproved.count');
         Route::get('profiles', 'Admin\Management\FacultyController@profiles')->name('profiles');
-        Route::get('sendmail', 'Admin\Management\FacultyController@createMail')->name('mail.create');
-        Route::post('sendmail', 'Admin\Management\FacultyController@sendMail')->name('mail.send');
     });
 });
-Route::resource('faculty', 'Admin\Management\FacultyController');
 
 Route::prefix('chat')->as('chat.')->group(function () {
     Route::prefix('{id}')->group(function () {
@@ -101,8 +89,6 @@ Route::prefix('volunteer')->as('volunteer.')->group(function () {
     Route::get('data', 'Admin\Volunteer\VolunteerController@indexData')->name('index.data');
 });
 Route::resource('volunteer', 'Admin\Volunteer\VolunteerController');
-
-Route::post('/process', 'Admin\Child\ChildController@createProcess')->name('process.store');
 
 Route::resource('mobile-notification', 'Admin\Volunteer\MobileNotificationController');
 Route::post('mobile-notification/{id}/send', 'Admin\Volunteer\MobileNotificationController@send')
@@ -157,6 +143,12 @@ Route::get('/email/activation/{token}', 'Admin\Auth\ActivateEmailController@acti
 | Children Routes
 |--------------------------------------------------------------------------
 */
+Route::prefix('child')->as('child.')->group(function () {
+    Route::prefix('{child}')->group(function () {
+        Route::post('/process', 'Admin\Child\ChildProcessController@store')->name('process.store');
+        Route::get('post', 'Admin\Child\ChildPostController@index')->name('post.index');
+    });
+});
 Route::resource('child', 'Admin\Child\ChildController');
 
 /*
@@ -183,6 +175,7 @@ Route::resource('post', 'Admin\Child\PostController');
 */
 Route::prefix('faculty')->as('faculty.')->group(function () {
     Route::prefix('{faculty}')->group(function () {
+        Route::resource('child', 'Admin\Child\FacultyChildController')->only(['index', 'edit']);
         Route::resource('post', 'Admin\Child\FacultyPostController')->only(['index', 'edit']);
         Route::resource('email', 'Admin\Management\FacultyEmailController')->only(['create', 'store']);
         Route::resource('user', 'Admin\Management\FacultyUserController')->parameters([

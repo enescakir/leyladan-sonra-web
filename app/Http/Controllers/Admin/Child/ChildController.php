@@ -32,7 +32,7 @@ class ChildController extends AdminController
     {
         $children = Child::with(['faculty'])->latest();
         $children->filter($filters);
-        $children = $children->paginate();
+        $children = $this->paginate($children);
 
         return view('admin.child.index', compact('children'));
     }
@@ -67,8 +67,7 @@ class ChildController extends AdminController
         }
 
         $post = $child->meetingPost()->create([
-            'child_id' => $child->id,
-            'text'     => $request->post_text,
+            'text'     => $request->meeting_text,
             'type'     => PostType::Meeting
         ]);
         //        $post->addMedia();

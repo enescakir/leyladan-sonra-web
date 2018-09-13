@@ -6,7 +6,7 @@ use App\Models\Faculty;
 
 class FacultyFilter extends Filter
 {
-    protected $filters = ['started', 'city', 'search', 'per_page', 'download'];
+    protected $filters = ['started', 'city', 'search', 'download'];
 
     protected function download()
     {

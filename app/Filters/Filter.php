@@ -67,6 +67,9 @@ abstract class Filter
 
     public static function getAppends()
     {
-        return (new static(request()))->getFilters();
+        $appends = (new static(request()))->getFilters();
+        array_push($appends, 'per_page');
+
+        return $appends;
     }
 }

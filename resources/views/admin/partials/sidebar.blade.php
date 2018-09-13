@@ -28,7 +28,10 @@
                     <a href="{{ route('admin.child.create') }}"><i class="fa fa-plus"></i> <span>Yeni Çocuk Ekle</span></a>
                 </li>
                 <li><a href="#"><i class="fa fa-heart"></i> <span>Kendi Çocuklarım</span></a></li>
-                <li><a href="#"><i class="fa fa-bars"></i> <span>Fakülte Çocukları</span></a></li>
+                <li class="{{ set_active('*admin/faculty/*/child') }}">
+                    <a href="{{ route('admin.faculty.child.index', $authUser->faculty_id) }}"><i class="fa fa-bars"></i>
+                        <span>Fakülte Çocukları</span></a>
+                </li>
                 <li class="{{ set_active('*admin/child') }}">
                     <a href="{{ route('admin.child.index') }}"><i class="fa fa-list"></i>
                         <span>Bütün Çocuklar</span></a>

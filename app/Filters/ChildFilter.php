@@ -6,11 +6,18 @@ use App\Models\Child;
 
 class ChildFilter extends Filter
 {
-    protected $filters = ['faculty_id', 'department', 'diagnosis', 'search', 'download'];
+    protected $filters = ['faculty_id', 'department', 'diagnosis', 'gift_state', 'search', 'until', 'download'];
 
     protected function faculty_id($faculty_id)
     {
         return $this->builder->where('faculty_id', $faculty_id);
+    }
+
+    protected function until($until)
+    {
+        return $until
+            ? $this->builder->whereDate('until', '>=', now())
+            : $this->builder->whereDate('until', '<', now());
     }
 
     protected function download()

@@ -2,7 +2,7 @@
     'selector' => [
         'id'        => 'department-selector',
         'class'     => 'btn-default',
-        'icon'      => 'fa fa-building',
+        'icon'      => 'fa fa-bed',
         'current'   => request()->department,
         'values'    => App\Models\Department::toSelect('Hepsi'),
         'default'   => 'Departman',
