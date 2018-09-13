@@ -29,9 +29,12 @@ function initCheckbox() {
 }
 
 function initSelect2() {
-    $('.select2').select2();
+    $('.select2').select2({
+        width: '100%'
+    });
     $('.select2-no-search').select2({
         minimumResultsForSearch: Infinity,
+        width: '100%'
     });
 }
 
@@ -171,7 +174,7 @@ function initNumberInput() {
 
 function initSummernote() {
     $('.summernote').summernote({
-        height: 300,
+        height: 200,
         toolbar: [
             ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
             ['fontsize', ['fontsize']],

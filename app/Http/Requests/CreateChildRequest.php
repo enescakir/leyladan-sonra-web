@@ -24,25 +24,27 @@ class CreateChildRequest extends Request
     public function rules()
     {
         return [
-            'department'       => 'required',
             'first_name'       => 'required',
             'last_name'        => 'required',
             'diagnosis'        => 'required',
             'diagnosis_desc'   => 'required',
+            'child_state'      => 'required',
+            'child_state_desc' => 'required',
             'meeting_day'      => 'required|date',
             'birthday'         => 'required|date',
             'wish'             => 'required',
+            'faculty_id'       => 'required',
+            'department'       => 'required',
+            'users'            => 'required',
+            'verification_doc' => 'required|image',
             'g_first_name'     => 'required',
             'g_last_name'      => 'required',
             'g_mobile'         => 'required',
             'province'         => 'required',
             'city'             => 'required',
-            'adress'           => 'required',
-            'child_state'      => 'required',
-            'child_state_desc' => 'required',
+            'address'          => 'required',
+            'mediaId'          => 'required',
             'meeting_text'     => 'required',
-            'verification_doc' => 'image',
-            'users'            => 'required'
         ];
     }
 }

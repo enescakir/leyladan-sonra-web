@@ -114,12 +114,24 @@ class Child extends Model implements HasMedia
 
     public function processes()
     {
-        return $this->hasMany(Process::class)->with(['creator']);
+        return $this->hasMany(Process::class)->with(['creator', 'processable'])->latest();
     }
 
     public function featuredMedia()
     {
         return $this->belongsTo(Media::class);
+    }
+
+    public function allMedia()
+    {
+        $media = collect();
+        if ($this->meetingPost){
+            $media = $media->merge($this->meetingPost->media);
+        }
+        if ($this->deliveryPost){
+            $media = $media->merge($this->deliveryPost->media);
+        }
+        return $media;
     }
 
     // Scopes
@@ -180,6 +192,20 @@ class Child extends Model implements HasMedia
         return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
     }
 
+    public function getMeetingDayLabelAttribute()
+    {
+        return $this->meeting_day
+            ? $this->meeting_day->format('d.m.Y')
+            : '';
+    }
+
+    public function getUntilLabelAttribute()
+    {
+        return $this->until
+            ? $this->until->format('d.m.Y')
+            : '';
+    }
+
     public function getMeetingDayHumanAttribute()
     {
         return date('d.m.Y', strtotime($this->attributes['meeting_day']));
@@ -199,14 +225,18 @@ class Child extends Model implements HasMedia
     public function setMeetingDayAttribute($date)
     {
         $this->attributes['meeting_day'] = $date
-            ? Carbon::createFromFormat('d.m.Y', $date)->toDateString()
+            ? (is_object($date)
+                ? $date
+                : Carbon::createFromFormat('d.m.Y', $date)->toDateString())
             : null;
     }
 
     public function setUntilAttribute($date)
     {
         $this->attributes['until'] = $date
-            ? Carbon::createFromFormat('d.m.Y', $date)->toDateString()
+            ? (is_object($date)
+                ? $date
+                : Carbon::createFromFormat('d.m.Y', $date)->toDateString())
             : null;
     }
 

@@ -21,7 +21,7 @@
         {!! Form::model($faculty, ['method' => 'PUT', 'route' => ['admin.faculty.update', $faculty->id], 'class' => '', 'files' => true]) !!}
         <div class="col-md-6">
             <!-- Horizontal Form -->
-            <div class="box box-danger">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <h4 class="box-title">Temel Bilgiler</h4>
                 </div>
@@ -104,7 +104,7 @@
         </div>
         <div class="col-md-6">
             <!-- Horizontal Form -->
-            <div class="box box-danger">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <h4 class="box-title">Fakülte Sorumluları</h4>
                 </div>
@@ -120,7 +120,7 @@
                 </div>
                 <!-- /.box-footer -->
             </div>
-            <div class="box box-danger">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <h4 class="box-title">Fakülte Logosu</h4>
                 </div>

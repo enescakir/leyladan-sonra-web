@@ -50,7 +50,6 @@
                     {{-- OTHER BUTTONS --}}
                     <a class="btn btn-filter btn-primary" target="_blank" href="javascript:" filter-param="download"
                        filter-value="true"><i class="fa fa-download"></i></a>
-                    <a class="btn btn-success" href="{{ route('admin.faculty.create') }}"><i class="fa fa-plus"></i></a>
                 @endslot
 
                 @slot('body')

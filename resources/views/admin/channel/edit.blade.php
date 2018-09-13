@@ -20,7 +20,7 @@
   <div class="row">
     <div class="col-md-8">
       <!-- Horizontal Form -->
-      <div class="box box-danger">
+      <div class="box box-primary">
         <!-- form start -->
         {!! Form::model($channel, [ 'method' => 'PUT', 'route' => ['admin.channel.update', $channel->id] , 'class' => 'form-horizontal', 'files' => true ]) !!}
         <div class="box-body">

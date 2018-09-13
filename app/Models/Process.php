@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProcessType;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Traits\BaseActions;
@@ -12,6 +13,7 @@ class Process extends Model
     // Properties
     protected $table    = 'processes';
     protected $fillable = ['child_id', 'desc', 'type', 'processable_id', 'processable_type'];
+    protected $appends = ['text'];
 
     // Relations
     public function child()
@@ -24,4 +26,12 @@ class Process extends Model
         return $this->morphTo();
     }
 
+    public function getTextAttribute()
+    {
+        $text = ProcessType::getText($this->type);
+        if ($this->processable){
+            $text = str_replace('*', $this->processable->full_name, $text);
+        }
+        return $text;
+    }
 }

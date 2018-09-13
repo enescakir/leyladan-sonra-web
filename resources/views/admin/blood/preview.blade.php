@@ -19,7 +19,7 @@
 @section('content')
   <div class="row">
     <div class="col-xs-12">
-      <div class="box box-danger" id="sms-send" >
+      <div class="box box-primary" id="sms-send" >
         <div class="box-header with-border">
           <h4 class="box-title">SMS göndermeden önce bütün bilgileri kontrol ediniz</h4>
           <div class="box-tools">
@@ -91,7 +91,7 @@
         <!-- /.box-footer -->
         {!! Form::close() !!}
       </div>
-      <div class="box">
+      <div class="box box-primary">
         <div class="box-header">
           <h3 class="box-title">SMS Gönderilecek {{ count($bloods) }} Bağışçı</h3>
         </div>

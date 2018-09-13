@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-md-8">
             <!-- Horizontal Form -->
-            <div class="box box-danger">
+            <div class="box box-primary">
                 <!-- /.box-header -->
                 <!-- form start -->
                 {!! Form::open(['method' => 'POST', 'route' => 'admin.form.store', 'class' => '']) !!}

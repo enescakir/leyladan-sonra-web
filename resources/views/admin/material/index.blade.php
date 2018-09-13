@@ -52,7 +52,7 @@
         <div class="row">
             @foreach($chunk as $material)
                 <div id="material-{{ $material->id }}" class="col-xs-6 col-sm-3">
-                    <div class="box">
+                    <div class="box box-primary">
                         <div class="box-header">
                             <h3 class="box-title"> {{ $material->name }} </h3>
                             <div class="box-tools">

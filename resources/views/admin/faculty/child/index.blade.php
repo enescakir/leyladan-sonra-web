@@ -42,7 +42,6 @@
                     {{-- OTHER BUTTONS --}}
                     <a class="btn btn-filter btn-primary" target="_blank" href="javascript:;" filter-param="download"
                        filter-value="true"><i class="fa fa-download"></i></a>
-                    <a href="{{ route('admin.child.create') }}" class="btn btn-success"><i class="fa fa-plus"></i></a>
                 @endslot
 
                 @slot('body')
@@ -165,7 +164,7 @@
                 },
                 allowOutsideClick: false,
             }).then(function (response) {
-                row.find('td[itemprop=gift_state]').html(response.label);
+                row.find('td[itemprop=gift_state]').html(response.data.label);
             })
         });
     </script>

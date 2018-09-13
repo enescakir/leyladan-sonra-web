@@ -145,11 +145,14 @@ Route::get('/email/activation/{token}', 'Admin\Auth\ActivateEmailController@acti
 */
 Route::prefix('child')->as('child.')->group(function () {
     Route::prefix('{child}')->group(function () {
-        Route::post('/process', 'Admin\Child\ChildProcessController@store')->name('process.store');
+        Route::post('process', 'Admin\Child\ChildProcessController@store')->name('process.store');
         Route::get('post', 'Admin\Child\ChildPostController@index')->name('post.index');
+        Route::get('verification', 'Admin\Child\ChildVerificationController@show')->name('verification.show');
     });
 });
 Route::resource('child', 'Admin\Child\ChildController');
+
+Route::post('tmp-media', 'Admin\Child\TemporaryMediaController@store')->name('tempMedia.store');
 
 /*
 |--------------------------------------------------------------------------

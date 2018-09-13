@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\Child;
 use App\Enums\FeedType;
 use App\Enums\ProcessType;
 use App\Http\Controllers\Admin\AdminController;
+use App\Models\Department;
+use App\Models\Post;
 use App\Services\ProcessService;
 use App\Services\FeedService;
 use Illuminate\Http\Request;
@@ -39,21 +41,23 @@ class ChildController extends AdminController
 
     public function create()
     {
-        $faculties = Faculty::toSelect();
-        $users = auth()->user()->faculty->users->toSelect();
+        $faculties = Faculty::toSelect('Fakülte seçiniz');
+        $users = auth()->user()->faculty->toUsersSelect();
         $diagnosises = Diagnosis::toSelect('Tanı seçiniz');
+        $departments = Department::toSelect('Departman seçiniz');
 
-        return view('admin.child.create', compact('faculties', 'users', 'diagnosises'));
+        return view('admin.child.create', compact('faculties', 'users', 'diagnosises', 'departments'));
     }
 
     public function store(CreateChildRequest $request)
     {
+
         $this->checkSimilarChildren($request->first_name, $request->last_name, $request->similarity_accept);
 
         $data = $request->only([
             'department', 'first_name', 'last_name', 'diagnosis', 'diagnosis_desc', 'taken_treatment', 'child_state',
             'child_state_desc', 'gender', 'meeting_day', 'birthday', 'wish', 'g_first_name', 'g_last_name', 'g_mobile',
-            'g_email', 'province', 'city', 'address', 'extra_info'
+            'g_email', 'province', 'city', 'address', 'extra_info', 'faculty_id'
         ]);
         $data['gift_state'] = GiftStatus::Waiting;
         $data['until'] = Carbon::createFromFormat('d.m.Y', $request->meeting_day)->addYear();
@@ -66,32 +70,49 @@ class ChildController extends AdminController
             $child->addVerificationDoc($request->file('verification_doc'));
         }
 
-        $post = $child->meetingPost()->create([
+        $post = Post::create([
+            'child_id' => $child->id,
             'text'     => $request->meeting_text,
             'type'     => PostType::Meeting
         ]);
-        //        $post->addMedia();
-        // TODO: Add media
+        $child->meetingPost()->associate($post);
+        $child->save();
+
+        foreach ($request->mediaId as $index => $id) {
+            $media = $post->addMedia(storage_path('app/public/tmp/' . $request->mediaName[$index]),
+                ['ratio' => $request->mediaRatio[$index]]);
+            if ($request->mediaFeature[$index] == '1') {
+                $child->featuredMedia()->associate($media);
+                $child->save();
+            }
+        }
+
+        if (!$child->featuredMedia){
+            $child->featuredMedia()->associate($post->getFirstMedia());
+            $child->save();
+        }
+
         $this->processService->create($child, ProcessType::Created);
         $this->feedService->create($child->faculty, FeedType::ChildCreated, ['child' => $child->full_name]);
 
         session_success("<strong>{$child->full_name}</strong> başarıyla sisteme eklendi.");
-
         return redirect()->route('admin.child.show', $child->id);
     }
 
     public function show(Child $child)
     {
+        $child->load('processes', 'meetingPost.media', 'deliveryPost.media');
         return view('admin.child.show', compact('child'));
     }
 
     public function edit(Child $child)
     {
-        $users = auth()->user()->faculty->users->toSelect();
+        $faculties = Faculty::toSelect('Fakülte seçiniz');
+        $users = auth()->user()->faculty->toUsersSelect();
         $diagnosises = Diagnosis::toSelect('Tanı seçiniz');
-        $faculties = Faculty::toSelect();
+        $departments = Department::toSelect('Departman seçiniz');
 
-        return view('admin.child.edit', compact('child', 'users', 'diagnosises', 'faculties'));
+        return view('admin.child.edit', compact('child', 'users', 'diagnosises', 'faculties', 'departments'));
     }
 
     public function update(Request $request, Child $child)

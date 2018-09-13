@@ -53,6 +53,10 @@ class ChildProcessController extends AdminController
         }
 
         $process->loadMissing('creator');
-        return ['process' => $process, 'label' => $child->gift_state_label];
+        return api_success([
+            'process'          => $process,
+            'label'            => $child->gift_state_label,
+            'created_at_label' => $process->created_at_label
+        ]);
     }
 }

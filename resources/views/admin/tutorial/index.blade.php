@@ -52,7 +52,7 @@
         <div class="row">
             @foreach($chunk as $tutorial)
                 <div id="tutorial-{{ $tutorial->id }}" class="col-sm-6 col-md-4">
-                    <div class="box">
+                    <div class="box box-primary">
                         <div class="box-header">
                             <h3 class="box-title"> {{ $tutorial->name }}</h3> <span
                                     class="label label-danger label-sm">{{ $tutorial->category }}</span>

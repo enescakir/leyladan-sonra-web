@@ -212,7 +212,7 @@ class User extends Authenticatable implements HasMedia
 
     public static function toSelect($placeholder = null)
     {
-        $res = static::orderBy('id', 'DESC')->get()->pluck('full_name', 'id');
+        $res = static::orderBy('first_name')->get()->pluck('full_name', 'id');
         return $placeholder
             ? collect(['' => $placeholder])->union($res)
             : $res;

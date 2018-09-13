@@ -25,7 +25,7 @@
   <div class="row">
     <div class="col-md-8">
       <!-- Horizontal Form -->
-      <div class="box box-danger">
+      <div class="box box-primary">
         <!-- form start -->
         {!! Form::open(['route' => 'admin.blood.people.update', 'method' => 'POST' ]) !!}
         <div class="box-body">

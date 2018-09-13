@@ -42,7 +42,7 @@ return [
     'exists'               => 'The selected :attribute is invalid.',
     'file'                 => 'The :attribute must be a file.',
     'filled'               => 'The :attribute field must have a value.',
-    'image'                => 'The :attribute must be an image.',
+    'image'                => ':attribute görsel olmalıdır.',
     'in'                   => 'The selected :attribute is invalid.',
     'in_array'             => 'The :attribute field does not exist in :other.',
     'integer'              => 'The :attribute must be an integer.',
@@ -130,6 +130,8 @@ return [
       'rhs' => 'RH',
       'blood_type' => 'Kan Grubu',
       'blood_types' => 'Kan Grubu',
+      'verification_doc' => 'Onam Formu',
+      'mediaId' => 'Fotoğraflar',
     ],
 
 ];
