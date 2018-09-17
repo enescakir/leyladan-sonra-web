@@ -105,7 +105,6 @@
     var url = '/admin/tmp-media';
 
     $(function () {
-
         $(".add-img-btn").on('click', function (event) {
             suffix = $(this).attr('suffix');
             postID = $(this).attr('post-id');

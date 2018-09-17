@@ -90,25 +90,12 @@
                 <!-- form start -->
                 <div class="box-body">
                     <div class="post-images">
-                        @forelse($post->media as $media)
-                            <div class="post-image-container" id="media-{{$media->id}}">
-                                <a href="{{ $media->getUrl('large') }}" target="_blank">
-                                    <img class="post-image img-responsive" src="{{ $media->getUrl('thumb') }}"
-                                         alt="{{ $post->child->full_name }}">
-                                </a>
-                                <button class="delete-btn img-btn btn btn-sm btn-danger" title="Fotoğrafı Sil"
-                                        delete-name="{{ $post->child->full_name }}"
-                                        delete-id="{{ $media->id }}"><i
-                                            class="fa fa-trash"></i></button>
-                                <button class="feature-btn img-btn btn btn-sm btn-default" title="Fotoğrafı Öne Çıkar"
-                                        feature-id="{{ $media->id }}">
-                                    <i class="fa fa-star-o"></i></button>
-                            </div>
-                        @empty
-                            <p>Yazının fotoğrafı bulunmamaktadır</p>
-                        @endforelse
+                        @include('admin.partials.media.post', [
+                            'postMedias' => $post->media,
+                            'childName' => $post->child->full_name
+                        ])
                         <div class="img-add-container">
-                            <a class="btn btn-app" id="add-img-btn">
+                            <a class="btn btn-app add-img-btn" post-id="{{ $post->id }}">
                                 <i class="fa fa-plus"></i> Fotoğraf Eke
                             </a>
                         </div>
@@ -143,7 +130,7 @@
 @endsection
 
 @section('scripts')
-    @include('admin.partials.modal.cropper', ['postId' => $post->id])
+    @include('admin.partials.modal.cropper')
 
     <script>
         deleteItem('media', 'isimli çocuğun fotoğrafını silmek istediğine emin misin?', 'delete-btn', '/admin/post/{{ $post->id }}/media/[ID]');

@@ -202,7 +202,7 @@
                             'tempMedias' => old('mediaId', [])
                         ])
                         <div class="img-add-container">
-                            <a class="btn btn-app" id="add-img-btn">
+                            <a class="btn btn-app add-img-btn">
                                 <i class="fa fa-plus"></i> Fotoğraf Eke
                             </a>
                         </div>
