@@ -56,8 +56,10 @@ class ChildController extends AdminController
         $data = $request->only([
             'department', 'first_name', 'last_name', 'diagnosis', 'diagnosis_desc', 'taken_treatment', 'child_state',
             'child_state_desc', 'gender', 'meeting_day', 'birthday', 'wish', 'g_first_name', 'g_last_name', 'g_mobile',
-            'g_email', 'province', 'city', 'address', 'extra_info', 'faculty_id'
+            'g_email', 'province', 'city', 'address', 'extra_info', 'faculty_id', 'is_name_public', 'is_diagnosis_public'
         ]);
+        $data['is_name_public'] = $request->has('is_name_public');
+        $data['is_diagnosis_public'] = $request->has('is_diagnosis_public');
         $data['gift_state'] = GiftStatus::Waiting;
         $data['until'] = Carbon::createFromFormat('d.m.Y', $request->meeting_day)->addYear();
 
@@ -110,11 +112,15 @@ class ChildController extends AdminController
 
     public function update(Request $request, Child $child)
     {
-        $child->update($request->only([
+        $data = $request->only([
             'department', 'first_name', 'last_name', 'diagnosis', 'diagnosis_desc', 'taken_treatment', 'child_state',
             'child_state_desc', 'gender', 'meeting_day', 'birthday', 'wish', 'g_first_name', 'g_last_name', 'g_mobile',
-            'g_email', 'province', 'city', 'address', 'extra_info', 'until', 'gift_state'
-        ]));
+            'g_email', 'province', 'city', 'address', 'extra_info', 'until', 'gift_state', 'faculty_id'
+        ]);
+        $data['is_name_public'] = $request->has('is_name_public');
+        $data['is_diagnosis_public'] = $request->has('is_diagnosis_public');
+        $child->update($data);
+
         $child->users()->sync($request->users);
 
         $child->meetingPost->change($request, 'meeting');

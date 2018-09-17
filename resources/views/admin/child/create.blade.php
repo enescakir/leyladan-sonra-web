@@ -54,16 +54,38 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="checkbox icheck">
+                                <label>
+                                    {!! Form::checkbox('is_name_public', 1, true) !!}
+                                    Çocuğun adını göster
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="checkbox icheck">
+                                <label>
+                                    {!! Form::checkbox('is_diagnosis_public', 1, true) !!}
+                                    Çocuğun tanısını göster
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12 form-group{{ $errors->has('child_state') ? ' has-error' : '' }}">
                             {!! Form::label('child_state', 'Durumu *', ['class' => 'control-label']) !!}
                             <div class="input-group">
                                 <div class="input-group-btn">
                                     <button type="button" id="child-state-btn" class="btn btn-default dropdown-toggle"
-                                            data-toggle="dropdown">{{ old('child_state', 'Durum seçiniz') }} <span class="caret"></span></button>
+                                            data-toggle="dropdown">{{ old('child_state', 'Durum seçiniz') }} <span
+                                                class="caret"></span></button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="state-btn" href="javascript:" help-text="Nerede? Nasıl?">Devam Ediyor</a></li>
-                                        <li><a class="state-btn" href="javascript:" help-text="İyileşme tarihi">İyileşti</a></li>
-                                        <li><a class="state-btn" href="javascript:" help-text="Vefat tarihi">Vefat Etti</a></li>
+                                        <li><a class="state-btn" href="javascript:" help-text="Nerede? Nasıl?">Devam
+                                                Ediyor</a></li>
+                                        <li><a class="state-btn" href="javascript:"
+                                               help-text="İyileşme tarihi">İyileşti</a></li>
+                                        <li><a class="state-btn" href="javascript:" help-text="Vefat tarihi">Vefat
+                                                Etti</a></li>
                                         <li role="separator" class="divider"></li>
                                         <li><a class="state-btn" href="javascript:" help-text="Açıklama">Diğer</a></li>
                                     </ul>

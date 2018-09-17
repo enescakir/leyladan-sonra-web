@@ -60,6 +60,25 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="checkbox icheck">
+                                <label>
+                                    {!! Form::checkbox('is_name_public') !!}
+                                    Çocuğun adını göster
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="checkbox icheck">
+                                <label>
+                                    {!! Form::checkbox('is_diagnosis_public') !!}
+                                    Çocuğun tanısını göster
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-md-12 form-group{{ $errors->has('child_state') ? ' has-error' : '' }}">
                             {!! Form::label('child_state', 'Durumu *', ['class' => 'control-label']) !!}
                             <div class="input-group">
@@ -232,7 +251,9 @@
                             'featureClass' => 'feature-btn-meeting'
                         ])
                         <div class="img-add-container-meeting">
-                            <a class="btn btn-app add-img-btn" @if($child->meetingPost->text) post-id="{{ $child->meetingPost->id }}" @endif suffix="meeting">
+                            <a class="btn btn-app add-img-btn"
+                               @if($child->meetingPost->text) post-id="{{ $child->meetingPost->id }}"
+                               @endif suffix="meeting">
                                 <i class="fa fa-plus"></i> Fotoğraf Eke
                             </a>
                         </div>
@@ -273,7 +294,9 @@
                             'featureClass' => 'feature-btn-delivery'
                         ])
                         <div class="img-add-container-delivery">
-                            <a class="btn btn-app add-img-btn" @if($child->deliveryPost->text) post-id="{{ $child->deliveryPost->id }}" @endif suffix="delivery">
+                            <a class="btn btn-app add-img-btn"
+                               @if($child->deliveryPost->text) post-id="{{ $child->deliveryPost->id }}"
+                               @endif suffix="delivery">
                                 <i class="fa fa-plus"></i> Fotoğraf Eke
                             </a>
                         </div>
@@ -308,7 +331,7 @@
     </script>
     <script>
         @if($child->featured_media_id)
-            setFeaturedMedia({{ $child->featured_media_id }});
+        setFeaturedMedia({{ $child->featured_media_id }});
         @endif
     </script>
 
