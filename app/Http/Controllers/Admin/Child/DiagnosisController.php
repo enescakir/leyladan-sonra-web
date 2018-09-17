@@ -20,7 +20,7 @@ class DiagnosisController extends AdminController
             $diagnosises->search($request->search);
         }
         if ($request->filled('download')) {
-            Diagnosis::download($departments);
+            Diagnosis::download($diagnosises);
         }
 
         $diagnosises = $diagnosises->paginate($request->per_page ?: 25);

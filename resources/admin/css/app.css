@@ -118,6 +118,19 @@ tr .two-button {
     float: right;
 }
 
+.post-images img:before {
+    content: 'Fotoğraf Dönüştürülüyor';
+    display: block;
+    position: absolute;
+    color: #ffffff;
+    padding-top: 30px;
+    padding-left: 20px;
+    width: 100%;
+    height: 90%;
+    background-color: #309A9A;
+    margin-bottom: 10px;
+}
+
 @media (max-width: 750px) {
     .btn-group-blockable > .btn {
         display: block;

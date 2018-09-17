@@ -14,6 +14,7 @@ $(function () {
     initNumberInput();
     initSummernote();
     initSidebar();
+    initBrokenImage();
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
     searchItem("search-btn", "search-input", "search");
@@ -186,6 +187,13 @@ function initSummernote() {
     });
 }
 
+function initBrokenImage() {
+    $('img').on('error', function(){
+        console.log($(this));
+        $(this).attr('src', '/admin/img/child_no_image.jpg');
+    });
+}
+
 function initSidebar() {
     $.ajax({
         url: "/admin/sidebar/data",
@@ -246,8 +254,7 @@ function setFeaturedMedia(mediaId, selectorClass = 'feature-btn') {
 function featureItem(slug, message, buttonClass = "feature-btn", url = null){
     $('.' + buttonClass).on('click', function () {
         var id = $(this).attr('feature-id');
-        var path= url ? url.replace('[ID]', id) :  ("/admin/" + slug + "/" + id + "/feature");
-
+        var path = url ? url.replace('[ID]', id) :  ("/admin/" + slug + "/" + id + "/feature");
         $.ajax({
             url: path,
             method: "PUT"

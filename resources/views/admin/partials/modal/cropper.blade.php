@@ -1,7 +1,20 @@
 <style>
     .img-container {
-        max-height: 60vh;
+        height: 60vh;
     }
+
+    .actions .btn-group {
+        margin-bottom: 5px;
+    }
+    @media (max-width: 550px) {
+        .btn-group-sm-block {
+            width: 100%;
+        }
+        .btn-group-sm-block .btn {
+            width: 100%;
+        }
+    }
+
 </style>
 <div class="modal fade" id="img-modal" role="dialog" aria-labelledby="modalLabel" tabindex="-1">
     <div class="modal-dialog modal-lg" role="document">
@@ -18,7 +31,7 @@
             </div>
             <div class="modal-footer">
                 <div class="actions pull-left">
-                    <div class="btn-group">
+                    <div class="btn-group btn-group-sm-block">
                         <label class="btn btn-primary btn-upload" for="inputImage" title="Fotoğraf Seç">
                             <input type="file" class="sr-only no-filestyle" id="inputImage" name="file"
                                    accept=".jpg,.jpeg,.png">
@@ -75,8 +88,10 @@
                         </label>
                     </div>
                 </div>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">İptal</button>
-                <button type="button" class="btn btn-success" id="crop-btn">Kaydet</button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-success" id="crop-btn">Kaydet</button>
+                </div>
             </div>
         </div>
     </div>
@@ -84,17 +99,23 @@
 
 
 <script type="text/javascript">
-    var postID;
-
-    @isset($postId)
-        postID = "{{ $postId }}";
-    @else
-        postID = false;
-    @endisset
+    var postID = false;
+    var imageContainer  = ".img-add-container";
+    var suffix = '';
+    var url = '/admin/tmp-media';
 
     $(function () {
-        $("#add-img-btn").on('click', function (event) {
-            $("#img-modal").modal("show")
+
+        $(".add-img-btn").on('click', function (event) {
+            suffix = $(this).attr('suffix');
+            postID = $(this).attr('post-id');
+            if (postID){
+                url = '/admin/post/' + postID + '/media';
+            }
+            if (suffix){
+                imageContainer = '.img-add-container-' + suffix;
+            }
+            $('#img-modal').modal("show")
         });
 
         var URL = window.URL || window.webkitURL;
@@ -196,8 +217,6 @@
                 formData.append('image', blob, 'child.jpg');
                 formData.append('ratio', aspectRatio);
 
-                var url = postID ? '/admin/post/' + postID + '/media' : '/admin/tmp-media';
-
                 $.ajax(url, {
                     method: 'POST',
                     data: formData,
@@ -207,20 +226,20 @@
                     $("#img-modal").modal("hide");
                     if (postID) {
                         var cell = getNewMediaCell(response.data.media.id, response.data.child.full_name, cropper.getCroppedCanvas({maxHeight: 300}).toDataURL());
-                        $(".img-add-container").before(cell);
+                        $(imageContainer).before(cell);
                         deleteItem('media', 'isimli çocuğun fotoğrafını silmek istediğine emin misin?', 'delete-btn-new', '/admin/post/' + postID + '/media/[ID]');
                         featureItem('media', '', 'feature-btn-new', '/admin/post/' + postID + '/media/[ID]/feature');
                     } else {
                         var cell = getTemporaryMediaCell(response.data.id, response.data.name, response.data.path, response.data.ratio);
-                        $(".img-add-container").before(cell);
+                        $(imageContainer).before(cell);
                         $('.delete-tmp-btn').on('click', function () {
                             var id = $(this).attr('delete-id');
                             $('#media-' + id).remove();
                         });
                         $('.feature-tmp-btn').on('click', function () {
                             var id = $(this).attr('feature-id');
-                            $('input[name="mediaFeature[]"]').val('0');
-                            $('#media-' + id + ' input[name="mediaFeature[]"]').val('1');
+                            $('input[name="mediaFeature' + (suffix ? '[' + suffix + ']' : '') + '[]"]').val('0');
+                            $('#media-' + id + ' input[name="mediaFeature' + (suffix ? '[' + suffix + ']' : '') + '[]"]').val('1');
                             setFeaturedMedia(id, 'feature-tmp-btn');
                         });
                     }
@@ -239,11 +258,11 @@
             '<a href="' + mediaUrl + '" target="_blank">' +
             '<img class="post-image img-responsive" src="' + mediaUrl + '">' +
             '</a>' +
-            '<button class="delete-btn delete-btn-new img-btn btn btn-sm btn-danger" title="Fotoğrafı Sil"' +
+            '<button type="button" class="delete-btn delete-btn-new img-btn btn btn-sm btn-danger" title="Fotoğrafı Sil"' +
             'delete-name="' + childName + '" delete-id="' + mediaId + '">' +
             '<i class="fa fa-trash"></i>' +
             '</button>' +
-            '<button class="feature-btn feature-btn-new img-btn btn btn-sm btn-default" title="Fotoğrafı Öne Çıkar"' +
+            '<button type="button" class="feature-btn feature-btn-new img-btn btn btn-sm btn-default" title="Fotoğrafı Öne Çıkar"' +
             'feature-id="' + mediaId + '">' +
             '<i class="fa fa-star-o"></i></button>' +
             '</div>';
@@ -251,10 +270,10 @@
 
     function getTemporaryMediaCell(id, name, path, ratio) {
         return '<div class="post-image-container" id="media-' + id + '">' +
-            '<input type="hidden" name="mediaId[]" value="' + id + '">'+
-            '<input type="hidden" name="mediaName[]" value="' + name + '">'+
-            '<input type="hidden" name="mediaFeature[]" value="0">'+
-            '<input type="hidden" name="mediaRatio[]" value="' + ratio + '">'+
+            '<input type="hidden" name="mediaId' + (suffix ? '[' + suffix + ']' : '') + '[]" value="' + id + '">'+
+            '<input type="hidden" name="mediaName' + (suffix ? '[' + suffix + ']' : '') + '[]" value="' + name + '">'+
+            '<input type="hidden" name="mediaFeature' + (suffix ? '[' + suffix + ']' : '') + '[]" value="0">'+
+            '<input type="hidden" name="mediaRatio' + (suffix ? '[' + suffix + ']' : '') + '[]" value="' + ratio + '">'+
             '<a href="' + path + '" target="_blank">' +
             '<img class="post-image img-responsive" src="' + path + '">' +
             '</a>' +

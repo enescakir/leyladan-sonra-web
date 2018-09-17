@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PostType;
+use App\Services\ProcessService;
 use App\Traits\Downloadable;
 use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
@@ -96,8 +97,40 @@ class Post extends Model implements HasMedia
     public function approve($approval = true)
     {
         $this->approveTrait($approval);
-        $this->child->createPostProcess($approval, $this);
+
+        (new ProcessService())->createPost($this->child, $approval, $this);
+
         return $this->save();
+    }
+
+    public function change($request, $suffix)
+    {
+        $this->text = $request->{$suffix . '_text'};
+
+        if ($this->isDirty('text')) {
+            $this->approve(false);
+        }
+        $this->save();
+
+        if ($request->filled("mediaId.{$suffix}")) {
+            $this->addTempMedia($request->mediaId[$suffix], $request->mediaName[$suffix], $request->mediaRatio[$suffix],
+                $request->mediaFeature[$suffix]);
+        }
+
+    }
+
+    public function addTempMedia($ids, $names, $ratios, $features)
+    {
+        foreach ($ids as $index => $id) {
+            $media = $this->addMedia(
+                storage_path('app/public/tmp/' . $names[$index]),
+                ['ratio' => $ratios[$index]]
+            );
+            if ($features[$index] == '1') {
+                $this->child->featuredMedia()->associate($media);
+                $this->child->save();
+            }
+        }
     }
 
     public function registerMediaConversions(Media $media = null)

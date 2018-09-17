@@ -1,20 +1,27 @@
 @extends('admin.parent')
 
-@section('title', 'Çocuk Ekle')
+@section('title', $child->full_name)
 
 @section('styles')
+    <style>
+        .box-body.disabled * {
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+    </style>
 @endsection
 
 @section('header')
     <section class="content-header">
         <h1>
-            Çocuk Ekle
-            <small>Bu sayfadan sisteme yeni çocuk ekleyebilirsiniz</small>
+            {{ $child->full_name }}
+            <small>Bu miniğimizi düzenliyorsunuz</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home"></i> Anasayfa</a></li>
             <li><a href="{{ route('admin.child.index') }}">Çocuklarım</a></li>
-            <li class="active">Çocuk Ekle</li>
+            <li class="active">{{ $child->full_name }}</li>
         </ol>
     </section>
 @endsection
@@ -214,44 +221,25 @@
                 </div>
                 <div class="box-body">
                     <div class="post-images">
-                        @foreach(old('mediaId', []) as $index => $id)
-                            <div class="post-image-container" id="media-{{ $id }}">
-                                <input type="hidden" name="mediaId[]" value="{{ $id }}">
-                                <input type="hidden" name="mediaName[]" value="{{ old('mediaName')[$index] }}">
-                                <input type="hidden" name="mediaFeature[]" value="{{ old('mediaFeature')[$index] }}">
-                                <input type="hidden" name="mediaRatio[]" value="{{ old('mediaRatio')[$index] }}">
-                                <a href="{{ asset('storage/tmp/' . old('mediaName')[$index]) }}" target="_blank">
-                                    <img class="post-image img-responsive"
-                                         src="{{ asset('storage/tmp/' . old('mediaName')[$index]) }}">
-                                </a>
-                                <button type="button" class="delete-tmp-btn delete-btn img-btn btn btn-sm btn-danger"
-                                        title="Fotoğrafı Sil" delete-id="{{ $id }}">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                                @if(old('mediaFeature')[$index] == '1')
-                                    <button type="button"
-                                            class="feature-tmp-btn feature-btn img-btn btn btn-sm btn-warning"
-                                            title="Fotoğrafı Öne Çıkar"
-                                            feature-id="{{ $id }}">
-                                        <i class="fa fa-star"></i></button>
-                                @else
-                                    <button type="button"
-                                            class="feature-tmp-btn feature-btn img-btn btn btn-sm btn-default"
-                                            title="Fotoğrafı Öne Çıkar"
-                                            feature-id="{{ $id }}">
-                                        <i class="fa fa-star-o"></i></button>
-                                @endif
-                            </div>
-                        @endforeach
-                        <div class="img-add-container">
-                            <a class="btn btn-app" id="add-img-btn">
+                        @include('admin.partials.media.temp', [
+                            'tempMedias' => old('mediaId.meeting', []),
+                            'suffix' =>  'meeting'
+                        ])
+                        @include('admin.partials.media.post', [
+                            'postMedias' => $child->meetingPost->media,
+                            'childName' => $child->full_name,
+                            'deleteClass' => 'delete-btn-meeting',
+                            'featureClass' => 'feature-btn-meeting'
+                        ])
+                        <div class="img-add-container-meeting">
+                            <a class="btn btn-app add-img-btn" @if($child->meetingPost->text) post-id="{{ $child->meetingPost->id }}" @endif suffix="meeting">
                                 <i class="fa fa-plus"></i> Fotoğraf Eke
                             </a>
                         </div>
                     </div>
                     <div class="form-group{{ $errors->has('meeting_text') ? ' has-error' : '' }}">
                         {!! Form::label('meeting_text', 'Metin *', ['class' => 'control-label']) !!}
-                        {!! Form::textarea('meeting_text', null, ['class' => 'form-control summernote', 'rows' => '3', 'required' => 'required']) !!}
+                        {!! Form::textarea('meeting_text', optional($child->meetingPost)->text, ['class' => 'form-control summernote', 'rows' => '3', 'required' => 'required']) !!}
                         <small class="text-danger">{{ $errors->first('meeting_text') }}</small>
                     </div>
 
@@ -260,50 +248,41 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h4 class="box-title">Hediye Teslim Yazısı</h4>
-                </div>
-                <div class="box-body">
-                    <div class="post-images">
-                        @foreach(old('mediaId', []) as $index => $id)
-                            <div class="post-image-container" id="media-{{ $id }}">
-                                <input type="hidden" name="mediaId[]" value="{{ $id }}">
-                                <input type="hidden" name="mediaName[]" value="{{ old('mediaName')[$index] }}">
-                                <input type="hidden" name="mediaFeature[]" value="{{ old('mediaFeature')[$index] }}">
-                                <input type="hidden" name="mediaRatio[]" value="{{ old('mediaRatio')[$index] }}">
-                                <a href="{{ asset('storage/tmp/' . old('mediaName')[$index]) }}" target="_blank">
-                                    <img class="post-image img-responsive"
-                                         src="{{ asset('storage/tmp/' . old('mediaName')[$index]) }}">
-                                </a>
-                                <button type="button" class="delete-tmp-btn delete-btn img-btn btn btn-sm btn-danger"
-                                        title="Fotoğrafı Sil" delete-id="{{ $id }}">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                                @if(old('mediaFeature')[$index] == '1')
-                                    <button type="button"
-                                            class="feature-tmp-btn feature-btn img-btn btn btn-sm btn-warning"
-                                            title="Fotoğrafı Öne Çıkar"
-                                            feature-id="{{ $id }}">
-                                        <i class="fa fa-star"></i></button>
-                                @else
-                                    <button type="button"
-                                            class="feature-tmp-btn feature-btn img-btn btn btn-sm btn-default"
-                                            title="Fotoğrafı Öne Çıkar"
-                                            feature-id="{{ $id }}">
-                                        <i class="fa fa-star-o"></i></button>
-                                @endif
+                    <div class="box-tools">
+                        @if($child->deliveryPost->text)
+                            <input type="checkbox" class="hidden" name="has_delivery_post" checked>
+                        @else
+                            <div class="checkbox icheck">
+                                <label>
+                                    <input id="delivery-post-check" type="checkbox" name="has_delivery_post"> Aktive Et
+                                </label>
                             </div>
-                        @endforeach
-                        <div class="img-add-container">
-                            <a class="btn btn-app" id="add-img-btn">
+                        @endif
+                    </div>
+                </div>
+                <div id="delivery-post-body" class="box-body @if(!$child->deliveryPost->text) disabled @endif">
+                    <div class="post-images">
+                        @include('admin.partials.media.temp', [
+                            'tempMedias' => old('mediaId.delivery', []),
+                            'suffix' =>  'delivery'
+                        ])
+                        @include('admin.partials.media.post', [
+                            'postMedias' => $child->deliveryPost->media,
+                            'childName' => $child->full_name,
+                            'deleteClass' => 'delete-btn-delivery',
+                            'featureClass' => 'feature-btn-delivery'
+                        ])
+                        <div class="img-add-container-delivery">
+                            <a class="btn btn-app add-img-btn" @if($child->deliveryPost->text) post-id="{{ $child->deliveryPost->id }}" @endif suffix="delivery">
                                 <i class="fa fa-plus"></i> Fotoğraf Eke
                             </a>
                         </div>
                     </div>
-                    <div class="form-group{{ $errors->has('meeting_text') ? ' has-error' : '' }}">
-                        {!! Form::label('meeting_text', 'Metin *', ['class' => 'control-label']) !!}
-                        {!! Form::textarea('meeting_text', null, ['class' => 'form-control summernote', 'rows' => '3', 'required' => 'required']) !!}
-                        <small class="text-danger">{{ $errors->first('meeting_text') }}</small>
+                    <div class="form-group{{ $errors->has('delivery_text') ? ' has-error' : '' }}">
+                        {!! Form::label('delivery_text', 'Metin *', ['class' => 'control-label']) !!}
+                        {!! Form::textarea('delivery_text', optional($child->deliveryPost)->text, ['class' => 'form-control summernote', 'rows' => '3']) !!}
+                        <small class="text-danger">{{ $errors->first('delivery_text') }}</small>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -321,17 +300,31 @@
     @include('admin.partials.modal.cropper')
 
     <script>
+        deleteItem('media', 'isimli çocuğun fotoğrafını silmek istediğine emin misin?', 'delete-btn-meeting', '/admin/post/{{ $child->meeting_post_id }}/media/[ID]');
+        featureItem('media', '', 'feature-btn-meeting', '/admin/post/{{ $child->meeting_post_id }}/media/[ID]/feature');
+
+        deleteItem('media', 'isimli çocuğun fotoğrafını silmek istediğine emin misin?', 'delete-btn-delivery', '/admin/post/{{ $child->delivery_post_id }}/media/[ID]');
+        featureItem('media', '', 'feature-btn-delivery', '/admin/post/{{ $child->delivery_post_id }}/media/[ID]/feature');
+    </script>
+    <script>
+        @if($child->featured_media_id)
+            setFeaturedMedia({{ $child->featured_media_id }});
+        @endif
+    </script>
+
+    <script>
+        $('#delivery-post-check').on('ifChecked', function () {
+            $('#delivery-post-body').removeClass('disabled');
+        }).on('ifUnchecked', function () {
+            $('#delivery-post-body').addClass('disabled');
+        });
+
         $('.state-btn').on('click', function () {
             var value = $(this).text();
             var help = $(this).attr('help-text');
             $('#child-state-btn').html(value + ' <span class="caret"></span>');
             $('input[name=child_state]').val(value);
             $('input[name=child_state_desc]').attr('placeholder', help);
-        });
-
-        $("#similarity-accept-btn").on('click', function () {
-            $('#similarity-accept-input').val("1");
-            $('#similarity-modal').modal('hide');
         });
 
         $('.delete-tmp-btn').on('click', function () {

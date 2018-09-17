@@ -51,7 +51,6 @@ class ChildController extends AdminController
 
     public function store(CreateChildRequest $request)
     {
-
         $this->checkSimilarChildren($request->first_name, $request->last_name, $request->similarity_accept);
 
         $data = $request->only([
@@ -78,16 +77,10 @@ class ChildController extends AdminController
         $child->meetingPost()->associate($post);
         $child->save();
 
-        foreach ($request->mediaId as $index => $id) {
-            $media = $post->addMedia(storage_path('app/public/tmp/' . $request->mediaName[$index]),
-                ['ratio' => $request->mediaRatio[$index]]);
-            if ($request->mediaFeature[$index] == '1') {
-                $child->featuredMedia()->associate($media);
-                $child->save();
-            }
-        }
+        $child->meetingPost->addTempMedia($request->mediaId, $request->mediaName, $request->mediaRatio,
+            $request->mediaFeature);
 
-        if (!$child->featuredMedia){
+        if (!$child->featuredMedia) {
             $child->featuredMedia()->associate($post->getFirstMedia());
             $child->save();
         }
@@ -124,20 +117,14 @@ class ChildController extends AdminController
         ]));
         $child->users()->sync($request->users);
 
-        $child->meetingPost->text = $request->meeting_text;
-        if ($child->meetingPost->isDirty('text')) {
-            $child->meetingPost->approve(false);
-        }
-        $child->meetingPost->save();
-        // TODO: Add media
+        $child->meetingPost->change($request, 'meeting');
 
-        if ($child->deliveryPost->text && trim(strip_tags($request->delivery_text))) {
-            $child->deliveryPost->text = $request->delivery_text;
-            if ($child->deliveryPost->isDirty('text')) {
-                $child->deliveryPost->approve(false);
-            }
-            $child->deliveryPost->save();
-            // TODO: Add media
+        if ($request->has('has_delivery_post') && $request->delivery_text && trim(strip_tags($request->delivery_text))) {
+            $post = $child->deliveryPost;
+            $post->change($request, 'delivery');
+            $child->deliveryPost()->associate($post);
+            $child->save();
+
         }
 
         if ($request->hasFile('verification_doc')) {
@@ -146,7 +133,7 @@ class ChildController extends AdminController
 
         session_success("<strong>{$child->full_name}</strong> başarıyla güncellendi.");
 
-        return redirect()->route('admin.child.show', $child->id);
+        return redirect()->route('admin.child.edit', $child->id);
     }
 
     public function destroy(Child $child)
@@ -157,14 +144,16 @@ class ChildController extends AdminController
         $child->chats()->delete();
 
         $this->processService->create($child, ProcessType::Deleted);
-        $this->feedService->create($child->faculty, FeedType::ChildDeleted,
-            ['child' => $child->full_name, 'user' => auth()->user()->full_name]);
+        $this->feedService->create(
+            $child->faculty,
+            FeedType::ChildDeleted,
+            ['child' => $child->full_name, 'user' => auth()->user()->full_name]
+        );
 
         $child->delete();
 
         return api_success(['child' => $child]);
     }
-
 
     // HELPERS
     private function checkSimilarChildren($firstName, $lastName, $accepted)

@@ -198,35 +198,16 @@
                 </div>
                 <div class="box-body">
                     <div class="post-images">
-                        @foreach(old('mediaId', []) as $index => $id)
-                        <div class="post-image-container" id="media-{{ $id }}">
-                            <input type="hidden" name="mediaId[]" value="{{ $id }}">
-                            <input type="hidden" name="mediaName[]" value="{{ old('mediaName')[$index] }}">
-                            <input type="hidden" name="mediaFeature[]" value="{{ old('mediaFeature')[$index] }}">
-                            <input type="hidden" name="mediaRatio[]" value="{{ old('mediaRatio')[$index] }}">
-                            <a href="{{ asset('storage/tmp/' . old('mediaName')[$index]) }}" target="_blank">
-                                <img class="post-image img-responsive" src="{{ asset('storage/tmp/' . old('mediaName')[$index]) }}">
-                                </a>
-                            <button type="button" class="delete-tmp-btn delete-btn img-btn btn btn-sm btn-danger" title="Fotoğrafı Sil"   delete-id="{{ $id }}">
-                            <i class="fa fa-trash"></i>
-                            </button>
-                            @if(old('mediaFeature')[$index] == '1')
-                                <button type="button" class="feature-tmp-btn feature-btn img-btn btn btn-sm btn-warning" title="Fotoğrafı Öne Çıkar"
-                                        feature-id="{{ $id }}">
-                                    <i class="fa fa-star"></i></button>
-                            @else
-                                <button type="button" class="feature-tmp-btn feature-btn img-btn btn btn-sm btn-default" title="Fotoğrafı Öne Çıkar"
-                                        feature-id="{{ $id }}">
-                                    <i class="fa fa-star-o"></i></button>
-                            @endif
-                        </div>
-                        @endforeach
+                        @include('admin.partials.media.temp', [
+                            'tempMedias' => old('mediaId', [])
+                        ])
                         <div class="img-add-container">
                             <a class="btn btn-app" id="add-img-btn">
                                 <i class="fa fa-plus"></i> Fotoğraf Eke
                             </a>
                         </div>
                     </div>
+                    <h3 class="text-danger">{{ $errors->first('mediaId') }}</h3>
                     <div class="form-group{{ $errors->has('meeting_text') ? ' has-error' : '' }}">
                         {!! Form::label('meeting_text', 'Metin *', ['class' => 'control-label']) !!}
                         {!! Form::textarea('meeting_text', null, ['class' => 'form-control summernote', 'rows' => '3', 'required' => 'required']) !!}

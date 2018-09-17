@@ -24,6 +24,6 @@ class ProcessService extends Service
             ? ProcessType::PostApproved
             : ProcessType::PostUnapproved;
 
-        return $this->createProcess($child, $processType, $post);
+        return $this->create($child, $processType, $post);
     }
 }
