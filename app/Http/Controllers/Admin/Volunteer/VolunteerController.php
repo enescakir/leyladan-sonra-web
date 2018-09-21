@@ -2,103 +2,78 @@
 
 namespace App\Http\Controllers\Admin\Volunteer;
 
+use App\Filters\VolunteerFilter;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
-use App\Volunteer;
-use App\Child;
-use Datatables;
+use App\Models\Volunteer;
 
 class VolunteerController extends AdminController
 {
-    public function __construct()
+    public function index(VolunteerFilter $filters)
     {
-        $this->middleware('auth');
+        $volunteers = Volunteer::latest()->withCount(['children', 'chats']);
+        $volunteers->filter($filters);
+        $volunteers = $this->paginate($volunteers);
+
+        return view('admin.volunteer.index', compact('volunteers'));
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return view('admin.volunteer.index');
-    }
-
-    public function indexData()
-    {
-        return Datatables::of(Volunteer::withCount(['boughtGift', 'volunteeredGift'])->get())
-//            ->addColumn('operations','
-//                <a class="edit btn btn-success btn-sm" href="{{ route("admin.volunteer.edit", $id) }}"><i class="fa fa-pencil"></i></a>
-//                <a class="delete btn btn-danger btn-sm" href="javascript:;"><i class="fa fa-trash"></i> </a>
-//           ')
-            ->addColumn('operations', '')
-            ->make(true);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        view('admin.volunteer.create');
+        return view('admin.volunteer.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $this->validateVolunteer($request);
+
+        $volunteer = Volunteer::create($request->only(['first_name', 'last_name', 'email', 'mobile', 'city']));
+
+        session_success("<strong>{$volunteer->full_name}</strong> isimli gönüllü başarıyla oluşturuldu");
+
+        return redirect()->route('admin.volunteer.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(Volunteer $volunteer)
     {
-        //
+        $volunteer->load('chats.child', 'chats.faculty', 'chats.messages', 'children.faculty');
+
+        return view('admin.volunteer.show', compact('volunteer'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function edit(Volunteer $volunteer)
     {
-        //
+        return view('admin.volunteer.edit', compact('volunteer'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, Volunteer $volunteer)
     {
-        //
+        $this->validateVolunteer($request, $volunteer->id);
+
+        $volunteer->update($request->only(['first_name', 'last_name', 'email', 'mobile', 'city']));
+
+        session_success("<strong>{$volunteer->full_name}</strong> isimli gönüllü başarıyla güncellendi");
+
+        return redirect()->route('admin.volunteer.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(Volunteer $volunteer)
     {
-        //
+        $volunteer->chats()->delete();
+        $volunteer->delete();
+
+        return api_success(['volunteer' => $volunteer]);
     }
+
+    public function validateVolunteer(Request $request, $volunteerId = null)
+    {
+        return $this->validate($request, [
+            'first_name' => 'required|max:255',
+            'last_name'  => 'required|max:255',
+            'email'      => 'required|max:255|email|unique:volunteers' . ($volunteerId
+                    ? ',email,' . $volunteerId
+                    : ''),
+        ]);
+    }
+
 }

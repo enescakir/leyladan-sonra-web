@@ -4,13 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\BaseActions;
-
 use Carbon\Carbon;
 
 class Message extends Model
 {
-    use BaseActions;
     // Properties
     protected $table    = 'messages';
     protected $fillable = ['chat_id', 'text', 'answered_by', 'answered_at', 'sent_by', 'sent_at'];

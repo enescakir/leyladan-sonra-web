@@ -11,6 +11,8 @@
 |
 */
 
+// Routes to later refactoring
+/*
 Route::prefix('vote')->group(function () {
     Route::get('/', 'Admin\Miscellaneous\DashboardController@vote')->name('vote');
     Route::post('/', 'Admin\Miscellaneous\DashboardController@voteStore')->name('vote.store');
@@ -49,9 +51,9 @@ Route::prefix('statistic')->as('statistics.')->group(function () {
     Route::get('children/count/faculty/{id}', 'Admin\Miscellaneous\StatisticController@children_by_faculty')
          ->name('children.count.faculty');
 });
+*/
 
 Route::prefix('child')->as('child.')->group(function () {
-    Route::get('/data', 'Admin\Child\ChildController@indexData')->name('index.data');
     Route::prefix('{id}')->group(function () {
         Route::put('volunteer', 'Admin\Child\ChildController@volunteered')->name('volunteered');
         Route::get('chats', 'Admin\Child\ChildController@chats')->name('chats');
@@ -60,41 +62,25 @@ Route::prefix('child')->as('child.')->group(function () {
     });
 });
 
-Route::prefix('faculty')->as('faculty.')->group(function () {
-    Route::prefix('{id}')->group(function () {
-        Route::get('messages', 'Admin\Management\FacultyController@messages')->name('messages');
-        Route::get('messages/unanswered', 'Admin\Management\FacultyController@messagesUnanswered')
-             ->name('messages.unanswered');
-        Route::get('profiles', 'Admin\Management\FacultyController@profiles')->name('profiles');
-    });
-});
+
 
 Route::prefix('chat')->as('chat.')->group(function () {
     Route::prefix('{id}')->group(function () {
         Route::put('close', 'Admin\Volunteer\ChatController@close')->name('close');
     });
 });
-Route::resource('chat', 'Admin\Volunteer\ChatController');
 
 Route::prefix('message')->as('message.')->group(function () {
     Route::prefix('{id}')->group(function () {
         Route::put('answered', 'Admin\Volunteer\MessageController@answered')->name('answered');
     });
 });
-Route::resource('message', 'Admin\Volunteer\MessageController');
 
 Route::prefix('volunteer')->as('volunteer.')->group(function () {
     Route::get('unanswered', 'Admin\Volunteer\VolunteerController@unanswered')->name('unanswered');
     Route::post('unanswered', 'Admin\Volunteer\VolunteerController@childUnanswered')->name('unanswered');
     Route::get('data', 'Admin\Volunteer\VolunteerController@indexData')->name('index.data');
 });
-Route::resource('volunteer', 'Admin\Volunteer\VolunteerController');
-
-Route::resource('mobile-notification', 'Admin\Volunteer\MobileNotificationController');
-Route::post('mobile-notification/{id}/send', 'Admin\Volunteer\MobileNotificationController@send')
-     ->name('mobile-notification.send');
-
-Route::resource('blog', 'Admin\Content\BlogController');
 
 /*
 |--------------------------------------------------------------------------
@@ -134,7 +120,7 @@ Route::get('login', 'Admin\Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Admin\Auth\LoginController@login')->name('login.post');
 Route::post('logout', 'Admin\Auth\LoginController@logout')->name('logout');
 Route::get('register', 'Admin\Auth\RegisterController@showRegistrationForm')->name('register');
-Route::get('register', 'Admin\Auth\RegisterController@register')->name('register.post');
+Route::post('register', 'Admin\Auth\RegisterController@register')->name('register.post');
 
 Route::get('/email/activation/{token}', 'Admin\Auth\ActivateEmailController@activate')->name('email.activate');
 
@@ -145,6 +131,7 @@ Route::get('/email/activation/{token}', 'Admin\Auth\ActivateEmailController@acti
 */
 Route::prefix('child')->as('child.')->group(function () {
     Route::prefix('{child}')->group(function () {
+        Route::resource('chat', 'Admin\Child\ChildChatController');
         Route::post('process', 'Admin\Child\ChildProcessController@store')->name('process.store');
         Route::get('post', 'Admin\Child\ChildPostController@index')->name('post.index');
         Route::get('verification', 'Admin\Child\ChildVerificationController@show')->name('verification.show');
@@ -173,12 +160,25 @@ Route::resource('post', 'Admin\Child\PostController');
 
 /*
 |--------------------------------------------------------------------------
+| Volunteer Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('chat', 'Admin\Volunteer\ChatController');
+
+Route::resource('message', 'Admin\Volunteer\MessageController');
+
+Route::resource('volunteer', 'Admin\Volunteer\VolunteerController');
+
+
+/*
+|--------------------------------------------------------------------------
 | Faculty Routes
 |--------------------------------------------------------------------------
 */
 Route::prefix('faculty')->as('faculty.')->group(function () {
     Route::prefix('{faculty}')->group(function () {
         Route::resource('child', 'Admin\Child\FacultyChildController')->only(['index', 'edit']);
+        Route::resource('chat', 'Admin\Child\FacultyChatController')->only(['index']);
         Route::resource('post', 'Admin\Child\FacultyPostController')->only(['index', 'edit']);
         Route::resource('email', 'Admin\Management\FacultyEmailController')->only(['create', 'store']);
         Route::resource('user', 'Admin\Management\FacultyUserController')->parameters([
@@ -191,10 +191,6 @@ Route::resource('faculty', 'Admin\Management\FacultyController');
 Route::get('/form/create', 'Admin\Miscellaneous\FormController@create')->name('form.create');
 Route::post('/form', 'Admin\Miscellaneous\FormController@store')->name('form.store');
 
-// Route::get('users/data', 'Admin\Management\FacultyController@usersData')->name('users.data');
-// Route::get('users/unapproved', 'Admin\Management\FacultyController@unapproved')->name('users.unapproved');
-// Route::get('users/unapproved/data', 'Admin\Management\FacultyController@unapprovedData')->name('users.unapproved.data');
-// Route::get('users/unapproved/count', 'Admin\Management\FacultyController@unapprovedCount')->name('users.unapproved.count');
 
 /*
 |--------------------------------------------------------------------------
@@ -212,6 +208,19 @@ Route::prefix('blood')->as('blood.')->group(function () {
     Route::post('/sms/test', 'Admin\Blood\SmsController@test')->name('sms.test');
 });
 Route::resource('blood', 'Admin\Blood\BloodController');
+
+/*
+|--------------------------------------------------------------------------
+| Profile Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('profile')->as('profile.')->group(function () {
+    Route::get('/', 'Admin\Management\ProfileController@index')->name('index');
+    Route::get('child', 'Admin\Management\ProfileController@show')->name('show');
+    Route::get('setting', 'Admin\Management\ProfileController@edit')->name('edit');
+    Route::put('setting', 'Admin\Management\ProfileController@update')->name('update');
+});
+
 
 /*
 |--------------------------------------------------------------------------

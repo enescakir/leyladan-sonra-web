@@ -1,33 +1,31 @@
-@extends('admin.parent')
+@extends('admin.profile.profile')
 
-@section('title', 'Üye Ekle')
+@section('title', 'Üye Güncelleme')
 
 @section('header')
     <section class="content-header">
         <h1>
-            Üye Ekle
-            <small>Bu sayfadan sisteme üye ekleyebilirsiniz</small>
+            Profilim
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home"></i> Anasayfa</a></li>
-            <li><a href="{{ route('admin.user.index') }}">Üyeler</a></li>
-            <li class="active">Üye Ekle</li>
+            <li><a href="{{ route('admin.profile.show') }}"> Profilim</a></li>
+            <li class="active">Ayarlarım</li>
         </ol>
     </section>
 @endsection
 
-@section('content')
+@section('profileContent')
     <div class="row">
         <div class="col-md-10">
             <!-- Horizontal Form -->
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h4 class="box-title">İşlemi tamamlamak için yanında <strong class="text-danger">*</strong> bulunan
-                        alanları doldurmanız gerekiyor.</h4>
+                    <h4 class="box-title">Profil Bilgilerim</h4>
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                {!! Form::open(['method' => 'POST', 'route' => 'admin.user.store', 'class' => '']) !!}
+                {!! Form::model($user, ['method' => 'PUT', 'route' => ['admin.profile.update'], 'files' => true]) !!}
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-6 form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
@@ -54,27 +52,27 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6 form-group{{ $errors->has('faculty_id') ? ' has-error' : '' }}">
-                            {!! Form::label('faculty_id', 'Fakülte *', ['class' => 'control-label']) !!}
-                            {!! Form::select('faculty_id', $faculties, null, ['class' => 'form-control select2', 'required' => 'required'])  !!}
-                            <small class="text-danger">{{ $errors->first('faculty_id') }}</small>
-                        </div>
-                        <div class="col-md-6 form-group{{ $errors->has('role') ? ' has-error' : '' }}">
-                            {!! Form::label('role', 'Görev *', ['class' => 'control-label']) !!}
-                            {!! Form::select('role', $roles, null, ['class' => 'form-control select2-no-search', 'required' => 'required'])  !!}
-                            <small class="text-danger">{{ $errors->first('role') }}</small>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6 form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            {!! Form::label('password', 'Şifre *', ['class' => 'control-label']) !!}
-                            {!! Form::password('password', ['class' => 'form-control', 'required' => 'required']) !!}
+                            {!! Form::label('password', 'Şifre', ['class' => 'control-label']) !!}
+                            {!! Form::password('password', ['class' => 'form-control']) !!}
                             <small class="text-danger">{{ $errors->first('password') }}</small>
                         </div>
                         <div class="col-md-6 form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                            {!! Form::label('password_confirmation', 'Şifre Doğrulama *', ['class' => 'control-label']) !!}
-                            {!! Form::password('password_confirmation', ['class' => 'form-control', 'required' => 'required']) !!}
+                            {!! Form::label('password_confirmation', 'Şifre Doğrulama', ['class' => 'control-label']) !!}
+                            {!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
                             <small class="text-danger">{{ $errors->first('password_confirmation') }}</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group{{ $errors->has('birthday') ? ' has-error' : '' }}">
+                            {!! Form::label('birthday', 'Doğum Tarihi *', ['class' => 'control-label']) !!}
+                            {!! Form::text('birthday', $user->birthday_label, ['class' => 'form-control birthday-picker date-mask', 'required' => 'required']) !!}
+                            <small class="text-danger">{{ $errors->first('birthday') }}</small>
+                        </div>
+                        <div class="col-md-6 form-group{{ $errors->has('profile') ? ' has-error' : '' }}">
+                            {!! Form::label('profile', 'Profil Fotoğrafı', ['class' => 'control-label']) !!}
+                            {!! Form::file('profile') !!}
+                            <small class="text-danger">{{ $errors->first('profile') }}</small>
                         </div>
                     </div>
                     <div class="row">
@@ -83,27 +81,21 @@
                             <br>
                             <div class="btn-group btn-group-justified" data-toggle="buttons">
                                 @foreach(range(0, 6) as $key)
-                                    <label class="btn btn-ls @if(old('year') == $key) active @endif">
-                                        {!! Form::radio('year', $key,  null) !!} {{ $key }}
+                                    <label class="btn btn-ls @if($user->year == $key) active @endif">
+                                        {!! Form::radio('year', $key,  ($user->year == $key)) !!} {{ $key }}
                                     </label>
                                 @endforeach
                             </div>
                             <small class="text-danger">{{ $errors->first('year') }}</small>
                         </div>
-                        <div class="col-md-6 form-group{{ $errors->has('birthday') ? ' has-error' : '' }}">
-                            {!! Form::label('birthday', 'Doğum Tarihi *', ['class' => 'control-label']) !!}
-                            {!! Form::text('birthday', null, ['class' => 'form-control birthday-picker date-mask', 'required' => 'required']) !!}
-                            <small class="text-danger">{{ $errors->first('birthday') }}</small>
-                        </div>
-                    </div>
-                    <div class="row">
+
                         <div class="col-md-6 form-group{{ $errors->has('gender') ? ' has-error' : '' }}">
                             {!! Form::label('gender', 'Cinsiyet *', ['class' => 'control-label']) !!}
                             <br>
                             <div class="btn-group btn-group-justified" data-toggle="buttons">
                                 @foreach(['Kadın', 'Erkek'] as $key)
-                                    <label class="btn btn-ls @if(old('gender') == $key) active @endif">
-                                        {!! Form::radio('gender', $key, null) !!} {{ $key }}
+                                    <label class="btn btn-ls @if($user->gender == $key) active @endif">
+                                        {!! Form::radio('gender', $key, $user->gender == $key) !!} {{ $key }}
                                     </label>
                                 @endforeach
                             </div>
@@ -113,8 +105,7 @@
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <a href="{{ route('admin.user.index') }}" class="btn btn-danger">Geri</a>
-                    {!! Form::submit("Ekle", ['class' => 'btn btn-success pull-right']) !!}
+                    {!! Form::submit("Güncelle", ['class' => 'btn btn-success btn-block btn-lg']) !!}
                 </div>
                 <!-- /.box-footer -->
                 {!! Form::close() !!}

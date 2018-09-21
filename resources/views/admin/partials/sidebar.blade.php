@@ -16,7 +16,9 @@
         <li class="{{ set_active('*admin/dashboard*') }}">
             <a href="{{ route('admin.dashboard') }}"><i class="fa fa-compass"></i> <span>Kontrol Paneli</span></a>
         </li>
-        <li><a href="#"><i class="fa fa-address-book-o"></i> <span>Arkadaşlarım</span></a></li>
+        <li class="{{ set_active('*admin/profile') }}">
+            <a href="{{ route('admin.profile.index') }}"><i class="fa fa-address-book-o"></i> <span>Arkadaşlarım</span></a>
+        </li>
         <li class="treeview {{ set_active('*child*', 'menu-open active') }}">
             <a href="#"><i class="fa fa-child"></i> <span>Çocuklar</span>
                 <span class="pull-right-container">
@@ -27,7 +29,10 @@
                 <li class="{{ set_active('*admin/child/create*') }}">
                     <a href="{{ route('admin.child.create') }}"><i class="fa fa-plus"></i> <span>Yeni Çocuk Ekle</span></a>
                 </li>
-                <li><a href="#"><i class="fa fa-heart"></i> <span>Kendi Çocuklarım</span></a></li>
+                <li class="{{ set_active('*admin/profile/child') }}">
+                    <a href="{{ route('admin.profile.show') }}"><i class="fa fa-heart"></i>
+                        <span>Kendi Çocuklarım</span></a>
+                </li>
                 <li class="{{ set_active('*admin/faculty/*/child') }}">
                     <a href="{{ route('admin.faculty.child.index', $authUser->faculty_id) }}"><i class="fa fa-bars"></i>
                         <span>Fakülte Çocukları</span></a>
@@ -113,18 +118,39 @@
                 </li>
             </ul>
         </li>
-        <li class="treeview">
+        <li class="treeview {{ set_active(['*chat*', '*volunteer*'], 'menu-open active') }}">
             <a href="#"><i class="fa fa-trophy"></i> <span>Gönüllüler</span>
                 <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
             </a>
             <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-plus"></i> <span>Yeni Gönüllü Oluştur</span></a></li>
-                <li><a href="#"><i class="fa fa-commenting-o"></i> <span>Açık Sohbetler</span></a></li>
-                <li><a href="#"><i class="fa fa-comment-o"></i> <span>Fakülte Sohbetleri</span></a></li>
-                <li><a href="#"><i class="fa fa-comments"></i> <span>Tüm Sohbetler</span></a></li>
-                <li><a href="#"><i class="fa fa-bell-o"></i> <span>Bildirim Gönder</span></a></li>
+                <li class="{{ set_active('*volunteer/create') }}">
+                    <a href="{{ route('admin.volunteer.create') }}"><i class="fa fa-plus"></i>
+                        <span>Yeni Gönüllü Oluştur</span></a>
+                </li>
+                <li class="">
+                    <a href="{{ route('admin.faculty.chat.index', [$authUser->faculty_id, 'approval' => '0']) }}"><i
+                                class="fa fa-commenting-o"></i>
+                        <span>Açık Sohbetler</span></a>
+                </li>
+                <li class="{{ set_active('*admin/faculty/*/chat') }}">
+                    <a href="{{ route('admin.faculty.chat.index', $authUser->faculty_id) }}"><i
+                                class="fa fa-comment-o"></i>
+                        <span>Fakülte Sohbetleri</span></a>
+                </li>
+                <li class="{{ set_active('*admin/chat') }}">
+                    <a href="{{ route('admin.chat.index') }}"><i
+                                class="fa fa-comments"></i>
+                        <span>Tüm Sohbetler</span></a>
+                </li>
+
+                <li class="{{ set_active('*admin/volunteer') }}">
+                    <a href="{{ route('admin.volunteer.index') }}"><i
+                                class="fa fa-star"></i>
+                        <span>Tüm Gönüllüler</span></a>
+                </li>
+                {{--<li><a href="#"><i class="fa fa-bell-o"></i> <span>Bildirim Gönder</span></a></li>--}}
             </ul>
         </li>
         <li class="treeview  {{ set_active('*user*', 'menu-open active') }}">

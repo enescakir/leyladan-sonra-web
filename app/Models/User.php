@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\GiftStatus;
+use App\Enums\ProcessType;
 use App\Traits\Downloadable;
 use App\Traits\Filterable;
 use Carbon\Carbon;
@@ -14,7 +16,7 @@ use App\Notifications\ApprovedUser as ApprovedUserNotification;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use App\Traits\HasMediaTrait;
 use Spatie\Image\Manipulations;
 use App\Scopes\GraduateScope;
 use App\Scopes\LeftScope;
@@ -38,22 +40,8 @@ class User extends Authenticatable implements HasMedia
     // Properties
     protected $table = 'users';
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
-        'password',
-        'birthday',
-        'mobile',
-        'year',
-        'title',
-        'profile_photo',
-        'faculty_id',
-        'gender',
-        'email_token',
-        'left_at',
-        'graduated_at',
-        'approved_at',
-        'approved_by'
+        'first_name', 'last_name', 'email', 'password', 'birthday', 'mobile', 'year', 'title', 'profile_photo',
+        'faculty_id', 'gender', 'email_token', 'left_at', 'graduated_at', 'approved_at', 'approved_by'
     ];
     protected $hidden = ['password', 'remember_token'];
     protected $appends = ['full_name'];
@@ -70,6 +58,11 @@ class User extends Authenticatable implements HasMedia
     public function children()
     {
         return $this->belongsToMany(Child::class);
+    }
+
+    public function deliveredChildren()
+    {
+        return $this->children()->gift(GiftStatus::Delivered);
     }
 
     public function faculty()
@@ -89,7 +82,7 @@ class User extends Authenticatable implements HasMedia
 
     public function visits()
     {
-        return $this->hasMany(Process::class, 'created_by')->where('desc', ProcessType::Visit);
+        return $this->hasMany(Process::class, 'created_by')->where('type', ProcessType::Visit);
     }
 
     // Scopes
@@ -102,6 +95,7 @@ class User extends Authenticatable implements HasMedia
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('id', $search)
+                   ->orWhere('first_name', 'like', '%' . $search . '%')
                    ->orWhere('last_name', 'like', '%' . $search . '%')
                    ->orWhere('email', 'like', '%' . $search . '%')
                    ->orWhere('mobile', 'like', '%' . $search . '%')
@@ -122,19 +116,19 @@ class User extends Authenticatable implements HasMedia
 
     public function getPhotoSmallUrlAttribute()
     {
-        return $this->getFirstMediaUrl('default', 'small')
+        return $this->getFirstMediaUrl('profile', 'small')
             ?: admin_asset('img/user-default-small.png');
     }
 
-    public function getPhotolUrlAttribute()
+    public function getPhotoUrlAttribute()
     {
-        return $this->getFirstMediaUrl('default', 'medium')
+        return $this->getFirstMediaUrl('profile', 'medium')
             ?: admin_asset('img/user-default-medium.png');
     }
 
     public function getPhotoLargeUrlAttribute()
     {
-        return $this->getFirstMediaUrl('default', 'large')
+        return $this->getFirstMediaUrl('profile', 'large')
             ?: admin_asset('img/user-default-large.png');
     }
 
@@ -168,7 +162,9 @@ class User extends Authenticatable implements HasMedia
 
     public function setPasswordAttribute($password)
     {
-        $this->attributes['password'] = bcrypt($password);
+        if (!is_null($password)) {
+            $this->attributes['password'] = bcrypt($password);
+        }
         return $this;
     }
 
@@ -244,10 +240,15 @@ class User extends Authenticatable implements HasMedia
 
 
     // Image conversions
+    public function registerMediaCollections()
+    {
+        $this->addMediaCollection('profile')->singleFile();
+    }
+
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('small')->fit(Manipulations::FIT_CROP, 64, 64);
-        $this->addMediaConversion('medium')->fit(Manipulations::FIT_CROP, 256, 256);
-        $this->addMediaConversion('large')->fit(Manipulations::FIT_CROP, 512, 512);
+        $this->addMediaConversion('small')->fit(Manipulations::FIT_CROP, 64, 64)->performOnCollections('profile');;
+        $this->addMediaConversion('medium')->fit(Manipulations::FIT_CROP, 256, 256)->performOnCollections('profile');;
+        $this->addMediaConversion('large')->fit(Manipulations::FIT_CROP, 512, 512)->performOnCollections('profile');;
     }
 }

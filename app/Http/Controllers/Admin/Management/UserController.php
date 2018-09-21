@@ -35,14 +35,7 @@ class UserController extends AdminController
         $this->validateUser($request);
 
         $user = User::create($request->only([
-            'first_name',
-            'last_name',
-            'email',
-            'password',
-            'faculty_id',
-            'birthday',
-            'mobile',
-            'year'
+            'first_name', 'last_name', 'email', 'password', 'faculty_id', 'birthday', 'gender', 'mobile', 'year'
         ]));
         $user->changeRole($request->role);
         session_success("<strong>{$user->full_name}</strong> başarıyla oluşturuldu. <br><strong>{$user->email}</strong> e-posta adresine doğrulama kodu gönderildi");
@@ -72,16 +65,8 @@ class UserController extends AdminController
         }
 
         $user->fill($request->only([
-            'first_name',
-            'last_name',
-            'email',
-            'password',
-            'faculty_id',
-            'birthday',
-            'mobile',
-            'year',
-            'graduated_at',
-            'left_at'
+            'first_name', 'last_name', 'email', 'password', 'faculty_id', 'birthday', 'gender', 'mobile', 'year',
+            'graduated_at', 'left_at'
         ]));
         if ($user->isDirty('email')) {
             $user->approved_at = null;

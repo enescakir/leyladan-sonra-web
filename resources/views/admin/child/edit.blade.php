@@ -20,7 +20,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home"></i> Anasayfa</a></li>
-            <li><a href="{{ route('admin.child.index') }}">Çocuklarım</a></li>
+            <li><a href="{{ route('admin.profile.index') }}">Çocuklarım</a></li>
             <li class="active">{{ $child->full_name }}</li>
         </ol>
     </section>

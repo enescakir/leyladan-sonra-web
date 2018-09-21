@@ -89,10 +89,10 @@
           <li class="user-body">
             <div class="row">
               <div class="col-xs-6 text-center">
-                <a href="#">Çocuk Ekle</a>
+                <a href="{{ route('admin.child.create') }}">Çocuk Ekle</a>
               </div>
               <div class="col-xs-6 text-center">
-                <a href="#">Çocuklarım</a>
+                <a href="{{ route('admin.profile.show') }}">Çocuklarım</a>
               </div>
             </div>
             <!-- /.row -->
@@ -100,7 +100,7 @@
           <!-- Menu Footer-->
           <li class="user-footer">
             <div class="pull-left">
-              <a href="#" class="btn btn-default btn-flat">Profilim</a>
+              <a href="{{ route('admin.profile.show') }}" class="btn btn-default btn-flat">Profilim</a>
             </div>
             <div class="pull-right">
               <a href="{{ url('/admin/logout') }}" class="btn btn-default btn-flat"

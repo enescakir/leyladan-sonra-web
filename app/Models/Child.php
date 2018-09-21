@@ -128,9 +128,9 @@ class Child extends Model implements HasMedia
     public function scopeSearch($query, $search)
     {
         $query->where(function ($query2) use ($search) {
-            $query2->where('id', $search)->orWhere('first_name', 'like', '%' . $search . '%')
-                   ->orWhere('last_name', 'like', '%' . $search . '%')
-                   ->orWhere(DB::raw('CONCAT_WS(" ", first_name, last_name)'), 'like', '%' . $search . '%');
+            $query2->where('children.id', $search)->orWhere('children.first_name', 'like', '%' . $search . '%')
+                   ->orWhere('children.last_name', 'like', '%' . $search . '%')
+                   ->orWhere(DB::raw('CONCAT_WS(" ", children.first_name, children.last_name)'), 'like', '%' . $search . '%');
         });
     }
 
