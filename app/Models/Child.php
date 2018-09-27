@@ -51,6 +51,11 @@ class Child extends Model implements HasMedia
         return $this->belongsTo(Faculty::class);
     }
 
+    public function volunteer()
+    {
+        return $this->belongsTo(Volunteer::class);
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -77,14 +82,14 @@ class Child extends Model implements HasMedia
         return $this->hasMany(Chat::class);
     }
 
-    public function openChats()
+    public function activeChats()
     {
-        return $this->hasMany(Chat::class)->whereIn('status', [ChatStatus::Open, ChatStatus::Answered]);
+        return $this->hasMany(Chat::class)->active();
     }
 
     public function unansweredMessages()
     {
-        return $this->hasManyThrough(Message::class, Chat::class)->whereNull('answered_at');
+        return $this->hasManyThrough(Message::class, Chat::class)->answered(false);
     }
 
     public function processes()
@@ -127,10 +132,15 @@ class Child extends Model implements HasMedia
 
     public function scopeSearch($query, $search)
     {
+        if (is_null($search)) {
+            return;
+        }
+
         $query->where(function ($query2) use ($search) {
-            $query2->where('children.id', $search)->orWhere('children.first_name', 'like', '%' . $search . '%')
-                   ->orWhere('children.last_name', 'like', '%' . $search . '%')
-                   ->orWhere(DB::raw('CONCAT_WS(" ", children.first_name, children.last_name)'), 'like', '%' . $search . '%');
+            $query2->where('children.id', $search)->orWhere('children.first_name', 'like', "%{$search}%")
+                   ->orWhere('children.last_name', 'like', "%{$search}%")
+                   ->orWhere(DB::raw('CONCAT_WS(" ", children.first_name, children.last_name)'), 'like',
+                       "%{$search}%");
         });
     }
 

@@ -36,26 +36,17 @@ class HomeController extends Controller
         $children = Cache::remember('home-children' . $page, 10, function () {
             return Child::where('gift_state', 'Bekleniyor')
                 ->with([
-                    'meetingPosts',
-                    'faculty',
-                    'meetingPosts.images'])
-                ->whereHas('posts', function ($query) {
-                    $query->where('type', 'Tanışma')->approved();
+                    'meetingPost',
+                    'meetingPost.media',
+                    'faculty'
+                ])
+                ->whereHas('meetingPost', function ($query) {
+                    $query->approved();
                 })
-                ->where('until', '>', Carbon::now())
-                ->orderby('meeting_day', 'desc')
+                ->whereDate('until', '>', now())
+                ->latest('meeting_day')
                 ->simplePaginate(20);
         });
-//        $children = Child::where('gift_state', 'Bekleniyor')
-//            ->with([
-//                'meetingPosts',
-//                'faculty',
-//                'meetingPosts.images'])
-//            ->whereHas('posts', function ($query) {
-//                $query->approved()->where('type', 'Tanışma');
-//            })
-//            ->orderby('meeting_day','desc')
-//            ->simplePaginate(20);
         return view('front.home', compact(['children']));
     }
 

@@ -72,7 +72,13 @@ function initMaxLength() {
 function initFilterButton() {
     $(".btn-filter").click(function (e) {
         e.preventDefault();
-        insertParam($(this).attr('filter-param'), $(this).attr('filter-value'));
+        var reload = true;
+        if ($(this).attr('filter-reload') == 0) {
+            reload = false;
+        }
+        $(this).trigger("change");
+
+        insertParam($(this).attr('filter-param'), $(this).attr('filter-value'), reload);
     });
 }
 
@@ -188,7 +194,7 @@ function initSummernote() {
 }
 
 function initBrokenImage() {
-    $('img').on('error', function(){
+    $('img').on('error', function () {
         console.log($(this));
         $(this).attr('src', '/admin/img/child_no_image.jpg');
     });
@@ -220,7 +226,7 @@ function deleteItem(slug, message, deleteClass = "delete", url = null) {
             showLoaderOnConfirm: true,
             preConfirm: function (email) {
                 return new Promise(function (resolve, reject) {
-                    var path= url ? url.replace('[ID]', id) :  ("/admin/" + slug + "/" + id);
+                    var path = url ? url.replace('[ID]', id) : ("/admin/" + slug + "/" + id);
                     $.ajax({
                         url: path,
                         method: "DELETE",
@@ -251,10 +257,10 @@ function setFeaturedMedia(mediaId, selectorClass = 'feature-btn') {
     $('.' + selectorClass + '[feature-id=' + mediaId + ']').html('<i class="fa fa-star"></i></button>').addClass('btn-warning').removeClass('btn-default');
 }
 
-function featureItem(slug, message, buttonClass = "feature-btn", url = null){
+function featureItem(slug, message, buttonClass = "feature-btn", url = null) {
     $('.' + buttonClass).on('click', function () {
         var id = $(this).attr('feature-id');
-        var path = url ? url.replace('[ID]', id) :  ("/admin/" + slug + "/" + id + "/feature");
+        var path = url ? url.replace('[ID]', id) : ("/admin/" + slug + "/" + id + "/feature");
         $.ajax({
             url: path,
             method: "PUT"
@@ -455,7 +461,7 @@ function checkAll(check_id, check_class) {
     });
 }
 
-function insertParam(key, value) {
+function insertParam(key, value, reload = true) {
     key = encodeURI(key);
     value = encodeURI(value);
     var kvp = document.location.search.substr(1).split('&');
@@ -476,7 +482,12 @@ function insertParam(key, value) {
     }
 
     //this will reload the page, it's likely better to store this until finished
-    document.location.search = kvp.join('&');
+    if (reload) {
+        document.location.search = kvp.join('&');
+    } else {
+        var newUrl = document.location.origin + document.location.pathname + "?" + kvp.join('&');
+        window.history.replaceState(null, null, newUrl);
+    }
 }
 
 function searchItem(button, input, param) {

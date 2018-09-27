@@ -44,8 +44,9 @@ class User extends Authenticatable implements HasMedia
         'faculty_id', 'gender', 'email_token', 'left_at', 'graduated_at', 'approved_at', 'approved_by'
     ];
     protected $hidden = ['password', 'remember_token'];
-    protected $appends = ['full_name'];
+    protected $appends = ['full_name', 'photo_small_url', 'photo_url', 'photo_large_url'];
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'birthday', 'left_at', 'graduated_at', 'approved_at'];
+    protected $with = ['media'];
 
     public static function boot()
     {
@@ -93,12 +94,16 @@ class User extends Authenticatable implements HasMedia
 
     public function scopeSearch($query, $search)
     {
+        if (is_null($search)) {
+            return;
+        }
+
         $query->where(function ($query2) use ($search) {
             $query2->where('id', $search)
-                   ->orWhere('first_name', 'like', '%' . $search . '%')
-                   ->orWhere('last_name', 'like', '%' . $search . '%')
-                   ->orWhere('email', 'like', '%' . $search . '%')
-                   ->orWhere('mobile', 'like', '%' . $search . '%')
+                   ->orWhere('first_name', 'like', "%{$search}%")
+                   ->orWhere('last_name', 'like', "%{$search}%")
+                   ->orWhere('email', 'like', "%{$search}%")
+                   ->orWhere('mobile', 'like', "%{$search}%")
                    ->orWhere(\DB::raw('CONCAT_WS(" ", first_name, last_name)'), 'like', "%{$search}%");
         });
     }

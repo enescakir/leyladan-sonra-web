@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
+use function foo\func;
 use Illuminate\Database\Eloquent\Model;
-
 use App\Traits\BaseActions;
 use App\Enums\ChatStatus;
-
-use Carbon\Carbon;
 
 class Chat extends Model
 {
     use BaseActions;
+    use Filterable;
+
     // Properties
-    protected $table    = 'chats';
+    protected $table = 'chats';
     protected $fillable = ['volunteer_id', 'faculty_id', 'child_id', 'via', 'status'];
 
     // Relations
@@ -38,9 +39,25 @@ class Chat extends Model
     }
 
     // Scopes
+    public function scopeSearch($query, $search)
+    {
+        if (is_null($search)) {
+            return;
+        }
+
+        $query->whereHas('volunteer', function ($query2) use ($search){
+            $query2->search($search);
+        });
+    }
+
     public function scopeOpen($query)
     {
         $query->where('status', ChatStatus::Open);
+    }
+
+    public function scopeActive($query)
+    {
+        $query->whereIn('status', ChatStatus::actives());
     }
 
     // Methods
@@ -54,7 +71,7 @@ class Chat extends Model
             if ($message->sent_at == null) {
                 $counter += 1;
                 if ($message->answered_at == null) {
-                    $sum += $message->created_at->diffInMinutes(Carbon::now());
+                    $sum += $message->created_at->diffInMinutes(now());
                 } else {
                     $sum += $message->created_at->diffInMinutes($message->answered_at);
                 }

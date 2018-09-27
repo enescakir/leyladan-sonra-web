@@ -131,7 +131,7 @@ Route::get('/email/activation/{token}', 'Admin\Auth\ActivateEmailController@acti
 */
 Route::prefix('child')->as('child.')->group(function () {
     Route::prefix('{child}')->group(function () {
-        Route::resource('chat', 'Admin\Child\ChildChatController');
+        Route::resource('chat', 'Admin\Volunteer\ChildChatController');
         Route::post('process', 'Admin\Child\ChildProcessController@store')->name('process.store');
         Route::get('post', 'Admin\Child\ChildPostController@index')->name('post.index');
         Route::get('verification', 'Admin\Child\ChildVerificationController@show')->name('verification.show');
@@ -163,6 +163,11 @@ Route::resource('post', 'Admin\Child\PostController');
 | Volunteer Routes
 |--------------------------------------------------------------------------
 */
+Route::prefix('chat')->as('chat.')->group(function () {
+    Route::prefix('{chat}')->group(function () {
+        Route::resource('message', 'Admin\Volunteer\ChatMessageController')->only(['index']);
+    });
+});
 Route::resource('chat', 'Admin\Volunteer\ChatController');
 
 Route::resource('message', 'Admin\Volunteer\MessageController');
@@ -178,7 +183,7 @@ Route::resource('volunteer', 'Admin\Volunteer\VolunteerController');
 Route::prefix('faculty')->as('faculty.')->group(function () {
     Route::prefix('{faculty}')->group(function () {
         Route::resource('child', 'Admin\Child\FacultyChildController')->only(['index', 'edit']);
-        Route::resource('chat', 'Admin\Child\FacultyChatController')->only(['index']);
+        Route::resource('chat', 'Admin\Volunteer\FacultyChatController')->only(['index']);
         Route::resource('post', 'Admin\Child\FacultyPostController')->only(['index', 'edit']);
         Route::resource('email', 'Admin\Management\FacultyEmailController')->only(['create', 'store']);
         Route::resource('user', 'Admin\Management\FacultyUserController')->parameters([

@@ -125,10 +125,6 @@
           </span>
             </a>
             <ul class="treeview-menu">
-                <li class="{{ set_active('*volunteer/create') }}">
-                    <a href="{{ route('admin.volunteer.create') }}"><i class="fa fa-plus"></i>
-                        <span>Yeni Gönüllü Oluştur</span></a>
-                </li>
                 <li class="">
                     <a href="{{ route('admin.faculty.chat.index', [$authUser->faculty_id, 'approval' => '0']) }}"><i
                                 class="fa fa-commenting-o"></i>

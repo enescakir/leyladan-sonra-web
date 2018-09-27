@@ -37,6 +37,10 @@ class Volunteer extends Model
     // Scopes
     public function scopeSearch($query, $search)
     {
+        if (is_null($search)) {
+            return;
+        }
+
         $query->where(function ($query2) use ($search) {
             $query2->where('id', $search)
                    ->orWhere('first_name', 'like', '%' . $search . '%')
