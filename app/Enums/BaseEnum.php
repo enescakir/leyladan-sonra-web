@@ -54,7 +54,7 @@ abstract class BaseEnum
 
     public static function toSelect($placeholder = '')
     {
-            $keys = static::$statusTexts ? array_values(static::$statusTexts) : array_keys(static::getConstants());
+            $keys = isset(static::$statusTexts) ? array_values(static::$statusTexts) : array_keys(static::getConstants());
             $values = array_values(static::getConstants());
             $result = array_combine($values, $keys);
             return $placeholder ? (['' => $placeholder] + $result) : $result;

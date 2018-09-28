@@ -4,6 +4,15 @@
 
 @section('styles')
     <style>
+        .selected {
+            background-color: rgba(250, 222, 104, 0.6) !important;
+        }
+
+        .dropdown-menu {
+            left: auto;
+            right: 0;
+        }
+
         .child-row {
             cursor: pointer;
         }
@@ -133,7 +142,7 @@
                     <div class="input-group input-group-sm">
                         <input id="child-search-input" type="text"
                                class="form-control" name="search"
-                               placeholder="Arama">
+                               placeholder="Arama" value="{{ request('child_search') }}">
                         <div class="input-group-btn">
                             <button id="child-search-btn" class="btn btn-default" type="button">
                                 <i class="fa fa-search"></i> Ara
@@ -192,11 +201,24 @@
                     <div class="input-group input-group-sm">
                         <input id="chat-search-input" type="text"
                                class="form-control" name="search"
-                               placeholder="Arama">
+                               placeholder="Arama" value="{{ request('chat_search') }}">
                         <div class="input-group-btn">
                             <button id="chat-search-btn" class="btn btn-default" type="button">
                                 <i class="fa fa-search"></i> Ara
                             </button>
+                            @include('admin.partials.selectors.default', [
+                                'selector' => [
+                                    'id'        => 'chat-status-selector',
+                                    'class'     => 'btn-default',
+                                    'icon'      => 'fa fa-comment',
+                                    'current'   => request()->chat_status,
+                                    'values'    => \App\Enums\ChatStatus::toSelect('Hepsi'),
+                                    'default'   => 'Durum',
+                                    'parameter' => 'chat_status',
+                                    'reload'    => '0',
+                                ]
+                            ])
+
                         </div>
                     </div>
                     <div class="table-responsive mailbox-messages">
@@ -345,25 +367,24 @@
 
 @section('scripts')
     <script type="text/javascript">
-        var child = {};
-        var chat = {};
+        var child = {!! request()->filled('child_id') ? "{ id:" . request()->child_id . "}" : '{}' !!};
+        var chat = {!! request()->filled('chat_id') ? "{ id:" . request()->chat_id . "}" : '{}' !!};
         var volunteer = {};
         var childSearch = {!! request()->filled('child_search') ? "'" . request()->child_search . "'" : 'null' !!};
-        var chatSearch = null;
+        var chatSearch = {!! request()->filled('chat_search') ? "'" . request()->chat_search . "'" : 'null' !!};
         var giftStatus = {!! request()->filled('gift_state') ? "'" . request()->gift_state . "'" : 'null' !!};
-        var chatStatus = null;
+        var chatStatus = {!! request()->filled('chat_status') ? "'" . request()->chat_status . "'" : 'null' !!};
 
         fetchChildren();
+        if (child.id) {
+            fetchChats();
+            if (chat.id) {
+                fetchMessages();
+            }
+        }
 
         function fetchChildren() {
             $('#children-box .overlay').show();
-            $('#chats-box .overlay').show();
-            $('#messages-box .overlay').show();
-            $('#chats-container').html('');
-            $('#messages-container').html('');
-            child = {};
-            chat = {};
-            volunteer = {};
 
             $.ajax({
                 url: '/admin/faculty/' + AuthUser.faculty_id + '/chat',
@@ -373,7 +394,7 @@
                 var rows = "";
                 response.data.children.forEach(function (element) {
                     var row = '' +
-                        '<tr class="child-row" child-id="' + element.id + '">' +
+                        '<tr class="child-row ' + (child ? (child.id == element.id ? 'selected' : '') : '') + '" child-id="' + element.id + '">' +
                         '<th class="name">' + element.full_name + '</th>' +
                         '<td class="counts">' +
                         '<span class="label label-sm label-danger" data-toggle="tooltip" title="Açık">' + element.open_count + '</span>' +
@@ -402,22 +423,25 @@
 
         function initChatButtons() {
             $('.child-row').on('click', function () {
+                removeChat();
+
+                $('.child-row.selected').removeClass('selected');
+                $(this).addClass('selected');
+
                 child.id = $(this).attr('child-id');
+                insertParam('child_id', child.id, 0);
+
                 fetchChats();
             });
         }
 
         function fetchChats() {
             $('#chats-box .overlay').show();
-            $('#messages-box .overlay').show();
-            $('#messages-container').html('');
-            chat = {};
-            volunteer = {};
 
             $.ajax({
                 url: '/admin/child/' + child.id + '/chat',
                 method: 'GET',
-                data: {search: chatSearch}
+                data: {search: chatSearch, status: chatStatus}
             }).done(function (response) {
                 child = response.data.child;
 
@@ -446,7 +470,7 @@
                         labelClass = "label-success"
                     }
                     var row = '' +
-                        '<tr class="chat-row" chat-id="' + element.id + '">' +
+                        '<tr class="chat-row ' + (chat ? (chat.id == element.id ? 'selected' : '') : '') + '" chat-id="' + element.id + '">' +
                         '<td class="text-center"><h4><span class="label ' + labelClass + '">' + element.status + '</span></h4></td>' +
                         '<td><b>' + element.volunteer.full_name + '</b><br>' + element.volunteer.email + '</td>' +
                         '<td class="text-center"><h4>' +
@@ -468,7 +492,10 @@
 
         function initMessages() {
             $('.chat-row').on('click', function () {
+                $('.chat-row.selected').removeClass('selected');
+                $(this).addClass('selected');
                 chat.id = $(this).attr('chat-id');
+                insertParam('chat_id', chat.id, 0);
                 fetchMessages();
             });
         }
@@ -491,7 +518,7 @@
                 var rows = "";
                 response.data.messages.forEach(function (element) {
                     var answerLabel = '<span class="label label-danger"><i class="fa fa-times"></i> Cevaplanmadı</span>';
-                    if (element.answered_at && element.answerer){
+                    if (element.answered_at && element.answerer) {
                         answerLabel = '<span class="label label-success"><i class="fa fa-check"></i> ' + element.answerer.full_name + ' tarafından cevaplandı</span>';
                     }
 
@@ -517,50 +544,94 @@
 
     </script>
     <script>
-        $('#child-search-btn').on('click', function () {
-            childSearch = $('#child-search-input').val();
+        function removeParam(param) {
+            insertParam(param, '', 0);
+        }
+
+        function removeChild() {
+            child = {};
+            removeParam('child_id');
+            $('#chats-box .overlay').show();
+            $('#messages-box .overlay').show();
+            $('#chats-container').html('');
+            $('#messages-container').html('');
+        }
+
+        function removeChat() {
+            chat = {};
+            removeParam('chat_id');
+            $('#messages-box .overlay').show();
+            $('#messages-container').html('');
+        }
+
+        function searchChildren(search) {
+            removeChild();
+            removeChat();
+
+            childSearch = search;
+            insertParam('child_search', search, 0);
             fetchChildren();
+        }
+
+        function searchChats(search) {
+            removeChat();
+
+            chatSearch = search;
+            insertParam('chat_search', search, 0);
+            fetchChats();
+        }
+
+        $('#child-search-btn').on('click', function () {
+            searchChildren($('#child-search-input').val())
         });
 
         $('#child-search-input').on("keydown", function (e) {
             if (e.keyCode === 13) {
-                childSearch = $(this).val();
-                fetchChildren();
+                searchChildren($(this).val())
             }
         });
 
         $('#chat-search-btn').on('click', function () {
-            chatSearch = $('#chat-search-input').val();
-            fetchChats();
+            searchChats($('#chat-search-input').val())
         });
 
         $('#chat-search-input').on("keydown", function (e) {
             if (e.keyCode === 13) {
-                chatSearch = $(this).val();
-                fetchChats();
+                searchChats($(this).val())
             }
         });
 
         $('#close-all-button').on('click', function () {
-           alert('Close all')
+            alert('Close all')
         });
 
         $('#close-button').on('click', function () {
-           alert('Close')
+            alert('Close')
         });
 
         $('#answer-button').on('click', function () {
-           alert('Answered')
+            alert('Answered')
         });
 
         $('#volunteered-button').on('click', function () {
-           alert('Volunteered')
+            alert('Volunteered')
         });
 
         $('#gift-state-selector .btn-filter').on('click', function () {
+            removeChild();
+            removeChat();
+
             $('#gift-state-selector-button').html('<i class="fa fa-gift"></i> ' + $(this).text());
             giftStatus = $(this).attr('filter-value');
             fetchChildren();
+        });
+
+        $('#chat-status-selector .btn-filter').on('click', function () {
+            removeChat();
+
+            $('#chat-status-selector-button').html('<i class="fa fa-comment"></i> ' + $(this).text());
+            chatStatus = $(this).attr('filter-value');
+            fetchChats();
         });
 
     </script>
