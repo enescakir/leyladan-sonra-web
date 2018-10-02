@@ -160,6 +160,19 @@
                                     'reload'    => '0',
                                 ]
                             ])
+                            @include('admin.partials.selectors.default', [
+                                'selector' => [
+                                    'id'        => 'faculty-selector',
+                                    'class'     => 'btn-default',
+                                    'icon'      => 'fa fa-hospital-o',
+                                    'current'   => request()->faculty_id,
+                                    'values'    => App\Models\Faculty::toSelect('Hepsi'),
+                                    'default'   => 'Fakülte',
+                                    'parameter' => 'faculty_id',
+                                    'menu_class' => 'scrollable-menu',
+                                    'reload'    => '0',
+                                ]
+                            ])
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -378,6 +391,7 @@
         var childSearch = {!! request()->filled('child_search') ? "'" . request()->child_search . "'" : 'null' !!};
         var chatSearch = {!! request()->filled('chat_search') ? "'" . request()->chat_search . "'" : 'null' !!};
         var giftStatus = {!! request()->filled('gift_state') ? "'" . request()->gift_state . "'" : 'null' !!};
+        var facultyId = {!! request()->filled('faculty_id') ? "'" . request()->faculty_id . "'" : 'null' !!};
         var chatStatus = {!! request()->filled('chat_status') ? "'" . request()->chat_status . "'" : 'null' !!};
         var childStatus = {!! "'" . request()->status . "'" !!};
 
@@ -393,9 +407,9 @@
             $('#children-box .overlay').show();
 
             $.ajax({
-                url: '/admin/faculty/' + AuthUser.faculty_id + '/chat',
+                url: '/admin/chat',
                 method: 'GET',
-                data: {search: childSearch, gift_state: giftStatus, status: childStatus}
+                data: {search: childSearch, gift_state: giftStatus, status: childStatus, faculty_id: facultyId}
             }).done(function (response) {
                 var rows = "";
                 response.data.children.forEach(function (element) {
@@ -705,6 +719,15 @@
 
             $('#gift-state-selector-button').html('<i class="fa fa-gift"></i> ' + $(this).text());
             giftStatus = $(this).attr('filter-value');
+            fetchChildren();
+        });
+
+        $('#faculty-selector .btn-filter').on('click', function () {
+            removeChild();
+            removeChat();
+
+            $('#faculty-selector-button').html('<i class="fa fa-hospital-o"></i> ' + $(this).text().replace('Tıp Fakültesi', ''));
+            facultyId = $(this).attr('filter-value');
             fetchChildren();
         });
 

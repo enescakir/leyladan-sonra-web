@@ -63,7 +63,6 @@ Route::prefix('child')->as('child.')->group(function () {
 });
 
 
-
 Route::prefix('chat')->as('chat.')->group(function () {
     Route::prefix('{id}')->group(function () {
         Route::put('close', 'Admin\Volunteer\ChatController@close')->name('close');
@@ -131,7 +130,8 @@ Route::get('/email/activation/{token}', 'Admin\Auth\ActivateEmailController@acti
 */
 Route::prefix('child')->as('child.')->group(function () {
     Route::prefix('{child}')->group(function () {
-        Route::resource('chat', 'Admin\Volunteer\ChildChatController');
+        Route::get('chat', 'Admin\Volunteer\ChildChatController@index');
+        Route::put('chat', 'Admin\Volunteer\ChildChatController@update');
         Route::post('process', 'Admin\Child\ChildProcessController@store')->name('process.store');
         Route::get('post', 'Admin\Child\ChildPostController@index')->name('post.index');
         Route::get('verification', 'Admin\Child\ChildVerificationController@show')->name('verification.show');
@@ -165,7 +165,8 @@ Route::resource('post', 'Admin\Child\PostController');
 */
 Route::prefix('chat')->as('chat.')->group(function () {
     Route::prefix('{chat}')->group(function () {
-        Route::resource('message', 'Admin\Volunteer\ChatMessageController')->only(['index']);
+        Route::get('message', 'Admin\Volunteer\ChatMessageController@index');
+        Route::put('message', 'Admin\Volunteer\ChatMessageController@update');
     });
 });
 Route::resource('chat', 'Admin\Volunteer\ChatController');

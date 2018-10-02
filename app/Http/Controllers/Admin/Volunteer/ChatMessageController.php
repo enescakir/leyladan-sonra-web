@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers\Admin\Volunteer;
 
+use App\Enums\ProcessType;
 use App\Http\Controllers\Admin\AdminController;
+use App\Models\Volunteer;
+use App\Services\ProcessService;
 use Illuminate\Http\Request;
 use App\Models\Chat;
 
 class ChatMessageController extends AdminController
 {
+
+    protected $processService;
+
+    public function __construct(ProcessService $processService)
+    {
+        $this->processService = $processService;
+    }
 
     public function index(Request $request, Chat $chat)
     {
@@ -23,12 +33,22 @@ class ChatMessageController extends AdminController
 
     }
 
-
-    public function close($id)
+    public function update(Request $request, Chat $chat)
     {
-        $chat = Chat::find($id);
-        $chat->status = 'Kapalı';
-        $chat->save();
-        return ['child_id' => $chat->child_id, 'volunteer_id' => $chat->volunteer_id, 'chat_id' => $chat->id];
+        if ($request->action == 'close') {
+            $chat->close();
+            $chat->answerMessages();
+        } elseif ($request->action == 'answer') {
+            $chat->answer();
+            $chat->answerMessages();
+        } elseif ($request->action == 'volunteer') {
+            $volunteer = Volunteer::findOrFail($request->volunteer_id);
+            $chat->child->volunteered($volunteer);
+            $chat->answer();
+            $chat->answerMessages();
+            $this->processService->create($chat->child, ProcessType::VolunteerDecided, $volunteer);
+        }
+
+        return api_success();
     }
 }

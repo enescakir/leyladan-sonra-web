@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PostType;
+use App\Filters\Filter;
 use App\Traits\Downloadable;
 use App\Traits\Filterable;
 use App\Traits\HasSlug;
@@ -144,6 +145,21 @@ class Child extends Model implements HasMedia
         });
     }
 
+    public function scopeWithChatCounts($query)
+    {
+        $query->withCount([
+            'chats as open_count'     => function ($query) {
+                return $query->where('status', ChatStatus::Open);
+            },
+            'chats as answered_count' => function ($query) {
+                return $query->where('status', ChatStatus::Answered);
+            },
+            'chats as closed_count'   => function ($query) {
+                return $query->where('status', ChatStatus::Closed);
+            }
+        ]);
+    }
+
     // Accessors
     public function getUserNameListAttribute()
     {
@@ -231,6 +247,13 @@ class Child extends Model implements HasMedia
     }
 
     // Helpers
+    public function volunteered(Volunteer $volunteer)
+    {
+        $this->volunteer()->associate($volunteer);
+        $this->gift_state = GiftStatus::OnRoad;
+        $this->save();
+    }
+
     public function registerMediaCollections()
     {
         $this->addMediaCollection('verification')->useDisk('verification')->singleFile();

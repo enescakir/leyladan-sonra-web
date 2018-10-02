@@ -27,7 +27,7 @@ class ProfileController extends AdminController
         $children->filter($filters);
         $children = $this->paginate($children);
 
-        return view('admin.profile.index', compact('children', 'user'));
+        return view('admin.profile.show', compact('children', 'user'));
 
     }
 

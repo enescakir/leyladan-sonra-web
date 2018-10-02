@@ -35,6 +35,7 @@
             opacity: 0;
             transition: .3s ease;
             border-radius: 50%;
+            z-index: 1;
         }
 
         .user-container:hover .overlay {

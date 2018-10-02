@@ -102,7 +102,7 @@
                     <a href="{{ route('admin.faculty.post.index', [$authUser->faculty_id, 'approval' => '0']) }}"><i
                                 class="fa fa-thumbs-o-up"></i> <span>Onay Bekleyenler</span>
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-red unapproved-post-count"></small>
+                            <small class="label pull-right bg-red unapproved-post-count" data-toggle="tooltip" title="Onaylanmamış Sohbet Sayısı"></small>
                         </span>
 
                     </a>
@@ -126,9 +126,13 @@
             </a>
             <ul class="treeview-menu">
                 <li class="">
-                    <a href="{{ route('admin.faculty.chat.index', [$authUser->faculty_id, 'approval' => '0']) }}"><i
+                    <a href="{{ route('admin.faculty.chat.index', [$authUser->faculty_id, 'status' => 'active']) }}"><i
                                 class="fa fa-commenting-o"></i>
-                        <span>Açık Sohbetler</span></a>
+                        <span>Aktif Sohbetler</span>
+                        <span class="pull-right-container">
+                            <small class="label pull-right bg-red open-chat-count" data-toggle="tooltip" title="Açık Sohbet Sayısı"></small>
+                        </span>
+                    </a>
                 </li>
                 <li class="{{ set_active('*admin/faculty/*/chat') }}">
                     <a href="{{ route('admin.faculty.chat.index', $authUser->faculty_id) }}"><i
@@ -161,7 +165,7 @@
                         <i class="fa fa-thumbs-o-up"></i>
                         <span>Onay Bekleyenler</span>
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-red unapproved-user-count"></small>
+                            <small class="label pull-right bg-red unapproved-user-count" data-toggle="tooltip" title="Onaylanmamış Üye Sayısı"></small>
                         </span>
                     </a>
                 </li>

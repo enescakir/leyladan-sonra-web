@@ -110,7 +110,7 @@ tr .two-button {
 }
 
 .long-column {
-    max-width:400px !important;
+    max-width: 400px !important;
     white-space: normal !important;
 }
 
@@ -131,19 +131,27 @@ tr .two-button {
     margin-bottom: 10px;
 }
 
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #309A9A;
+    border-color: #309A9A;
+}
+
 @media (max-width: 750px) {
     .btn-group-blockable > .btn {
         display: block;
         width: 100%;
     }
 
-    .btn-group-blockable>.btn:first-child:not(:last-child):not(.dropdown-toggle) {
+    .btn-group-blockable > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
         border-top-right-radius: 3px;
     }
 
-    .btn-group-blockable>.btn:last-child:not(:first-child), .btn-group-blockable>.dropdown-toggle:not(:first-child) {
+    .btn-group-blockable > .btn:last-child:not(:first-child), .btn-group-blockable > .dropdown-toggle:not(:first-child) {
         border-top-left-radius: 0;
         border-top-right-radius: 0;
         border-bottom-left-radius: 3px;

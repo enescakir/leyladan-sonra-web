@@ -45,7 +45,7 @@ class Chat extends Model
             return;
         }
 
-        $query->whereHas('volunteer', function ($query2) use ($search){
+        $query->whereHas('volunteer', function ($query2) use ($search) {
             $query2->search($search);
         });
     }
@@ -61,6 +61,24 @@ class Chat extends Model
     }
 
     // Methods
+    public function close()
+    {
+        $this->status = ChatStatus::Closed;
+        $this->save();
+
+    }
+
+    public function answer()
+    {
+        $this->status = ChatStatus::Answered;
+        $this->save();
+    }
+
+    public function answerMessages()
+    {
+        $this->messages()->sent(false)->answered(false)->get()->each->answer();
+    }
+
     public function avgTime()
     {
         $messages = $this->messages;

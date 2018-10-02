@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\ChatStatus;
 use Illuminate\Database\Eloquent\Model;
-
-use Carbon\Carbon;
+use Auth;
 
 class Message extends Model
 {
@@ -31,6 +31,13 @@ class Message extends Model
     }
 
     // Scopes
+    public function scopeSent($query, $sent = true)
+    {
+        return $sent
+            ? $query->whereNotNull('sent_by')
+            : $query->whereNull('sent_by');
+    }
+
     public function scopeAnswered($query, $answer = true)
     {
         return $answer
@@ -48,5 +55,13 @@ class Message extends Model
     public function getIsSentAttribute()
     {
         return $this->attributes['sent_at'] != null;
+    }
+
+    // Method
+    public function answer()
+    {
+        $this->answerer()->associate(Auth::user());
+        $this->answered_at = now();
+        $this->save();
     }
 }

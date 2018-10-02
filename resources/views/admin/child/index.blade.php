@@ -2,6 +2,11 @@
 
 @section('title', 'Tüm Çocuklar')
 
+@section('styles')
+    <style>
+    </style>
+@endsection
+
 @section('header')
     <section class="content-header">
         <h1>
