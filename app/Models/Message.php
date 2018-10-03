@@ -54,7 +54,20 @@ class Message extends Model
 
     public function getIsSentAttribute()
     {
-        return $this->attributes['sent_at'] != null;
+        return $this->attributes['sent_by'] != null;
+    }
+
+    public function getIsAnsweredAttribute()
+    {
+        return $this->attributes['answered_at'] != null;
+    }
+
+    public function getAnswerTimeAttribute()
+    {
+        return $this->created_at->diffInMinutes($this->isAnswered
+            ? $this->answered_at
+            : now()
+        );
     }
 
     // Method

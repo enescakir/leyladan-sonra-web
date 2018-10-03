@@ -3,399 +3,323 @@
 
 namespace App\Http\Controllers\Admin\Miscellaneous;
 
+use App\Enums\ChatStatus;
+use App\Enums\GiftStatus;
+use App\Enums\ProcessType;
 use App\Http\Controllers\Admin\AdminController;
-use App\Volunteer;
 use Illuminate\Http\Request;
-use App\Http\Requests;
-use Auth;
+use App\Models\Message;
+use App\Models\Role;
+use App\Models\Volunteer;
 use DB;
-use App\Child;
-use App\User;
-use LaravelAnalytics;
-use App\Chat;
-use App\Faculty;
-use App\Process;
-use App\Blood;
-use Carbon\Carbon;
-use Log;
-use Facebook\Facebook;
-use PDF;
-use App\Message;
+use App\Models\Child;
+use App\Models\User;
+use Analytics;
+use Spatie\Analytics\Period;
+use App\Models\Faculty;
+use App\Models\Blood;
 
 class StatisticController extends AdminController
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    public function children_by_general()
-    {
-        $result = DB::select('SELECT COUNT(*) as count, YEAR(meeting_day) as year, MONTHNAME(meeting_day) as month FROM children GROUP BY year, MONTH(meeting_day) ORDER BY year DESC, MONTH(meeting_day) DESC LIMIT 10;');
-
-        $childrenCount = [];
-        foreach ($result as $key => $value) {
-            array_push($childrenCount, [substr($value->month, 0, 3), $value->count]);
-        }
-
-        return array_reverse($childrenCount);
-    }
-
-    public function children_by_faculty($id)
-    {
-        $result = DB::select('SELECT COUNT(*) as count, YEAR(meeting_day) as year, MONTHNAME(meeting_day) as month FROM children WHERE faculty_id = ' . $id . ' GROUP BY year, MONTH(meeting_day) ORDER BY year DESC, MONTH(meeting_day) DESC LIMIT 10;');
-
-        $childrenCount = [];
-        foreach ($result as $key => $value) {
-            array_push($childrenCount, [substr($value->month, 0, 3), $value->count]);
-        }
-
-        return array_reverse($childrenCount);
-    }
-
-    public function user()
-    {
-        $user = Auth::user();
-        $youngest = User::select('birthday')->orderby('birthday', 'desc')->first();
-        $oldest = User::select('birthday')->orderby('birthday')->first();
-        $ageAve = DB::select('SELECT AVG(TIMESTAMPDIFF(YEAR, birthday, CURDATE())) AS `average` FROM users;')[0];
-        $visits = User::with('faculty')->withCount('visits')->limit(10)->orderby('visits_count', 'desc')->get();
-        $meetings = User::with('faculty')->withCount('children')->limit(10)->orderby('children_count', 'desc')->get();
-        $messages = User::with('faculty')->withCount('answers')->limit(10)->orderby('answers_count', 'desc')->get();
-        return view('admin.statistics.user', compact(['user', 'youngest', 'oldest', 'ageAve', 'visits', 'meetings', 'messages']));
-    }
-
-    public function userHoroscope()
-    {
-        $koc = DB::select("SELECT 'Koç' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 3 AND DAY(birthday) >= 21) OR (MONTH(birthday) = 4 AND DAY(birthday) <= 19)")[0];
-        $boga = DB::select("SELECT 'Boğa' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 4 AND DAY(birthday) >= 20) OR (MONTH(birthday) = 5 AND DAY(birthday) <= 20)")[0];
-        $ikizler = DB::select("SELECT 'İkizler' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 5 AND DAY(birthday) >= 21) OR (MONTH(birthday) = 6 AND DAY(birthday) <= 21)")[0];
-        $yengec = DB::select("SELECT 'Yengeç' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 6 AND DAY(birthday) >= 22) OR (MONTH(birthday) = 7 AND DAY(birthday) <= 22)")[0];
-        $aslan = DB::select("SELECT 'Aslan' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 7 AND DAY(birthday) >= 23) OR (MONTH(birthday) = 8 AND DAY(birthday) <= 22)")[0];
-        $basak = DB::select("SELECT 'Başak' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 8 AND DAY(birthday) >= 23) OR (MONTH(birthday) = 9 AND DAY(birthday) <= 22)")[0];
-        $terazi = DB::select("SELECT 'Terazi' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 9 AND DAY(birthday) >= 23) OR (MONTH(birthday) = 10 AND DAY(birthday) <= 22)")[0];
-        $akrep = DB::select("SELECT 'Akrep' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 10 AND DAY(birthday) >= 23) OR (MONTH(birthday) = 11 AND DAY(birthday) <= 21)")[0];
-        $yay = DB::select("SELECT 'Yay' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 11 AND DAY(birthday) >= 22) OR (MONTH(birthday) = 12 AND DAY(birthday) <= 21)")[0];
-        $oglak = DB::select("SELECT 'Oğlak' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 12 AND DAY(birthday) >= 22) OR (MONTH(birthday) = 1 AND DAY(birthday) <= 19)")[0];
-        $kova = DB::select("SELECT 'Kova' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 1 AND DAY(birthday) >= 20) OR (MONTH(birthday) = 2 AND DAY(birthday) <= 18)")[0];
-        $balik = DB::select("SELECT 'Balık' AS 'horoscope', count(*) AS 'number' FROM users WHERE (MONTH(birthday) = 2 AND DAY(birthday) >= 19) OR (MONTH(birthday) = 3 AND DAY(birthday) <= 20)")[0];
-        $horoscope = [$koc, $boga, $ikizler, $yengec, $aslan, $basak, $terazi, $akrep, $yay, $oglak, $kova, $balik];
-
-        return $horoscope;
-    }
-
-    public function volunteer()
-    {
-        $chats = Chat::all();
-        $avgTimes = [];
-        $chats = $chats->groupBy('faculty_id');
-        foreach ($chats as $index => $chat) {
-            $sum = 0;
-            foreach ($chat as $c) {
-                $sum += $c->avgTime();
-            }
-            $avg = $sum / count($chat);
-            $faculty = Faculty::find($index);
-            $avgTimes[$faculty->full_name] = [number_format($avg, 2, '.', ''), $faculty->chats()->where('status', 'Açık')->count()];
-        }
-        asort($avgTimes);
-        $children = Child::where('gift_state', 'Bekleniyor')
-            ->with(['faculty', 'chats'])
-            ->whereHas('posts', function ($query) {
-                $query->where('type', 'Tanışma')->approved();
-            })
-            ->orderby('meeting_day', 'desc')
-            ->get();
-        $chats = Faculty::withCount('chats')->get()->toArray();
-        usort($chats, function ($a, $b) { return $b['chats_count'] - $a['chats_count']; });
-
-        $todayMessage = Message::whereDate('created_at', '=', date('Y-m-d'))->count();
-        $todayVolunteer = Volunteer::whereDate('created_at', '=', date('Y-m-d'))->count();
-        $totalMessage = Message::count();
-        $totalVolunteer = Volunteer::count();
-
-        return view('admin.statistics.volunteer', compact(['avgTimes', 'children', 'chats', 'todayMessage', 'todayVolunteer', 'totalMessage', 'totalVolunteer']));
-    }
-
-    public function volunteersAndMessages()
-    {
-        $volunteersAndMessages = [[], []];
-        $volunteersAndMessages[0] = DB::select('SELECT c.datefield AS date, IFNULL(COUNT(m.`id`),0) AS messages FROM messages as m RIGHT JOIN calendar as c ON (DATE(m.created_at) = c.datefield) WHERE (c.datefield BETWEEN (CURDATE() - INTERVAL 6 MONTH) AND CURDATE()) GROUP BY DATE');
-        $volunteersAndMessages[1] = DB::select('SELECT c.datefield AS date, IFNULL(COUNT(v.`id`),0) AS volunteers FROM volunteers as v RIGHT JOIN calendar as c ON (DATE(v.created_at) = c.datefield) WHERE (c.datefield BETWEEN (CURDATE() - INTERVAL 6 MONTH) AND CURDATE()) GROUP BY DATE');
-
-        //Carbon::setLocale('tr');
-        for ($i = 0; $i < count($volunteersAndMessages[0]); $i++) {
-            $message = $volunteersAndMessages[0][$i];
-            $volunteer = $volunteersAndMessages[1][$i];
-            $date = new Carbon($message->date);
-            $volunteersAndMessages[0][$i] = [$date->format('d.m.Y'), $message->messages / 1];
-            $volunteersAndMessages[1][$i] = [$date->format('d.m.Y'), $volunteer->volunteers / 1];
-        }
-        return $volunteersAndMessages;
-    }
-
     public function child()
     {
-        $youngest = Child::orderby('birthday', 'desc')->first();
-        $oldest = Child::orderby('birthday')->first();
-        $ageAve = DB::select('SELECT AVG(TIMESTAMPDIFF(YEAR, birthday, CURDATE())) AS `average` FROM children;')[0];
-        $cities = DB::table('children')->select('city', DB::raw('count(*) as count'))->groupBy('city')->get();
-        usort($cities, function ($a, $b) { return $b->count - $a->count; });
-        $diagnosises = DB::table('children')->select('diagnosis', DB::raw('count(*) as count'))->groupBy('diagnosis')->get();
-        usort($diagnosises, function ($a, $b) { return $b->count - $a->count; });
+        $youngestChild = Child::orderby('birthday', 'DESC')->whereNotNull('birthday')->first();
+        $oldestChild = Child::orderby('birthday')->whereYear('birthday', '>', 1950)->first();
+        $ageAverage = DB::table('children')->selectRaw('AVG(TIMESTAMPDIFF(YEAR, birthday, CURDATE())) AS `average`')
+                        ->whereYear('birthday', '>', 1950)
+                        ->get()[0];
+        $childByCity = Child::select('city', DB::raw('count(*) as count'))->groupBy('city')->orderBy('count', 'DESC')
+                            ->get()->pluck('count', 'city');
+        $childByDiagnosis = Child::select('diagnosis', DB::raw('count(*) as count'))->groupBy('diagnosis')
+                                 ->orderBy('count', 'DESC')->get()->pluck('count', 'diagnosis');
+        $childByDepartment = Child::select('department', DB::raw('count(*) as count'))->groupBy('department')
+                                  ->orderBy('count', 'DESC')->get()->pluck('count', 'department');
+        $childByGift = Child::select('gift_state', DB::raw('count(*) as count'))->groupBy('gift_state')
+                            ->orderBy('count', 'DESC')->get()->pluck('count', 'gift_state');
+        $childByName = Child::select('first_name', DB::raw('count(*) as count'))->groupBy('first_name')
+                            ->orderBy('count', 'DESC')->limit(20)->get()->pluck('count', 'first_name');
 
-        return view('admin.statistics.child', compact(['youngest', 'oldest', 'ageAve', 'cities', 'diagnosises']));
-    }
+        $mostChats = Child::select('id', 'first_name', 'last_name', 'wish', 'faculty_id')->with('faculty')
+                          ->withCount('chats')->orderBy('chats_count', 'DESC')->limit(20)->get();
 
-    public function childDepartment()
-    {
-        $departments = DB::table('children')->select('department', DB::raw('count(*) as number'))->groupBy('department')->get();
-        return $departments;
-    }
-
-    public function blood()
-    {
-        $cities = DB::table('bloods')->select('city', DB::raw('count(*) as count'))->groupBy('city')->get();
-        usort($cities, function ($a, $b) { return $b->count - $a->count; });
-
-        return view('admin.statistics.blood', compact(['cities']));
-    }
-
-    public function bloodRh()
-    {
-        $rhs = DB::table('bloods')->select('rh', DB::raw('count(*) as number'))->groupBy('rh')->get();
-        return $rhs;
-    }
-
-    public function bloodType()
-    {
-        $types = DB::table('bloods')->select('blood_type', DB::raw('count(*) as number'))->groupBy('blood_type')->get();
-        return $types;
+        return view(
+            'admin.statistic.child',
+            compact(
+                'youngestChild',
+                'oldestChild',
+                'ageAverage',
+                'childByCity',
+                'childByDiagnosis',
+                'childByDepartment',
+                'childByGift',
+                'childByName',
+                'mostChats'
+            )
+        );
     }
 
     public function faculty()
     {
-        $datas = Faculty::whereNotNull('started_at')->get();
-        $faculties = [];
-        $facultyMeetings = [];
-        setlocale(LC_ALL, 'tr_TR.UTF-8');
-        $first = strtotime('first day this month');
-        $lastMonths = [];
-        for ($i = 5; $i >= 1; $i--) {
-            array_push($lastMonths, ['n' => date('n', strtotime("-$i month", $first)), 'M' => strftime('%b', strtotime("-$i month", $first)), 'Y' =>date('Y', strtotime("-$i month", $first))]);
+        $faculties = Faculty::started()->with('children')->withCount('children')->orderBy('children_count', 'DESC')
+                            ->get();
+        $lastMonths = collect();
+        for ($i = 5; $i >= 0; $i--) {
+            $lastMonths->push(now()->subMonths($i));
         }
 
-        foreach ($datas as $key => $faculty) {
-            $object = new \stdClass();
-            $object->name = $faculty->full_name . ' Tıp Fakültesi';
-            $object->waiting = DB::table('children')->where('faculty_id', $faculty->id)->where('gift_state', 'Bekleniyor')->count();
-            $object->road = DB::table('children')->where('faculty_id', $faculty->id)->where('gift_state', 'Yolda')->count();
-            $object->arrived = DB::table('children')->where('faculty_id', $faculty->id)->where('gift_state', 'Bize Ulaştı')->count();
-            $object->delivered = DB::table('children')->where('faculty_id', $faculty->id)->where('gift_state', 'Teslim Edildi')->count();
-            $object->total = DB::table('children')->where('faculty_id', $faculty->id)->count();
-
-            if ($faculty->slug == 'istanbultip') {
-                $object->delivered = $object->delivered + 100;
-                $object->total = $object->total + 100;
+        $faculties = $faculties->map(function ($faculty) use ($lastMonths) {
+            $data = [];
+            $data['name'] = $faculty->full_name;
+            $data['gift_state'] = $faculty->children->groupBy('gift_state')->map->count();
+            $data['monthly'] = [];
+            foreach ($lastMonths as $month) {
+                $count = $faculty->children->filter(function ($child) use ($month) {
+                    return $month->format('m.Y') == $child->created_at->format('m.Y');
+                })->count();
+                $data['monthly'][$month->month] = $count;
             }
-            array_push($faculties, $object);
-            $facultyMeetings[$faculty->full_name . ' Tıp Fak.'][0] = Child::where('faculty_id', $faculty->id)->whereYear('meeting_day', '=', $lastMonths[0]['Y'])->whereMonth('meeting_day', '=', $lastMonths[0]['n'])->count();
-            $facultyMeetings[$faculty->full_name . ' Tıp Fak.'][1] = Child::where('faculty_id', $faculty->id)->whereYear('meeting_day', '=', $lastMonths[1]['Y'])->whereMonth('meeting_day', '=', $lastMonths[1]['n'])->count();
-            $facultyMeetings[$faculty->full_name . ' Tıp Fak.'][2] = Child::where('faculty_id', $faculty->id)->whereYear('meeting_day', '=', $lastMonths[2]['Y'])->whereMonth('meeting_day', '=', $lastMonths[2]['n'])->count();
-            $facultyMeetings[$faculty->full_name . ' Tıp Fak.'][3] = Child::where('faculty_id', $faculty->id)->whereYear('meeting_day', '=', $lastMonths[3]['Y'])->whereMonth('meeting_day', '=', $lastMonths[3]['n'])->count();
-            $facultyMeetings[$faculty->full_name . ' Tıp Fak.'][4] = Child::where('faculty_id', $faculty->id)->whereYear('meeting_day', '=', $lastMonths[4]['Y'])->whereMonth('meeting_day', '=', $lastMonths[4]['n'])->count();
-        }
-        usort($faculties, function ($a, $b) {
-            return $b->total - $a->total;
+            return $data;
         });
-        return view('admin.statistics.faculty', compact(['faculties', 'lastMonths', 'facultyMeetings']));
+        return view('admin.statistic.faculty', compact('faculties', 'lastMonths'));
     }
 
-    public function website()
+    public function blood()
     {
-        $topKeywords = LaravelAnalytics::getTopKeywords(365, 20);
-        $topReferrers = LaravelAnalytics::getTopReferrers();
-        $topBrowsers = LaravelAnalytics::getTopBrowsers();
-        $mostVisitedPages = LaravelAnalytics::getMostVisitedPages();
-
-        return view('admin.statistics.website', compact(['topKeywords', 'topReferrers', 'topBrowsers', 'mostVisitedPages']));
+        $bloodByCity = Blood::select('city', DB::raw('count(*) as count'))->groupBy('city')->orderBy('count', 'DESC')
+                            ->get()->pluck('count', 'city');
+        $bloodByType = Blood::select('blood_type', DB::raw('count(*) as count'))->groupBy('blood_type')
+                            ->orderBy('count', 'DESC')
+                            ->get()->pluck('count', 'blood_type');
+        $bloodByRh = Blood::select('rh', DB::raw('count(*) as count'))->groupBy('rh')->orderBy('count', 'DESC')
+                          ->get()->mapWithKeys(function ($blood) {
+                return [$blood->rh_label => $blood->count];
+            });
+        $bloodByGroup = Blood::select(
+            'blood_type',
+            'rh',
+            DB::raw('CONCAT(blood_type, " ", rh) as blood_group'),
+            DB::raw('count(*) as count')
+        )->groupBy('blood_group')->orderBy('count', 'DESC')
+                             ->get()->mapWithKeys(function ($blood) {
+                return [
+                    ("{$blood->blood_type} {$blood->rh_label}") => $blood->count
+                ];
+            });
+        return view(
+            'admin.statistic.blood',
+            compact('bloodByType', 'bloodByRh', 'bloodByGroup', 'bloodByCity')
+        );
     }
 
-    public function websiteVisitors()
+    public function user()
     {
-        $visitorsAndPageview = [[], []];
-        $vps = LaravelAnalytics::getVisitorsAndPageViews(60);
-        Carbon::setLocale('tr');
-        foreach ($vps as $vp) {
-            $date = new Carbon($vp['date']);
-            array_push($visitorsAndPageview[0], [$date->format('d.m.Y'), $vp['visitors'] / 1]);
-            array_push($visitorsAndPageview[1], [$date->format('d.m.Y'), $vp['pageViews'] / 1]);
+        $youngestUser = User::orderby('birthday', 'DESC')->whereNotNull('birthday')->whereYear('birthday', '<', 2010)
+                            ->first();
+        $oldestUser = User::orderby('birthday')->whereYear('birthday', '>', 1950)->first();
+        $ageAverage = DB::table('users')->selectRaw('AVG(TIMESTAMPDIFF(YEAR, birthday, CURDATE())) AS `average`')
+                        ->whereYear('birthday', '>', 1950)
+                        ->get()[0];
+        $userByName = User::select('first_name', DB::raw('count(*) as count'))->groupBy('first_name')
+                          ->orderBy('count', 'DESC')->limit(15)->get()->pluck('count', 'first_name');
+        $userByHoroscope = $this->getUserHoroscopes();
+        $userByFaculty = Faculty::started()->has('users')->withCount('users')->orderBy('users_count', 'DESC')->get()
+                                ->pluck('users_count', 'name');
+        $userByRole = Role::has('users')->withCount('users')->orderBy('users_count', 'DESC')->get()
+                          ->pluck('users_count', 'display');
+        $mostVisits = User::select('id', 'faculty_id', 'first_name', 'last_name')->with('faculty:id,name')
+                          ->withCount('visits')->orderBy('visits_count', 'DESC')->limit(10)->get();
+        $mostChildren = User::select('id', 'faculty_id', 'first_name', 'last_name')->with('faculty:id,name')
+                            ->withCount('children')->orderBy('children_count', 'DESC')->limit(10)->get();
+        $mostAnswers = User::select('id', 'faculty_id', 'first_name', 'last_name')->with('faculty:id,name')
+                           ->withCount('answers')->orderBy('answers_count', 'DESC')->limit(10)->get();
+        $mostApprovals = User::select('id', 'faculty_id', 'first_name', 'last_name')->with('faculty:id,name')
+                             ->withCount('approvedPosts')->orderBy('approved_posts_count', 'DESC')->limit(10)->get();
+        $mostArrivals = User::select('id', 'faculty_id', 'first_name', 'last_name')->with('faculty:id,name')
+                            ->withCount([
+                                'processes as arrivals_count' => function ($query) {
+                                    return $query->type(ProcessType::GiftArrived);
+                                }
+                            ])->orderBy('arrivals_count', 'DESC')->limit(10)->get();
+
+        return view(
+            'admin.statistic.user',
+            compact(
+                'youngestUser',
+                'oldestUser',
+                'ageAverage',
+                'userByName',
+                'userByHoroscope',
+                'userByFaculty',
+                'userByRole',
+                'mostVisits',
+                'mostChildren',
+                'mostAnswers',
+                'mostApprovals',
+                'mostArrivals'
+            )
+        );
+    }
+
+    public function volunteer()
+    {
+        $facultyAverageTimes = Faculty::started()->has('chats')->with('chats', 'chats.messages')
+                                      ->withCount('children', 'messages')->get()
+                                      ->map(function (
+                                          $faculty
+                                      ) {
+                                          $time = $faculty->chats->avg(function ($chat) {
+                                              return $chat->averageTime();
+                                          });
+                                          $openChats = $faculty->chats->filter(function ($chat) {
+                                              return $chat->status == ChatStatus::Open;
+                                          })->count();
+
+                                          return [
+                                              'name'             => $faculty->name,
+                                              'time'             => number_format($time, 2, '.', ''),
+                                              'open_chats_count' => $openChats,
+                                              'children_count'   => $faculty->children_count,
+                                              'messages_count'   => $faculty->messages_count
+                                          ];
+                                      })->sortBy('time');
+
+        $waitingChildren = Child::gift(GiftStatus::Waiting)
+                                ->with('faculty')
+                                ->withChatCounts()
+                                ->whereHas('meetingPost', function ($query) {
+                                    $query->approved();
+                                })
+                                ->latest('meeting_day')
+                                ->get();
+        $mostChats = Volunteer::select('id', 'first_name', 'last_name', 'city')
+                              ->withCount('chats')->orderBy('chats_count', 'DESC')->limit(15)->get();
+        $mostChildren = Volunteer::select('id', 'first_name', 'last_name', 'city')
+                                 ->withCount('children')->orderBy('children_count', 'DESC')->limit(15)->get();
+        $messageCount = [
+            'total' => Message::count(),
+            'today' => Message::whereDate('created_at', now()->toDateString())->count()
+        ];
+        $volunteerCount = [
+            'total' => Volunteer::count(),
+            'today' => Volunteer::whereDate('created_at', now()->toDateString())->count()
+        ];
+
+        $dailyCount = $this->getVolunteerAndMessageDailyCount();
+
+        return view(
+            'admin.statistic.volunteer',
+            compact(
+                'messageCount',
+                'volunteerCount',
+                'dailyCount',
+                'waitingChildren',
+                'mostChats',
+                'mostChildren',
+                'facultyAverageTimes'
+            )
+        );
+    }
+
+    private function getUserHoroscopes()
+    {
+        $data = collect();
+        $users = User::select('id', DB::raw('MONTH(birthday) as month'), DB::raw('DAY(birthday) as day'))->get();
+        $horoscopes = [
+            'Koç'     => ['start' => ['21', '3'], 'end' => ['19', '4']],
+            'Boğa'    => ['start' => ['20', '4'], 'end' => ['20', '5']],
+            'İkizler' => ['start' => ['21', '5'], 'end' => ['21', '6']],
+            'Yengeç'  => ['start' => ['22', '6'], 'end' => ['22', '7']],
+            'Aslan'   => ['start' => ['23', '7'], 'end' => ['22', '8']],
+            'Başak'   => ['start' => ['23', '8'], 'end' => ['22', '9']],
+            'Terazi'  => ['start' => ['23', '9'], 'end' => ['22', '10']],
+            'Akrep'   => ['start' => ['23', '10'], 'end' => ['21', '11']],
+            'Yay'     => ['start' => ['22', '11'], 'end' => ['12', '12']],
+            'Oğlak'   => ['start' => ['22', '11'], 'end' => ['19', '1']],
+            'Kova'    => ['start' => ['20', '1'], 'end' => ['18', '2']],
+            'Balık'   => ['start' => ['19', '2'], 'end' => ['20', '3']]
+        ];
+        foreach ($horoscopes as $horoscope => $dates) {
+            $data[$horoscope] = $users->filter(function ($user) use ($dates) {
+                return ($user->month == $dates['start'][1] && $user->day >= $dates['start'][0]) || ($user->month == $dates['end'][1] && $user->day <= $dates['end'][0]);
+            })->count();
         }
-
-        return $visitorsAndPageview;
+        $data = $data->sort();
+        return $data;
     }
 
-    public function websiteActive()
+    private function getVolunteerAndMessageDailyCount()
     {
-        return LaravelAnalytics::getActiveUsers();
+        $dailyCount = [];
+        $dailyCount['message'] = DB::select('
+              SELECT c.datefield AS date, IFNULL(COUNT(m.`id`),0) AS count 
+              FROM messages as m 
+              RIGHT JOIN calendar as c ON (DATE(m.created_at) = c.datefield) 
+              WHERE (c.datefield BETWEEN (CURDATE() - INTERVAL 6 MONTH) AND CURDATE()) 
+              GROUP BY DATE');
+        $dailyCount['volunteer'] = DB::select('
+              SELECT c.datefield AS date, IFNULL(COUNT(v.`id`),0) AS count 
+              FROM volunteers as v 
+              RIGHT JOIN calendar as c ON (DATE(v.created_at) = c.datefield) 
+              WHERE (c.datefield BETWEEN (CURDATE() - INTERVAL 6 MONTH) AND CURDATE()) 
+              GROUP BY DATE');
+
+        return $dailyCount;
     }
 
-    // =========== TEST =========== TEST ============ TEST ===============
-    public function facebook()
+    public function website(Request $request)
     {
-        $fb = new Facebook([
-            'app_id'                => '1057935854286241',
-            'app_secret'            => 'c5834cbbb5a0e979aa1d1d1966553477',
-            'default_graph_version' => 'v2.6',
-            'default_access_token'  => 'EAAPCLZBLKNaEBAFdqhqYQwsNwF1LWzFfEorhlzRjBcmyZCo8yYF8klQcpKNCqlcvgElllZCVFTbZAcOzzt9ExVSdi3IeDIDGJDZAzbRJwbIqt3tw7ZCUmorObUfAkbv4u2ugL78wrc4wFQQujZCpw7otUXL6vY5NoKLOU24iChrgwZDZD',
-        ]);
-        try {
-            // Get the Facebook\GraphNodes\GraphUser object for the current user.
-            // If you provided a 'default_access_token', the '{access-token}' is optional.
-            $response = $fb->get('/1385092778379995/posts/');
-        } catch (Facebook\Exceptions\FacebookResponseException $e) {
-            // When Graph returns an error
-            return 'Graph returned an error: ' . $e->getMessage();
-            exit;
-        } catch (Facebook\Exceptions\FacebookSDKException $e) {
-            // When validation fails or other local issues
-            return 'Facebook SDK returned an error: ' . $e->getMessage();
-            exit;
+        if ($request->ajax()) {
+            $type = $request->type;
+            switch ($type) {
+                case 'top-referrers':
+                    $data = Analytics::fetchTopReferrers(Period::years(1))->mapToGroups(function ($item) {
+                        $key = $item['url'];
+                        if (str_contains($key, 'facebook')) {
+                            $key = 'Facebook';
+                        } elseif (str_contains($key, 'instagram')) {
+                            $key = 'Instagram';
+                        } elseif (str_contains($key, '(direct)')) {
+                            $key = 'Direkt';
+                        } elseif (str_contains($key, 't.co')) {
+                            $key = 'Twitter';
+                        } else {
+                            $key = title_case($key);
+                        }
+                        return [$key => $item['pageViews']];
+                    })->map->sum();
+                    break;
+                case 'top-browsers':
+                    $data = Analytics::fetchTopBrowsers(Period::years(1));
+                    break;
+                case 'user-types':
+                    $data = Analytics::fetchUserTypes(Period::years(1))->map(function ($item) {
+                        $item['type'] = $item['type'] == 'New Visitor'
+                            ? 'Yeni Ziyaretçi'
+                            : 'Dönen Ziyaretçi';
+                        return $item;
+                    });
+                    break;
+                case 'most-visited-pages':
+                    $data = Analytics::fetchMostVisitedPages(Period::years(1))->map(function ($item) {
+                        $item['pageTitle'] = str_replace('Leyla\'dan Sonra | ', '', $item['pageTitle']);
+                        return $item;
+                    });
+                    break;
+                case 'total-visits-pageviews':
+                    $data = Analytics::fetchTotalVisitorsAndPageViews(Period::months(2));
+                    break;
+                case 'today-visits-pageviews':
+                    $data = Analytics::fetchTotalVisitorsAndPageViews(Period::days(0));
+                    break;
+                case 'active-users':
+                    $data = Analytics::getAnalyticsService()->data_realtime->get(
+                        'ga:' . config('analytics.view_id'),
+                        'rt:activeVisitors'
+                    )->totalsForAllResults['rt:activeVisitors'];
+                    break;
+            }
+            return api_success($data);
         }
-        $d = $response->getDecodedBody();
-
-        return view('admin.statistics.facebook', compact('d'));
-    }
-
-    public function facebookPost($id)
-    {
-        $fb = new Facebook([
-            'app_id'                => '1057935854286241',
-            'app_secret'            => 'c5834cbbb5a0e979aa1d1d1966553477',
-            'default_graph_version' => 'v2.6',
-            'default_access_token'  => 'EAAPCLZBLKNaEBAFdqhqYQwsNwF1LWzFfEorhlzRjBcmyZCo8yYF8klQcpKNCqlcvgElllZCVFTbZAcOzzt9ExVSdi3IeDIDGJDZAzbRJwbIqt3tw7ZCUmorObUfAkbv4u2ugL78wrc4wFQQujZCpw7otUXL6vY5NoKLOU24iChrgwZDZD',
-        ]);
-
-//        $post = $fb->get('/' . $id . '/attachments')->getDecodedBody()['data'][0];
-//        $post_impressions_unique = $fb->request('GET', '/' . $id . '/insights/post_impressions_unique'); //People Reached
-//        $post_consumption = $fb->request('GET', '/' . $id . '/insights/post_consumptions'); // Post-clicks
-//        $post_consumptions_by_type_unique = $fb->request('GET', '/' . $id . '/insights/post_consumptions_by_type_unique'); // Post-detailed-clicks
-//        $post_stories = $fb->request('GET', '/' . $id . '/insights/post_stories'); // Likes, comment total
-//        $post_stories_by_action_type = $fb->request('GET', '/' . $id . '/insights/post_stories_by_action_type'); // Likes, comment totally, separated
-//        $post_storytellers_by_action_type = $fb->request('GET', '/' . $id . '/insights/post_story_adds_unique'); // Likes, comment on post, separated
-//
-//
-//        $batch = [
-//            'post_impressions_unique' => $post_impressions_unique,
-//            'post_consumption' => $post_consumption,
-//            'post_consumptions_by_type_unique' => $post_consumptions_by_type_unique,
-//            'post_stories' => $post_stories,
-//            'post_stories_by_action_type' => $post_stories_by_action_type,
-//            'post_storytellers_by_action_type' => $post_storytellers_by_action_type,
-//        ];
-//
-//        $responses = $fb->sendBatchRequest($batch);
-//
-//        $result = [];
-//        foreach( $responses as $response){
-//            $data = $response->getDecodedBody()['data'];
-//            $result = array_add($result, $data[0]['name'],  $data[0]['values'][0]['value']);
-//        }
-//        dd($result);
-//        return view('admin.statistics.facebook-post', compact(['result', 'post']));
-
-        try {
-            // Get the Facebook\GraphNodes\GraphUser object for the current user.
-            // If you provided a 'default_access_token', the '{access-token}' is optional.
-            $post = $fb->get('/' . $id)->getDecodedBody();
-            $post_attachments = $fb->get('/' . $id . '/attachments')->getDecodedBody()['data'][0];
-            $post_insights = $fb->get('/' . $id . '/insights')->getDecodedBody()['data'];
-        } catch (Facebook\Exceptions\FacebookResponseException $e) {
-            // When Graph returns an error
-            return 'Graph returned an error: ' . $e->getMessage();
-            exit;
-        } catch (Facebook\Exceptions\FacebookSDKException $e) {
-            // When validation fails or other local issues
-            return 'Facebook SDK returned an error: ' . $e->getMessage();
-            exit;
-        }
-
-        $result = [];
-        foreach ($post_insights as $post_insight) {
-            $result = array_add($result, $post_insight['name'], $post_insight['values'][0]['value']);
-        }
-
-//        @if( $post_attachments['type'] == 'photo')
-//                        <img src="{{ $post_attachments['media']['image']['src'] }}" style="width:70%;">
-//        @elseif($post_attachments['type'] == 'album')
-//                        @foreach( $post_attachments['subattachments']['data'] as $photo)
-//                            <img src="{{ $photo['media']['image']['src'] }}" style="width:45%; margin-right: 5px;">
-//        @endforeach
-//                    @endif
-
-        return view('admin.statistics.facebook-post', compact(['result', 'post', 'post_attachments']));
-    }
-
-    public function facebookPDF($id)
-    {
-//        $text = '<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"/>
-//    <title>Gönderiler</title><link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"
-//          type="text/css"/></head><body><div class="container" style="margin-top: 40px;"><div class="row"><div class="col-md-2"></div>
-//        <div class="col-md-8"><div class="row"><div class="col-md-6"><p>' . nl2br($post['message']) . '</p></div>
-//                <div class="col-md-6">
-//                    <h2> ' . $result['post_impressions_unique'] . '
-//                        <small> People Reached</small>
-//                    </h2>
-//                    <h2> ' . $result['post_stories'] . '
-//                        <small> Likes, Comments & Shares</small>
-//                    </h2>
-//                    <table class="table table-bordered">
-//                        <tbody>
-//                        <tr>
-//                            <td><h4><strong> ' . $result['post_stories_by_action_type']['like'] . ' </strong></h4> Likes</td>
-//                            <td><h4><strong> ' . $result['post_stories_by_action_type']['like'] . ' </strong></h4> On Post</td>
-//                            <td><h4><strong> 2 </strong></h4> On Shares</td>
-//                        </tr>
-//                        <tr>
-//                            <td><h4><strong>  48 </strong></h4> Comments</td>
-//                            <td><h4><strong>  48 </strong></h4>On Post</td>
-//                            <td><h4><strong> 0 </strong></h4> On Shares</td>
-//                        </tr>
-//                        <tr>
-//                            <td><h4><strong> ' . $result['post_stories_by_action_type']['share'] . ' </strong></h4> Shares</td>
-//                            <td><h4><strong> ' . $result['post_stories_by_action_type']['share'] . ' </strong></h4> On Post</td>
-//                            <td><h4><strong> 0 </strong></h4> On Shares</td>
-//                        </tr>
-//                        </tbody>
-//                    </table>
-//                    <h2> ' . $result['post_consumptions'] . '
-//                        <small> Post Clicks</small>
-//                    </h2>
-//                    <table class="table table-bordered">
-//                        <tbody>
-//                        <tr>
-//                            <td><h4><strong> ' . $result['post_consumptions_by_type']['photo view'] . ' </strong></h4> Photo Views</td>
-//                            <td><h4><strong> ' . $result['post_consumptions_by_type']['link clicks'] . ' </strong></h4> Link Clicks</td>
-//                            <td><h4><strong> ' . $result['post_consumptions_by_type']['other clicks'] . ' </strong></h4> Other Clicks</td>
-//                        </tr>
-//                        </tbody>
-//                    </table>
-//                    <h5><strong> NEGATIVE FEEDBACK</strong></h5>
-//                    <div class="row">
-//                        <div class="col-md-6">
-//                            <p> <strong> 0 </strong> <small> Hide Post</small></p>
-//                            <p> <strong> 0 </strong> <small> Report as Spam</small></p>
-//                        </div>
-//                        <div class="col-md-6">
-//                            <p> <strong> 0 </strong> <small> Hide All Posts</small></p>
-//                            <p> <strong> 0 </strong> <small> Unlike Page</small></p></div></div></div></div></div></div>
-//                    </div></body></html>';
-//
-//        return PDFS::loadHtml($text)->inline('rapor.pdf');
+        return view('admin.statistic.website');
     }
 }

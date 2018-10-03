@@ -16,7 +16,7 @@ class Blood extends Model
     use Downloadable;
 
     // Properties
-    protected $table    = 'bloods';
+    protected $table = 'bloods';
     protected $fillable = ['rh', 'mobile', 'city', 'blood_type'];
 
     // Scopes
@@ -24,8 +24,16 @@ class Blood extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('id', $search)
-                ->orWhere('mobile', 'like', '%' . $search . '%')
-                ->orWhere('city', 'like', '%' . $search . '%');
+                   ->orWhere('mobile', 'like', '%' . $search . '%')
+                   ->orWhere('city', 'like', '%' . $search . '%');
         });
+    }
+
+    // Accessors
+    public function getRhLabelAttribute()
+    {
+        return $this->attributes['rh'] == 1
+            ? 'Pozitif'
+            : 'Negatif';
     }
 }

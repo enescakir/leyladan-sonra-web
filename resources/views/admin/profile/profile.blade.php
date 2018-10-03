@@ -30,7 +30,7 @@
 
                     <p class="text-muted text-center">{{ $user->role_display }}</p>
 
-                    <a href="{{ route('admin.profile.index') }}"
+                    <a href="{{ route('admin.profile.show') }}"
                        class="btn btn-default {{ set_active('*admin/profile/child', 'btn-ls') }} btn-block">Çocuklarım</a>
                     <a href="{{ route('admin.profile.edit') }}"
                        class="btn btn-default {{ set_active('*admin/profile/setting', 'btn-ls') }} btn-block">Ayarlarım</a>

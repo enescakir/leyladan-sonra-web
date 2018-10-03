@@ -58,6 +58,11 @@ class Faculty extends Model implements HasMedia
         return $this->hasManyThrough(Post::class, Child::class);
     }
 
+    public function messages()
+    {
+        return $this->hasManyThrough(Message::class, Chat::class);
+    }
+
     public function children()
     {
         return $this->hasMany(Child::class);

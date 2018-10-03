@@ -139,6 +139,28 @@ tr .two-button {
     border-color: #309A9A;
 }
 
+.table-fixed::-webkit-scrollbar {
+    width: 5px;
+}
+
+.table-fixed::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.table-fixed::-webkit-scrollbar-thumb {
+    background: #888;
+    height: 20px;
+}
+
+.table-fixed::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.table-fixed {
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
 @media (max-width: 750px) {
     .btn-group-blockable > .btn {
         display: block;

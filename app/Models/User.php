@@ -66,6 +66,11 @@ class User extends Authenticatable implements HasMedia
         return $this->children()->gift(GiftStatus::Delivered);
     }
 
+    public function approvedPosts()
+    {
+        return $this->hasMany(Post::class, 'approved_by');
+    }
+
     public function faculty()
     {
         return $this->belongsTo(Faculty::class);
@@ -83,7 +88,7 @@ class User extends Authenticatable implements HasMedia
 
     public function visits()
     {
-        return $this->hasMany(Process::class, 'created_by')->where('type', ProcessType::Visit);
+        return $this->processes()->type(ProcessType::Visit);
     }
 
     // Scopes

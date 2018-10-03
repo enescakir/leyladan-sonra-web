@@ -358,9 +358,9 @@
                 <div class="box-footer">
 
                     <div class="input-group">
-                        <input type="text" name="message" placeholder="Mesajınızı yazın ..." class="form-control">
+                        <input type="text" name="message" placeholder="Mesajınızı yazın ..." class="form-control" disabled>
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-danger btn-flat">Gönder</button>
+                            <button type="button" class="btn btn-danger btn-flat" disabled>Gönder</button>
                         </span>
                     </div>
                 </div><!-- /.box-footer-->

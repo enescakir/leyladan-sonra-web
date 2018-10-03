@@ -53,33 +53,6 @@ Route::prefix('statistic')->as('statistics.')->group(function () {
 });
 */
 
-Route::prefix('child')->as('child.')->group(function () {
-    Route::prefix('{id}')->group(function () {
-        Route::put('volunteer', 'Admin\Child\ChildController@volunteered')->name('volunteered');
-        Route::get('chats', 'Admin\Child\ChildController@chats')->name('chats');
-        Route::get('chat/{chatID}', 'Admin\Child\ChildController@chat')->name('chat');
-        Route::get('chats/opens', 'Admin\Child\ChildController@chatsOpens')->name('chats.opens');
-    });
-});
-
-
-Route::prefix('chat')->as('chat.')->group(function () {
-    Route::prefix('{id}')->group(function () {
-        Route::put('close', 'Admin\Volunteer\ChatController@close')->name('close');
-    });
-});
-
-Route::prefix('message')->as('message.')->group(function () {
-    Route::prefix('{id}')->group(function () {
-        Route::put('answered', 'Admin\Volunteer\MessageController@answered')->name('answered');
-    });
-});
-
-Route::prefix('volunteer')->as('volunteer.')->group(function () {
-    Route::get('unanswered', 'Admin\Volunteer\VolunteerController@unanswered')->name('unanswered');
-    Route::post('unanswered', 'Admin\Volunteer\VolunteerController@childUnanswered')->name('unanswered');
-    Route::get('data', 'Admin\Volunteer\VolunteerController@indexData')->name('index.data');
-});
 
 /*
 |--------------------------------------------------------------------------
@@ -234,12 +207,6 @@ Route::prefix('profile')->as('profile.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::approve('user', 'Admin\Management\UserController');
-Route::prefix('user')->as('user.')->group(function () {
-    Route::prefix('{user}')->group(function () {
-        Route::get('children', 'Admin\Management\UserController@children')->name('children');
-        Route::get('children/data', 'Admin\Management\UserController@childrenData')->name('children.data');
-    });
-});
 Route::resource('user', 'Admin\Management\UserController')->parameters([
     'user' => 'any_user'
 ]);
@@ -272,3 +239,20 @@ Route::resource('testimonial', 'Admin\Content\TestimonialController');
 Route::resource('emailsample', 'Admin\Resource\EmailSampleController');
 Route::resource('material', 'Admin\Resource\MaterialController');
 Route::resource('tutorial', 'Admin\Resource\TutorialController');
+
+
+/*
+|--------------------------------------------------------------------------
+| Statistics Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('statistic')->as('statistic.')->group(function () {
+    Route::get('child', 'Admin\Miscellaneous\StatisticController@child')->name('child');
+    Route::get('faculty', 'Admin\Miscellaneous\StatisticController@faculty')->name('faculty');
+    Route::get('volunteer', 'Admin\Miscellaneous\StatisticController@volunteer')->name('volunteer');
+    Route::get('blood', 'Admin\Miscellaneous\StatisticController@blood')->name('blood');
+    Route::get('user', 'Admin\Miscellaneous\StatisticController@user')->name('user');
+    Route::get('website', 'Admin\Miscellaneous\StatisticController@website')->name('website');
+
+});

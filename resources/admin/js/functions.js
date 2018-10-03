@@ -502,3 +502,28 @@ function searchItem(button, input, param) {
         }
     });
 }
+
+function getChartColors() {
+    return ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)', 'rgba(153, 102, 255, 0.5)', 'rgba(255, 159, 64, 0.5)', 'rgba(220,20,60, 0.5)', 'rgba(173,255,47, 0.5)', 'rgba(0,250,154, 0.5)', 'rgba(0,206,209, 0.5)', 'rgba(0,191,255, 0.5)', 'rgba(225,200,220, 0.5)', 'rgba(244,164,96, 0.5)', 'rgba(50,205,50, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)', 'rgba(153, 102, 255, 0.5)', 'rgba(255, 159, 64, 0.5)', 'rgba(220,20,60, 0.5)', 'rgba(173,255,47, 0.5)', 'rgba(0,250,154, 0.5)', 'rgba(0,206,209, 0.5)', 'rgba(0,191,255, 0.5)', 'rgba(225,200,220, 0.5)', 'rgba(244,164,96, 0.5)', 'rgba(50,205,50, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)', 'rgba(153, 102, 255, 0.5)', 'rgba(255, 159, 64, 0.5)', 'rgba(220,20,60, 0.5)', 'rgba(173,255,47, 0.5)', 'rgba(0,250,154, 0.5)', 'rgba(0,206,209, 0.5)', 'rgba(0,191,255, 0.5)', 'rgba(225,200,220, 0.5)', 'rgba(244,164,96, 0.5)', 'rgba(50,205,50, 0.5)',
+    ];
+}
+
+function initChart(id, type, labels, data, label) {
+    var ctx = document.getElementById(id).getContext('2d');
+    return new Chart(ctx, {
+        type: type,
+        data: {
+            labels: labels,
+            datasets: [{
+                label: label,
+                data: data,
+                backgroundColor: getChartColors(),
+            }]
+        },
+    });
+}
+
+function initPieChart(id, labels, data) {
+    initChart(id, 'pie', labels, data);
+}
+

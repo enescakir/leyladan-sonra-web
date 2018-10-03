@@ -64,7 +64,7 @@
                 </li>
             </ul>
         </li>
-        <li class="treeview {{ set_active('*blood*', 'menu-open active') }}">
+        <li class="treeview {{ set_active('*admin/blood*', 'menu-open active') }}">
             <a href="#"><i class="fa fa-tint"></i> <span>Kan Bağışı</span>
                 <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
@@ -102,7 +102,8 @@
                     <a href="{{ route('admin.faculty.post.index', [$authUser->faculty_id, 'approval' => '0']) }}"><i
                                 class="fa fa-thumbs-o-up"></i> <span>Onay Bekleyenler</span>
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-red unapproved-post-count" data-toggle="tooltip" title="Onaylanmamış Sohbet Sayısı"></small>
+                            <small class="label pull-right bg-red unapproved-post-count" data-toggle="tooltip"
+                                   title="Onaylanmamış Sohbet Sayısı"></small>
                         </span>
 
                     </a>
@@ -118,7 +119,7 @@
                 </li>
             </ul>
         </li>
-        <li class="treeview {{ set_active(['*chat*', '*volunteer*'], 'menu-open active') }}">
+        <li class="treeview {{ set_active(['*chat*', '*admin/volunteer*'], 'menu-open active') }}">
             <a href="#"><i class="fa fa-trophy"></i> <span>Gönüllüler</span>
                 <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
@@ -130,7 +131,8 @@
                                 class="fa fa-commenting-o"></i>
                         <span>Aktif Sohbetler</span>
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-red open-chat-count" data-toggle="tooltip" title="Açık Sohbet Sayısı"></small>
+                            <small class="label pull-right bg-red open-chat-count" data-toggle="tooltip"
+                                   title="Açık Sohbet Sayısı"></small>
                         </span>
                     </a>
                 </li>
@@ -153,7 +155,7 @@
                 {{--<li><a href="#"><i class="fa fa-bell-o"></i> <span>Bildirim Gönder</span></a></li>--}}
             </ul>
         </li>
-        <li class="treeview  {{ set_active('*user*', 'menu-open active') }}">
+        <li class="treeview  {{ set_active('*admin/user*', 'menu-open active') }}">
             <a href="#"><i class="fa fa-users"></i> <span>Üyeler</span>
                 <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
@@ -165,7 +167,8 @@
                         <i class="fa fa-thumbs-o-up"></i>
                         <span>Onay Bekleyenler</span>
                         <span class="pull-right-container">
-                            <small class="label pull-right bg-red unapproved-user-count" data-toggle="tooltip" title="Onaylanmamış Üye Sayısı"></small>
+                            <small class="label pull-right bg-red unapproved-user-count" data-toggle="tooltip"
+                                   title="Onaylanmamış Üye Sayısı"></small>
                         </span>
                     </a>
                 </li>
@@ -201,7 +204,7 @@
         </li>
 
         <li class="header">Site</li>
-        <li class="treeview {{ set_active(['*new*', '*channel*'], 'menu-open active') }}">
+        <li class="treeview {{ set_active(['*admin/new*', '*admin/channel*'], 'menu-open active') }}">
             <a href="#"><i class="fa fa-newspaper-o"></i> <span>Basında Biz</span>
                 <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
@@ -239,19 +242,43 @@
                 <span>Sorular</span></a>
         </li>
         <li class="header">Diğer</li>
-        <li class="treeview">
+        <li class="treeview {{ set_active('*statistic*', 'menu-open active') }}">
             <a href="#"><i class="fa fa-bar-chart"></i> <span>İstatistikler</span>
                 <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
             </a>
             <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-child"></i> <span>çocuklar</span></a></li>
-                <li><a href="#"><i class="fa fa-university"></i> <span>fakülteler</span></a></li>
-                <li><a href="#"><i class="fa fa-trophy"></i> <span>gönüllüler</span></a></li>
-                <li><a href="#"><i class="fa fa-tint"></i> <span>kan bağışçıları</span></a></li>
-                <li><a href="#"><i class="fa fa-users"></i> <span>üyeler</span></a></li>
-                <li><a href="#"><i class="fa fa-globe"></i> <span>site ziyareti</span></a></li>
+                <li class="{{ set_active('*admin/statistic/child*') }}">
+                    <a href="{{ route('admin.statistic.child') }}">
+                        <i class="fa fa-child"></i> <span>Çocuklar</span>
+                    </a>
+                </li>
+                <li class="{{ set_active('*admin/statistic/faculty*') }}">
+                    <a href="{{ route('admin.statistic.faculty') }}">
+                        <i class="fa fa-university"></i> <span>Fakülteler</span>
+                    </a>
+                </li>
+                <li class="{{ set_active('*admin/statistic/volunteer*') }}">
+                    <a href="{{ route('admin.statistic.volunteer') }}">
+                        <i class="fa fa-trophy"></i> <span>Gönüllüler</span>
+                    </a>
+                </li>
+                <li class="{{ set_active('*admin/statistic/blood*') }}">
+                    <a href="{{ route('admin.statistic.blood') }}">
+                        <i class="fa fa-tint"></i> <span>Kan Bağışçıları</span>
+                    </a>
+                </li>
+                <li class="{{ set_active('*admin/statistic/user*') }}">
+                    <a href="{{ route('admin.statistic.user') }}">
+                        <i class="fa fa-users"></i> <span>Üyeler</span>
+                    </a>
+                </li>
+                <li class="{{ set_active('*admin/statistic/website*') }}">
+                    <a href="{{ route('admin.statistic.website') }}">
+                        <i class="fa fa-globe"></i> <span>Site Ziyareti</span>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="{{ set_active('*admin/material*') }}">

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\PostType;
-use App\Filters\Filter;
 use App\Traits\Downloadable;
 use App\Traits\Filterable;
 use App\Traits\HasSlug;
@@ -140,8 +139,11 @@ class Child extends Model implements HasMedia
         $query->where(function ($query2) use ($search) {
             $query2->where('children.id', $search)->orWhere('children.first_name', 'like', "%{$search}%")
                    ->orWhere('children.last_name', 'like', "%{$search}%")
-                   ->orWhere(DB::raw('CONCAT_WS(" ", children.first_name, children.last_name)'), 'like',
-                       "%{$search}%");
+                   ->orWhere(
+                       DB::raw('CONCAT_WS(" ", children.first_name, children.last_name)'),
+                       'like',
+                       "%{$search}%"
+                   );
         });
     }
 

@@ -60,6 +60,14 @@ class Chat extends Model
         $query->whereIn('status', ChatStatus::actives());
     }
 
+    // Accessors
+    public function averageTime()
+    {
+        return $this->messages->filter(function ($message){
+            return $message->is_sent == false;
+        })->avg('answerTime');
+    }
+
     // Methods
     public function close()
     {
@@ -77,27 +85,5 @@ class Chat extends Model
     public function answerMessages()
     {
         $this->messages()->sent(false)->answered(false)->get()->each->answer();
-    }
-
-    public function avgTime()
-    {
-        $messages = $this->messages;
-        $sum = 0;
-        $counter = 0;
-
-        foreach ($messages as $message) {
-            if ($message->sent_at == null) {
-                $counter += 1;
-                if ($message->answered_at == null) {
-                    $sum += $message->created_at->diffInMinutes(now());
-                } else {
-                    $sum += $message->created_at->diffInMinutes($message->answered_at);
-                }
-            }
-        }
-        if ($counter == 0) {
-            return 0;
-        }
-        return $sum / $counter / 60;
     }
 }
