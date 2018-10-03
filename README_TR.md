@@ -26,7 +26,14 @@ Daha fazla bilgi: [Türkçe](http://www.leyladansonra.com), [İngilizce](http://
 ## Yönetim Paneli
 Yönetim paneli başlangıçta [Metronic](https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469) teması ile geliştirilmiştir. Ama bu tema açık kaynak kodlu olmadığı için açık kaynak kodlu olan [AdminLTE](https://github.com/almasaeed2010/AdminLTE) temasına geçilmeye karar verilmiştir.
 
-Şu an bu geçiş işlemi devam etmektedir. Bu yüzden bütün sayfalara ulaşamayabilirsiniz.
+Şu an bu geçiş işlemi devam etmektedir.
+
+#### Örnek Ekran Görüntüleri
+|||
+:-------------------------:|:-------------------------:
+<a href="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_1.jpg"><img src="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_1.jpg"></a> | <a href="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_2.jpg"><img src="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_2.jpg"></a>
+<a href="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_3.jpg"><img src="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_3.jpg"></a> | <a href="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_4.jpg"><img src="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_4.jpg"></a>
+
 
 ## Geliştiriciler
 - **[Enes Çakır](https://github.com/enescakir)**
