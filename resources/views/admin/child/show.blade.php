@@ -13,6 +13,10 @@
             margin-top: 3px !important;
             margin-bottom: 3px !important;
         }
+
+        #process-container {
+            max-height: 200px;
+        }
     </style>
 @endsection
 
@@ -103,6 +107,10 @@
                         <tr>
                             <th>Bizden İsteği</th>
                             <td>{{ $child->wish }}</td>
+                        </tr>
+                        <tr>
+                            <th>Dilek Kategorisi</th>
+                            <td>{{ $child->wishCategory ? $child->wishCategory->name : '-' }}</td>
                         </tr>
                         <tr>
                             <th>Sorumlular</th>
@@ -207,24 +215,26 @@
                             </div>
                         </div>
                         <div class="box-body no-padding">
-                            <table class="table table-striped table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>İşlem</th>
-                                    <th>Kişi</th>
-                                    <th>Tarih</th>
-                                </tr>
-                                </thead>
-                                <tbody id="process-container">
-                                @foreach($child->processes as $process)
+                            <div class="table-fixed">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
                                     <tr>
-                                        <td>{{ $process->text }}</td>
-                                        <td>{{ $process->creator->full_name }}</td>
-                                        <td>{{ $process->created_at_label }}</td>
+                                        <th>İşlem</th>
+                                        <th>Kişi</th>
+                                        <th>Tarih</th>
                                     </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody id="process-container">
+                                    @foreach($child->processes as $process)
+                                        <tr>
+                                            <td>{{ $process->text }}</td>
+                                            <td>{{ $process->creator->full_name }}</td>
+                                            <td>{{ $process->created_at_label }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 

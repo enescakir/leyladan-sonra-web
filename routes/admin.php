@@ -144,7 +144,7 @@ Route::prefix('chat')->as('chat.')->group(function () {
 });
 Route::resource('chat', 'Admin\Volunteer\ChatController');
 
-Route::resource('message', 'Admin\Volunteer\MessageController');
+//Route::resource('message', 'Admin\Volunteer\MessageController');
 
 Route::resource('volunteer', 'Admin\Volunteer\VolunteerController');
 
@@ -218,6 +218,7 @@ Route::resource('user', 'Admin\Management\UserController')->parameters([
 */
 Route::resource('diagnosis', 'Admin\Child\DiagnosisController');
 Route::resource('department', 'Admin\Child\DepartmentController');
+Route::resource('wish-category', 'Admin\Child\WishCategoryController');
 
 /*
 |--------------------------------------------------------------------------

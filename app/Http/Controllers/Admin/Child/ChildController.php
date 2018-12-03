@@ -7,6 +7,7 @@ use App\Enums\ProcessType;
 use App\Http\Controllers\Admin\AdminController;
 use App\Models\Department;
 use App\Models\Post;
+use App\Models\WishCategory;
 use App\Services\ProcessService;
 use App\Services\FeedService;
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ class ChildController extends AdminController
 
     public function __construct(ProcessService $processService, FeedService $feedService)
     {
+        parent::__construct();
         $this->processService = $processService;
         $this->feedService = $feedService;
     }
@@ -45,8 +47,9 @@ class ChildController extends AdminController
         $users = auth()->user()->faculty->toUsersSelect();
         $diagnosises = Diagnosis::toSelect('Tanı seçiniz');
         $departments = Department::toSelect('Departman seçiniz');
+        $categories = WishCategory::toSelect('Dilek kategorisi seçiniz');
 
-        return view('admin.child.create', compact('faculties', 'users', 'diagnosises', 'departments'));
+        return view('admin.child.create', compact('faculties', 'users', 'diagnosises', 'departments', 'categories'));
     }
 
     public function store(CreateChildRequest $request)
@@ -56,7 +59,8 @@ class ChildController extends AdminController
         $data = $request->only([
             'department', 'first_name', 'last_name', 'diagnosis', 'diagnosis_desc', 'taken_treatment', 'child_state',
             'child_state_desc', 'gender', 'meeting_day', 'birthday', 'wish', 'g_first_name', 'g_last_name', 'g_mobile',
-            'g_email', 'province', 'city', 'address', 'extra_info', 'faculty_id', 'is_name_public', 'is_diagnosis_public'
+            'g_email', 'province', 'city', 'address', 'extra_info', 'faculty_id', 'is_name_public',
+            'is_diagnosis_public', 'wish_category_id'
         ]);
         $data['is_name_public'] = $request->has('is_name_public');
         $data['is_diagnosis_public'] = $request->has('is_diagnosis_public');
@@ -106,8 +110,10 @@ class ChildController extends AdminController
         $users = auth()->user()->faculty->toUsersSelect();
         $diagnosises = Diagnosis::toSelect('Tanı seçiniz');
         $departments = Department::toSelect('Departman seçiniz');
+        $categories = WishCategory::toSelect('Dilek kategorisi seçiniz');
 
-        return view('admin.child.edit', compact('child', 'users', 'diagnosises', 'faculties', 'departments'));
+        return view('admin.child.edit',
+            compact('child', 'users', 'diagnosises', 'faculties', 'departments', 'categories'));
     }
 
     public function update(Request $request, Child $child)
@@ -115,7 +121,8 @@ class ChildController extends AdminController
         $data = $request->only([
             'department', 'first_name', 'last_name', 'diagnosis', 'diagnosis_desc', 'taken_treatment', 'child_state',
             'child_state_desc', 'gender', 'meeting_day', 'birthday', 'wish', 'g_first_name', 'g_last_name', 'g_mobile',
-            'g_email', 'province', 'city', 'address', 'extra_info', 'until', 'gift_state', 'faculty_id'
+            'g_email', 'province', 'city', 'address', 'extra_info', 'until', 'gift_state', 'faculty_id',
+            'wish_category_id'
         ]);
         $data['is_name_public'] = $request->has('is_name_public');
         $data['is_diagnosis_public'] = $request->has('is_diagnosis_public');

@@ -34,7 +34,7 @@ class Child extends Model implements HasMedia
         'child_state', 'child_state_desc', 'gender', 'meeting_day', 'birthday', 'wish', 'g_first_name', 'g_last_name',
         'g_mobile', 'g_email', 'province', 'city', 'address', 'extra_info', 'volunteer_id', 'verification_doc',
         'gift_state', 'on_hospital', 'until', 'slug', 'featured_media_id', 'meeting_post_id', 'delivery_post_id',
-        'is_name_public', 'is_diagnosis_public'
+        'is_name_public', 'is_diagnosis_public', 'wish_category_id'
     ];
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'meeting_day', 'birthday', 'until'];
     protected $appends = ['full_name'];
@@ -59,6 +59,11 @@ class Child extends Model implements HasMedia
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function wishCategory()
+    {
+        return $this->belongsTo(WishCategory::class);
     }
 
     public function meetingPost()

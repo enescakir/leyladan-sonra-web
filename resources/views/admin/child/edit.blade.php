@@ -132,10 +132,15 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 form-group{{ $errors->has('wish') ? ' has-error' : '' }}">
+                        <div class="col-md-6 form-group{{ $errors->has('wish') ? ' has-error' : '' }}">
                             {!! Form::label('wish', 'Dilek *', ['class' => 'control-label']) !!}
                             {!! Form::text('wish', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => '"Bir Çocuk Bir Dilek" mottomuzu unutmayın']) !!}
                             <small class="text-danger">{{ $errors->first('wish') }}</small>
+                        </div>
+                        <div class="col-md-6 form-group{{ $errors->has('wish_category_id') ? ' has-error' : '' }}">
+                            {!! Form::label('wish_category_id', 'Dilek Kategorisi', ['class' => 'control-label']) !!}
+                            {!! Form::select('wish_category_id', $categories, null, ['class' => 'form-control select2']) !!}
+                            <small class="text-danger">{{ $errors->first('wish_category_id') }}</small>
                         </div>
                     </div>
                     <div class="row">

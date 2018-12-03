@@ -28,9 +28,10 @@ class Faculty extends Model implements HasMedia
         'address',
         'city',
         'code',
-        'started_at'
+        'started_at',
+        'stopped_at'
     ];
-    protected $dates = ['created_at', 'updated_at', 'deleted_at', 'started_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at', 'started_at', 'stopped_at'];
 
     // Relations
     public function feeds()
@@ -81,7 +82,8 @@ class Faculty extends Model implements HasMedia
 
     public function toUsersSelect($placeholder = null)
     {
-        $result = $this->users()->orderBy('first_name')->get(['id', 'faculty_id', 'first_name', 'last_name'])->pluck('full_name', 'id');
+        $result = $this->users()->orderBy('first_name')->get(['id', 'faculty_id', 'first_name', 'last_name'])
+                       ->pluck('full_name', 'id');
         return $placeholder
             ? collect(['' => $placeholder])->union($result)
             : $result;

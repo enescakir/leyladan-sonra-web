@@ -193,6 +193,9 @@
           </span>
             </a>
             <ul class="treeview-menu">
+                <li class="{{ set_active('*admin/wish-category*') }}">
+                    <a href="{{ route('admin.wish-category.index') }}"><i class="fa fa-magic"></i> <span>Dilek Kategorileri</span></a>
+                </li>
                 <li class="{{ set_active('*admin/diagnosis*') }}">
                     <a href="{{ route('admin.diagnosis.index') }}"><i class="fa fa-flask"></i> <span>Tanılar</span></a>
                 </li>

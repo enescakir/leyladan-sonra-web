@@ -14,6 +14,10 @@ return [
         'create' => '<strong>:name</strong> isimli tanı başarıyla sisteme kaydedildi.',
         'update' => '<strong>:name</strong> isimli tanı başarıyla güncellendi.',
     ],
+    'wishCategory' => [
+        'create' => '<strong>:name</strong> isimli dilek kategorisi başarıyla sisteme kaydedildi.',
+        'update' => '<strong>:name</strong> isimli dilek kategorisi başarıyla güncellendi.',
+    ],
     'department' => [
         'create' => '<strong>:name</strong> isimli departman başarıyla sisteme kaydedildi.',
         'update' => '<strong>:name</strong> isimli departman başarıyla güncellendi.',
