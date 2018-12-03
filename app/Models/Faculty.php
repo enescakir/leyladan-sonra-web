@@ -97,10 +97,28 @@ class Faculty extends Model implements HasMedia
             : $query->whereNull('started_at');
     }
 
+    public function scopeSearch($query, $search)
+    {
+        if (is_null($search)) {
+            return;
+        }
+
+        $query->where(function ($query2) use ($search) {
+            $query2->where('faculties.name', 'like', "%{$search}%");
+        });
+    }
+
     // Mutators
     public function setStartedAtAttribute($date)
     {
         $this->attributes['started_at'] = $date
+            ? Carbon::createFromFormat('d.m.Y', $date)->toDateString()
+            : null;
+    }
+
+    public function setStoppedAtAttribute($date)
+    {
+        $this->attributes['stopped_at'] = $date
             ? Carbon::createFromFormat('d.m.Y', $date)->toDateString()
             : null;
     }
@@ -110,6 +128,13 @@ class Faculty extends Model implements HasMedia
     {
         return $this->attributes['started_at']
             ? Carbon::parse($this->attributes['started_at'])->format('d.m.Y')
+            : null;
+    }
+
+    public function getStoppedAtLabelAttribute()
+    {
+        return $this->attributes['stopped_at']
+            ? Carbon::parse($this->attributes['stopped_at'])->format('d.m.Y')
             : null;
     }
 
@@ -131,6 +156,11 @@ class Faculty extends Model implements HasMedia
     public function isStarted()
     {
         return !is_null($this->started_at);
+    }
+
+    public function isStopped()
+    {
+        return !is_null($this->stopped_at);
     }
 
     // Helpers

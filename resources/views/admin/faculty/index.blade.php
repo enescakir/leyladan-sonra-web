@@ -82,8 +82,10 @@
                                     <td>{{ $faculty->children_count }}</td>
                                     <td>{{ $faculty->users_count }}</td>
                                     <td itemprop="started_at">
-                                        @if($faculty->isStarted())
-                                            <span class="label bg-green">{{ $faculty->started_at_label }}</span>
+                                        @if($faculty->isStopped())
+                                            <span class="label bg-red">Durduruldu -  {{ $faculty->stopped_at_label }}</span>
+                                        @elseif($faculty->isStarted())
+                                            <span class="label bg-green">Aktif - {{ $faculty->started_at_label }}</span>
                                         @else
                                             <span class="label bg-yellow">Görülüşüyor</span>
                                         @endif

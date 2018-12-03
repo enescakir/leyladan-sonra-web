@@ -69,6 +69,15 @@
                             </small>
                         </div>
                     </div>
+                    <div class="form-group{{ $errors->has('stopped_at') ? ' has-error' : '' }}">
+                        {!! Form::label('stopped_at', 'Durdurulma Tarihi', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-9">
+                            {!! Form::text('stopped_at', $faculty->stopped_at_label, ['class' => 'form-control date-picker date-mask']) !!}
+                            <small class="text-danger">{{ $errors->first('stopped_at') }}</small>
+                            <small class="help-block">Bu tarihi belirlerseniz fakülte üyeleri hesaplarına giriş yapamazlar.
+                            </small>
+                        </div>
+                    </div>
                     <div class="form-group{{ $errors->has('latitude') ? ' has-error' : '' }}">
                         {!! Form::label('latitude', 'Enlem', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-9">
@@ -133,7 +142,7 @@
                             <p>
                                 <img class="table-img-lg" src="{{ $faculty->logo_url }}" alt="{{ $faculty->full_name }}">
                             </p>
-                            {!! Form::file('logo', ['required' => 'required']) !!}
+                            {!! Form::file('logo', []) !!}
                             <p class="help-block">Fakültenin logosu en az 320x240 piksel boyutunda olmalıdır</p>
                             <small class="text-danger">{{ $errors->first('logo') }}</small>
                         </div>

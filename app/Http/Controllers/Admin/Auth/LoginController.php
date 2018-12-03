@@ -65,6 +65,10 @@ class LoginController extends AdminController
             session_info('Hesabınızın fakülte yöneticiniz tarafından onaylanması gerekiyor.');
             $this->guard()->logout();
             return back()->withInput($request->only('email', 'remember'));
+        } elseif ($user->faculty->isStopped()) {
+            session_info("Fakülteniz {$user->faculty->stopped_at_label} tarihinde durdurulmuştur. Yönetim kuruluyla görüşmeniz gerekiyor.");
+            $this->guard()->logout();
+            return back()->withInput($request->only('email', 'remember'));
         } else {
             $user->last_login = date('Y-m-d H:i:s');
             $user->save();

@@ -85,8 +85,10 @@
                         <tr>
                             <th>Durum</th>
                             <td>
-                                @if($faculty->isStarted())
-                                    <span class="label bg-green">{{ $faculty->started_at_label }}</span>
+                                @if($faculty->isStopped())
+                                    <span class="label bg-red">Durduruldu - {{ $faculty->stopped_at_label }}</span>
+                                @elseif($faculty->isStarted())
+                                    <span class="label bg-green">Aktif - {{ $faculty->started_at_label }}</span>
                                 @else
                                     <span class="label bg-yellow">Görülüşüyor</span>
                                 @endif

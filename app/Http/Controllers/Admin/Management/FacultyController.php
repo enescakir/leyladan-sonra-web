@@ -58,7 +58,7 @@ class FacultyController extends AdminController
         $this->validateFaculty($request, true);
 
         $faculty->update($request->only([
-            'name', 'slug', 'latitude', 'longitude', 'address', 'city', 'code', 'started_at'
+            'name', 'slug', 'latitude', 'longitude', 'address', 'city', 'code', 'started_at', 'stopped_at'
         ]));
         if ($request->hasFile('logo')) {
             $faculty->clearMediaCollection();
