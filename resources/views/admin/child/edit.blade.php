@@ -122,6 +122,7 @@
                             {!! Form::label('until', 'Son Yayın Tarihi *', ['class' => 'control-label']) !!}
                             {!! Form::text('until', $child->until_label, ['class' => 'form-control date-mask date-picker', 'required' => 'required']) !!}
                             <small class="text-danger">{{ $errors->first('until') }}</small>
+                            <small class="text-dark">Bu tarihten sonra çocuğumuz sitede gözükmez. Çocuğumuzun görüntülenmesini istiyorsanız ileri bir tarih seçiniz.</small>
                         </div>
                     </div>
                     <div class="row">
