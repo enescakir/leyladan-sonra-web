@@ -161,6 +161,16 @@
                             {!! Form::file('verification_doc', ['class' => 'form-control', 'required' => 'required']) !!}
                             <small class="text-danger">{{ $errors->first('verification_doc') }}</small>
                         </div>
+                        <div class="col-md-12">
+                            <div class="checkbox icheck">
+                                <label>
+                                    {!! Form::checkbox('verification_approval', 1, false, ['required' => 'required']) !!}
+                                    <small>Onam Formunu hatasız ve aile/çocuğun kimlik bilgilerini eksiksiz doldurduğumu
+                                        onaylıyorum.
+                                    </small>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -282,6 +292,10 @@
 
 @section('scripts')
     @include('admin.partials.modal.cropper')
+
+    @if(auth()->user()->children()->count() == 0)
+        @include('admin.partials.modal.childVideo')
+    @endif
 
     @if (session()->has('similarChildren'))
         <script>

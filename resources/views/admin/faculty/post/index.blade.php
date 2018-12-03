@@ -72,7 +72,8 @@
                                         @foreach($post->media->chunk(3) as $chunk)
                                             <div style="display: flex;">
                                                 @foreach($chunk as $media)
-                                                    <img class="table-img-md" style="margin:2px;" src="{{ $media->getUrl('thumb') }}"
+                                                    <img class="table-img-md" style="margin:2px;"
+                                                         src="{{ $media->getUrl('thumb') }}"
                                                          alt="{{ $post->child->full_name }}">
                                                 @endforeach
                                             </div>
@@ -124,7 +125,7 @@
     <script type="text/javascript">
         deleteItem("post", "yazısını silmek istediğinize emin misiniz?");
         approveItem("post",
-            "yazısını onaylamak istediğinize emin misiniz?",
+            "yazısını onaylamak istediğinize emin misiniz? <br> <strong>Onam formunu</strong> kontrol ettiniz mi? <br>Onam formunun hatasız ve eksiksiz olduğunu onaylıyor musunuz?",
             "yazısının onayını kaldırmak istediğinize emin misiniz?",
             function (approval, id) {
                 if (approval) {

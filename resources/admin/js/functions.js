@@ -326,7 +326,7 @@ function approveItem(slug, approveMessage, unapproveMessage, callback, popup = t
         if (popup) {
             swal({
                 title: "Emin misin?",
-                text: "'" + name + "' " + (approval ? approveMessage : unapproveMessage),
+                html: "'" + name + "' " + (approval ? approveMessage : unapproveMessage),
                 type: "warning",
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Evet, " + (approval ? 'onayla!' : 'onayı kaldır!'),

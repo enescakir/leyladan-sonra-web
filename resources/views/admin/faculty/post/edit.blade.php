@@ -10,7 +10,8 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home"></i> Anasayfa</a></li>
-            <li><a href="{{ route('admin.faculty.post.index', $faculty->id) }}">{{ $faculty->full_name }} Yazıları</a></li>
+            <li><a href="{{ route('admin.faculty.post.index', $faculty->id) }}">{{ $faculty->full_name }} Yazıları</a>
+            </li>
             <li>Yazı Düzenleme</li>
             <li class="active">{{ $post->child->full_name }}</li>
         </ol>
@@ -74,6 +75,17 @@
                             <th>Ekstra Bilgi</th>
                             <td>{{ $post->child->extra_info }}</td>
                         </tr>
+                        <tr>
+                            <th>Onam Formu</th>
+                            <td>
+                                <a href="{{ route('admin.child.verification.show', $post->child->id) }}"
+                                   target="_blank">
+                                    <img class="img-responsive"
+                                         src="{{ route('admin.child.verification.show', $post->child->id) }}"
+                                         alt="{{ "{$post->child->full_name} Onam Formu" }}">
+                                </a>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -110,7 +122,7 @@
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                {!! Form::model($post, ['method' => 'PUT', 'route' => ['admin.post.update', $post->id], 'class' => 'form-horizontal', 'files' => true]) !!}
+                {!! Form::model($post, ['method' => 'PUT', 'route' => ['admin.post.update', $post->id], 'class' => 'form-horizontal', 'files' => true, 'id' => 'post-form']) !!}
                 <div class="box-body">
                     {!! Form::textarea('text', null, ['class' => 'form-control summernote', 'required' => 'required']) !!}
                 </div>
@@ -119,7 +131,9 @@
                     <a href="{{ url()->previous() }}" class="btn btn-danger">Geri</a>
                     <div class="btn-group pull-right">
                         <button type="submit" class="btn btn-primary" name="approval" value="0">Kaydet</button>
-                        <button type="submit" class="btn btn-success" name="approval" value="1">Kaydet & Onayla</button>
+                        <button type="submit" class="btn btn-success" name="approval" value="1" id="approve-submit-btn">
+                            Kaydet & Onayla
+                        </button>
                     </div>
                 </div>
                 <!-- /.box-footer -->
@@ -138,7 +152,25 @@
     </script>
     <script>
         @if($post->child->featured_media_id)
-            setFeaturedMedia({{ $post->child->featured_media_id }});
+        setFeaturedMedia({{ $post->child->featured_media_id }});
         @endif
+    </script>
+    <script>
+        $('#approve-submit-btn').on('click', function (e) {
+            e.preventDefault();
+            swal({
+                title: "Emin misin?",
+                html: "<strong>Onam formunu</strong> kontrol ettiniz mi? <br>Onam formunun hatasız ve eksiksiz olduğunu onaylıyor musunuz?",
+                type: "warning",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Evet, onayla!",
+                showCancelButton: true,
+                cancelButtonText: "Hayır",
+                showLoaderOnConfirm: true,
+                allowOutsideClick: false,
+            }).then(function () {
+                $("#post-form").append('<input type="hidden" name="approval" value="1">').submit();
+            });
+        });
     </script>
 @endsection
