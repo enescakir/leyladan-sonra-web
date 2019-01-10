@@ -97,6 +97,15 @@ function BaseActions(Illuminate\Database\Schema\Blueprint $table)
     $table->foreign('updated_by')->references('id')->on('users');
     $table->foreign('deleted_by')->references('id')->on('users');
 }
+function DropBaseActions(Illuminate\Database\Schema\Blueprint $table)
+{
+    $table->dropForeign(['created_by']);
+    $table->dropForeign(['updated_by']);
+    $table->dropForeign(['deleted_by']);
+    $table->dropColumn('created_by');
+    $table->dropColumn('updated_by');
+    $table->dropColumn('deleted_by');
+}
 
 function Approval(Illuminate\Database\Schema\Blueprint $table)
 {

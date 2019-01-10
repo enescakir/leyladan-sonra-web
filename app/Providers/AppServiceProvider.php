@@ -45,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
             'volunteers' => 'App\Models\Volunteer',
             'users'      => 'App\Models\User',
             'posts'      => 'App\Models\Post',
+            'faculties'  => 'App\Models\Faculty',
         ]);
 
     }

@@ -163,7 +163,12 @@ class Faculty extends Model implements HasMedia
         return !is_null($this->stopped_at);
     }
 
-    // Helpers
+    # Media Library
+    public function registerMediaCollections()
+    {
+        $this->addMediaCollection('default')->singleFile();
+    }
+
     public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('thumb')->width(100)->height(75);

@@ -19,7 +19,7 @@ class Department extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('desc', 'like', '%' . $search . '%');
+                   ->orWhere('desc', 'like', '%' . $search . '%');
         });
     }
 
@@ -37,6 +37,8 @@ class Department extends Model
     public static function toSelect($placeholder = false)
     {
         $result = Department::orderBy('name')->pluck('name', 'name');
-        return $placeholder ? collect(['' => $placeholder])->union($result) : $result;
+        return $placeholder
+            ? collect(['' => $placeholder])->union($result)
+            : $result;
     }
 }

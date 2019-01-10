@@ -27,8 +27,8 @@ class AddMorphToProccesses extends Migration
     public function down()
     {
         Schema::table('processes', function (Blueprint $table) {
+            $table->dropColumn('processable_id');
             $table->dropColumn('processable_type');
-            $table->dropColumn('processable_name');
         });
 
     }

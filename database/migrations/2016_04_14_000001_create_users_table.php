@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->integer('faculty_id')->unsigned();
             $table->enum('gender', ['Kadın', 'Erkek'])->nullable();
             $table->date('birthday');
-            $table->string('mobile',10);
+            $table->string('mobile', 10);
             $table->string('year');
             $table->string('title');
             $table->dateTime('left_at')->nullable();
@@ -50,6 +50,10 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
+        Schema::table('faculties', function (Blueprint $table) {
+            DropBaseActions($table);
+        });
+
         Schema::dropIfExists('users');
     }
 }
