@@ -34,7 +34,7 @@
                         <span>Kendi Çocuklarım</span></a>
                 </li>
                 <li class="{{ set_active('*admin/faculty/*/child') }}">
-                    <a href="{{ route('admin.faculty.child.index', $authUser->faculty_id) }}"><i class="fa fa-bars"></i>
+                    <a href="{{ route('admin.faculty.child.index', ['faculty' => $authUser->faculty_id]) }}"><i class="fa fa-bars"></i>
                         <span>Fakülte Çocukları</span></a>
                 </li>
                 <li class="{{ set_active('*admin/child') }}">
@@ -163,7 +163,7 @@
             </a>
             <ul class="treeview-menu">
                 <li class="">
-                    <a href="{{ route('admin.faculty.user.index', ['faculty_id' => $authUser->faculty_id, 'approval' => 0]) }}">
+                    <a href="{{ route('admin.faculty.user.index', ['faculty' => $authUser->faculty_id, 'approval' => 0]) }}">
                         <i class="fa fa-thumbs-o-up"></i>
                         <span>Onay Bekleyenler</span>
                         <span class="pull-right-container">
@@ -173,7 +173,7 @@
                     </a>
                 </li>
                 <li class="{{ set_active('*admin/faculty/*/user*') }}">
-                    <a href="{{ route('admin.faculty.user.index', $authUser->faculty_id) }}"><i class="fa fa-user"></i>
+                    <a href="{{ route('admin.faculty.user.index', ['faculty' => $authUser->faculty_id]) }}"><i class="fa fa-user"></i>
                         <span>Fakülte Üyeleri</span></a>
                 </li>
                 <li class="{{ set_active('*admin/user*') }}">

@@ -12,8 +12,8 @@ use App\Models\Feed;
 class CacheManager
 {
 
-    const SHORT_TERM_MINUTES = 15;
-    const LONG_TERM_MINUTES = 600;
+    const SHORT_TERM_MINUTES = 15 * 60;
+    const LONG_TERM_MINUTES = 600 * 60;
 
     public static function counts()
     {
@@ -31,14 +31,14 @@ class CacheManager
 
     public static function bloodCount()
     {
-        return cache()->remember('blood-count', 15, function () {
+        return cache()->remember('blood-count', CacheManager::SHORT_TERM_MINUTES, function () {
             return Blood::count();
         });
     }
 
     public static function volunteerCount()
     {
-        return cache()->remember('volunteer-count', 15, function () {
+        return cache()->remember('volunteer-count', CacheManager::SHORT_TERM_MINUTES, function () {
             return Volunteer::count();
         });
     }
@@ -46,15 +46,15 @@ class CacheManager
     public static function feeds($faculty_id = null, $limit = 15)
     {
         if ($faculty_id) {
-            return cache()->remember('feed-' . $faculty_id, 5, function () use ($faculty_id, $limit) {
+            return cache()->remember('feed-' . $faculty_id, CacheManager::SHORT_TERM_MINUTES, function () use ($faculty_id, $limit) {
                 return Feed::where('faculty_id', $faculty_id)
-                           ->orderby('id', 'desc')
-                           ->with('creator')
-                           ->limit($limit)
-                           ->get();
+                    ->orderby('id', 'desc')
+                    ->with('creator')
+                    ->limit($limit)
+                    ->get();
             });
         }
-        return cache()->remember('feed', 5, function () use ($limit) {
+        return cache()->remember('feed', CacheManager::SHORT_TERM_MINUTES, function () use ($limit) {
             return Feed::orderby('id', 'desc')->limit($limit)->with('creator')->get();
         });
     }

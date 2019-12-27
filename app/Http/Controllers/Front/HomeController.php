@@ -28,12 +28,14 @@ use Newsletter;
 
 class HomeController extends Controller
 {
-    //
+    const SHORT_TERM_MINUTES = 15 * 60;
+    const LONG_TERM_MINUTES = 60 * 60;
+
 
     public function home(Request $request)
     {
         $page = $request->has('page') ? $request->page : '1';
-        $children = Cache::remember('home-children' . $page, 10, function () {
+        $children = Cache::remember('home-children' . $page, static::SHORT_TERM_MINUTES, function () {
             return Child::where('gift_state', 'Bekleniyor')
                 ->with([
                     'meetingPost',
@@ -78,7 +80,7 @@ class HomeController extends Controller
 
     public function news()
     {
-        $channels = Cache::remember('channels', 60, function () {
+        $channels = Cache::remember('channels', static::LONG_TERM_MINUTES, function () {
             return Channel::with('news')->get();
         });
 
@@ -87,19 +89,19 @@ class HomeController extends Controller
 
     public function us()
     {
-        $totalChildren = Cache::remember('totalChildren', 15, function () {
+        $totalChildren = Cache::remember('totalChildren', static::SHORT_TERM_MINUTES, function () {
             return DB::table('children')->count();
         });
 
-        $activeFaculties = Cache::remember('activeFaculties', 15, function () {
+        $activeFaculties = Cache::remember('activeFaculties', static::SHORT_TERM_MINUTES, function () {
             return DB::table('faculties')->whereNotNull('started_at')->count();
         });
 
-        $nonActiveFaculties = Cache::remember('nonActiveFaculties', 15, function () {
+        $nonActiveFaculties = Cache::remember('nonActiveFaculties', static::SHORT_TERM_MINUTES, function () {
             return DB::table('faculties')->whereNull('started_at')->count();
         });
 
-        $totalUser = Cache::remember('totalUser', 15, function () {
+        $totalUser = Cache::remember('totalUser', static::SHORT_TERM_MINUTES, function () {
             return DB::table('users')->count();
         });
 
@@ -195,7 +197,7 @@ class HomeController extends Controller
 
     public function testimonials()
     {
-        $testimonials = Cache::remember('testimonials', 60, function () {
+        $testimonials = Cache::remember('testimonials', static::LONG_TERM_MINUTES, function () {
             return Testimonial::whereNotNull('approved_at')->orderBy('priority', 'DESC')->get();
         });
 
@@ -237,11 +239,11 @@ class HomeController extends Controller
 
     public function appLanding()
     {
-        $totalChildren = Cache::remember('totalChildren', 15, function () {
+        $totalChildren = Cache::remember('totalChildren', static::SHORT_TERM_MINUTES, function () {
             return DB::table('children')->count();
         });
 
-        $totalFaculties = Cache::remember('activeFaculties', 15, function () {
+        $totalFaculties = Cache::remember('activeFaculties', static::SHORT_TERM_MINUTES, function () {
             return DB::table('faculties')->whereNotNull('started_at')->count();
         });
 
@@ -258,11 +260,11 @@ class HomeController extends Controller
 
     public function english()
     {
-        $activeFaculties = Cache::remember('activeFaculties', 15, function () {
+        $activeFaculties = Cache::remember('activeFaculties', static::SHORT_TERM_MINUTES, function () {
             return DB::table('faculties')->whereNotNull('started_at')->count();
         });
 
-        $nonActiveFaculties = Cache::remember('nonActiveFaculties', 15, function () {
+        $nonActiveFaculties = Cache::remember('nonActiveFaculties', static::SHORT_TERM_MINUTES, function () {
             return DB::table('faculties')->whereNull('started_at')->count();
         });
 
@@ -271,7 +273,7 @@ class HomeController extends Controller
 
     public function faculties()
     {
-        $faculties = Cache::remember('faculties', 60, function () {
+        $faculties = Cache::remember('faculties', static::LONG_TERM_MINUTES, function () {
             return Faculty::all();
         });
 
@@ -286,7 +288,7 @@ class HomeController extends Controller
         }
 
         $page = $request->has('page') ? $request->page : '1';
-        $children = Cache::remember($facultyName . '-children-' . $page, 10, function () use ($faculty) {
+        $children = Cache::remember($facultyName . '-children-' . $page, static::SHORT_TERM_MINUTES, function () use ($faculty) {
             return $faculty->children()
                 ->with([
                     'posts',
@@ -305,7 +307,7 @@ class HomeController extends Controller
 
     public function child($facultyName, $childSlug)
     {
-        $child = Cache::remember('child-' . $childSlug, 30, function () use ($childSlug) {
+        $child = Cache::remember('child-' . $childSlug, static::SHORT_TERM_MINUTES, function () use ($childSlug) {
             return Child::where('slug', $childSlug)->with('faculty', 'posts', 'posts.images')->first();
         });
 
@@ -316,7 +318,7 @@ class HomeController extends Controller
         if ($child->until < Carbon::now()) {
             return view('front.childExpired');
         }
-        $children = Cache::remember('childRandom-' . $childSlug, 30, function () {
+        $children = Cache::remember('childRandom-' . $childSlug, static::SHORT_TERM_MINUTES, function () {
             return Child::where('gift_state', 'Bekleniyor')
                 ->with([
                     'meetingPosts',
@@ -395,7 +397,7 @@ class HomeController extends Controller
      */
     public function cities()
     {
-        $coloredCities = Cache::remember('coloredCities', 60, function () {
+        $coloredCities = Cache::remember('coloredCities', static::LONG_TERM_MINUTES, function () {
             $cities = Faculty::all();
             $colored = [];
             foreach ($cities as $city) {
