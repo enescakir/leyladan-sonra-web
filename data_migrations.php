@@ -34,34 +34,36 @@ $sponsors->each(function ($sponsor) {
 });
 
 ## USER MIGRATIONS
-$users = App\Models\User::get();
-$users->each(function ($user) {
-    switch ($user->title) {
-        case 'Yönetici':
-            $user->assignRole('admin');
-            break;
-        case 'Fakülte Sorumlusu':
-            $user->assignRole('manager');
-            break;
-        case 'Fakülte Yönetim Kurulu':
-            $user->assignRole('board');
-            break;
-        case 'İletişim Sorumlusu':
-            $user->assignRole('relation');
-            break;
-        case 'Site Sorumlusu':
-            $user->assignRole('website');
-            break;
-        case 'Kan Bağışı Görevlisi':
-            $user->assignRole('blood');
-            break;
-        case 'Hediye Sorumlusu':
-            $user->assignRole('gift');
-            break;
-        default:
-            $user->assignRole('normal');
-            break;
-    }
+// approved_by -> approved_at
+App\Models\User::chunk(100, function ($users) {
+    $users->each(function ($user) {
+        switch ($user->title) {
+            case 'Yönetici':
+                $user->assignRole('admin');
+                break;
+            case 'Fakülte Sorumlusu':
+                $user->assignRole('manager');
+                break;
+            case 'Fakülte Yönetim Kurulu':
+                $user->assignRole('board');
+                break;
+            case 'İletişim Sorumlusu':
+                $user->assignRole('relation');
+                break;
+            case 'Site Sorumlusu':
+                $user->assignRole('website');
+                break;
+            case 'Kan Bağışı Görevlisi':
+                $user->assignRole('blood');
+                break;
+            case 'Hediye Sorumlusu':
+                $user->assignRole('gift');
+                break;
+            default:
+                $user->assignRole('normal');
+                break;
+        }
+    });
 });
 
 

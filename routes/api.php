@@ -13,9 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:api');
 
 Route::get('children', 'Front\Api\ApiController@children')->name('api.children');
 Route::get('child/{id}', 'Front\Api\ApiController@child')->name('api.child');

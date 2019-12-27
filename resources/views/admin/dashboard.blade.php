@@ -159,32 +159,32 @@
                     <div class="row">
                         <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
                             <h3>
-                                {{ $childCounts['faculty'][App\Enums\GiftStatus::Waiting] }} /
-                                {{ $childCounts['general'][App\Enums\GiftStatus::Waiting] }}
+                                {{ $childCounts['faculty'][App\Enums\GiftStatus::Waiting] ?? 0 }} /
+                                {{ $childCounts['general'][App\Enums\GiftStatus::Waiting] ?? 0 }}
                             </h3>
                             <div class="knob-label label bg-red">Beklenen</div>
                         </div>
                         <!-- ./col -->
                         <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
                             <h3>
-                                {{ $childCounts['faculty'][App\Enums\GiftStatus::OnRoad] }} /
-                                {{ $childCounts['general'][App\Enums\GiftStatus::OnRoad] }}
+                                {{ $childCounts['faculty'][App\Enums\GiftStatus::OnRoad] ?? 0 }} /
+                                {{ $childCounts['general'][App\Enums\GiftStatus::OnRoad] ?? 0 }}
                             </h3>
                             <div class="knob-label label bg-yellow">Yolda</div>
                         </div>
                         <!-- ./col -->
                         <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
                             <h3>
-                                {{ $childCounts['faculty'][App\Enums\GiftStatus::Arrived] }} /
-                                {{ $childCounts['general'][App\Enums\GiftStatus::Arrived] }}
+                                {{ $childCounts['faculty'][App\Enums\GiftStatus::Arrived] ?? 0 }} /
+                                {{ $childCounts['general'][App\Enums\GiftStatus::Arrived] ?? 0 }}
                             </h3>
                             <div class="knob-label label bg-aqua">Bize Ulaşan</div>
                         </div>
                         <!-- ./col -->
                         <div class="col-xs-3 text-center">
                             <h3>
-                                {{ $childCounts['faculty'][App\Enums\GiftStatus::Delivered] }} /
-                                {{ $childCounts['general'][App\Enums\GiftStatus::Delivered] }}
+                                {{ $childCounts['faculty'][App\Enums\GiftStatus::Delivered] ?? 0 }} /
+                                {{ $childCounts['general'][App\Enums\GiftStatus::Delivered] ?? 0 }}
                             </h3>
                             <div class="knob-label label bg-green">Teslim Edilen</div>
                         </div>

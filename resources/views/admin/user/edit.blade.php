@@ -112,7 +112,7 @@
                         </div>
                         <div class="col-md-6 form-group{{ $errors->has('role') ? ' has-error' : '' }}">
                             {!! Form::label('role', 'Görev *', ['class' => 'control-label']) !!}
-                            {!! Form::select('role', $roles, optional($user->roles)->first()->name, ['class' => 'form-control select2-no-search', 'required' => 'required'])  !!}
+                            {!! Form::select('role', $roles, optional($user->roles)->first()->name ?? null, ['class' => 'form-control select2-no-search', 'required' => 'required'])  !!}
                             <small class="text-danger">{{ $errors->first('role') }}</small>
                         </div>
 
