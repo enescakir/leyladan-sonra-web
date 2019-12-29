@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Macros\RouteMacro;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -36,9 +37,6 @@ class AppServiceProvider extends ServiceProvider
                 'totalFaculties' => FacultyCacheManager::count()
             ]);
         });
-
-        RouteMacro::registerMacros();
-
 
         Relation::morphMap([
             'children'   => 'App\Models\Children',

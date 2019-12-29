@@ -18,7 +18,7 @@ class FacultyPostController extends Controller
 
     public function index(PostFilter $filters, Faculty $faculty)
     {
-        $posts = $faculty->posts()->with(['child', 'child.faculty', 'media'])->latest('posts.id')->filter($filters)->safePaginate();
+        $posts = $faculty->posts()->latest('posts.created_at')->with(['child', 'child.faculty', 'media'])->filter($filters)->safePaginate();
 
         $postTypes = PostType::toSelect('Hepsi');
 

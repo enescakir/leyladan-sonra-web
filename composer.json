@@ -15,7 +15,7 @@
     "aws/aws-sdk-php": "^3.130",
     "barryvdh/laravel-snappy": "^0.4.3",
     "doctrine/dbal": "^2.10",
-    "enescakir/laravel-helper": "0.2.3",
+    "enescakir/laravel-helper": "0.2.4",
     "fideloper/proxy": "^4.0",
     "guzzlehttp/guzzle": "^6.5",
     "intervention/image": "^2.5",

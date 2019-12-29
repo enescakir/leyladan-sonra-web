@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Excel;
 
 class Diagnosis extends Model
 {
     use BaseActions;
+    use Filterable;
 
     // Properties
     protected $table = 'diagnoses';
