@@ -2,15 +2,15 @@
 
 namespace App\Filters;
 
-use App\Models\WishCategory;
+use App\Models\Diagnosis;
 use EnesCakir\Helper\Base\Filter;
 
-class WishCategoryFilter extends Filter
+class DiagnosisFilter extends Filter
 {
     protected $filters = ['search', 'download'];
 
     protected function download()
     {
-        WishCategory::download($this->builder);
+        Diagnosis::download($this->builder);
     }
 }

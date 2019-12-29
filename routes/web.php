@@ -34,8 +34,6 @@ Route::get('/english.html', 'Front\HomeController@english')->name('front.english
 Route::get('/kan-bagisi.html', 'Front\HomeController@blood')->name('front.blood');
 Route::get('/mobil-uygulama.html', 'Front\HomeController@appLanding')->name('front.landing');
 Route::post('/kan-bagisi', 'Front\HomeController@bloodStore')->name('front.blood.store');
-Route::get('/bekleyen-hediyeler', 'Front\HomeController@waitings');
-Route::post('/bekleyen-hediyeler', 'Front\HomeController@waitings');
 
 Route::get('/yonetim', function () { return redirect('/admin/login'); })->name('admin');
 

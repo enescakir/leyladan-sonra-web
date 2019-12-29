@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Admin\Volunteer;
 
 use App\Filters\ChatFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Child;
 
-class ChildChatController extends AdminController
+class ChildChatController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(ChatFilter $filters, Child $child)
     {

@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\Channel;
+use EnesCakir\Helper\Base\Filter;
 
 class ChannelFilter extends Filter
 {

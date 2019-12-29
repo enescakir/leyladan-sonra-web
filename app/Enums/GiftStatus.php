@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-class GiftStatus extends BaseEnum
+use EnesCakir\Helper\Base\Enum;
+
+class GiftStatus extends Enum
 {
     const Waiting = 'Bekleniyor';
     const OnRoad = 'Yolda';

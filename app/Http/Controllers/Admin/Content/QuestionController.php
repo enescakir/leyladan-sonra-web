@@ -3,18 +3,21 @@
 namespace App\Http\Controllers\Admin\Content;
 
 use App\Filters\QuestionFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Question;
 
-class QuestionController extends AdminController
+class QuestionController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(QuestionFilter $filters)
     {
-        $questions = Question::orderBy('order');
-        $questions->filter($filters);
-        $questions = $questions->paginate();
+        $questions = Question::orderBy('order')->filter($filters)->safePaginate();
 
         return view('admin.question.index', compact('questions'));
     }
@@ -29,7 +32,7 @@ class QuestionController extends AdminController
         $this->validateQuestion($request);
         $question = Question::create($request->only(['text', 'answer', 'order']));
 
-        session_success(__('messages.question.create', ['name' =>  $question->text]));
+        session_success(__('messages.question.create', ['name' => $question->text]));
 
         return redirect()->route('admin.question.index');
     }
@@ -44,7 +47,7 @@ class QuestionController extends AdminController
         $this->validateQuestion($request);
         $question->update($request->only(['text', 'answer', 'order']));
 
-        session_success(__('messages.question.update', ['name' =>  $question->text]));
+        session_success(__('messages.question.update', ['name' => $question->text]));
 
         return redirect()->route('admin.question.index');
     }

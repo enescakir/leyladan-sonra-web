@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use App\Traits\Filterable;
-use function foo\func;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
 use App\Enums\ChatStatus;
 
 class Chat extends Model
@@ -63,7 +62,7 @@ class Chat extends Model
     // Accessors
     public function averageTime()
     {
-        return $this->messages->filter(function ($message){
+        return $this->messages->filter(function ($message) {
             return $message->is_sent == false;
         })->avg('answerTime');
     }

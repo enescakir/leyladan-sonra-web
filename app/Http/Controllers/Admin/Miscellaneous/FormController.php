@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Admin\Miscellaneous;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use PDF;
 
-class FormController extends AdminController
+class FormController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function create()
     {
@@ -19,9 +24,9 @@ class FormController extends AdminController
         $text = $request->text;
         $random = str_random(6);
 
-        return PDF::loadView('admin.form.show', compact('text','random'))
-                  ->setPaper('a5', 'portrait')
-                  ->setWarnings(false)
-                  ->stream("Onam_Formu_{$random}.pdf");
+        return PDF::loadView('admin.form.show', compact('text', 'random'))
+            ->setPaper('a5', 'portrait')
+            ->setWarnings(false)
+            ->stream("Onam_Formu_{$random}.pdf");
     }
 }

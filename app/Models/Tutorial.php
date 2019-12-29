@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Traits\Filterable;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
 
 class Tutorial extends Model
 {
@@ -27,7 +27,7 @@ class Tutorial extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('link', 'like', '%' . $search . '%');
+                ->orWhere('link', 'like', '%' . $search . '%');
         });
     }
 

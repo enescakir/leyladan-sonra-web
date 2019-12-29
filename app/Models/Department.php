@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use EnesCakir\Helper\Traits\BaseActions;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
 use Excel;
 
 class Department extends Model
 {
     use BaseActions;
+
     // Properties
     protected $table = 'departments';
     protected $fillable = ['name', 'desc', 'slug'];
@@ -19,7 +20,7 @@ class Department extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('name', 'like', '%' . $search . '%')
-                   ->orWhere('desc', 'like', '%' . $search . '%');
+                ->orWhere('desc', 'like', '%' . $search . '%');
         });
     }
 

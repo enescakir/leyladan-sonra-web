@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Admin\Child;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class TemporaryMediaController extends AdminController
+class TemporaryMediaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function store(Request $request)
     {
         $media = $request->file('image');

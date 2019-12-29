@@ -2,28 +2,22 @@
 
 namespace App\Http\Controllers\Admin\Child;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Filters\DiagnosisFilter;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Diagnosis;
 
-class DiagnosisController extends AdminController
+class DiagnosisController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    public function index(Request $request)
+    public function index(DiagnosisFilter $filters)
     {
-        $diagnosises = Diagnosis::orderBy('name');
-        if ($request->filled('search')) {
-            $diagnosises->search($request->search);
-        }
-        if ($request->filled('download')) {
-            Diagnosis::download($diagnosises);
-        }
+        $diagnosises = Diagnosis::orderBy('name')->filter($filters)->safePaginate();
 
-        $diagnosises = $diagnosises->paginate($request->per_page ?: 25);
         return view('admin.diagnosis.index', compact('diagnosises'));
     }
 
@@ -35,10 +29,10 @@ class DiagnosisController extends AdminController
     public function store(Request $request)
     {
         $diagnosis = Diagnosis::create([
-          'name' => $request->name,
-          'desc' => $request->desc
+            'name' => $request->name,
+            'desc' => $request->desc
         ]);
-        session_success(__('messages.diagnosis.create', ['name' =>  $diagnosis->name]));
+        session_success(__('messages.diagnosis.create', ['name' => $diagnosis->name]));
         return redirect()->route('admin.diagnosis.index');
     }
 
@@ -51,7 +45,7 @@ class DiagnosisController extends AdminController
     public function update(Request $request, Diagnosis $diagnosi)
     {
         $diagnosi->update($request->all());
-        session_success(__('messages.diagnosis.update', ['name' =>  $diagnosi->name]));
+        session_success(__('messages.diagnosis.update', ['name' => $diagnosi->name]));
         return redirect()->route('admin.diagnosis.index');
     }
 

@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\Blood;
+use EnesCakir\Helper\Base\Filter;
 
 class BloodFilter extends Filter
 {

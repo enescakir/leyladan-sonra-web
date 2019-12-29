@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\EmailSample;
+use EnesCakir\Helper\Base\Filter;
 
 class EmailSampleFilter extends Filter
 {

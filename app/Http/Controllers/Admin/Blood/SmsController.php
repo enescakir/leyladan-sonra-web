@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\Admin\Blood;
 
 use App\Filters\SmsFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Blood;
 use App\Models\Sms;
 
-class SmsController extends AdminController
+class SmsController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(SmsFilter $filters)
     {
-        $messages = Sms::where('category', 'Kan Bağışı')->orderBy('id', 'DESC')->with('sender');
-        $messages->filter($filters);
-        $messages = $messages->paginate(request('per_page', 25));
+        $messages = Sms::where('category', 'Kan Bağışı')->latest()->with('sender')->filter($filters)->safePaginate();
 
         $senders = Sms::toSenderSelect('Hepsi', 'Kan Bağışı');
 

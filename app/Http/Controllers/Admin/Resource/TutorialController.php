@@ -3,20 +3,24 @@
 namespace App\Http\Controllers\Admin\Resource;
 
 use App\Filters\TutorialFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Tutorial;
 
-class TutorialController extends AdminController
+class TutorialController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(TutorialFilter $filters)
     {
-        $tutorials = Tutorial::latest();
-        $tutorials->filter($filters);
-        $tutorials = $tutorials->paginate();
+        $tutorials = Tutorial::latest()->filter($filters)->safePaginate();
 
         $categories = Tutorial::toCategorySelect('Hepsi');
+
         return view('admin.tutorial.index', compact('tutorials', 'categories'));
     }
 
@@ -29,11 +33,11 @@ class TutorialController extends AdminController
     {
         $this->validateTutorial($request);
         $tutorial = Tutorial::create([
-          'name'     => $request->name,
-          'link'     => $request->link,
-          'category' => $request->category,
+            'name'     => $request->name,
+            'link'     => $request->link,
+            'category' => $request->category,
         ]);
-        session_success(__('messages.tutorial.create', ['name' =>  $tutorial->name]));
+        session_success(__('messages.tutorial.create', ['name' => $tutorial->name]));
         return redirect()->route('admin.tutorial.index');
     }
 
@@ -50,7 +54,7 @@ class TutorialController extends AdminController
             'link'     => $request->link,
             'category' => $request->category,
         ]);
-        session_success(__('messages.tutorial.update', ['name' =>  $tutorial->name]));
+        session_success(__('messages.tutorial.update', ['name' => $tutorial->name]));
         return redirect()->route('admin.tutorial.index');
     }
 
@@ -64,9 +68,9 @@ class TutorialController extends AdminController
     private function validateTutorial(Request $request, $isUpdate = false)
     {
         $this->validate($request, [
-          'name'     => 'required|string|max:255',
-          'link'     => 'required|string',
-          'category' => 'required|string'
-      ]);
+            'name'     => 'required|string|max:255',
+            'link'     => 'required|string',
+            'category' => 'required|string'
+        ]);
     }
 }

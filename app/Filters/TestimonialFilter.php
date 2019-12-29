@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\Testimonial;
+use EnesCakir\Helper\Base\Filter;
 
 class TestimonialFilter extends Filter
 {

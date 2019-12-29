@@ -2,13 +2,18 @@
 // TODO: New voting engine
 namespace App\Http\Controllers\Admin\Miscellaneous;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
 
-class VoteController extends AdminController
+class VoteController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function vote()
     {

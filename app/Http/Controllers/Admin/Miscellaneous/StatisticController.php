@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Admin\Miscellaneous;
 use App\Enums\ChatStatus;
 use App\Enums\GiftStatus;
 use App\Enums\ProcessType;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\Role;
@@ -19,28 +19,33 @@ use Spatie\Analytics\Period;
 use App\Models\Faculty;
 use App\Models\Blood;
 
-class StatisticController extends AdminController
+class StatisticController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function child()
     {
         $youngestChild = Child::orderby('birthday', 'DESC')->whereNotNull('birthday')->first();
         $oldestChild = Child::orderby('birthday')->whereYear('birthday', '>', 1950)->first();
         $ageAverage = DB::table('children')->selectRaw('AVG(TIMESTAMPDIFF(YEAR, birthday, CURDATE())) AS `average`')
-                        ->whereYear('birthday', '>', 1950)
-                        ->get()[0];
+            ->whereYear('birthday', '>', 1950)
+            ->get()[0];
         $childByCity = Child::select('city', DB::raw('count(*) as count'))->groupBy('city')->orderBy('count', 'DESC')
-                            ->get()->pluck('count', 'city');
+            ->get()->pluck('count', 'city');
         $childByDiagnosis = Child::select('diagnosis', DB::raw('count(*) as count'))->groupBy('diagnosis')
-                                 ->orderBy('count', 'DESC')->get()->pluck('count', 'diagnosis');
+            ->orderBy('count', 'DESC')->get()->pluck('count', 'diagnosis');
         $childByDepartment = Child::select('department', DB::raw('count(*) as count'))->groupBy('department')
-                                  ->orderBy('count', 'DESC')->get()->pluck('count', 'department');
+            ->orderBy('count', 'DESC')->get()->pluck('count', 'department');
         $childByGift = Child::select('gift_state', DB::raw('count(*) as count'))->groupBy('gift_state')
-                            ->orderBy('count', 'DESC')->get()->pluck('count', 'gift_state');
+            ->orderBy('count', 'DESC')->get()->pluck('count', 'gift_state');
         $childByName = Child::select('first_name', DB::raw('count(*) as count'))->groupBy('first_name')
-                            ->orderBy('count', 'DESC')->limit(20)->get()->pluck('count', 'first_name');
+            ->orderBy('count', 'DESC')->limit(20)->get()->pluck('count', 'first_name');
 
         $mostChats = Child::select('id', 'first_name', 'last_name', 'wish', 'faculty_id')->with('faculty')
-                          ->withCount('chats')->orderBy('chats_count', 'DESC')->limit(20)->get();
+            ->withCount('chats')->orderBy('chats_count', 'DESC')->limit(20)->get();
 
         return view(
             'admin.statistic.child',
@@ -61,7 +66,7 @@ class StatisticController extends AdminController
     public function faculty()
     {
         $faculties = Faculty::started()->with('children')->withCount('children')->orderBy('children_count', 'DESC')
-                            ->get();
+            ->get();
         $lastMonths = collect();
         for ($i = 5; $i >= 0; $i--) {
             $lastMonths->push(now()->subMonths($i));
@@ -86,12 +91,12 @@ class StatisticController extends AdminController
     public function blood()
     {
         $bloodByCity = Blood::select('city', DB::raw('count(*) as count'))->groupBy('city')->orderBy('count', 'DESC')
-                            ->get()->pluck('count', 'city');
+            ->get()->pluck('count', 'city');
         $bloodByType = Blood::select('blood_type', DB::raw('count(*) as count'))->groupBy('blood_type')
-                            ->orderBy('count', 'DESC')
-                            ->get()->pluck('count', 'blood_type');
+            ->orderBy('count', 'DESC')
+            ->get()->pluck('count', 'blood_type');
         $bloodByRh = Blood::select('rh', DB::raw('count(*) as count'))->groupBy('rh')->orderBy('count', 'DESC')
-                          ->get()->mapWithKeys(function ($blood) {
+            ->get()->mapWithKeys(function ($blood) {
                 return [$blood->rh_label => $blood->count];
             });
         $bloodByGroup = Blood::select(
@@ -100,7 +105,7 @@ class StatisticController extends AdminController
             DB::raw('CONCAT(blood_type, " ", rh) as blood_group'),
             DB::raw('count(*) as count')
         )->groupBy('blood_group')->orderBy('count', 'DESC')
-                             ->get()->mapWithKeys(function ($blood) {
+            ->get()->mapWithKeys(function ($blood) {
                 return [
                     ("{$blood->blood_type} {$blood->rh_label}") => $blood->count
                 ];
@@ -114,32 +119,32 @@ class StatisticController extends AdminController
     public function user()
     {
         $youngestUser = User::orderby('birthday', 'DESC')->whereNotNull('birthday')->whereYear('birthday', '<', 2010)
-                            ->first();
+            ->first();
         $oldestUser = User::orderby('birthday')->whereYear('birthday', '>', 1950)->first();
         $ageAverage = DB::table('users')->selectRaw('AVG(TIMESTAMPDIFF(YEAR, birthday, CURDATE())) AS `average`')
-                        ->whereYear('birthday', '>', 1950)
-                        ->get()[0];
+            ->whereYear('birthday', '>', 1950)
+            ->get()[0];
         $userByName = User::select('first_name', DB::raw('count(*) as count'))->groupBy('first_name')
-                          ->orderBy('count', 'DESC')->limit(15)->get()->pluck('count', 'first_name');
+            ->orderBy('count', 'DESC')->limit(15)->get()->pluck('count', 'first_name');
         $userByHoroscope = $this->getUserHoroscopes();
         $userByFaculty = Faculty::started()->has('users')->withCount('users')->orderBy('users_count', 'DESC')->get()
-                                ->pluck('users_count', 'name');
+            ->pluck('users_count', 'name');
         $userByRole = Role::has('users')->withCount('users')->orderBy('users_count', 'DESC')->get()
-                          ->pluck('users_count', 'display');
+            ->pluck('users_count', 'display');
         $mostVisits = User::select('id', 'faculty_id', 'first_name', 'last_name')->with('faculty:id,name')
-                          ->withCount('visits')->orderBy('visits_count', 'DESC')->limit(10)->get();
+            ->withCount('visits')->orderBy('visits_count', 'DESC')->limit(10)->get();
         $mostChildren = User::select('id', 'faculty_id', 'first_name', 'last_name')->with('faculty:id,name')
-                            ->withCount('children')->orderBy('children_count', 'DESC')->limit(10)->get();
+            ->withCount('children')->orderBy('children_count', 'DESC')->limit(10)->get();
         $mostAnswers = User::select('id', 'faculty_id', 'first_name', 'last_name')->with('faculty:id,name')
-                           ->withCount('answers')->orderBy('answers_count', 'DESC')->limit(10)->get();
+            ->withCount('answers')->orderBy('answers_count', 'DESC')->limit(10)->get();
         $mostApprovals = User::select('id', 'faculty_id', 'first_name', 'last_name')->with('faculty:id,name')
-                             ->withCount('approvedPosts')->orderBy('approved_posts_count', 'DESC')->limit(10)->get();
+            ->withCount('approvedPosts')->orderBy('approved_posts_count', 'DESC')->limit(10)->get();
         $mostArrivals = User::select('id', 'faculty_id', 'first_name', 'last_name')->with('faculty:id,name')
-                            ->withCount([
-                                'processes as arrivals_count' => function ($query) {
-                                    return $query->type(ProcessType::GiftArrived);
-                                }
-                            ])->orderBy('arrivals_count', 'DESC')->limit(10)->get();
+            ->withCount([
+                'processes as arrivals_count' => function ($query) {
+                    return $query->type(ProcessType::GiftArrived);
+                }
+            ])->orderBy('arrivals_count', 'DESC')->limit(10)->get();
 
         return view(
             'admin.statistic.user',
@@ -163,38 +168,38 @@ class StatisticController extends AdminController
     public function volunteer()
     {
         $facultyAverageTimes = Faculty::started()->has('chats')->with('chats', 'chats.messages')
-                                      ->withCount('children', 'messages')->get()
-                                      ->map(function (
-                                          $faculty
-                                      ) {
-                                          $time = $faculty->chats->avg(function ($chat) {
-                                              return $chat->averageTime();
-                                          });
-                                          $openChats = $faculty->chats->filter(function ($chat) {
-                                              return $chat->status == ChatStatus::Open;
-                                          })->count();
+            ->withCount('children', 'messages')->get()
+            ->map(function (
+                $faculty
+            ) {
+                $time = $faculty->chats->avg(function ($chat) {
+                    return $chat->averageTime();
+                });
+                $openChats = $faculty->chats->filter(function ($chat) {
+                    return $chat->status == ChatStatus::Open;
+                })->count();
 
-                                          return [
-                                              'name'             => $faculty->name,
-                                              'time'             => number_format($time, 2, '.', ''),
-                                              'open_chats_count' => $openChats,
-                                              'children_count'   => $faculty->children_count,
-                                              'messages_count'   => $faculty->messages_count
-                                          ];
-                                      })->sortBy('time');
+                return [
+                    'name'             => $faculty->name,
+                    'time'             => number_format($time, 2, '.', ''),
+                    'open_chats_count' => $openChats,
+                    'children_count'   => $faculty->children_count,
+                    'messages_count'   => $faculty->messages_count
+                ];
+            })->sortBy('time');
 
         $waitingChildren = Child::gift(GiftStatus::Waiting)
-                                ->with('faculty')
-                                ->withChatCounts()
-                                ->whereHas('meetingPost', function ($query) {
-                                    $query->approved();
-                                })
-                                ->latest('meeting_day')
-                                ->get();
+            ->with('faculty')
+            ->withChatCounts()
+            ->whereHas('meetingPost', function ($query) {
+                $query->approved();
+            })
+            ->latest('meeting_day')
+            ->get();
         $mostChats = Volunteer::select('id', 'first_name', 'last_name', 'city')
-                              ->withCount('chats')->orderBy('chats_count', 'DESC')->limit(15)->get();
+            ->withCount('chats')->orderBy('chats_count', 'DESC')->limit(15)->get();
         $mostChildren = Volunteer::select('id', 'first_name', 'last_name', 'city')
-                                 ->withCount('children')->orderBy('children_count', 'DESC')->limit(15)->get();
+            ->withCount('children')->orderBy('children_count', 'DESC')->limit(15)->get();
         $messageCount = [
             'total' => Message::count(),
             'today' => Message::whereDate('created_at', now()->toDateString())->count()

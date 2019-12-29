@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Management;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
 use App\Models\Role;
@@ -10,8 +10,13 @@ use App\Models\User;
 use App\Notifications\FacultyInform as FacultyInformNotification;
 use Notification;
 
-class FacultyEmailController extends AdminController
+class FacultyEmailController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function create(Faculty $faculty)
     {

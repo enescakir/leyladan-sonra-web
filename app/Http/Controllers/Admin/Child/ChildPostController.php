@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Child;
 
 use App\Enums\GiftStatus;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use App\Services\ProcessService;
 use App\Services\FeedService;
 use Illuminate\Http\Request;
@@ -13,13 +13,14 @@ use App\Enums\ProcessType;
 use App\Notifications\GiftArrived as GiftArrivedNotification;
 use Notification;
 
-class ChildPostController extends AdminController
+class ChildPostController extends Controller
 {
     protected $processService;
     protected $feedService;
 
     public function __construct(ProcessService $processService, FeedService $feedService)
     {
+        $this->middleware('auth');
         $this->processService = $processService;
         $this->feedService = $feedService;
     }

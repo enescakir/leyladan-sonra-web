@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Admin\Volunteer;
 
 use App\Enums\ProcessType;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use App\Models\Volunteer;
 use App\Services\ProcessService;
 use Illuminate\Http\Request;
 use App\Models\Chat;
 
-class ChatMessageController extends AdminController
+class ChatMessageController extends Controller
 {
-
     protected $processService;
 
     public function __construct(ProcessService $processService)
     {
+        $this->middleware('auth');
         $this->processService = $processService;
     }
 
@@ -26,8 +26,9 @@ class ChatMessageController extends AdminController
                 return $query->withCount(['children', 'chats']);
             }
         ]);
-        $messages = $chat->messages()->with('sender:id,first_name,last_name', 'answerer:id,first_name,last_name')
-                         ->oldest()->get();
+        $messages = $chat->messages()
+            ->with('sender:id,first_name,last_name', 'answerer:id,first_name,last_name')
+            ->oldest()->get();
 
         return api_success(['chat' => $chat, 'messages' => $messages]);
 

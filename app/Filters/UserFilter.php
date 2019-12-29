@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\User;
+use EnesCakir\Helper\Base\Filter;
 
 class UserFilter extends Filter
 {

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use EnesCakir\Helper\Traits\BaseActions;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
 use Excel;
 
 class Diagnosis extends Model
 {
     use BaseActions;
+
     // Properties
     protected $table = 'diagnoses';
     protected $fillable = ['name', 'category', 'desc'];
@@ -18,7 +19,7 @@ class Diagnosis extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('desc', 'like', '%' . $search . '%');
+                ->orWhere('desc', 'like', '%' . $search . '%');
         });
     }
 

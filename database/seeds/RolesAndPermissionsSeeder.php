@@ -81,7 +81,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $manager = Role::updateOrCreate(['name' => 'manager', 'display' => 'Fakülte Sorumlusu', 'public' => true]);
         $manager->syncPermissions([
-            'create child', 'edit child', 'delete child', 'list own children', 'list faculty children detail', 'list children basic',
+            'create child', 'edit child', 'list own children', 'list faculty children detail', 'list children basic',
             'list diagnosises',
             'edit faculty', 'list faculties',
             'list faculty posts', 'edit post', 'approve post', 'delete post',

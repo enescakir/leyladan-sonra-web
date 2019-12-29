@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\Sponsor;
+use EnesCakir\Helper\Base\Filter;
 
 class SponsorFilter extends Filter
 {

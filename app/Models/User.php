@@ -4,9 +4,14 @@ namespace App\Models;
 
 use App\Enums\GiftStatus;
 use App\Enums\ProcessType;
-use App\Traits\Downloadable;
-use App\Traits\Filterable;
 use Carbon\Carbon;
+use EnesCakir\Helper\Traits\Approvable;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
+use EnesCakir\Helper\Traits\HasBirthday;
+use EnesCakir\Helper\Traits\HasMediaTrait;
+use EnesCakir\Helper\Traits\HasMobile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
@@ -16,14 +21,9 @@ use App\Notifications\ApprovedUser as ApprovedUserNotification;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-use App\Traits\HasMediaTrait;
 use Spatie\Image\Manipulations;
 use App\Scopes\GraduateScope;
 use App\Scopes\LeftScope;
-use App\Traits\HasBirthday;
-use App\Traits\HasMobile;
-use App\Traits\BaseActions;
-use App\Traits\Approvable;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -105,11 +105,11 @@ class User extends Authenticatable implements HasMedia
 
         $query->where(function ($query2) use ($search) {
             $query2->where('id', $search)
-                   ->orWhere('first_name', 'like', "%{$search}%")
-                   ->orWhere('last_name', 'like', "%{$search}%")
-                   ->orWhere('email', 'like', "%{$search}%")
-                   ->orWhere('mobile', 'like', "%{$search}%")
-                   ->orWhere(\DB::raw('CONCAT_WS(" ", first_name, last_name)'), 'like', "%{$search}%");
+                ->orWhere('first_name', 'like', "%{$search}%")
+                ->orWhere('last_name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('mobile', 'like', "%{$search}%")
+                ->orWhere(\DB::raw('CONCAT_WS(" ", first_name, last_name)'), 'like', "%{$search}%");
         });
     }
 

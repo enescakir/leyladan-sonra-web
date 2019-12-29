@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\Faculty;
+use EnesCakir\Helper\Base\Filter;
 
 class FacultyFilter extends Filter
 {

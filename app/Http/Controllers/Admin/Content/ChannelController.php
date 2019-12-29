@@ -3,17 +3,20 @@
 namespace App\Http\Controllers\Admin\Content;
 
 use App\Filters\ChannelFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Channel;
 
-class ChannelController extends AdminController
+class ChannelController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(ChannelFilter $filters)
     {
-        $channels = Channel::latest()->with('media')->withCount('news');
-        $channels->filter($filters);
-        $channels = $channels->paginate();
+        $channels = Channel::latest()->with('media')->withCount('news')->filter($filters)->safePaginate();
 
         $categories = Channel::toCategorySelect('Hepsi');
 
@@ -31,7 +34,7 @@ class ChannelController extends AdminController
         $channel = Channel::create($request->only(['name', 'channel', 'category']));
         $channel->addMedia($request->logo);
 
-        session_success(__('messages.channel.create', ['name' =>  $channel->name]));
+        session_success(__('messages.channel.create', ['name' => $channel->name]));
 
         return redirect()->route('admin.channel.index');
     }
@@ -50,7 +53,7 @@ class ChannelController extends AdminController
             $channel->addMedia($request->logo);
         }
 
-        session_success(__('messages.channel.update', ['name' =>  $channel->name]));
+        session_success(__('messages.channel.update', ['name' => $channel->name]));
 
         return redirect()->route('admin.channel.index');
     }
@@ -66,9 +69,9 @@ class ChannelController extends AdminController
     private function validateChannel(Request $request, $isUpdate = false)
     {
         $this->validate($request, [
-          'name'     => 'required|string|max:255',
-          'category' => 'required|string|max:255',
-          'logo'     => 'image' . ($isUpdate ? '' : '|required'),
-      ]);
+            'name'     => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'logo'     => 'image' . ($isUpdate ? '' : '|required'),
+        ]);
     }
 }

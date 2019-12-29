@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Traits\Downloadable;
-use App\Traits\Filterable;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
 
 class Question extends Model
 {

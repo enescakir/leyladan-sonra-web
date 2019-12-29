@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\Sms;
+use EnesCakir\Helper\Base\Filter;
 
 class SmsFilter extends Filter
 {

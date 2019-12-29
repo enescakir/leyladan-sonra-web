@@ -3,19 +3,23 @@
 namespace App\Http\Controllers\Admin\Content;
 
 use App\Filters\TestimonialFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Testimonial;
 
-class TestimonialController extends AdminController
+class TestimonialController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(TestimonialFilter $filters)
     {
-        $testimonials = Testimonial::latest();
-        $testimonials->filter($filters);
-        $testimonials = $testimonials->paginate();
+        $testimonials = Testimonial::latest()->filter($filters)->safePaginate();
         $sources = Testimonial::toSourceSelect('Hepsi');
+
         return view('admin.testimonial.index', compact('testimonials', 'sources'));
     }
 

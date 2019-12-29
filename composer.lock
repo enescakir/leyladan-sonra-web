@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "61523008346abcb5e0fdacaaa102c439",
+    "content-hash": "94f399949811928a23c47a25b65558d0",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -829,16 +829,16 @@
         },
         {
             "name": "enescakir/laravel-helper",
-            "version": "0.2.0",
+            "version": "0.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/enescakir/laravel-helper.git",
-                "reference": "4c1d678eb913b2895edbdc190718c52f6b37adfa"
+                "reference": "4d1f966198965ad4147ad236f43b9423fc96d2f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/enescakir/laravel-helper/zipball/4c1d678eb913b2895edbdc190718c52f6b37adfa",
-                "reference": "4c1d678eb913b2895edbdc190718c52f6b37adfa",
+                "url": "https://api.github.com/repos/enescakir/laravel-helper/zipball/4d1f966198965ad4147ad236f43b9423fc96d2f1",
+                "reference": "4d1f966198965ad4147ad236f43b9423fc96d2f1",
                 "shasum": ""
             },
             "require": {
@@ -871,10 +871,10 @@
             ],
             "description": "It includes basic helpers for Laravel Projects",
             "support": {
-                "source": "https://github.com/enescakir/laravel-helper/tree/v0.2.0",
+                "source": "https://github.com/enescakir/laravel-helper/tree/v0.2.3",
                 "issues": "https://github.com/enescakir/laravel-helper/issues"
             },
-            "time": "2019-12-03T19:39:16+00:00"
+            "time": "2019-12-29T09:51:16+00:00"
         },
         {
             "name": "erusev/parsedown",

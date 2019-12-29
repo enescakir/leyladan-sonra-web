@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Filterable;
+use EnesCakir\Helper\Traits\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-use App\Traits\BaseActions;
-use App\Traits\Filterable;
-use App\Traits\HasMediaTrait;
 
 class Material extends Model implements HasMedia
 {
@@ -42,7 +42,7 @@ class Material extends Model implements HasMedia
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('link', 'like', '%' . $search . '%');
+                ->orWhere('link', 'like', '%' . $search . '%');
         });
     }
 

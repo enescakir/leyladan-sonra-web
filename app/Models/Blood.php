@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Traits\Downloadable;
-use App\Traits\Filterable;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
+use EnesCakir\Helper\Traits\HasMobile;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
-use App\Traits\HasMobile;
 
 class Blood extends Model
 {
@@ -24,8 +24,8 @@ class Blood extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('id', $search)
-                   ->orWhere('mobile', 'like', '%' . $search . '%')
-                   ->orWhere('city', 'like', '%' . $search . '%');
+                ->orWhere('mobile', 'like', '%' . $search . '%')
+                ->orWhere('city', 'like', '%' . $search . '%');
         });
     }
 

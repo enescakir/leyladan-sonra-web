@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-class ProcessType extends BaseEnum
+use EnesCakir\Helper\Base\Enum;
+
+class ProcessType extends Enum
 {
     protected static $statusTexts = [
         1  => 'Çocuk sisteme girildi',

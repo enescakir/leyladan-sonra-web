@@ -6,11 +6,16 @@ use App\CacheManagers\ChatCacheManager;
 use App\CacheManagers\PostCacheManager;
 use App\CacheManagers\UserCacheManager;
 use App\Enums\ChatStatus;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class SidebarController extends AdminController
+class SidebarController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function data(Request $request)
     {

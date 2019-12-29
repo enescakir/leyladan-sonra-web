@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Content;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Filters\SponsorFilter;
 use App\Models\Sponsor;
 
-class SponsorController extends AdminController
+class SponsorController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(SponsorFilter $filters)
     {
-        $sponsors = Sponsor::orderBy('order', 'DESC')->with('media');
-        $sponsors->filter($filters);
-        $sponsors = $sponsors->paginate();
+        $sponsors = Sponsor::orderBy('order', 'DESC')->with('media')->filter($filters)->safePaginate();
 
         return view('admin.sponsor.index', compact('sponsors'));
     }
@@ -29,7 +32,7 @@ class SponsorController extends AdminController
         $sponsor = Sponsor::create($request->only(['name', 'link', 'order']));
         $sponsor->addMedia($request->logo);
 
-        session_success(__('messages.sponsor.create', ['name' =>  $sponsor->name]));
+        session_success(__('messages.sponsor.create', ['name' => $sponsor->name]));
 
         return redirect()->route('admin.sponsor.index');
     }
@@ -48,7 +51,7 @@ class SponsorController extends AdminController
             $sponsor->addMedia($request->logo);
         }
 
-        session_success(__('messages.sponsor.update', ['name' =>  $sponsor->name]));
+        session_success(__('messages.sponsor.update', ['name' => $sponsor->name]));
 
         return redirect()->route('admin.sponsor.index');
     }
@@ -62,10 +65,10 @@ class SponsorController extends AdminController
     private function validateSponsor(Request $request, $isUpdate = false)
     {
         $this->validate($request, [
-          'name'  => 'required|string|max:255',
-          'link'  => 'required|string',
-          'order' => 'required|integer',
-          'logo'  => 'image' . ($isUpdate ? '' : '|required'),
-      ]);
+            'name'  => 'required|string|max:255',
+            'link'  => 'required|string',
+            'order' => 'required|integer',
+            'logo'  => 'image' . ($isUpdate ? '' : '|required'),
+        ]);
     }
 }

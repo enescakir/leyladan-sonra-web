@@ -3,17 +3,20 @@
 namespace App\Http\Controllers\Admin\Blood;
 
 use App\Filters\BloodFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Blood;
 
-class BloodController extends AdminController
+class BloodController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(BloodFilter $filters)
     {
-        $bloods = Blood::latest();
-        $bloods->filter($filters);
-        $bloods = $this->paginate($bloods);
+        $bloods = Blood::latest()->filter($filters)->safePaginate();
 
         return view('admin.blood.index', compact('bloods'));
     }
@@ -27,7 +30,7 @@ class BloodController extends AdminController
     {
         $request['mobile'] = make_mobile($request->mobile);
         $this->validateBlood($request);
-        $blood = Blood::create($request->only(['mobile', 'city', 'blood_type' . 'rh']));
+        $blood = Blood::create($request->only(['mobile', 'city', 'blood_type', 'rh']));
 
         session_success(__('messages.blood.create', ['mobile' => $blood->mobile]));
 
@@ -43,7 +46,7 @@ class BloodController extends AdminController
     {
         $request['mobile'] = make_mobile($request->mobile);
         $this->validateBlood($request, true);
-        $blood->update($request->only(['mobile', 'city', 'blood_type' . 'rh']));
+        $blood->update($request->only(['mobile', 'city', 'blood_type', 'rh']));
 
         session_success(__('messages.blood.update', ['mobile' => $blood->mobile]));
 

@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\Admin\Content;
 
 use App\Filters\NewFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\News;
 use App\Models\Channel;
 
-class NewController extends AdminController
+class NewController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(NewFilter $filters)
     {
-        $news = News::latest()->with('channel');
-        $news->filter($filters);
-        $news = $news->paginate();
+        $news = News::latest()->with('channel')->filter($filters)->safePaginate();
 
         $channels = Channel::toSelect('Hepsi');
 

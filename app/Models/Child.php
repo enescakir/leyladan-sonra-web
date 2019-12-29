@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Enums\PostType;
-use App\Traits\Downloadable;
-use App\Traits\Filterable;
-use App\Traits\HasSlug;
 use Carbon\Carbon;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
+use EnesCakir\Helper\Traits\HasBirthday;
+use EnesCakir\Helper\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
-use App\Traits\HasBirthday;
 use App\Enums\ChatStatus;
 use App\Enums\GiftStatus;
 use DB;
@@ -143,12 +143,12 @@ class Child extends Model implements HasMedia
 
         $query->where(function ($query2) use ($search) {
             $query2->where('children.id', $search)->orWhere('children.first_name', 'like', "%{$search}%")
-                   ->orWhere('children.last_name', 'like', "%{$search}%")
-                   ->orWhere(
-                       DB::raw('CONCAT_WS(" ", children.first_name, children.last_name)'),
-                       'like',
-                       "%{$search}%"
-                   );
+                ->orWhere('children.last_name', 'like', "%{$search}%")
+                ->orWhere(
+                    DB::raw('CONCAT_WS(" ", children.first_name, children.last_name)'),
+                    'like',
+                    "%{$search}%"
+                );
         });
     }
 
@@ -269,7 +269,7 @@ class Child extends Model implements HasMedia
     public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('optimized')->fit(Manipulations::FIT_CONTAIN, 1500, 2000)
-             ->performOnCollections('verification');
+            ->performOnCollections('verification');
     }
 
     public function addVerificationDoc($file)

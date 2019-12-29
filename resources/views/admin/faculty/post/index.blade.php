@@ -66,7 +66,7 @@
                             @forelse ($posts as $post)
                                 <tr id="post-{{ $post->id }}">
                                     <td>{{ $post->id }}</td>
-                                    <td>{{ $post->child->full_name }} <strong>({{ $post->child->id }})</strong></td>
+                                    <td>{{ $post->child->full_name ?? "-" }} <strong>({{ $post->child->id ?? "-" }})</strong></td>
                                     <td>{{ $post->type }}</td>
                                     <td>
                                         @foreach($post->media->chunk(3) as $chunk)
@@ -74,7 +74,7 @@
                                                 @foreach($chunk as $media)
                                                     <img class="table-img-md" style="margin:2px;"
                                                          src="{{ $media->getUrl('thumb') }}"
-                                                         alt="{{ $post->child->full_name }}">
+                                                         alt="{{ $post->child->full_name ?? "-" }}">
                                                 @endforeach
                                             </div>
                                         @endforeach
@@ -86,7 +86,7 @@
                                             <button id="approval-post-{{ $post->id }}"
                                                     class="approval btn btn-default btn-xs"
                                                     approval-id="{{ $post->id }}"
-                                                    approval-name="{{ $post->child->full_name }}-{{ $post->type }}"
+                                                    approval-name="{{ $post->child->full_name ?? "-" }}-{{ $post->type }}"
                                                     approved="{{ (int) $post->isApproved() }}">
                                                 <i class="fa fa-square-o"></i>
                                             </button>
@@ -96,7 +96,7 @@
                                             </a>
                                             <a class="delete btn btn-danger btn-xs"
                                                delete-id="{{ $post->id }}"
-                                               delete-name="{{ $post->child->full_name }}-{{ $post->type }}"
+                                               delete-name="{{ $post->child->full_name ?? "-" }}-{{ $post->type }}"
                                                href="javascript:;">
                                                 <i class="fa fa-trash"></i>
                                             </a>

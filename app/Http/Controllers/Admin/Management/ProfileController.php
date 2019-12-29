@@ -4,17 +4,20 @@ namespace App\Http\Controllers\Admin\Management;
 
 use App\Filters\ChildFilter;
 use App\Filters\UserFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
 
-class ProfileController extends AdminController
+class ProfileController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(UserFilter $filters)
     {
-        $users = auth()->user()->faculty->users()->orderBy('first_name');
-        $users->filter($filters);
-        $users = $this->paginate($users);
+        $users = auth()->user()->faculty->users()->orderBy('first_name')->filter($filters)->safePaginate();
 
         return view('admin.profile.index', compact('users'));
     }
@@ -23,9 +26,7 @@ class ProfileController extends AdminController
     {
         $user = auth()->user();
 
-        $children = auth()->user()->children();
-        $children->filter($filters);
-        $children = $this->paginate($children);
+        $children = auth()->user()->children()->filter($filters)->safePaginate();
 
         return view('admin.profile.show', compact('children', 'user'));
 

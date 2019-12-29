@@ -3,17 +3,20 @@
 namespace App\Http\Controllers\Admin\Volunteer;
 
 use App\Filters\VolunteerFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Volunteer;
 
-class VolunteerController extends AdminController
+class VolunteerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(VolunteerFilter $filters)
     {
-        $volunteers = Volunteer::latest()->withCount(['children', 'chats']);
-        $volunteers->filter($filters);
-        $volunteers = $this->paginate($volunteers);
+        $volunteers = Volunteer::latest()->withCount(['children', 'chats'])->filter($filters)->safePaginate();
 
         return view('admin.volunteer.index', compact('volunteers'));
     }

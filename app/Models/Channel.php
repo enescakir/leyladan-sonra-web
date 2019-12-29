@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
+use EnesCakir\Helper\Traits\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-use App\Traits\BaseActions;
-use App\Traits\HasMediaTrait;
-use App\Traits\Filterable;
-use App\Traits\Downloadable;
 
 class Channel extends Model implements HasMedia
 {

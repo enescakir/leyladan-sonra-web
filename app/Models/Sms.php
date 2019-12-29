@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use App\Traits\Downloadable;
-use App\Traits\Filterable;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
 use Excel;
 use App\Models\User;
 
@@ -118,6 +117,6 @@ class Sms extends Model
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 120);
         $result = curl_exec($ch);
-        return (string) simplexml_load_string($result)->balance->sms;
+        return (string)simplexml_load_string($result)->balance->sms;
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
-use App\Traits\Filterable;
-use App\Traits\Downloadable;
 
 class EmailSample extends Model
 {
@@ -38,7 +38,7 @@ class EmailSample extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('text', 'like', '%' . $search . '%');
+                ->orWhere('text', 'like', '%' . $search . '%');
         });
     }
 

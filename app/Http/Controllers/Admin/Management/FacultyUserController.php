@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\Admin\Management;
 
 use App\Filters\UserFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use App\Models\Faculty;
 use App\Models\Role;
 use App\Models\User;
 
-class FacultyUserController extends AdminController
+class FacultyUserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(UserFilter $filters, Faculty $faculty)
     {
-        $users = $faculty->users()->latest()->with(['roles']);
-        $users->filter($filters);
-        $users = $this->paginate($users);
+        $users = $faculty->users()->latest()->with(['roles'])->filter($filters)->safePaginate();
 
         $roles = Role::toSelect('Yeni Görev');
 

@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\Admin\Child;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use Spatie\MediaLibrary\Models\Media;
 
-class PostMediaController extends AdminController
+class PostMediaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function store(Request $request, Post $post)
     {
         $media = $post->addMedia($request->file('image'), ['ratio' => $request->ratio]);

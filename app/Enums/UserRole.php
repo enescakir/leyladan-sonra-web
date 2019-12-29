@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-class UserRole extends BaseEnum
+use EnesCakir\Helper\Base\Enum;
+
+class UserRole extends Enum
 {
     const All = null;
     const Admin = 'admin';

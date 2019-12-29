@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-class FeedType extends BaseEnum
+use EnesCakir\Helper\Base\Enum;
+
+class FeedType extends Enum
 {
     protected static $descriptions = [
         1 => '[child] ile tanışıldı.',

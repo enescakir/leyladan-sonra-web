@@ -3,22 +3,19 @@
 namespace App\Http\Controllers\Admin\Resource;
 
 use App\Filters\EmailSampleFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\EmailSample;
 
-class EmailSampleController extends AdminController
+class EmailSampleController extends Controller
 {
 
     public function index(EmailSampleFilter $filters)
     {
-        $samples = EmailSample::orderBy('category')->with('creator');
-
-        $samples->filter($filters);
-
-        $samples = $samples->paginate();
+        $samples = EmailSample::orderBy('category')->with('creator')->filter($filters)->safePaginate();
 
         $categories = EmailSample::toCategorySelect('Hepsi');
+
         return view('admin.emailsample.index', compact('samples', 'categories'));
     }
 
@@ -32,7 +29,7 @@ class EmailSampleController extends AdminController
         $this->validateEmailSample($request);
         $sample = EmailSample::create($request->only(['name', 'category', 'text']));
 
-        session_success(__('messages.emailsample.create', ['name' =>  $sample->name]));
+        session_success(__('messages.emailsample.create', ['name' => $sample->name]));
 
         return redirect()->route('admin.emailsample.index');
     }
@@ -47,7 +44,7 @@ class EmailSampleController extends AdminController
         $this->validateEmailSample($request);
         $emailsample->update($request->only(['name', 'category', 'text']));
 
-        session_success(__('messages.emailsample.update', ['name' =>  $emailsample->name]));
+        session_success(__('messages.emailsample.update', ['name' => $emailsample->name]));
 
         return redirect()->route('admin.emailsample.index');
     }

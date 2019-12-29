@@ -2,25 +2,22 @@
 
 namespace App\Http\Controllers\Admin\Child;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Filters\DepartmentFilter;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Department;
 
-class DepartmentController extends AdminController
+class DepartmentController extends Controller
 {
 
-    public function index(Request $request)
+    public function __construct()
     {
-        $departments = Department::orderBy('name');
+        $this->middleware('auth');
+    }
 
-        if ($request->filled('search')) {
-            $departments->search($request->search);
-        }
-        if ($request->filled('download')) {
-            Department::download($departments);
-        }
-
-        $departments = $departments->paginate($request->per_page ?: 25);
+    public function index(DepartmentFilter $filters)
+    {
+        $departments = Department::orderBy('name')->filter($filters)->safePaginate();
 
         return view('admin.department.index', compact('departments'));
     }
@@ -33,10 +30,10 @@ class DepartmentController extends AdminController
     public function store(Request $request)
     {
         $department = Department::create([
-          'name' => $request->name,
-          'desc' => $request->desc
+            'name' => $request->name,
+            'desc' => $request->desc
         ]);
-        session_success(__('messages.department.create', ['name' =>  $department->name]));
+        session_success(__('messages.department.create', ['name' => $department->name]));
         return redirect()->route('admin.department.index');
     }
 
@@ -48,7 +45,7 @@ class DepartmentController extends AdminController
     public function update(Request $request, Department $department)
     {
         $department->update($request->all());
-        session_success(__('messages.department.update', ['name' =>  $department->name]));
+        session_success(__('messages.department.update', ['name' => $department->name]));
         return redirect()->route('admin.department.index');
     }
 

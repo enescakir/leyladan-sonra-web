@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Traits\BaseActions;
-use App\Traits\Downloadable;
-use App\Traits\Filterable;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 
 class WishCategory extends Model
@@ -28,7 +28,7 @@ class WishCategory extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('name', 'like', '%' . $search . '%')
-                   ->orWhere('desc', 'like', '%' . $search . '%');
+                ->orWhere('desc', 'like', '%' . $search . '%');
         });
     }
 

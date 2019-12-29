@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use App\Traits\Downloadable;
-use App\Traits\Filterable;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
+use EnesCakir\Helper\Traits\HasMediaTrait;
+use EnesCakir\Helper\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
 use Carbon\Carbon;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-use App\Traits\HasMediaTrait;
 
 class Faculty extends Model implements HasMedia
 {
@@ -17,6 +18,7 @@ class Faculty extends Model implements HasMedia
     use Filterable;
     use HasMediaTrait;
     use Downloadable;
+    use HasSlug;
 
     // Properties
     protected $table = 'faculties';
@@ -83,7 +85,7 @@ class Faculty extends Model implements HasMedia
     public function toUsersSelect($placeholder = null)
     {
         $result = $this->users()->orderBy('first_name')->get(['id', 'faculty_id', 'first_name', 'last_name'])
-                       ->pluck('full_name', 'id');
+            ->pluck('full_name', 'id');
         return $placeholder
             ? collect(['' => $placeholder])->union($result)
             : $result;

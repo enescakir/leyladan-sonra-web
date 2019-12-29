@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use EnesCakir\Helper\Traits\BaseActions;
 use Illuminate\Database\Eloquent\Model;
-
-use App\Traits\BaseActions;
 
 class PostImage extends Model
 {
     use BaseActions;
+
     // Properties
-    protected $table    = 'post_images';
+    protected $table = 'post_images';
     protected $fillable = ['name', 'ratio', 'post_id'];
 
     // Relations

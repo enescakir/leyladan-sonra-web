@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Admin\Miscellaneous;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\DashboardService;
 
-class DashboardController extends AdminController
+class DashboardController extends Controller
 {
 
     protected $service;
 
     public function __construct(DashboardService $service)
     {
+        $this->middleware('auth');
         $this->service = $service;
     }
 

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Traits\Downloadable;
-use App\Traits\Filterable;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
 
 class News extends Model
 {
@@ -28,7 +28,7 @@ class News extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('desc', 'like', '%' . $search . '%');
+                ->orWhere('desc', 'like', '%' . $search . '%');
         });
     }
 }

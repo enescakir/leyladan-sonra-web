@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-class PostType extends BaseEnum
+use EnesCakir\Helper\Base\Enum;
+
+class PostType extends Enum
 {
 
     protected static $statusTexts = [

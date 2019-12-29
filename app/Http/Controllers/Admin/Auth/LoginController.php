@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin\Auth;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-class LoginController extends AdminController
+class LoginController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -56,6 +56,7 @@ class LoginController extends AdminController
      */
     protected function authenticated($request, $user)
     {
+        // TODO: not allow login when left project
         if ($user->email_token != null) {
             session_info('E-posta adresinizi doğrulamamışsınız. <br> Doğrulama kodu e-postanıza tekrardan gönderildi.');
             $user->sendEmailActivationNotification();

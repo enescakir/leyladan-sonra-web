@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\Admin\Child;
 
 use App\Filters\PostFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Enums\PostType;
 use App\Models\Faculty;
 use App\Models\Post;
 
-class FacultyPostController extends AdminController
+class FacultyPostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(PostFilter $filters, Faculty $faculty)
     {
-        $posts = $faculty->posts()->with(['child', 'child.faculty', 'media'])->latest();
-        $posts->filter($filters);
-        $posts = $this->paginate($posts);
+        $posts = $faculty->posts()->with(['child', 'child.faculty', 'media'])->latest('posts.id')->filter($filters)->safePaginate();
 
         $postTypes = PostType::toSelect('Hepsi');
 

@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Enums\ProcessType;
+use EnesCakir\Helper\Traits\BaseActions;
 use Illuminate\Database\Eloquent\Model;
-
-use App\Traits\BaseActions;
 
 class Process extends Model
 {
     use BaseActions;
+
     // Properties
     protected $table = 'processes';
     protected $fillable = ['child_id', 'desc', 'type', 'processable_id', 'processable_type'];

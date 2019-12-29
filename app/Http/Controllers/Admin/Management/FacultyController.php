@@ -3,19 +3,25 @@
 namespace App\Http\Controllers\Admin\Management;
 
 use App\Filters\FacultyFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
 use App\Models\User;
 
-class FacultyController extends AdminController
+class FacultyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(FacultyFilter $filters)
     {
-        $faculties = Faculty::orderBy('name')->with('managers', 'media')->withCount('children', 'users');
-        $faculties->filter($filters);
-        $faculties = $this->paginate($faculties);
+        $faculties = Faculty::orderBy('name')
+            ->with('managers', 'media')
+            ->withCount('children', 'users')
+            ->filter($filters)
+            ->safePaginate();
 
         return view('admin.faculty.index', compact('faculties'));
     }

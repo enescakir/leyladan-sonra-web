@@ -3,18 +3,21 @@
 namespace App\Http\Controllers\Admin\Child;
 
 use App\Filters\WishCategoryFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use App\Models\WishCategory;
 use Illuminate\Http\Request;
 
-class WishCategoryController extends AdminController
+class WishCategoryController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(WishCategoryFilter $filters)
     {
-        $categories = WishCategory::orderBy('name');
-        $categories->filter($filters);
-        $categories = $this->paginate($categories);
+        $categories = WishCategory::orderBy('name')->filter($filters)->safePaginate();
 
         return view('admin.wishCategory.index', compact('categories'));
     }

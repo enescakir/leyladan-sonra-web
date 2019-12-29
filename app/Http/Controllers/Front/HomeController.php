@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Enums\GiftStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests;
 use App\Http\Requests\VolunteerMessageRequest;
 use App\Models\Child;
-use App\Models\Post;
 use App\Models\Faculty;
-use App\Models\News;
 use App\Models\Channel;
 use App\Models\User;
 use App\Models\Volunteer;
@@ -18,11 +16,7 @@ use App\Models\Message;
 use App\Models\Testimonial;
 use App\Models\Blood;
 use App\Models\Sponsor;
-use Log;
 use DB;
-use Validator;
-use Cache;
-use Mail;
 use Carbon\Carbon;
 use Newsletter;
 
@@ -35,8 +29,9 @@ class HomeController extends Controller
     public function home(Request $request)
     {
         $page = $request->has('page') ? $request->page : '1';
-        $children = Cache::remember('home-children' . $page, static::SHORT_TERM_MINUTES, function () {
-            return Child::where('gift_state', 'Bekleniyor')
+
+        $children = cache()->remember("home-children-{$page}", static::SHORT_TERM_MINUTES, function () {
+            return Child::gift(GiftStatus::Waiting)
                 ->with([
                     'meetingPost',
                     'meetingPost.media',
@@ -49,63 +44,31 @@ class HomeController extends Controller
                 ->latest('meeting_day')
                 ->simplePaginate(20);
         });
-        return view('front.home', compact(['children']));
-    }
 
-    public function waitings(Request $request)
-    {
-        if ($request->isMethod('post')) {
-            if ($request->secret == 'burasicokgizli') {
-                $children = Child::where('gift_state', 'Bekleniyor')
-                    ->with([
-                        'meetingPosts',
-                        'faculty',
-                        'meetingPosts.images'])
-                    ->whereHas('posts', function ($query) {
-                        $query->where('type', 'Tanışma')->approved();
-                    })
-                    ->orderby('meeting_day', 'desc')
-                    ->get();
-
-                return view('front.protected.waitings', compact(['children']));
-            } else {
-                return view('front.protected.login')->with('flash_message', 'Maalesef gizli kelimeyi bilemedin.');
-            }
-        }
-
-        if ($request->isMethod('get')) {
-            return view('front.protected.login');
-        }
+        return view('front.home', compact('children'));
     }
 
     public function news()
     {
-        $channels = Cache::remember('channels', static::LONG_TERM_MINUTES, function () {
+        $channels = cache()->remember('channels', static::LONG_TERM_MINUTES, function () {
             return Channel::with('news')->get();
         });
 
-        return view('front.news', compact(['channels']));
+        return view('front.news', compact('channels'));
     }
 
     public function us()
     {
-        $totalChildren = Cache::remember('totalChildren', static::SHORT_TERM_MINUTES, function () {
-            return DB::table('children')->count();
+        $counts = cache()->remember('us', static::LONG_TERM_MINUTES, function () {
+            return [
+                'children'              => Child::count(),
+                'started-faculties'     => Faculty::started()->count(),
+                'not-started-faculties' => Faculty::started(false)->count(),
+                'users'                 => User::count(),
+            ];
         });
 
-        $activeFaculties = Cache::remember('activeFaculties', static::SHORT_TERM_MINUTES, function () {
-            return DB::table('faculties')->whereNotNull('started_at')->count();
-        });
-
-        $nonActiveFaculties = Cache::remember('nonActiveFaculties', static::SHORT_TERM_MINUTES, function () {
-            return DB::table('faculties')->whereNull('started_at')->count();
-        });
-
-        $totalUser = Cache::remember('totalUser', static::SHORT_TERM_MINUTES, function () {
-            return DB::table('users')->count();
-        });
-
-        return view('front.us', compact(['totalChildren', 'activeFaculties', 'nonActiveFaculties', 'totalUser']));
+        return view('front.us', compact($counts));
     }
 
     public function blood()
@@ -117,16 +80,28 @@ class HomeController extends Controller
     {
         $blood = Blood::where('mobile', $request->mobile)->first();
         if ($blood != null) {
-            return ['alert' => 'error', 'message' => '<span style="font-size: 24px"><br> Verdiğiniz telefon numarası zaten SMS sistemimizde kayıtlı.<br></br></span>'];
+            return [
+                'alert'   => 'error',
+                'message' => '<span style="font-size: 24px"><br> Verdiğiniz telefon numarası zaten SMS sistemimizde kayıtlı.<br></br></span>'
+            ];
         }
 
-//        $validator = Validator::make($request->all(), Blood::$validationRules, Blood::$validationMessages);
+        $blood = Blood::create(
+            $request->only([
+                'mobile',
+                'city',
+                'blood_type',
+                'rh'
+            ])
+        );
 
-        $blood = new Blood($request->all());
-        if ($blood->save()) {
-            $text = '<span style="font-size: 24px"><br>' . $blood->city . ' şehrinde ' . $blood->blood_type . ' kan grubuna ihtiyaç durumunda vermiş olduğunuz ' . $blood->mobile . ' telefon numarası üzerinden SMS ile bildireceğiz.<br></br></span>';
+        if ($blood) {
+            $text = "<span style='font-size: 24px'><br>{$blood->city} şehrinde {$blood->blood_type} kan grubuna ihtiyaç durumunda vermiş olduğunuz {$blood->mobile} telefon numarası üzerinden SMS ile bildireceğiz.<br></br></span>";
 
-            return ['alert' => 'success', 'message' => $text];
+            return [
+                'alert'   => 'success',
+                'message' => $text
+            ];
         }
     }
 
@@ -155,18 +130,21 @@ class HomeController extends Controller
 
         \Mail::raw($text, function ($message) {
             $message->to('iletisim@leyladansonra.com')
-                ->from('teknik@leyladansonra.com', 'Leyladan Sonra Sistem')
+                ->from('teknik@leyladansonra.com', 'Leyla\'dan Sonra Sistem')
                 ->subject('İletişim Formu');
         });
 
-        $text = '<span style="font-size: 24px"><br>Mesajınız tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong>' . $request->email . '</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!<br></br></span>';
+        $text = "<span style='font-size: 24px'><br>Mesajınız tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong> {$request->email}</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!<br></br></span>";
 
-        return ['alert' => 'success', 'message' => $text];
+        return [
+            'alert'   => 'success',
+            'message' => $text
+        ];
     }
 
     public function newsletter(Request $request)
     {
-        $text = '<span style="font-size: 24px"><br> Bu e-posta adresi zaten e-posta listemize kayıtlıdır. <br> İyilikle Kalın!<br></br></span>';
+        $text = "<span style='font-size: 24px'><br> Bu e-posta adresi zaten e-posta listemize kayıtlıdır. <br> İyilikle Kalın!<br></br></span>";
 
         if (Newsletter::hasMember($request->email)) {
             return ['alert' => 'success', 'message' => $text];
@@ -187,21 +165,20 @@ class HomeController extends Controller
 
     public function sponsors()
     {
-        $sponsors = Sponsor::orderBy('order', 'DESC')->get();
-        // $channels = Cache::remember('channels', 60, function () {
-        //     return Channel::with('news')->get();
-        // });
+        $sponsors = cache()->remember('sponsors', static::LONG_TERM_MINUTES, function () {
+            return Sponsor::orderBy('order', 'DESC')->get();
+        });
 
-        return view('front.sponsors', compact(['sponsors']));
+        return view('front.sponsors', compact('sponsors'));
     }
 
     public function testimonials()
     {
-        $testimonials = Cache::remember('testimonials', static::LONG_TERM_MINUTES, function () {
+        $testimonials = cache()->remember('testimonials', static::LONG_TERM_MINUTES, function () {
             return Testimonial::whereNotNull('approved_at')->orderBy('priority', 'DESC')->get();
         });
 
-        return view('front.testimonials', compact(['testimonials']));
+        return view('front.testimonials', compact('testimonials'));
     }
 
     public function testimonialStore(Request $request)
@@ -239,18 +216,14 @@ class HomeController extends Controller
 
     public function appLanding()
     {
-        $totalChildren = Cache::remember('totalChildren', static::SHORT_TERM_MINUTES, function () {
-            return DB::table('children')->count();
+        $counts = cache()->remember('app-landing', static::LONG_TERM_MINUTES, function () {
+            return [
+                'children'          => Child::count(),
+                'started-faculties' => Faculty::started()->count(),
+            ];
         });
 
-        $totalFaculties = Cache::remember('activeFaculties', static::SHORT_TERM_MINUTES, function () {
-            return DB::table('faculties')->whereNotNull('started_at')->count();
-        });
-
-        return view('front.appLanding')->with([
-            'totalChildren'  => $totalChildren,
-            'totalFaculties' => $totalFaculties
-        ]);
+        return view('front.appLanding', compact('counts'));
     }
 
     public function blog($name)
@@ -260,54 +233,54 @@ class HomeController extends Controller
 
     public function english()
     {
-        $activeFaculties = Cache::remember('activeFaculties', static::SHORT_TERM_MINUTES, function () {
-            return DB::table('faculties')->whereNotNull('started_at')->count();
+
+        $counts = cache()->remember('english', static::LONG_TERM_MINUTES, function () {
+            return [
+                'started-faculties'     => Faculty::started()->count(),
+                'not-started-faculties' => Faculty::started(false)->count(),
+            ];
         });
 
-        $nonActiveFaculties = Cache::remember('nonActiveFaculties', static::SHORT_TERM_MINUTES, function () {
-            return DB::table('faculties')->whereNull('started_at')->count();
-        });
-
-        return view('front.english', compact(['activeFaculties', 'nonActiveFaculties']));
+        return view('front.english', compact('counts'));
     }
 
     public function faculties()
     {
-        $faculties = Cache::remember('faculties', static::LONG_TERM_MINUTES, function () {
+        $faculties = cache()->remember('faculties', static::LONG_TERM_MINUTES, function () {
             return Faculty::all();
         });
 
-        return view('front.faculties', compact(['faculties']));
+        return view('front.faculties', compact('faculties'));
     }
 
     public function faculty(Request $request, $facultyName)
     {
-        $faculty = Faculty::where('slug', $facultyName)->first();
-        if ($faculty == null) {
-            abort(404);
-        }
+        $faculty = Faculty::slug($facultyName)->firstOrFail();
 
         $page = $request->has('page') ? $request->page : '1';
-        $children = Cache::remember($facultyName . '-children-' . $page, static::SHORT_TERM_MINUTES, function () use ($faculty) {
+        $children = cache()->remember("{$facultyName}-children-{$page}", static::SHORT_TERM_MINUTES, function () use ($faculty) {
             return $faculty->children()
                 ->with([
-                    'posts',
-                    'faculty',
-                    'posts.images'])
-                ->whereHas('posts', function ($query) {
-                    $query->where('type', 'Tanışma')->approved();
+                    'meetingPost',
+                    'meetingPost.media',
+                    'deliveryPost',
+                    'deliveryPost.media',
+                    'faculty'
+                ])
+                ->whereHas('meetingPost', function ($query) {
+                    $query->approved();
                 })
-                ->where('until', '>', Carbon::now())
-                ->orderby('meeting_day', 'desc')
+                ->whereDate('until', '>', now())
+                ->latest('meeting_day')
                 ->simplePaginate(20);
         });
 
-        return view('front.faculty', compact(['faculty', 'children']));
+        return view('front.faculty', compact('faculty', 'children'));
     }
 
     public function child($facultyName, $childSlug)
     {
-        $child = Cache::remember('child-' . $childSlug, static::SHORT_TERM_MINUTES, function () use ($childSlug) {
+        $child = cache()->remember('child-' . $childSlug, static::SHORT_TERM_MINUTES, function () use ($childSlug) {
             return Child::where('slug', $childSlug)->with('faculty', 'posts', 'posts.images')->first();
         });
 
@@ -318,7 +291,7 @@ class HomeController extends Controller
         if ($child->until < Carbon::now()) {
             return view('front.childExpired');
         }
-        $children = Cache::remember('childRandom-' . $childSlug, static::SHORT_TERM_MINUTES, function () {
+        $children = cache()->remember('childRandom-' . $childSlug, static::SHORT_TERM_MINUTES, function () {
             return Child::where('gift_state', 'Bekleniyor')
                 ->with([
                     'meetingPosts',
@@ -336,7 +309,7 @@ class HomeController extends Controller
                 ->get();
         });
         $children = $children->random(min(10, $children->count()));
-//        $nextPrev = Cache::remember('childNextPrev-' . $childSlug, 30, function () {
+//        $nextPrev = cache()->remember('childNextPrev-' . $childSlug, 30, function () {
 //            return Child::select('id', 'gift_state', 'slug', 'faculty_id')->with('faculty')->where('gift_state', 'Bekleniyor')->get()->random(2);
 //        });
         $previousChild = $children->first();
@@ -390,14 +363,9 @@ class HomeController extends Controller
         return ['alert' => 'success', 'message' => $text];
     }
 
-    /**
-     * Display a listing of faculty's children.
-     *
-     * @return Response
-     */
     public function cities()
     {
-        $coloredCities = Cache::remember('coloredCities', static::LONG_TERM_MINUTES, function () {
+        $coloredCities = cache()->remember('coloredCities', static::LONG_TERM_MINUTES, function () {
             $cities = Faculty::all();
             $colored = [];
             foreach ($cities as $city) {

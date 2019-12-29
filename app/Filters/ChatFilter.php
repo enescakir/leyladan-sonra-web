@@ -2,6 +2,7 @@
 
 namespace App\Filters;
 
+use EnesCakir\Helper\Base\Filter;
 
 class ChatFilter extends Filter
 {

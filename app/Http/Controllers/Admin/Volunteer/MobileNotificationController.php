@@ -3,7 +3,7 @@
 
 namespace App\Http\Controllers\Admin\Volunteer;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use PushNotification;
 use App\Models\MobileNotification;
@@ -12,8 +12,13 @@ use Log;
 use App\Models\Subscriber;
 use Auth;
 
-class MobileNotificationController extends AdminController
+class MobileNotificationController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index()
     {

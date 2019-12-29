@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Admin\Blood;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class BloodUserController extends AdminController
+class BloodUserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function edit()
     {
         $users = User::orderby('first_name')->get()->pluck('fullname', 'id');

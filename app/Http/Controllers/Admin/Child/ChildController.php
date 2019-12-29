@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Child;
 
 use App\Enums\FeedType;
 use App\Enums\ProcessType;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\Post;
 use App\Models\WishCategory;
@@ -20,23 +20,21 @@ use App\Models\Diagnosis;
 use Carbon\Carbon;
 use App\Filters\ChildFilter;
 
-class ChildController extends AdminController
+class ChildController extends Controller
 {
     protected $processService;
     protected $feedService;
 
     public function __construct(ProcessService $processService, FeedService $feedService)
     {
-        parent::__construct();
+        $this->middleware('auth');
         $this->processService = $processService;
         $this->feedService = $feedService;
     }
 
     public function index(ChildFilter $filters)
     {
-        $children = Child::with(['faculty'])->latest();
-        $children->filter($filters);
-        $children = $this->paginate($children);
+        $children = Child::with(['faculty'])->latest()->filter($filters)->safePaginate();
 
         return view('admin.child.index', compact('children'));
     }
@@ -137,7 +135,6 @@ class ChildController extends AdminController
             $post->change($request, 'delivery');
             $child->deliveryPost()->associate($post);
             $child->save();
-
         }
 
         if ($request->hasFile('verification_doc')) {
@@ -193,6 +190,6 @@ class ChildController extends AdminController
     private function getSimilarChildren($first_name, $last_name)
     {
         return Child::query()->where('first_name', 'like', "%{$first_name}%")
-                    ->where('last_name', 'like', "%{$last_name}%")->with('users', 'faculty')->get();
+            ->where('last_name', 'like', "%{$last_name}%")->with('users', 'faculty')->get();
     }
 }

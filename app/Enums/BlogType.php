@@ -2,9 +2,11 @@
 
 namespace App\Enums;
 
-// TODO: Complete chat status
-class BlogType extends BaseEnum
+// TODO: Complete blog type
+use EnesCakir\Helper\Base\Enum;
+
+class BlogType extends Enum
 {
-  const Milestone = 'milestone';
-  const Video     = 'video';
+    const Milestone = 'milestone';
+    const Video = 'video';
 }

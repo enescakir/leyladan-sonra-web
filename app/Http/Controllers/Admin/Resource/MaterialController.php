@@ -3,19 +3,18 @@
 namespace App\Http\Controllers\Admin\Resource;
 
 use App\Filters\MaterialFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Material;
 
-class MaterialController extends AdminController
+class MaterialController extends Controller
 {
     public function index(MaterialFilter $filters)
     {
-        $materials = Material::latest()->with('media');
-        $materials->filter($filters);
-        $materials = $materials->paginate();
+        $materials = Material::latest()->with('media')->filter($filters)->safePaginate();
 
         $categories = Material::toCategorySelect('Hepsi');
+
         return view('admin.material.index', compact('materials', 'categories'));
     }
 

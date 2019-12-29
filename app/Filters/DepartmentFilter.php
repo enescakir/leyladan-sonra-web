@@ -2,15 +2,15 @@
 
 namespace App\Filters;
 
-use App\Models\WishCategory;
+use App\Models\Department;
 use EnesCakir\Helper\Base\Filter;
 
-class WishCategoryFilter extends Filter
+class DepartmentFilter extends Filter
 {
     protected $filters = ['search', 'download'];
 
     protected function download()
     {
-        WishCategory::download($this->builder);
+        Department::download($this->builder);
     }
 }

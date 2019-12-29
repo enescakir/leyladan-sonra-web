@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Traits\Downloadable;
-use App\Traits\Filterable;
+use EnesCakir\Helper\Traits\Approvable;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BaseActions;
-use App\Traits\Approvable;
 
 class Testimonial extends Model
 {
@@ -25,8 +25,8 @@ class Testimonial extends Model
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('name', 'like', "%{$search}%")
-                   ->orWhere('text', 'like', "%{$search}%")
-                   ->orWhere('email', 'like', "%{$search}%");
+                ->orWhere('text', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
         });
     }
 

@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\Post;
+use EnesCakir\Helper\Base\Filter;
 
 class PostFilter extends Filter
 {

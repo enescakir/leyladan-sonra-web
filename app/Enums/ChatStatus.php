@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-class ChatStatus extends BaseEnum
+use EnesCakir\Helper\Base\Enum;
+
+class ChatStatus extends Enum
 {
     const Open = 'Açık';
     const Answered = 'Cevaplandı';

@@ -4,15 +4,15 @@ namespace App\Models;
 
 use App\Enums\PostType;
 use App\Services\ProcessService;
-use App\Traits\Downloadable;
-use App\Traits\Filterable;
+use EnesCakir\Helper\Traits\Approvable;
+use EnesCakir\Helper\Traits\BaseActions;
+use EnesCakir\Helper\Traits\Downloadable;
+use EnesCakir\Helper\Traits\Filterable;
+use EnesCakir\Helper\Traits\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-use App\Traits\HasMediaTrait;
-use App\Traits\BaseActions;
-use App\Traits\Approvable;
 
 class Post extends Model implements HasMedia
 {
@@ -64,10 +64,10 @@ class Post extends Model implements HasMedia
     {
         $query->where(function ($query2) use ($search) {
             $query2->where('id', $search)
-                   ->orWhere('text', 'like', '%' . $search . '%')
-                   ->orWhereHas('child', function ($query3) use ($search) {
-                       $query3->search($search);
-                   });
+                ->orWhere('text', 'like', '%' . $search . '%')
+                ->orWhereHas('child', function ($query3) use ($search) {
+                    $query3->search($search);
+                });
         });
     }
 

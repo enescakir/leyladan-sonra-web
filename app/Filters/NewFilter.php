@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\News;
+use EnesCakir\Helper\Base\Filter;
 
 class NewFilter extends Filter
 {

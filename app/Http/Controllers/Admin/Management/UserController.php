@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\Admin\Management;
 
 use App\Filters\UserFilter;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
 use App\Models\Faculty;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 
-class UserController extends AdminController
+class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(UserFilter $filters)
     {
-        $users = User::latest()->with(['roles', 'faculty']);
-        $users->filter($filters);
-        $users = $this->paginate($users);
+        $users = User::latest()->with(['roles', 'faculty'])->filter($filters)->safePaginate();
 
         $roles = Role::toSelect('Yeni Görev', null);
 
@@ -109,7 +112,7 @@ class UserController extends AdminController
         }
 
         return api_success([
-            'approval' => (int) $user->isApproved(),
+            'approval' => (int)$user->isApproved(),
             'user'     => $user
         ]);
     }
