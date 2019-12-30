@@ -14,100 +14,137 @@
     <!-- Sidebar Menu -->
     <ul class="sidebar-menu" data-widget="tree">
         <li class="{{ set_active('*admin/dashboard*') }}">
-            <a href="{{ route('admin.dashboard') }}"><i class="fa fa-compass"></i> <span>Kontrol Paneli</span></a>
+            <a href="{{ route('admin.dashboard') }}">
+                <i class="fa fa-compass"></i>
+                <span>Kontrol Paneli</span>
+            </a>
         </li>
         <li class="{{ set_active('*admin/profile') }}">
-            <a href="{{ route('admin.profile.index') }}"><i class="fa fa-address-book-o"></i> <span>Arkadaşlarım</span></a>
-        </li>
-        <li class="treeview {{ set_active('*child*', 'menu-open active') }}">
-            <a href="#"><i class="fa fa-child"></i> <span>Çocuklar</span>
-                <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
+            <a href="{{ route('admin.profile.index') }}">
+                <i class="fa fa-address-book-o"></i>
+                <span>Arkadaşlarım</span>
             </a>
-            <ul class="treeview-menu">
-                @can('create', App\Models\Child::class)
-                    <li class="{{ set_active('*admin/child/create*') }}">
-                        <a href="{{ route('admin.child.create') }}">
-                            <i class="fa fa-plus"></i>
-                            <span>Yeni Çocuk Ekle</span>
-                        </a>
-                    </li>
-                @endcan
-                @can('list', App\Models\Child::class)
+        </li>
+        @can('list', App\Models\Child::class)
+            <li class="treeview {{ set_active('*child*', 'menu-open active') }}">
+                <a href="#">
+                    <i class="fa fa-child"></i>
+                    <span>Çocuklar</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    @can('create', App\Models\Child::class)
+                        <li class="{{ set_active('*admin/child/create*') }}">
+                            <a href="{{ route('admin.child.create') }}">
+                                <i class="fa fa-plus"></i>
+                                <span>Yeni Çocuk Ekle</span>
+                            </a>
+                        </li>
+                    @endcan
                     <li class="{{ set_active('*admin/profile/child') }}">
                         <a href="{{ route('admin.profile.show') }}">
                             <i class="fa fa-heart"></i>
                             <span>Kendi Çocuklarım</span>
                         </a>
                     </li>
-                @endcan
-                @can('listFaculty', [App\Models\Child::class, $authUser->faculty])
-                    <li class="{{ set_active('*admin/faculty/*/child') }}">
-                        <a href="{{ route('admin.faculty.child.index', ['faculty' => $authUser->faculty_id]) }}">
-                            <i class="fa fa-bars"></i>
-                            <span>Fakülte Çocukları</span>
-                        </a>
-                    </li>
-                @endcan
-                @can('listAll', App\Models\Child::class)
-                    <li class="{{ set_active('*admin/child') }}">
-                        <a href="{{ route('admin.child.index') }}">
-                            <i class="fa fa-list"></i>
-                            <span>Bütün Çocuklar</span>
-                        </a>
-                    </li>
-                @endcan
-            </ul>
-        </li>
+                    @can('listFaculty', [App\Models\Child::class, $authUser->faculty])
+                        <li class="{{ set_active('*admin/faculty/*/child') }}">
+                            <a href="{{ route('admin.faculty.child.index', ['faculty' => $authUser->faculty_id]) }}">
+                                <i class="fa fa-bars"></i>
+                                <span>Fakülte Çocukları</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('listAll', App\Models\Child::class)
+                        <li class="{{ set_active('*admin/child') }}">
+                            <a href="{{ route('admin.child.index') }}">
+                                <i class="fa fa-list"></i>
+                                <span>Bütün Çocuklar</span>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
         <li class="treeview {{ set_active(['*admin/faculty', '*form*', '*admin/faculty/create', '*admin/faculty/*/edit'], 'menu-open active') }}">
-            <a href="#"><i class="fa fa-university"></i> <span>Fakülteler</span>
+            <a href="#">
+                <i class="fa fa-university"></i>
+                <span>Fakülteler</span>
                 <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
             </a>
             <ul class="treeview-menu">
                 <li class="{{ set_active('*admin/faculty/create') }}">
-                    <a href="{{ route('admin.faculty.create') }}"><i class="fa fa-plus"></i>
-                        <span>Yeni Fakülte Ekle</span></a>
+                    <a href="{{ route('admin.faculty.create') }}">
+                        <i class="fa fa-plus"></i>
+                        <span>Yeni Fakülte Ekle</span>
+                    </a>
                 </li>
                 <li class="{{ set_active('*admin/faculty') }}">
-                    <a href="{{ route('admin.faculty.index') }}"><i class="fa fa-fort-awesome"></i>
-                        <span>Bütün Fakülteler</span></a>
+                    <a href="{{ route('admin.faculty.index') }}">
+                        <i class="fa fa-fort-awesome"></i>
+                        <span>Bütün Fakülteler</span>
+                    </a>
                 </li>
                 <li class="{{ set_active('*admin/form/create*') }}">
-                    <a href="{{ route('admin.form.create') }}"><i class="fa fa-file-text-o"></i>
-                        <span>Onam Formu Oluştur</span></a>
+                    <a href="{{ route('admin.form.create') }}">
+                        <i class="fa fa-file-text-o"></i>
+                        <span>Onam Formu Oluştur</span>
+                    </a>
                 </li>
             </ul>
         </li>
-        <li class="treeview {{ set_active('*admin/blood*', 'menu-open active') }}">
-            <a href="#"><i class="fa fa-tint"></i> <span>Kan Bağışı</span>
-                <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-            </a>
-            <ul class="treeview-menu">
-                <li class="{{ set_active('*admin/blood/create*') }}">
-                    <a href="{{ route('admin.blood.create') }}"><i class="fa fa-plus"></i>
-                        <span>Yeni Bağışçı Ekle</span></a>
-                </li>
-                <li class="{{ set_active('*admin/blood') }}">
-                    <a href="{{ route('admin.blood.index') }}"><i class="fa fa-users"></i>
-                        <span>Tüm Bağışçılar</span></a>
-                </li>
-                <li class="{{ set_active('*admin/blood/sms/send*') }}">
-                    <a href="{{ route('admin.blood.sms.send') }}"><i class="fa fa-paper-plane"></i>
-                        <span>SMS Gönder</span></a>
-                </li>
-                <li class="{{ set_active('*admin/blood/sms*') }}">
-                    <a href="{{ route('admin.blood.sms.index') }}"><i class="fa fa-envelope"></i> <span>Gönderilen Mesajlar</span></a>
-                </li>
-                <li class="{{ set_active('*admin/blood/people*') }}">
-                    <a href="{{ route('admin.blood.people.edit') }}"><i class="fa fa-user-circle-o"></i> <span>Görevliler</span></a>
-                </li>
-            </ul>
-        </li>
+        @can('list', App\Models\Blood::class)
+            <li class="treeview {{ set_active('*admin/blood*', 'menu-open active') }}">
+                <a href="#">
+                    <i class="fa fa-tint"></i>
+                    <span>Kan Bağışı</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    @can('create', App\Models\Blood::class)
+                        <li class="{{ set_active('*admin/blood/create*') }}">
+                            <a href="{{ route('admin.blood.create') }}">
+                                <i class="fa fa-plus"></i>
+                                <span>Yeni Bağışçı Ekle</span>
+                            </a>
+                        </li>
+                    @endcan
+                    <li class="{{ set_active('*admin/blood') }}">
+                        <a href="{{ route('admin.blood.index') }}">
+                            <i class="fa fa-users"></i>
+                            <span>Tüm Bağışçılar</span></a>
+                    </li>
+                    @can('send', App\Models\Blood::class)
+                        <li class="{{ set_active('*admin/blood/sms/send*') }}">
+                            <a href="{{ route('admin.blood.sms.send') }}">
+                                <i class="fa fa-paper-plane"></i>
+                                <span>SMS Gönder</span>
+                            </a>
+                        </li>
+                        <li class="{{ set_active('*admin/blood/sms') }}">
+                            <a href="{{ route('admin.blood.sms.index') }}">
+                                <i class="fa fa-envelope"></i>
+                                <span>Gönderilen Mesajlar</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('auth', App\Models\Blood::class)
+                        <li class="{{ set_active('*admin/blood/people*') }}">
+                            <a href="{{ route('admin.blood.people.edit') }}">
+                                <i class="fa fa-user-circle-o"></i>
+                                <span>Görevliler</span>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
         <li class="treeview {{ set_active('*post*', 'menu-open active') }}">
             <a href="#"><i class="fa fa-pencil"></i> <span>Yazılar</span>
                 <span class="pull-right-container">

@@ -18,7 +18,9 @@ class SmsController extends Controller
 
     public function index(SmsFilter $filters)
     {
-        $messages = Sms::where('category', 'Kan Bağışı')->latest()->with('sender')->filter($filters)->safePaginate();
+        $this->authorize('send', Blood::class);
+
+        $messages = Sms::where('category', 'Kan Bağışı')->filter($filters)->with('sender')->latest()->safePaginate();
 
         $senders = Sms::toSenderSelect('Hepsi', 'Kan Bağışı');
 
@@ -27,11 +29,15 @@ class SmsController extends Controller
 
     public function show()
     {
+        $this->authorize('send', Blood::class);
+
         return view('admin.blood.send');
     }
 
     public function preview(Request $request)
     {
+        $this->authorize('send', Blood::class);
+
         $this->validate($request, [
             'cities'      => 'required',
             'blood_types' => 'required',
@@ -51,6 +57,8 @@ class SmsController extends Controller
 
     public function send(Request $request)
     {
+        $this->authorize('send', Blood::class);
+
         $sms = Sms::create([
             'title'          => 'LEYLADANSNR',
             'message'        => $request->message,
@@ -68,6 +76,8 @@ class SmsController extends Controller
 
     public function test(Request $request)
     {
+        $this->authorize('send', Blood::class);
+
         $sms = Sms::create([
             'title'          => 'LEYLADANSNR',
             'message'        => $request->message,

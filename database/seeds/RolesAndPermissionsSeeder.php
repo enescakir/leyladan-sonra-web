@@ -17,15 +17,6 @@ class RolesAndPermissionsSeeder extends Seeder
         app()['cache']->forget('spatie.permission.cache');
 
         // create permissions
-        Permission::updateOrCreate(['name' => 'create child', 'display' => 'Yeni Çocuk Ekleme']);
-        Permission::updateOrCreate(['name' => 'edit child', 'display' => 'Çocuk Düzenleme']);
-        Permission::updateOrCreate(['name' => 'delete child', 'display' => 'Çocuk Silme']);
-        Permission::updateOrCreate(['name' => 'list own children', 'display' => 'Kendi Çocuklarını Listeleme']);
-        Permission::updateOrCreate(['name' => 'list faculty children basic', 'display' => 'Fakülte Çocuklarını Basit Listeleme']);
-        Permission::updateOrCreate(['name' => 'list faculty children detail', 'display' => 'Fakülte Çocuklarını Ayrıntılı Listeleme']);
-        Permission::updateOrCreate(['name' => 'list children basic', 'display' => 'Bütün Çocukları Basit Listeleme']);
-        Permission::updateOrCreate(['name' => 'list children detail', 'display' => 'Bütün Çocukları Ayrıntılı Listeleme']);
-
         Permission::updateOrCreate(['name' => 'create diagnosis', 'display' => 'Yeni Tanı Ekleme']);
         Permission::updateOrCreate(['name' => 'edit diagnosis', 'display' => 'Tanı Düzenleme']);
         Permission::updateOrCreate(['name' => 'list diagnosises', 'display' => 'Tanıları Listeleme']);
@@ -33,15 +24,8 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::updateOrCreate(['name' => 'create faculty', 'display' => 'Yeni Fakülte Ekleme']);
         Permission::updateOrCreate(['name' => 'edit faculty', 'display' => 'Fakülte Düzenleme']);
         Permission::updateOrCreate(['name' => 'list faculties', 'display' => 'Fakülteleri Listeme']);
-
         Permission::updateOrCreate(['name' => 'create form', 'display' => 'Onam Formu Oluşturma']);
-
-        Permission::updateOrCreate(['name' => 'create blood', 'display' => 'Yeni Kan Bağışçısı Ekleme']);
-        Permission::updateOrCreate(['name' => 'edit blood', 'display' => 'Kan Bağışçısı Düzenleme']);
-        Permission::updateOrCreate(['name' => 'list bloods', 'display' => 'Kan Bağışçılarını Listeleme']);
-        Permission::updateOrCreate(['name' => 'send blood', 'display' => 'Kan Bağışı SMS Gönderme']);
-        Permission::updateOrCreate(['name' => 'auth blood', 'display' => 'Kan Bağışı Görevlilerini Seçme']);
-
+        
         Permission::updateOrCreate(['name' => 'list posts', 'display' => 'Yazıları Listeleme']);
         Permission::updateOrCreate(['name' => 'list faculty posts', 'display' => 'Fakülte Yazılarını Listeleme']);
         Permission::updateOrCreate(['name' => 'edit post', 'display' => 'Yazı Düzenleme']);
