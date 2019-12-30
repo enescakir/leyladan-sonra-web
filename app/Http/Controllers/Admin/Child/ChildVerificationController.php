@@ -15,6 +15,8 @@ class ChildVerificationController extends Controller
 
     public function show(Child $child)
     {
+        $this->authorize('view', $child);
+
         $path = $child->getFirstMediaPath('verification');
 
         return response()->file($path);

@@ -50,13 +50,12 @@ class LoginController extends Controller
     /**
      * The user has been authenticated.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  mixed                    $user
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $user
      * @return mixed
      */
     protected function authenticated($request, $user)
     {
-        // TODO: not allow login when left project
         if ($user->email_token != null) {
             session_info('E-posta adresinizi doğrulamamışsınız. <br> Doğrulama kodu e-postanıza tekrardan gönderildi.');
             $user->sendEmailActivationNotification();

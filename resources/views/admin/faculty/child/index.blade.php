@@ -41,7 +41,9 @@
 
                     {{-- OTHER BUTTONS --}}
                     <a class="btn btn-filter btn-primary" target="_blank" href="javascript:;" filter-param="download"
-                       filter-value="true"><i class="fa fa-download"></i></a>
+                       filter-value="true">
+                        <i class="fa fa-download"></i>
+                    </a>
                 @endslot
 
                 @slot('body')
@@ -56,7 +58,7 @@
                             <th>Tanışma</th>
                             <th>Hediye</th>
                             <th>Sorumlular</th>
-                            <th class="three-button">İşlem</th>
+                            <th class="five-button">İşlem</th>
                         @endslot
 
                         @slot('body')
@@ -73,37 +75,42 @@
                                     <td class="long-column">{!! $child->users->implode('full_name', ', ') !!}</td>
                                     <td>
                                         <div class="btn-group">
-                                            @can('list faculty children detail')
+                                            @can('view', $child)
                                                 <a class="show btn btn-primary btn-xs"
                                                    href="{{ route("admin.child.show", $child->id) }}">
                                                     <i class="fa fa-search"></i>
                                                 </a>
+                                            @endcan
+                                            @can('update', $child)
                                                 <a class="edit btn btn-warning btn-xs"
                                                    href="{{ route("admin.child.edit", $child->id) }}">
                                                     <i class="fa fa-pencil"></i>
                                                 </a>
+                                            @else
+                                                @can('process', [$child, App\Enums\ProcessType::VolunteerFound])
+                                                    <button class="process-btn btn btn-success btn-xs"
+                                                            process-type="{{ App\Enums\ProcessType::VolunteerFound }}">
+                                                        Gönüllü bulundu
+                                                    </button>
+                                                @endcan
+                                                @can('process', [$child, App\Enums\ProcessType::PostApproved])
+                                                    <a class="post btn btn-success btn-xs"
+                                                       href="{{ route("admin.child.post.index", $child->id) }}">
+                                                        Yazılarını göster
+                                                    </a>
+                                                @endcan
+                                                @can('process', [$child, App\Enums\ProcessType::GiftArrived])
+                                                    <button class="process-btn btn btn-success btn-xs"
+                                                            process-type="{{ App\Enums\ProcessType::GiftArrived }}">
+                                                        Hediyesi geldi
+                                                    </button>
+                                                @endcan
+                                            @endcan
+                                            @can('delete', $child)
                                                 <a class="delete btn btn-danger btn-xs" delete-id="{{ $child->id }}"
-                                                   delete-name="{{ $child->full_name }}" href="javascript:"><i
-                                                            class="fa fa-trash"></i></a>
-
-                                            @elsecan('list faculty children basic')
-                                                @role(App\Enums\UserRole::Relation)
-                                                <button class="process-btn btn btn-default btn-sm"
-                                                        process-type="{{ App\Enums\ProcessType::VolunteerFound }}">
-                                                    Gönüllü bulundu
-                                                </button>
-                                                @endrole
-                                                @role(App\Enums\UserRole::Website)
-                                                <a class="post btn btn-default btn-sm"
-                                                   href="{{ route("admin.child.post.index", $child->id) }}">
-                                                    Yazılarını göster </a>
-                                                @endrole
-                                                @role(App\Enums\UserRole::Gift)
-                                                <button class="process-btn btn btn-default btn-sm"
-                                                        process-type="{{ App\Enums\ProcessType::GiftArrived }}">
-                                                    Hediyesi geldi
-                                                </button>
-                                                @endrole
+                                                   delete-name="{{ $child->full_name }}" href="javascript:">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
                                             @endcan
                                         </div>
                                     </td>

@@ -1,0 +1,10 @@
+{
+  "This action is unauthorized.": "Bu işleme yapmaya yetkiniz bulunmamaktadır.",
+  "Forbidden": "Yetersiz Yetki",
+  "Unauthorized": "Yetersiz Yetki",
+  "Not Found": "İçerik Bulunamadı",
+  "Page Expired": "Sayfayı Yenileyin",
+  "Too Many Requests": "Çok fazla istekte bulundunuz",
+  "Server Error": "Sunucu Hatası: teknik@leyladansonra.com",
+  "Service Unavailable": "En kısa sürede yeniden yayındayız"
+}

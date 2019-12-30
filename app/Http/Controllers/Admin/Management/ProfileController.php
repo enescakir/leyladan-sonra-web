@@ -17,7 +17,7 @@ class ProfileController extends Controller
 
     public function index(UserFilter $filters)
     {
-        $users = auth()->user()->faculty->users()->orderBy('first_name')->filter($filters)->safePaginate();
+        $users = auth()->user()->faculty->users()->filter($filters)->with('roles')->orderBy('first_name')->safePaginate();
 
         return view('admin.profile.index', compact('users'));
     }

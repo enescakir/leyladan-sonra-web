@@ -72,14 +72,18 @@
                             <td itemprop="gift_state">{!! $child->gift_state_label !!}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a class="show btn btn-primary btn-xs"
-                                       href="{{ route("admin.child.show", $child->id) }}">
-                                        <i class="fa fa-search"></i>
-                                    </a>
-                                    <a class="edit btn btn-warning btn-xs"
-                                       href="{{ route("admin.child.edit", $child->id) }}">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
+                                    @can('view', $child)
+                                        <a class="show btn btn-primary btn-xs"
+                                           href="{{ route("admin.child.show", $child->id) }}">
+                                            <i class="fa fa-search"></i>
+                                        </a>
+                                    @endcan
+                                    @can('update', $child)
+                                        <a class="edit btn btn-warning btn-xs"
+                                           href="{{ route("admin.child.edit", $child->id) }}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

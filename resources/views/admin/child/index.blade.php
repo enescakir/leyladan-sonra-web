@@ -81,17 +81,24 @@
                                     <td>{!! $child->gift_state_label !!}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <a class="show btn btn-primary btn-xs"
-                                               href="{{ route("admin.child.show", $child->id) }}">
-                                                <i class="fa fa-search"></i>
-                                            </a>
-                                            <a class="edit btn btn-warning btn-xs"
-                                               href="{{ route("admin.child.edit", $child->id) }}">
-                                                <i class="fa fa-pencil"></i>
-                                            </a>
-                                            <a class="delete btn btn-danger btn-xs" delete-id="{{ $child->id }}"
-                                               delete-name="{{ $child->full_name }}" href="javascript:"><i
-                                                        class="fa fa-trash"></i></a>
+                                            @can('view', $child)
+                                                <a class="show btn btn-primary btn-xs"
+                                                   href="{{ route("admin.child.show", $child->id) }}">
+                                                    <i class="fa fa-search"></i>
+                                                </a>
+                                            @endcan
+                                            @can('update', $child)
+                                                <a class="edit btn btn-warning btn-xs"
+                                                   href="{{ route("admin.child.edit", $child->id) }}">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                            @endcan
+                                            @can('delete', $child)
+                                                <a class="delete btn btn-danger btn-xs" delete-id="{{ $child->id }}"
+                                                   delete-name="{{ $child->full_name }}" href="javascript:">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

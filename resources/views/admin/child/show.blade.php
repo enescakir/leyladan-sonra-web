@@ -126,8 +126,11 @@
                 <!-- /.box-body -->
 
             </div>
-            <a href="{{ route('admin.child.edit', $child->id) }}"
-               class="btn btn-primary btn-block margin-bottom"><i class="fa fa-edit"></i> Düzenle</a>
+            @can('update', $child)
+                <a href="{{ route('admin.child.edit', $child->id) }}" class="btn btn-primary btn-block margin-bottom">
+                    <i class="fa fa-edit"></i> Düzenle
+                </a>
+            @endcan
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h4 class="box-title">Veli Bilgileri</h4>
@@ -189,28 +192,40 @@
                             </h4>
                             <div class="box-buttons">
                                 <div class="btn-group btn-group-sm btn-group-blockable">
-                                    <button type="button" class="process-btn btn btn-default"
-                                            process-type="{{ App\Enums\ProcessType::Visit }}">Ziyaret ettim
-                                    </button>
+                                    @can('process', [$child, App\Enums\ProcessType::Visit])
+                                        <button type="button" class="process-btn btn btn-default"
+                                                process-type="{{ App\Enums\ProcessType::Visit }}">Ziyaret ettim
+                                        </button>
+                                    @endcan
                                     @if ($child->gift_state == App\Enums\GiftStatus::Waiting )
-                                        <button type="button" class="process-btn btn btn-default"
-                                                process-type="{{ App\Enums\ProcessType::VolunteerFound }}">Gönüllü
-                                            bulundu
-                                        </button>
+                                        @can('process', [$child, App\Enums\ProcessType::VolunteerFound])
+                                            <button type="button" class="process-btn btn btn-default"
+                                                    process-type="{{ App\Enums\ProcessType::VolunteerFound }}">
+                                                Gönüllü bulundu
+                                            </button>
+                                        @endcan
                                     @endif
-                                    @if($child->gift_state == App\Enums\GiftStatus::Waiting || $child->gift_state == App\Enums\GiftStatus::OnRoad)
-                                        <button type="button" class="process-btn btn btn-default"
-                                                process-type="{{ App\Enums\ProcessType::GiftArrived }}">Hediyesi geldi
-                                        </button>
+                                    @if(in_array($child->gift_state, [App\Enums\GiftStatus::Waiting, App\Enums\GiftStatus::OnRoad]))
+                                        @can('process', [$child, App\Enums\ProcessType::GiftArrived])
+                                            <button type="button" class="process-btn btn btn-default"
+                                                    process-type="{{ App\Enums\ProcessType::GiftArrived }}">
+                                                Hediyesi geldi
+                                            </button>
+                                        @endcan
                                     @endif
-                                    @if($child->gift_state == App\Enums\GiftStatus::Waiting || $child->gift_state == App\Enums\GiftStatus::OnRoad || $child->gift_state == App\Enums\GiftStatus::Arrived)
-                                        <button type="button" class="process-btn btn btn-default"
-                                                process-type="{{ App\Enums\ProcessType::GiftDelivered }}">Teslim edildi
-                                        </button>
+                                    @if(in_array($child->gift_state, [App\Enums\GiftStatus::Waiting, App\Enums\GiftStatus::OnRoad, App\Enums\GiftStatus::Arrived]))
+                                        @can('process', [$child, App\Enums\ProcessType::GiftDelivered])
+                                            <button type="button" class="process-btn btn btn-default"
+                                                    process-type="{{ App\Enums\ProcessType::GiftDelivered }}">
+                                                Teslim edildi
+                                            </button>
+                                        @endcan
                                     @endif
-                                    <button type="button" class="process-btn btn btn-danger btn-sm"
-                                            process-type="{{ App\Enums\ProcessType::Reset }}">Bekleniyor yap
-                                    </button>
+                                    @can('process', [$child, App\Enums\ProcessType::Reset])
+                                        <button type="button" class="process-btn btn btn-danger btn-sm"
+                                                process-type="{{ App\Enums\ProcessType::Reset }}">Bekleniyor yap
+                                        </button>
+                                    @endcan
                                 </div>
                             </div>
                         </div>

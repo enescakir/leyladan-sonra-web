@@ -27,6 +27,8 @@ class ChildProcessController extends Controller
 
     public function store(Request $request, Child $child)
     {
+        $this->authorize('process', [$child, $request->type]);
+
         $process = $this->processService->create($child, $request->type);
 
         if ($process->type == ProcessType::GiftArrived) {

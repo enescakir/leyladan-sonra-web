@@ -26,21 +26,38 @@
           </span>
             </a>
             <ul class="treeview-menu">
-                <li class="{{ set_active('*admin/child/create*') }}">
-                    <a href="{{ route('admin.child.create') }}"><i class="fa fa-plus"></i> <span>Yeni Çocuk Ekle</span></a>
-                </li>
-                <li class="{{ set_active('*admin/profile/child') }}">
-                    <a href="{{ route('admin.profile.show') }}"><i class="fa fa-heart"></i>
-                        <span>Kendi Çocuklarım</span></a>
-                </li>
-                <li class="{{ set_active('*admin/faculty/*/child') }}">
-                    <a href="{{ route('admin.faculty.child.index', ['faculty' => $authUser->faculty_id]) }}"><i class="fa fa-bars"></i>
-                        <span>Fakülte Çocukları</span></a>
-                </li>
-                <li class="{{ set_active('*admin/child') }}">
-                    <a href="{{ route('admin.child.index') }}"><i class="fa fa-list"></i>
-                        <span>Bütün Çocuklar</span></a>
-                </li>
+                @can('create', App\Models\Child::class)
+                    <li class="{{ set_active('*admin/child/create*') }}">
+                        <a href="{{ route('admin.child.create') }}">
+                            <i class="fa fa-plus"></i>
+                            <span>Yeni Çocuk Ekle</span>
+                        </a>
+                    </li>
+                @endcan
+                @can('list', App\Models\Child::class)
+                    <li class="{{ set_active('*admin/profile/child') }}">
+                        <a href="{{ route('admin.profile.show') }}">
+                            <i class="fa fa-heart"></i>
+                            <span>Kendi Çocuklarım</span>
+                        </a>
+                    </li>
+                @endcan
+                @can('listFaculty', [App\Models\Child::class, $authUser->faculty])
+                    <li class="{{ set_active('*admin/faculty/*/child') }}">
+                        <a href="{{ route('admin.faculty.child.index', ['faculty' => $authUser->faculty_id]) }}">
+                            <i class="fa fa-bars"></i>
+                            <span>Fakülte Çocukları</span>
+                        </a>
+                    </li>
+                @endcan
+                @can('listAll', App\Models\Child::class)
+                    <li class="{{ set_active('*admin/child') }}">
+                        <a href="{{ route('admin.child.index') }}">
+                            <i class="fa fa-list"></i>
+                            <span>Bütün Çocuklar</span>
+                        </a>
+                    </li>
+                @endcan
             </ul>
         </li>
         <li class="treeview {{ set_active(['*admin/faculty', '*form*', '*admin/faculty/create', '*admin/faculty/*/edit'], 'menu-open active') }}">
@@ -173,7 +190,8 @@
                     </a>
                 </li>
                 <li class="{{ set_active('*admin/faculty/*/user*') }}">
-                    <a href="{{ route('admin.faculty.user.index', ['faculty' => $authUser->faculty_id]) }}"><i class="fa fa-user"></i>
+                    <a href="{{ route('admin.faculty.user.index', ['faculty' => $authUser->faculty_id]) }}"><i
+                                class="fa fa-user"></i>
                         <span>Fakülte Üyeleri</span></a>
                 </li>
                 <li class="{{ set_active('*admin/user*') }}">

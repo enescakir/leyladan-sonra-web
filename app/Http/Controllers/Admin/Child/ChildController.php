@@ -34,13 +34,17 @@ class ChildController extends Controller
 
     public function index(ChildFilter $filters)
     {
-        $children = Child::with(['faculty'])->latest()->filter($filters)->safePaginate();
+        $this->authorize('list', Child::class);
+
+        $children = Child::filter($filters)->with(['faculty'])->latest()->safePaginate();
 
         return view('admin.child.index', compact('children'));
     }
 
     public function create()
     {
+        $this->authorize('create', Child::class);
+
         $faculties = Faculty::toSelect('Fakülte seçiniz');
         $users = auth()->user()->faculty->toUsersSelect();
         $diagnosises = Diagnosis::toSelect('Tanı seçiniz');
@@ -52,6 +56,8 @@ class ChildController extends Controller
 
     public function store(CreateChildRequest $request)
     {
+        $this->authorize('create', Child::class);
+
         $this->checkSimilarChildren($request->first_name, $request->last_name, $request->similarity_accept);
 
         $data = $request->only([
@@ -98,12 +104,16 @@ class ChildController extends Controller
 
     public function show(Child $child)
     {
+        $this->authorize('view', $child);
+
         $child->load('processes', 'meetingPost.media', 'deliveryPost.media');
         return view('admin.child.show', compact('child'));
     }
 
     public function edit(Child $child)
     {
+        $this->authorize('update', $child);
+
         $faculties = Faculty::toSelect('Fakülte seçiniz');
         $users = auth()->user()->faculty->toUsersSelect();
         $diagnosises = Diagnosis::toSelect('Tanı seçiniz');
@@ -116,6 +126,8 @@ class ChildController extends Controller
 
     public function update(Request $request, Child $child)
     {
+        $this->authorize('update', $child);
+
         $data = $request->only([
             'department', 'first_name', 'last_name', 'diagnosis', 'diagnosis_desc', 'taken_treatment', 'child_state',
             'child_state_desc', 'gender', 'meeting_day', 'birthday', 'wish', 'g_first_name', 'g_last_name', 'g_mobile',
@@ -148,6 +160,8 @@ class ChildController extends Controller
 
     public function destroy(Child $child)
     {
+        $this->authorize('delete', $child);
+
         $child->meetingPost()->delete();
         $child->deliveryPost()->delete();
         $child->processes()->delete();
