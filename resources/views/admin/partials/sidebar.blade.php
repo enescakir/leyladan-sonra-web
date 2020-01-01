@@ -209,38 +209,54 @@
                 {{--<li><a href="#"><i class="fa fa-bell-o"></i> <span>Bildirim Gönder</span></a></li>--}}
             </ul>
         </li>
-        <li class="treeview  {{ set_active('*admin/user*', 'menu-open active') }}">
-            <a href="#"><i class="fa fa-users"></i> <span>Üyeler</span>
-                <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-            </a>
-            <ul class="treeview-menu">
-                <li class="">
-                    <a href="{{ route('admin.faculty.user.index', ['faculty' => $authUser->faculty_id, 'approval' => 0]) }}">
-                        <i class="fa fa-thumbs-o-up"></i>
-                        <span>Onay Bekleyenler</span>
-                        <span class="pull-right-container">
-                            <small class="label pull-right bg-red unapproved-user-count" data-toggle="tooltip"
-                                   title="Onaylanmamış Üye Sayısı"></small>
-                        </span>
-                    </a>
-                </li>
-                <li class="{{ set_active('*admin/faculty/*/user*') }}">
-                    <a href="{{ route('admin.faculty.user.index', ['faculty' => $authUser->faculty_id]) }}"><i
-                                class="fa fa-user"></i>
-                        <span>Fakülte Üyeleri</span></a>
-                </li>
-                <li class="{{ set_active('*admin/user*') }}">
-                    <a href="{{ route('admin.user.index') }}"><i class="fa fa-users"></i> <span>Tüm Üyeler</span></a>
-                </li>
-                <li class="{{ set_active('*admin/faculty/*/email*') }}">
-                    <a href="{{ route('admin.faculty.email.create', $authUser->faculty_id) }}"><i
-                                class="fa fa-paper-plane"></i>
-                        <span>E-posta Gönder</span></a>
-                </li>
-            </ul>
-        </li>
+        @can('listFaculty', [App\Models\User::class, $authUser->faculty])
+            <li class="treeview {{ set_active(['*admin/user*', '*faculty/*/user', '*admin/faculty/*/email*'], 'menu-open active') }}">
+                <a href="#">
+                    <i class="fa fa-users"></i>
+                    <span>Üyeler</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    @can('listFaculty', [App\Models\User::class, $authUser->faculty])
+                        <li class="">
+                            <a href="{{ route('admin.faculty.user.index', ['faculty' => $authUser->faculty_id, 'approval' => 0]) }}">
+                                <i class="fa fa-thumbs-o-up"></i>
+                                <span>Onay Bekleyenler</span>
+                                <span class="pull-right-container">
+                                <small class="label pull-right bg-red unapproved-user-count"
+                                       data-toggle="tooltip"
+                                       title="Onaylanmamış Üye Sayısı"></small>
+                            </span>
+                            </a>
+                        </li>
+                        <li class="{{ set_active('*admin/faculty/*/user*') }}">
+                            <a href="{{ route('admin.faculty.user.index', ['faculty' => $authUser->faculty_id]) }}">
+                                <i class="fa fa-user"></i>
+                                <span>Fakülte Üyeleri</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('listAll', App\Models\User::class)
+                        <li class="{{ set_active('*admin/user*') }}">
+                            <a href="{{ route('admin.user.index') }}">
+                                <i class="fa fa-users"></i>
+                                <span>Tüm Üyeler</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('sendFaculty', [App\Models\User::class, $authUser->faculty])
+                        <li class="{{ set_active('*admin/faculty/*/email*') }}">
+                            <a href="{{ route('admin.faculty.email.create', $authUser->faculty_id) }}">
+                                <i class="fa fa-paper-plane"></i>
+                                <span>E-posta Gönder</span>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
         <li class="treeview {{ set_active(['*diagnosis*', '*department*'], 'menu-open active') }}">
             <a href="#"><i class="fa fa-cog"></i> <span>Ayarlar</span>
                 <span class="pull-right-container">

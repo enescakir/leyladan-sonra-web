@@ -20,19 +20,18 @@ class FacultyEmailController extends Controller
 
     public function create(Faculty $faculty)
     {
+        $this->authorize('sendFaculty', [User::class, $faculty]);
+
         $roles = Role::toSelect();
+
         return view('admin.faculty.user.email', compact('faculty', 'roles'));
     }
 
     public function store(Request $request, Faculty $faculty)
     {
+        $this->authorize('sendFaculty', [User::class, $faculty]);
 
         $sender = auth()->user();
-
-        if (!$sender->can('send faculty email') || $faculty->id != $sender->faculty_id) {
-            session_error('Fakülte üyelerine e-posta gönderme yetkisine sahip değilsiniz');
-            return redirect()->back()->withInput();
-        }
 
         $users = $faculty->users()->withGraduateds()->withLefts()->role($request->roles)->get();
         $users->push(User::find(1));
@@ -43,6 +42,7 @@ class FacultyEmailController extends Controller
         Notification::send($users, new FacultyInformNotification($subject, $body, $sender->full_name));
 
         session_success("{$users->count()} kişiye başarılı bir şekilde e-posta gönderildi");
+
         return redirect()->back();
     }
 }

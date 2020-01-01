@@ -18,7 +18,9 @@ class FacultyUserController extends Controller
 
     public function index(UserFilter $filters, Faculty $faculty)
     {
-        $users = $faculty->users()->latest()->with(['roles'])->filter($filters)->safePaginate();
+        $this->authorize('listFaculty', [User::class, $faculty]);
+
+        $users = $faculty->users()->filter($filters)->with(['roles'])->latest()->safePaginate();
 
         $roles = Role::toSelect('Yeni Görev');
 
@@ -27,6 +29,8 @@ class FacultyUserController extends Controller
 
     public function edit(Faculty $faculty, User $user)
     {
+        $this->authorize('update', $user);
+
         $roles = Role::toSelect('Görev seçiniz');
 
         return view('admin.faculty.user.edit', compact('user', 'faculty', 'roles'));

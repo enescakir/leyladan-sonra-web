@@ -18,7 +18,9 @@ class UserController extends Controller
 
     public function index(UserFilter $filters)
     {
-        $users = User::latest()->with(['roles', 'faculty'])->filter($filters)->safePaginate();
+        $this->authorize('listAll', User::class);
+
+        $users = User::filter($filters)->with(['roles', 'faculty'])->latest()->safePaginate();
 
         $roles = Role::toSelect('Yeni Görev', null);
 
@@ -27,6 +29,8 @@ class UserController extends Controller
 
     public function create()
     {
+        $this->authorize('create', User::class);
+
         $faculties = Faculty::toSelect('Fakülte seçiniz');
         $roles = Role::toSelect('Görev seçiniz', null);
 
@@ -35,6 +39,8 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
+
         $this->validateUser($request);
 
         $user = User::create($request->only([
@@ -50,11 +56,16 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        $this->authorize('view', $user);
+
+        dd($user);
         return view('admin.user.show', compact('user'));
     }
 
     public function edit(User $user)
     {
+        $this->authorize('update', $user);
+
         $faculties = Faculty::toSelect('Fakülte seçiniz');
         $roles = Role::toSelect('Görev seçiniz', null);
 
@@ -63,6 +74,8 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
+
         if (!$request->ajax()) {
             $this->validateUser($request, $user->id);
         }
@@ -98,6 +111,9 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $this->authorize('update', $user);
+
+        // TODO: delete user relations
         $user->delete();
 
         return api_success(['user' => $user]);
@@ -105,6 +121,8 @@ class UserController extends Controller
 
     public function approve(Request $request, User $user)
     {
+        $this->authorize('approve', $user);
+
         $user->approve($request->approval);
 
         if ($request->approval) {

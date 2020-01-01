@@ -67,21 +67,27 @@
                                     <td>{{ $user->year }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <button id="approval-user-{{ $user->id }}"
-                                                    class="approval btn btn-default btn-xs"
-                                                    approval-id="{{ $user->id }}" approval-name="{{ $user->full_name }}"
-                                                    approved="{{ (int) $user->isApproved() }}">
-                                                <i class="fa fa-square-o"></i>
-                                            </button>
-                                            <a class="edit btn btn-warning btn-xs"
-                                               href="{{ route("admin.faculty.user.edit", [$faculty->id, $user->id]) }}" title="Düzenle">
-                                                <i class="fa fa-pencil"></i>
-                                            </a>
-                                            <button
-                                                    class="role btn btn-primary btn-xs"
-                                                    item-id="{{ $user->id }}" title="Görev Seç">
-                                                <i class="fa fa-briefcase"></i>
-                                            </button>
+                                            @can('approve', $user)
+                                                <button id="approval-user-{{ $user->id }}"
+                                                        class="approval btn btn-default btn-xs"
+                                                        approval-id="{{ $user->id }}"
+                                                        approval-name="{{ $user->full_name }}"
+                                                        approved="{{ (int) $user->isApproved() }}">
+                                                    <i class="fa fa-square-o"></i>
+                                                </button>
+                                            @endcan
+                                            @can('update', $user)
+                                                <a class="edit btn btn-warning btn-xs"
+                                                   href="{{ route("admin.faculty.user.edit", [$faculty->id, $user->id]) }}"
+                                                   title="Düzenle">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                                <button
+                                                        class="role btn btn-primary btn-xs"
+                                                        item-id="{{ $user->id }}" title="Görev Seç">
+                                                    <i class="fa fa-briefcase"></i>
+                                                </button>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
