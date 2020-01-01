@@ -17,7 +17,9 @@ class PostController extends Controller
 
     public function index(PostFilter $filters)
     {
-        $posts = Post::with(['child', 'child.faculty', 'media'])->latest()->filter($filters)->safePaginate();
+        $this->authorize('listAll', Post::class);
+
+        $posts = Post::filter($filters)->with(['child', 'child.faculty', 'media'])->latest()->safePaginate();
 
         $postTypes = PostType::toSelect('Hepsi');
 
@@ -26,11 +28,15 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
+        $this->authorize('update', $post);
+
         return view('admin.post.edit', compact('post'));
     }
 
     public function update(Request $request, Post $post)
     {
+        $this->authorize('update', $post);
+
         $post->update($request->only(['text']));
 
         session_success("<strong>{$post->child->full_name}</strong> yazısı başarıyla güncellendi.");
@@ -44,6 +50,8 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
+        $this->authorize('delete', $post);
+
         $post->delete();
 
         return api_success(['post' => $post]);
@@ -51,6 +59,8 @@ class PostController extends Controller
 
     public function approve(Request $request, Post $post)
     {
+        $this->authorize('approve', $post);
+
         $post->approve($request->approval);
 
         return api_success([

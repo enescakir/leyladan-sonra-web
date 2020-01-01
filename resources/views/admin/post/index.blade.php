@@ -69,14 +69,16 @@
                             @forelse ($posts as $post)
                                 <tr id="post-{{ $post->id }}">
                                     <td>{{ $post->id }}</td>
-                                    <td>{{ $post->child->full_name ?? '-' }} <strong>({{ $post->child->id ?? '-' }})</strong></td>
+                                    <td>{{ $post->child->full_name ?? '-' }} <strong>({{ $post->child->id ?? '-' }}
+                                            )</strong></td>
                                     <td>{{ $post->child->faculty->name ?? '-' }}</td>
                                     <td>{{ $post->type }}</td>
                                     <td>
                                         @foreach($post->media->chunk(3) as $chunk)
                                             <div style="display: flex;">
                                                 @foreach($chunk as $media)
-                                                    <img class="table-img-md" style="margin:2px;" src="{{ $media->getUrl('thumb') }}"
+                                                    <img class="table-img-md" style="margin:2px;"
+                                                         src="{{ $media->getUrl('thumb') }}"
                                                          alt="{{ $post->child->full_name ?? '-' }}">
                                                 @endforeach
                                             </div>
@@ -86,23 +88,29 @@
                                     <td id="post-{{ $post->id }}-status">{!! $post->approval_label !!}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <button id="approval-post-{{ $post->id }}"
-                                                    class="approval btn btn-default btn-xs"
-                                                    approval-id="{{ $post->id }}"
-                                                    approval-name="{{ $post->child->full_name ?? '-' }}-{{ $post->type }}"
-                                                    approved="{{ (int) $post->isApproved() }}">
-                                                <i class="fa fa-square-o"></i>
-                                            </button>
-                                            <a class="edit btn btn-warning btn-xs"
-                                               href="{{ route("admin.post.edit", $post->id) }}">
-                                                <i class="fa fa-pencil"></i>
-                                            </a>
-                                            <a class="delete btn btn-danger btn-xs"
-                                               delete-id="{{ $post->id }}"
-                                               delete-name="{{ $post->child->full_name ?? '-' }}-{{ $post->type }}"
-                                               href="javascript:;">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
+                                            @can('approve', $post)
+                                                <button id="approval-post-{{ $post->id }}"
+                                                        class="approval btn btn-default btn-xs"
+                                                        approval-id="{{ $post->id }}"
+                                                        approval-name="{{ $post->child->full_name ?? '-' }}-{{ $post->type }}"
+                                                        approved="{{ (int) $post->isApproved() }}">
+                                                    <i class="fa fa-square-o"></i>
+                                                </button>
+                                            @endcan
+                                            @can('update', $post)
+                                                <a class="edit btn btn-warning btn-xs"
+                                                   href="{{ route("admin.post.edit", $post->id) }}">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                            @endcan
+                                            @can('delete', $post)
+                                                <a class="delete btn btn-danger btn-xs"
+                                                   delete-id="{{ $post->id }}"
+                                                   delete-name="{{ $post->child->full_name ?? '-' }}-{{ $post->type }}"
+                                                   href="javascript:;">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

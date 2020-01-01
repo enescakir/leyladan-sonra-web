@@ -106,7 +106,6 @@ Route::prefix('child')->as('child.')->group(function () {
         Route::get('chat', 'Admin\Volunteer\ChildChatController@index');
         Route::put('chat', 'Admin\Volunteer\ChildChatController@update');
         Route::post('process', 'Admin\Child\ChildProcessController@store')->name('process.store');
-        Route::get('post', 'Admin\Child\ChildPostController@index')->name('post.index');
         Route::get('verification', 'Admin\Child\ChildVerificationController@show')->name('verification.show');
     });
 });

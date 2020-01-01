@@ -128,7 +128,8 @@
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <a href="{{ url()->previous() }}" class="btn btn-danger">Geri</a>
+                    <a href="{{ route('admin.faculty.post.index', auth()->user()->faculty_id) }}"
+                       class="btn btn-danger">Geri</a>
                     <div class="btn-group pull-right">
                         <button type="submit" class="btn btn-primary" name="approval" value="0">Kaydet</button>
                         <button type="submit" class="btn btn-success" name="approval" value="1" id="approve-submit-btn">
