@@ -93,14 +93,20 @@
                                     <td>{{ $faculty->managers->implode('full_name', ', ') }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <a class="show btn btn-primary btn-xs"
-                                               href="{{ route("admin.faculty.show", [$faculty->id]) }}" title="Göster">
-                                                <i class="fa fa-search"></i>
-                                            </a>
-                                            <a class="edit btn btn-warning btn-xs"
-                                               href="{{ route("admin.faculty.edit", [$faculty->id]) }}" title="Düzenle">
-                                                <i class="fa fa-pencil"></i>
-                                            </a>
+                                            @can('view', $faculty)
+                                                <a class="show btn btn-primary btn-xs"
+                                                   href="{{ route("admin.faculty.show", [$faculty->id]) }}"
+                                                   title="Göster">
+                                                    <i class="fa fa-search"></i>
+                                                </a>
+                                            @endcan
+                                            @can('update', $faculty)
+                                                <a class="edit btn btn-warning btn-xs"
+                                                   href="{{ route("admin.faculty.edit", [$faculty->id]) }}"
+                                                   title="Düzenle">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

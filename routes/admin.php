@@ -167,8 +167,8 @@ Route::prefix('faculty')->as('faculty.')->group(function () {
 });
 Route::resource('faculty', 'Admin\Management\FacultyController');
 
-Route::get('/form/create', 'Admin\Miscellaneous\FormController@create')->name('form.create');
-Route::post('/form', 'Admin\Miscellaneous\FormController@store')->name('form.store');
+Route::get('/form/create', 'Admin\Management\FacultyFormController@create')->name('form.create');
+Route::post('/form', 'Admin\Management\FacultyFormController@store')->name('form.store');
 
 
 /*

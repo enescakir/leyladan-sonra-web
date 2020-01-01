@@ -68,35 +68,43 @@
                 </ul>
             </li>
         @endcan
-        <li class="treeview {{ set_active(['*admin/faculty', '*form*', '*admin/faculty/create', '*admin/faculty/*/edit'], 'menu-open active') }}">
-            <a href="#">
-                <i class="fa fa-university"></i>
-                <span>Fakülteler</span>
-                <span class="pull-right-container">
+        @can('list', App\Models\Faculty::class)
+            <li class="treeview {{ set_active(['*admin/faculty', '*form*', '*admin/faculty/create', '*admin/faculty/*/edit'], 'menu-open active') }}">
+                <a href="#">
+                    <i class="fa fa-university"></i>
+                    <span>Fakülteler</span>
+                    <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
                 </span>
-            </a>
-            <ul class="treeview-menu">
-                <li class="{{ set_active('*admin/faculty/create') }}">
-                    <a href="{{ route('admin.faculty.create') }}">
-                        <i class="fa fa-plus"></i>
-                        <span>Yeni Fakülte Ekle</span>
-                    </a>
-                </li>
-                <li class="{{ set_active('*admin/faculty') }}">
-                    <a href="{{ route('admin.faculty.index') }}">
-                        <i class="fa fa-fort-awesome"></i>
-                        <span>Bütün Fakülteler</span>
-                    </a>
-                </li>
-                <li class="{{ set_active('*admin/form/create*') }}">
-                    <a href="{{ route('admin.form.create') }}">
-                        <i class="fa fa-file-text-o"></i>
-                        <span>Onam Formu Oluştur</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+                </a>
+                <ul class="treeview-menu">
+                    @can('create', App\Models\Faculty::class)
+                        <li class="{{ set_active('*admin/faculty/create') }}">
+                            <a href="{{ route('admin.faculty.create') }}">
+                                <i class="fa fa-plus"></i>
+                                <span>Yeni Fakülte Ekle</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('list', App\Models\Faculty::class)
+                        <li class="{{ set_active('*admin/faculty') }}">
+                            <a href="{{ route('admin.faculty.index') }}">
+                                <i class="fa fa-fort-awesome"></i>
+                                <span>Bütün Fakülteler</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('form', App\Models\Faculty::class)
+                        <li class="{{ set_active('*admin/form/create*') }}">
+                            <a href="{{ route('admin.form.create') }}">
+                                <i class="fa fa-file-text-o"></i>
+                                <span>Onam Formu Oluştur</span>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
         @can('list', App\Models\Blood::class)
             <li class="treeview {{ set_active('*admin/blood*', 'menu-open active') }}">
                 <a href="#">

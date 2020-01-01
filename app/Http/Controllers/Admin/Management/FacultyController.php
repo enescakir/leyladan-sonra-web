@@ -17,10 +17,12 @@ class FacultyController extends Controller
 
     public function index(FacultyFilter $filters)
     {
-        $faculties = Faculty::orderBy('name')
+        $this->authorize('list', Faculty::class);
+
+        $faculties = Faculty::filter($filters)
             ->with('managers', 'media')
             ->withCount('children', 'users')
-            ->filter($filters)
+            ->orderBy('name')
             ->safePaginate();
 
         return view('admin.faculty.index', compact('faculties'));
@@ -28,11 +30,15 @@ class FacultyController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Faculty::class);
+
         return view('admin.faculty.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Faculty::class);
+
         $this->validateFaculty($request);
 
         $faculty = Faculty::create($request->only([
@@ -47,11 +53,15 @@ class FacultyController extends Controller
 
     public function show(Faculty $faculty)
     {
+        $this->authorize('view', $faculty);
+
         return view('admin.faculty.show', compact('faculty'));
     }
 
     public function edit(Faculty $faculty)
     {
+        $this->authorize('update', $faculty);
+
         $users = $faculty->users()->orderBy('first_name')->get()->pluck('full_name', 'id');
 
         $managers = $faculty->managers()->pluck('id')->toArray();
@@ -61,6 +71,8 @@ class FacultyController extends Controller
 
     public function update(Request $request, Faculty $faculty)
     {
+        $this->authorize('update', $faculty);
+
         $this->validateFaculty($request, true);
 
         $faculty->update($request->only([
@@ -80,7 +92,9 @@ class FacultyController extends Controller
 
     public function destroy(Faculty $faculty)
     {
-        //
+        $this->authorize('delete', $faculty);
+
+        abort(403);
     }
 
     private function validateFaculty(Request $request, $isUpdate = false)

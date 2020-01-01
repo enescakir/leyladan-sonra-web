@@ -39,7 +39,11 @@
                         </li>
                     </ul>
 
-                    <a href="{{ route('admin.faculty.edit', $faculty->id) }}" class="btn btn-warning btn-block"><b>Düzenle</b></a>
+                    @can('update', $faculty)
+                        <a href="{{ route('admin.faculty.edit', $faculty->id) }}" class="btn btn-warning btn-block">
+                            <b>Düzenle</b>
+                        </a>
+                    @endcan
                 </div>
                 <!-- /.box-body -->
             </div>
