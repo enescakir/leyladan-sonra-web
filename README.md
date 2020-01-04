@@ -1,47 +1,51 @@
 <p align="center"><a href="http://www.leyladansonra.com"><img src="http://www.leyladansonra.com/resources/front/images/logo@2x.png" style="width:80%;"></a></p>
 
-## Leyla'dan Sonra Web Application [[Türkçe](https://github.com/EnesCakir/leyladan-sonra-web/blob/master/README_TR.md)]
-`This project is actively under development`
+## Leyla'dan Sonra Yönetim Uygulaması [[English](https://github.com/EnesCakir/leyladan-sonra-web/blob/master/README_EN.md)]
+`Bu proje şu an geliştirme aşamasındadır.`
 
-It's Children Management System and REST API for [Leyla'dan Sonra](http://www.leyladansonra.com).
+ [Leyla'dan Sonra](http://www.leyladansonra.com) projesi için Çocuk Yönetim Sistemi ve REST API.
 
-It's developed with [Laravel](http://www.laravel.com) Framework.
+ İnternet dünyasında yaygın olan [Laravel](http://www.laravel.com) Framework'ü kullanılarak geliştirilmiştir.
 
-The project was created originally in [July 2015](http://www.enescakir.com/wp-content/uploads/2017/07/LeyladanSonra_v2.0_FirstMeeting.pdf).
+Projenin temelleri [Temmuz 2015](http://www.enescakir.com/wp-content/uploads/2017/07/LeyladanSonra_v2.0_FirstMeeting.pdf) tarihine dayanmaktadır.
 
-[iOS Application](https://github.com/EnesCakir/leyladan-sonra-ios)
+[iOS Uygulaması](https://github.com/EnesCakir/leyladan-sonra-ios)
 
-## What is Leyla'dan Sonra?
-+2000 medical students are working for Leyla'dan Sonra volunteerly.
+## Leyla'dan Sonra Nedir?
+Leyla'dan Sonra kronik hastalıklı miniklerin hayatlarında en çok istedikleri bir dileği gerçekleştirmek üzere hayata geçirilmiş bir projedir.
 
-> We started this journey with a motto: one child, one wish.
+Şu an Türkiye'nin dört bir yanında 46'dan fazla tıp fakültesinde 2000'den fazla tıp fakültesi öğrencisi gönüllü olarak projeyi yürütmektedir.
 
-More information about Leyla'dan Sonra: [Turkish](http://www.leyladansonra.com), [English](http://www.afterleyla.com)
+> bir çocuk, bir dilek.
 
-## Website
-It is derived from [Canvas](https://themeforest.net/item/canvas-the-multipurpose-html5-template/9228123) theme. Because of commercial issues, we remove it from public repository.
+Daha fazla bilgi: [Türkçe](http://www.leyladansonra.com), [English](http://www.afterleyla.com)
 
-## Admin Panel
-It was developed with [Metronic](https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469) theme when this project wasn't open source. Now we are changing admin theme to open source [AdminLTE](https://github.com/almasaeed2010/AdminLTE), because [Metronic](https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469) is a commercial template.
+## İnternet Sitesi
+İnternet sitemiz [Canvas](https://themeforest.net/item/canvas-the-multipurpose-html5-template/9228123) teması kullanılarak geliştirilmiştir.
+Ticari bir tema olduğu için halka açık kısımdan kodları kaldırılmıştır.
 
-#### Example Screenshots
+## Yönetim Paneli
+Yönetim paneli başlangıçta [Metronic](https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469) teması ile geliştirilmiştir.
+Ama bu tema açık kaynak kodlu olmadığı için açık kaynak kodlu olan [AdminLTE](https://github.com/almasaeed2010/AdminLTE) temasına geçilmeye karar verilmiştir.
+
+Şu an bu geçiş işlemi devam etmektedir.
+
+#### Örnek Ekran Görüntüleri
 |||
 :-------------------------:|:-------------------------:
 <a href="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_1.jpg"><img src="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_1.jpg"></a> | <a href="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_2.jpg"><img src="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_2.jpg"></a>
 <a href="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_3.jpg"><img src="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_3.jpg"></a> | <a href="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_4.jpg"><img src="https://raw.githubusercontent.com/codetodayorg/leyladan-sonra-web/master/screenshots/admin_4.jpg"></a>
 
-## Contributors
+
+## Geliştiriciler
 - **[Enes Çakır](https://github.com/enescakir)**
-Project Manager, Back-end, iOS Application
+Proje Yöneticisi, Back-end, iOS Uygulaması
 
 - **[Ergün Erdoğmuş](https://github.com/ergun1017)**
-Android App, Front-end Advisor
+Android Uygulaması
 
-- **[Alparslan Demir](https://github.com/alparslandemir)**
-Public Website
+## Güvenlik Açıkları
+Eğer uygulama ile ilgili bir güvenlik açığı tespit ederseniz lütfen enes@cakir.web.tr adresine e-posta ile bu durumu bildirin.
 
-## Security Vulnerabilities
-If you discover a security vulnerability within Leyla'dan Sonra Web Application, please send an e-mail to Enes Cakir at enes@cakir.web.tr. All security vulnerabilities will be promptly addressed.
-
-## License
-Leyla'dan Sonra Web Application is an open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+## Lisans
+Leyla'dan Sonra Yönetim Uygulaması açık kaynak kodlu bir yazılım olup [MIT license](http://opensource.org/licenses/MIT) lisansı ile korunmaktadır.
