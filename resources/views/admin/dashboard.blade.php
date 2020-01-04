@@ -110,7 +110,7 @@
                         Leyla'dan Sonra Türkiye
                     </h3>
                 </div>
-                <div class="box-body">
+                <div class="box-body no-padding">
                     <div id="turkey-map" style="height: 300px; width: 100%;"></div>
                 </div>
                 <!-- /.box-body-->
@@ -205,29 +205,22 @@
         <section class="col-lg-6">
             <!-- TABLE: LATEST ORDERS -->
             <div class="box box-info">
-                <div class="box-header with-border">
+                <div class="box-header">
                     <h3 class="box-title">Güncel Fakülte Bildirimleri</h3>
-                    <div class="box-tools pull-right">
-                        <a type="button" class="btn btn-sm btn-primary">Tüm Bildirimler</a>
-                    </div>
+{{--                    <div class="box-tools pull-right">--}}
+{{--                        <a type="button" class="btn btn-sm btn-primary">Tüm Bildirimler</a>--}}
+{{--                    </div>--}}
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body">
+                <div class="box-body no-padding">
                     <div class="table-responsive">
                         <table class="table no-margin">
-                            <thead>
-                            <tr>
-                                <th>Bildirim</th>
-                                <th>Kişi</th>
-                                <th>Zaman</th>
-                            </tr>
-                            </thead>
                             <tbody>
                             @forelse( App\CacheManagers\CacheManager::feeds(auth()->user()->faculty_id, 17)  as $feed)
                                 <tr>
-                                    <td>{!! $feed->icon_label !!} {{ $feed->desc }}</td>
-                                    <td>{{ $feed->creator ? $feed->creator->full_name : '' }}</td>
-                                    <td>{{ $feed->created_at_human }}</td>
+                                    <td style="display: flex;"><div style="margin-right: 8px;">{!! $feed->icon_label !!}</div> <div>{{ $feed->desc }}</div></td>
+                                    <td class="text-nowrap">{{ $feed->creator ? $feed->creator->full_name : '-' }}</td>
+                                    <td class="text-nowrap text-muted text-sm">{{ $feed->created_at_human }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -255,7 +248,7 @@
                     <h3 class="box-title">Doğum Günleri</h3>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body">
+                <div class="box-body no-padding">
                     <!--The calendar -->
                     <div id="calendar"></div>
                 </div>
