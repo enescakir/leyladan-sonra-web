@@ -61,9 +61,7 @@
                   </td>
                 </tr>
               @empty
-                <tr>
-                  <td colspan="4">Kategori bulunmamaktadır.</td>
-                </tr>
+                  @include('admin.partials.noDataRow')
               @endforelse
             @endslot
           @endcomponent

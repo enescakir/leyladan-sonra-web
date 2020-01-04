@@ -1,7 +1,7 @@
 @extends('admin.parent')
 
 @section('title', 'Tanılar')
-  
+
 @section('header')
   <section class="content-header">
     <h1>
@@ -20,9 +20,9 @@
     <div class="col-xs-12">
       @component('admin.partials.box.default')
         @slot('title', "{$diagnosises->total()} Tanı")
-  
+
         @slot('search', true)
-    
+
         @slot('filters')
 
           {{-- ROW PER PAGE --}}
@@ -32,7 +32,7 @@
           <a class="btn btn-filter btn-primary" target="_blank"  href="javascript:;" filter-param="download" filter-value="true"><i class="fa fa-download"></i></a>
           <a href="{{ route('admin.diagnosis.create') }}" class="btn btn-success"><i class="fa fa-plus"></i></a>
         @endslot
-  
+
         @slot('body')
           @component('admin.partials.box.table')
             @slot('head')
@@ -61,9 +61,7 @@
                   </td>
                 </tr>
               @empty
-                <tr>
-                  <td colspan="4">Tanı bulunmamaktadır.</td>
-                </tr>
+                  @include('admin.partials.noDataRow')
               @endforelse
             @endslot
           @endcomponent

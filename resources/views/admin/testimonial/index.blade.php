@@ -111,9 +111,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr>
-                                    <td colspan="7">Referans bulunmamaktadır.</td>
-                                </tr>
+                                    @include('admin.partials.noDataRow')
                             @endforelse
                         @endslot
                     @endcomponent

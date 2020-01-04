@@ -91,9 +91,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr>
-                                    <td colspan="5">Soru bulunmamaktadır.</td>
-                                </tr>
+                                    @include('admin.partials.noDataRow')
                             @endforelse
                         @endslot
                     @endcomponent

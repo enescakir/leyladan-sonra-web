@@ -96,9 +96,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr>
-                                    <td colspan="6">Destekçi bulunmamaktadır.</td>
-                                </tr>
+                                    @include('admin.partials.noDataRow')
                             @endforelse
                         @endslot
                     @endcomponent

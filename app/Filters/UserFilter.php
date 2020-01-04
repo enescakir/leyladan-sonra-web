@@ -9,13 +9,12 @@ class UserFilter extends Filter
 {
     protected $filters = ['approval', 'role_name', 'faculty_id', 'year', 'search', 'download'];
 
-
     protected function approval($approval)
     {
         return $this->builder->approved($approval);
     }
 
-    protected function role_name($role)
+    protected function roleName($role)
     {
         $this->builder->role($role)->when($role == 'left', function ($query) {
             return $query->withLefts();

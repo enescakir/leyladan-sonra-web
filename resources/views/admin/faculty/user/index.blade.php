@@ -92,9 +92,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr>
-                                    <td colspan="9">Üye bulunmamaktadır.</td>
-                                </tr>
+                                    @include('admin.partials.noDataRow')
                             @endforelse
                         @endslot
                     @endcomponent

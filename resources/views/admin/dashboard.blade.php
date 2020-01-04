@@ -231,7 +231,10 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3">Bildirim bulunmamaktadır.</td>
+                                    <td class="text-center" colspan="20">
+                                        <p style="font-size: 80px; line-height: 1; margin: 10px;"><i class="fa fa-exclamation-triangle"></i></p>
+                                        <p style="font-size: 24px;">Bildirim bulunmamaktadır</p>
+                                    </td>
                                 </tr>
                             @endforelse
                             </tbody>

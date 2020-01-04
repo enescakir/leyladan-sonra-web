@@ -111,7 +111,10 @@
                             </li>
 
                         @empty
-                            <h3>Bu kriterlere uygun üye bulunamadı</h3>
+                            <div class="text-center">
+                                <p style="font-size: 80px; line-height: 1; margin: 10px;"><i class="fa fa-exclamation-triangle"></i></p>
+                                <p style="font-size: 24px;">Aradığınız kriterlerde veri bulunamadı</p>
+                            </div>
                         @endforelse
                     </ul>
                     <!-- /.users-list -->
