@@ -6,37 +6,24 @@
             @endisset
         </h3>
         <div class="box-tools">
-            <div class="input-group input-group-sm">
-                @if(isset($search) && $search)
-                    <input id="search-input" type="text" class="form-control table-search-bar pull-right search-input" name="search" placeholder="Arama"
-                        value="{{ request()->search }}">
-                @endif
-                <div class="input-group-btn">
-                    @if(isset($search) && $search)
+            @if(isset($search) && $search)
+                <div class="input-group input-group-sm search-group">
+                    <input id="search-input" type="text" class="form-control table-search-bar pull-right search-input"
+                           name="search" placeholder="Arama"
+                           value="{{ request()->search }}">
+                    <div class="input-group-btn">
                         <button id="search-btn" class="btn btn-default" type="submit">
                             <i class="fa fa-search"></i> Ara
                         </button>
-                    @endif
-
-                    {{--BULK ACTIONS --}}
-                    @isset($actions)
-                        <div class="btn-group btn-group-sm hidden-sm">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-wrench"></i>
-                                İşlem
-                            </button>
-                            <ul class="dropdown-menu">
-                                {{ $actions }}
-                            </ul>
-                        </div>
-                    @endisset
-
-                    @isset($filters)
-                        {{ $filters }}
-                    @endisset
-
+                    </div>
                 </div>
-            </div>
+            @endif
+
+            @isset($filters)
+                <div class="btn-group btn-group-sm filter-group">
+                    {{ $filters }}
+                </div>
+            @endisset
         </div>
     </div>
     <!-- /.box-header -->

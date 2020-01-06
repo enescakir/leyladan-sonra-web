@@ -40,7 +40,7 @@
                     @include('admin.partials.selectors.page')
 
                     {{-- OTHER BUTTONS --}}
-                    <a class="btn btn-filter btn-primary" target="_blank" href="javascript:;" filter-param="download"
+                    <a class="btn btn-filter btn-primary hidden-xs" target="_blank" href="javascript:;" filter-param="download"
                        filter-value="true">
                         <i class="fa fa-download"></i>
                     </a>

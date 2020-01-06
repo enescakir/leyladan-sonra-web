@@ -47,7 +47,7 @@
                             <th>Şehir</th>
                             <th>Hediye Sayısı</th>
                             <th>Sohbet Sayısı</th>
-                            <th class="seven-button">İşlem</th>
+                            <th class="three-button">İşlem</th>
                         @endslot
 
                         @slot('body')
