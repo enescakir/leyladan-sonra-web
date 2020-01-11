@@ -16,6 +16,8 @@ class PostMediaController extends Controller
 
     public function store(Request $request, Post $post)
     {
+        $this->authorize('media', $post);
+
         $media = $post->addMedia($request->file('image'), ['ratio' => $request->ratio]);
         $post->approve(false);
 
@@ -24,6 +26,8 @@ class PostMediaController extends Controller
 
     public function destroy(Post $post, Media $media)
     {
+        $this->authorize('media', $post);
+
         $media->delete();
         $post->approve(false);
 
@@ -32,6 +36,8 @@ class PostMediaController extends Controller
 
     public function feature(Post $post, Media $media)
     {
+        $this->authorize('media', $post);
+
         $post->child->featuredMedia()->associate($media);
         $post->child->save();
         $post->approve(false);

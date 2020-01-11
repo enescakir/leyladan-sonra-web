@@ -31,10 +31,15 @@
                     @include('admin.partials.selectors.page')
 
                     {{-- OTHER BUTTONS --}}
-                    <a class="btn btn-filter btn-primary" target="_blank" href="javascript:" filter-param="download"
-                       filter-value="true"><i class="fa fa-download"></i></a>
-                    <a href="{{ route('admin.volunteer.create') }}" class="btn btn-success"><i
-                                class="fa fa-plus"></i></a>
+                    @can('create', App\Models\Volunteer::class)
+                        <a class="btn btn-filter btn-primary" target="_blank" href="javascript:" filter-param="download"
+                           filter-value="true">
+                            <i class="fa fa-download"></i>
+                        </a>
+                        <a href="{{ route('admin.volunteer.create') }}" class="btn btn-success">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    @endcan
                 @endslot
 
                 @slot('body')
@@ -62,25 +67,32 @@
                                     <td>{{ $volunteer->chats_count }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <a class="show btn btn-primary btn-xs"
-                                               href="{{ route("admin.volunteer.show", $volunteer->id) }}"
-                                               title="Görüntüle">
-                                                <i class="fa fa-search"></i>
-                                            </a>
-                                            <a class="edit btn btn-warning btn-xs"
-                                               href="{{ route("admin.volunteer.edit", $volunteer->id) }}"
-                                               title="Düzenle">
-                                                <i class="fa fa-pencil"></i>
-                                            </a>
-                                            <a class="delete btn btn-danger btn-xs" delete-id="{{ $volunteer->id }}"
-                                               delete-name="{{ $volunteer->full_name }}" href="javascript:" title="Sil">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
+                                            @can('view', $volunteer)
+                                                <a class="show btn btn-primary btn-xs"
+                                                   href="{{ route("admin.volunteer.show", $volunteer->id) }}"
+                                                   title="Görüntüle">
+                                                    <i class="fa fa-search"></i>
+                                                </a>
+                                            @endcan
+                                            @can('update', $volunteer)
+                                                <a class="edit btn btn-warning btn-xs"
+                                                   href="{{ route("admin.volunteer.edit", $volunteer->id) }}"
+                                                   title="Düzenle">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                            @endcan
+                                            @can('delete', $volunteer)
+                                                <a class="delete btn btn-danger btn-xs" delete-id="{{ $volunteer->id }}"
+                                                   delete-name="{{ $volunteer->full_name }}" href="javascript:"
+                                                   title="Sil">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
                             @empty
-                                    @include('admin.partials.noDataRow')
+                                @include('admin.partials.noDataRow')
                             @endforelse
                         @endslot
                     @endcomponent

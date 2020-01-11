@@ -16,18 +16,24 @@ class VolunteerController extends Controller
 
     public function index(VolunteerFilter $filters)
     {
-        $volunteers = Volunteer::latest()->withCount(['children', 'chats'])->filter($filters)->safePaginate();
+        $this->authorize('list', Volunteer::class);
+
+        $volunteers = Volunteer::filter($filters)->withCount(['children', 'chats'])->latest()->safePaginate();
 
         return view('admin.volunteer.index', compact('volunteers'));
     }
 
     public function create()
     {
+        $this->authorize('create', Volunteer::class);
+
         return view('admin.volunteer.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Volunteer::class);
+
         $this->validateVolunteer($request);
 
         $volunteer = Volunteer::create($request->only(['first_name', 'last_name', 'email', 'mobile', 'city']));
@@ -39,6 +45,8 @@ class VolunteerController extends Controller
 
     public function show(Volunteer $volunteer)
     {
+        $this->authorize('view', $volunteer);
+
         $volunteer->load('chats.child', 'chats.faculty', 'chats.messages', 'children.faculty');
 
         return view('admin.volunteer.show', compact('volunteer'));
@@ -46,11 +54,15 @@ class VolunteerController extends Controller
 
     public function edit(Volunteer $volunteer)
     {
+        $this->authorize('update', $volunteer);
+
         return view('admin.volunteer.edit', compact('volunteer'));
     }
 
     public function update(Request $request, Volunteer $volunteer)
     {
+        $this->authorize('update', $volunteer);
+
         $this->validateVolunteer($request, $volunteer->id);
 
         $volunteer->update($request->only(['first_name', 'last_name', 'email', 'mobile', 'city']));
@@ -62,6 +74,8 @@ class VolunteerController extends Controller
 
     public function destroy(Volunteer $volunteer)
     {
+        $this->authorize('delete', $volunteer);
+
         $volunteer->chats()->delete();
         $volunteer->delete();
 

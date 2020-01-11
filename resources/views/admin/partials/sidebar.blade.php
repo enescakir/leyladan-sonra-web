@@ -190,42 +190,55 @@
                 </ul>
             </li>
         @endcan
-        <li class="treeview {{ set_active(['*chat*', '*admin/volunteer*'], 'menu-open active') }}">
-            <a href="#"><i class="fa fa-trophy"></i> <span>Gönüllüler</span>
-                <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-            </a>
-            <ul class="treeview-menu">
-                <li class="">
-                    <a href="{{ route('admin.faculty.chat.index', [$authUser->faculty_id, 'status' => 'active']) }}"><i
-                                class="fa fa-commenting-o"></i>
-                        <span>Aktif Sohbetler</span>
-                        <span class="pull-right-container">
-                            <small class="label pull-right bg-red open-chat-count" data-toggle="tooltip"
-                                   title="Açık Sohbet Sayısı"></small>
-                        </span>
-                    </a>
-                </li>
-                <li class="{{ set_active('*admin/faculty/*/chat') }}">
-                    <a href="{{ route('admin.faculty.chat.index', $authUser->faculty_id) }}"><i
-                                class="fa fa-comment-o"></i>
-                        <span>Fakülte Sohbetleri</span></a>
-                </li>
-                <li class="{{ set_active('*admin/chat') }}">
-                    <a href="{{ route('admin.chat.index') }}"><i
-                                class="fa fa-comments"></i>
-                        <span>Tüm Sohbetler</span></a>
-                </li>
-
-                <li class="{{ set_active('*admin/volunteer') }}">
-                    <a href="{{ route('admin.volunteer.index') }}"><i
-                                class="fa fa-star"></i>
-                        <span>Tüm Gönüllüler</span></a>
-                </li>
-                {{--<li><a href="#"><i class="fa fa-bell-o"></i> <span>Bildirim Gönder</span></a></li>--}}
-            </ul>
-        </li>
+        @can('list', App\Models\Volunteer::class)
+            <li class="treeview {{ set_active(['*chat*', '*admin/volunteer*'], 'menu-open active') }}">
+                <a href="#">
+                    <i class="fa fa-trophy"></i>
+                    <span>Gönüllüler</span>
+                    <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                    @can('listFaculty', [App\Models\Chat::class, $authUser->faculty])
+                        <li class="">
+                            <a href="{{ route('admin.faculty.chat.index', [$authUser->faculty_id, 'status' => 'active']) }}">
+                                <i class="fa fa-commenting-o"></i>
+                                <span>Aktif Sohbetler</span>
+                                <span class="pull-right-container">
+                                <small class="label pull-right bg-red open-chat-count"
+                                       data-toggle="tooltip"
+                                       title="Açık Sohbet Sayısı">
+                                </small>
+                            </span>
+                            </a>
+                        </li>
+                        <li class="{{ set_active('*admin/faculty/*/chat') }}">
+                            <a href="{{ route('admin.faculty.chat.index', $authUser->faculty_id) }}">
+                                <i class="fa fa-comment-o"></i>
+                                <span>Fakülte Sohbetleri</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('list', App\Models\Chat::class)
+                        <li class="{{ set_active('*admin/chat') }}">
+                            <a href="{{ route('admin.chat.index') }}">
+                                <i class="fa fa-comments"></i>
+                                <span>Tüm Sohbetler</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('list', App\Models\Volunteer::class)
+                        <li class="{{ set_active('*admin/volunteer') }}">
+                            <a href="{{ route('admin.volunteer.index') }}">
+                                <i class="fa fa-star"></i>
+                                <span>Tüm Gönüllüler</span>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
         @can('listFaculty', [App\Models\User::class, $authUser->faculty])
             <li class="treeview {{ set_active(['*admin/user*', '*faculty/*/user', '*admin/faculty/*/email*'], 'menu-open active') }}">
                 <a href="#">

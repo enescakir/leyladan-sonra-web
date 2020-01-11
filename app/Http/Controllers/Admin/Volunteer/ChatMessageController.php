@@ -21,6 +21,8 @@ class ChatMessageController extends Controller
 
     public function index(Request $request, Chat $chat)
     {
+        $this->authorize('view', $chat);
+
         $chat->load([
             'volunteer' => function ($query) {
                 return $query->withCount(['children', 'chats']);
@@ -36,6 +38,8 @@ class ChatMessageController extends Controller
 
     public function update(Request $request, Chat $chat)
     {
+        $this->authorize('update', $chat);
+
         if ($request->action == 'close') {
             $chat->close();
             $chat->answerMessages();

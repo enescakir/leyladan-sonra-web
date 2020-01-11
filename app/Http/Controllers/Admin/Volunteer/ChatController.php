@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Volunteer;
 
 use App\Filters\ChildFilter;
 use App\Http\Controllers\Controller;
+use App\Models\Chat;
 use App\Models\Child;
 
 class ChatController extends Controller
@@ -15,16 +16,19 @@ class ChatController extends Controller
 
     public function index(ChildFilter $filters)
     {
+        $this->authorize('list', Chat::class);
+
         if (request()->ajax()) {
             $children = Child::select(['id', 'first_name', 'last_name', 'faculty_id'])
-                ->filter($filters)->has('chats')
+                ->filter($filters)
+                ->has('chats')
                 ->withChatCounts()
-                ->orderBy('first_name')->get();
+                ->orderBy('first_name')
+                ->get();
 
             return api_success(['children' => $children]);
         }
 
         return view('admin.chat.index');
     }
-
 }
