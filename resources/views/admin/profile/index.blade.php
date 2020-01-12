@@ -17,6 +17,7 @@
                 width: 50%;
             }
         }
+
         .dropdown-menu {
             left: auto;
             right: 0;
@@ -42,7 +43,7 @@
             opacity: 1;
         }
 
-        .user-container .icon{
+        .user-container .icon {
             color: #287F7F;
             font-size: 72px;
             position: absolute;
@@ -78,7 +79,7 @@
                         Sayfa {{ $users->currentPage() . "/" . $users->lastPage() }}
                     </h3>
                     <div class="box-tools">
-                        <div class="input-group input-group-sm">
+                        <div class="input-group input-group-sm search-group">
                             <input id="search-input" type="text"
                                    class="form-control table-search-bar pull-right search-input" name="search"
                                    placeholder="Arama"
@@ -87,9 +88,10 @@
                                 <button id="search-btn" class="btn btn-default" type="submit">
                                     <i class="fa fa-search"></i> Ara
                                 </button>
-
-                                @include('admin.partials.selectors.role')
                             </div>
+                        </div>
+                        <div class="btn-group btn-group-sm filter-group">
+                            @include('admin.partials.selectors.role')
                         </div>
                     </div>
                 </div>
@@ -101,7 +103,8 @@
                                 <div class="user-container">
                                     <img src="{{ $user->photo_url }}" class="img-circle" alt="{{ $user->full_name }}">
                                     <div class="overlay">
-                                        <a href="mailto:{{ $user->email }}" class="icon" title="E-posta Gönder" target="_blank">
+                                        <a href="mailto:{{ $user->email }}" class="icon" title="E-posta Gönder"
+                                           target="_blank">
                                             <i class="fa fa-envelope"></i>
                                         </a>
                                     </div>
@@ -112,7 +115,8 @@
 
                         @empty
                             <div class="text-center">
-                                <p style="font-size: 80px; line-height: 1; margin: 10px;"><i class="fa fa-exclamation-triangle"></i></p>
+                                <p style="font-size: 80px; line-height: 1; margin: 10px;"><i
+                                            class="fa fa-exclamation-triangle"></i></p>
                                 <p style="font-size: 24px;">Aradığınız kriterlerde veri bulunamadı</p>
                             </div>
                         @endforelse

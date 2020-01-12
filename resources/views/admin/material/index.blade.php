@@ -19,39 +19,38 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="input-group input-group-sm">
-                <input id="search-input" type="text" class="form-control table-search-bar pull-right search-input"
-                       name="search" placeholder="Arama"
-                       value="{{ request()->search }}">
-                <div class="input-group-btn">
-                    <button id="search-btn" class="btn btn-default" type="submit">
-                        <i class="fa fa-search"></i> Ara
-                    </button>
-                    {{-- CATEGORY SELECTOR --}}
-                    @include('admin.partials.selectors.default', [
-                      'selector' => [
-                        'id'        => 'category-selector',
-                        'class'     => 'btn-default',
-                        'icon'      => 'fa fa-files-o',
-                        'current'   => request()->category,
-                        'values'    => $categories,
-                        'default'   => 'Kategori',
-                        'parameter' => 'category'
-                      ]
-                    ])
-
-                    @can('create', App\Models\Material::class)
-                        <a href="{{ route('admin.material.create') }}" class="btn btn-success">
-                            <i class="fa fa-plus"></i>
-                        </a>
-                    @endcan
-                </div>
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+        <div class="input-group input-group-sm search-group">
+            <input id="search-input" type="text" class="form-control table-search-bar pull-right search-input"
+                   name="search" placeholder="Arama"
+                   value="{{ request()->search }}">
+            <div class="input-group-btn">
+                <button id="search-btn" class="btn btn-default" type="submit">
+                    <i class="fa fa-search"></i> Ara
+                </button>
             </div>
         </div>
+        <div class="btn-group btn-group-sm filter-group">
+            {{-- CATEGORY SELECTOR --}}
+            @include('admin.partials.selectors.default', [
+              'selector' => [
+                'id'        => 'category-selector',
+                'class'     => 'btn-default',
+                'icon'      => 'fa fa-files-o',
+                'current'   => request()->category,
+                'values'    => $categories,
+                'default'   => 'Kategori',
+                'parameter' => 'category'
+              ]
+            ])
+
+            @can('create', App\Models\Material::class)
+                <a href="{{ route('admin.material.create') }}" class="btn btn-success">
+                    <i class="fa fa-plus"></i>
+                </a>
+            @endcan
+        </div>
     </div>
-    <br>
     @forelse($materials->chunk(4) as $chunk)
         <div class="row">
             @foreach($chunk as $material)
