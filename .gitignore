@@ -1,21 +1,22 @@
-/resources/views/auth_old
+# Website Resources
 /resources/views/front
-/resources/views/admin_old
-/public/resources
 /public/front
 
+# npm stuff
 /node_modules
 /bower_components
+npm-debug.log
+yarn-error.log
 
+# App Stuff
 /public/storage
-/storage/framework
-Homestead.yaml
-Homestead.json
-.env
-/bootstrap/compiled.php
-/vendor
-/.idea
-/public/hot
 /storage/*.key
-composer.lock
+
+# Laravel Stuff
+/vendor
+.env
+
+# Configs
+.idea
 .php_cs.cache
+.DS_Store
