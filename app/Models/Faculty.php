@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasMediaTrait;
 use EnesCakir\Helper\Traits\HasSlug;
@@ -17,7 +16,6 @@ class Faculty extends Model implements HasMedia
     use BaseActions;
     use Filterable;
     use HasMediaTrait;
-    use Downloadable;
     use HasSlug;
 
     // Properties

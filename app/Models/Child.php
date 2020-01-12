@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enums\PostType;
 use Carbon\Carbon;
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasBirthday;
 use EnesCakir\Helper\Traits\HasSlug;
@@ -23,7 +22,6 @@ class Child extends Model implements HasMedia
     use BaseActions;
     use HasBirthday;
     use Filterable;
-    use Downloadable;
     use HasSlug;
     use HasMediaTrait;
 

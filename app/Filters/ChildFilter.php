@@ -23,17 +23,21 @@ class ChildFilter extends Filter
 
     protected function download()
     {
+        $name = "LS_Cocuk_" . date('d_m_Y');
         $mapper = function ($item, $key) {
             return [
-                'ID'           => $item->id,
-                'Ad'           => $item->first_name,
-                'Soyad'        => $item->last_name,
-                'E-posta'      => $item->email,
-                'Telefon'      => $item->mobile,
-                'Fakülte'      => $item->faculty->name,
-                'Kayıt Tarihi' => $item->created_at,
+                'ID'          => $item->id,
+                'Ad'          => $item->first_name,
+                'Soyad'       => $item->last_name,
+                'Fakülte'     => $item->faculty->name,
+                'Tanışma'     => $item->meeting_day,
+                'Doğum Günü'  => $item->birthday,
+                'Tanı'        => $item->diagnosis,
+                'Dilek'       => $item->wish,
+                'Oluşturulma' => $item->created_at,
             ];
         };
-        Child::download($this->builder, $mapper);
+
+        $this->builder->with('faculty')->download($name, $mapper);
     }
 }

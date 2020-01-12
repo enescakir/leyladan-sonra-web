@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +14,6 @@ class Channel extends Model implements HasMedia
     use BaseActions;
     use HasMediaTrait;
     use Filterable;
-    use Downloadable;
 
     // Properties
     protected $table = 'channels';

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Excel;
@@ -11,7 +10,6 @@ use App\Models\User;
 class Sms extends Model
 {
     use Filterable;
-    use Downloadable;
 
     // Properties
     protected $table = 'sms';

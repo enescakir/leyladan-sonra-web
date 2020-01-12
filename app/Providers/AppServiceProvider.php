@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Macros\RouteMacro;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -10,6 +9,7 @@ use Auth;
 use App\CacheManagers\ChildCacheManager;
 use App\CacheManagers\FacultyCacheManager;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -54,5 +54,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
+        Builder::macro('download', function ($name, $mapper = null) {
+            $elements = $this->get();
+
+            if (is_callable($mapper)) {
+                $elements = $elements->map($mapper);
+            }
+
+            abort($elements->downloadExcel("{$name}.xlsx", null, true));
+        });
+
     }
 }

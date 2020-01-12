@@ -2,7 +2,6 @@
 
 namespace App\Filters;
 
-use App\Models\News;
 use EnesCakir\Helper\Base\Filter;
 
 class NewFilter extends Filter
@@ -11,16 +10,19 @@ class NewFilter extends Filter
 
     protected function download()
     {
-        $mapper = function ($item) {
+        $name = "LS_Haber_" . date('d_m_Y');
+        $mapper = function ($item, $key) {
             return [
-                'id'         => $item->id,
-                'title'      => $item->title,
-                'desc'       => $item->desc,
-                'channel'    => $item->channel->name,
-                'link'       => $item->link,
-                'created_at' => $item->created_at,
+                'ID'          => $item->id,
+                'Başlık'      => $item->title,
+                'Açıklama'    => $item->desc,
+                'Kanal'       => $item->channel->name,
+                'Bağlantı'    => $item->link,
+                'Oluşturulma' => $item->created_at,
             ];
         };
-        News::download($this->builder, $mapper);
+
+        $this->builder->with('channel')->download($name, $mapper);
     }
+
 }

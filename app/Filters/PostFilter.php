@@ -21,6 +21,19 @@ class PostFilter extends Filter
 
     protected function download()
     {
-        Post::download($this->builder);
+        $name = "LS_Yazi_" . date('d_m_Y');
+        $mapper = function ($item, $key) {
+            return [
+                'ID'          => $item->id,
+                'Çocuk'       => $item->child->full_name,
+                'Tip'         => $item->type,
+                'Metin'       => $item->text,
+                'Onay'        => $item->approved_at,
+                'Oluşturulma' => $item->created_at,
+            ];
+        };
+
+        $this->builder->with('child')->download($name, $mapper);
     }
+
 }

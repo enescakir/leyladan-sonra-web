@@ -2,7 +2,6 @@
 
 namespace App\Filters;
 
-use App\Models\Channel;
 use EnesCakir\Helper\Base\Filter;
 
 class ChannelFilter extends Filter
@@ -11,11 +10,18 @@ class ChannelFilter extends Filter
 
     protected function download()
     {
-        $mapper = function ($item) {
-            $item->logo = $item->logo_url;
-            return $item;
+        $name = "LS_Kanallar_" . date('d_m_Y');
+        $mapper = function ($item, $key) {
+            return [
+                'ID'           => $item->id,
+                'Ad'           => $item->name,
+                'Logo'         => $item->logo_url,
+                'Kategori'     => $item->category,
+                'Oluşturulma' => $item->created_at,
+            ];
         };
 
-        Channel::download($this->builder, $mapper);
+        $this->builder->download($name, $mapper);
     }
+
 }

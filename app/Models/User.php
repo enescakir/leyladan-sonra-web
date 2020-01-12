@@ -7,7 +7,6 @@ use App\Enums\ProcessType;
 use Carbon\Carbon;
 use EnesCakir\Helper\Traits\Approvable;
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasBirthday;
 use EnesCakir\Helper\Traits\HasMediaTrait;
@@ -35,7 +34,6 @@ class User extends Authenticatable implements HasMedia
     use HasRoles;
     use HasMediaTrait;
     use Filterable;
-    use Downloadable;
 
     // Properties
     protected $table = 'users';

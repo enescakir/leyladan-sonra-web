@@ -6,7 +6,6 @@ use App\Enums\PostType;
 use App\Services\ProcessService;
 use EnesCakir\Helper\Traits\Approvable;
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +21,6 @@ class Post extends Model implements HasMedia
     }
     use HasMediaTrait;
     use Filterable;
-    use Downloadable;
 
     // Properties
     protected $table = 'posts';

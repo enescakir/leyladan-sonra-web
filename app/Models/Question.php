@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,7 +10,6 @@ class Question extends Model
 {
     use BaseActions;
     use Filterable;
-    use Downloadable;
 
     // Properties
     protected $table = 'questions';
