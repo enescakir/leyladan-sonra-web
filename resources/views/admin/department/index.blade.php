@@ -31,7 +31,10 @@
                     {{-- OTHER BUTTONS --}}
                     <a class="btn btn-filter btn-primary" target="_blank" href="javascript:;" filter-param="download"
                        filter-value="true"><i class="fa fa-download"></i></a>
-                    <a href="{{ route('admin.department.create') }}" class="btn btn-success"><i class="fa fa-plus"></i></a>
+                    @can('create', App\Models\Department::class)
+                        <a href="{{ route('admin.department.create') }}" class="btn btn-success"><i
+                                    class="fa fa-plus"></i></a>
+                    @endcan
                 @endslot
 
                 @slot('body')
@@ -51,15 +54,20 @@
                                     <td>{{ $department->desc }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <a class="edit btn btn-warning btn-xs"
-                                               href="{{ route("admin.department.edit", $department->id) }}">
-                                                <i class="fa fa-pencil"></i>
-                                            </a>
-                                            <a class="delete btn btn-danger btn-xs"
-                                               delete-id="{{ $department->id }}" delete-name="{{ $department->name }}"
-                                               href="javascript:;">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
+                                            @can('update', $department)
+                                                <a class="edit btn btn-warning btn-xs"
+                                                   href="{{ route("admin.department.edit", $department->id) }}">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                            @endcan
+                                            @can('delete', $department)
+                                                <a class="delete btn btn-danger btn-xs"
+                                                   delete-id="{{ $department->id }}"
+                                                   delete-name="{{ $department->name }}"
+                                                   href="javascript:;">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\UserRole;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -13,13 +14,19 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Models\Child'     => 'App\Policies\ChildPolicy',
-        'App\Models\Blood'     => 'App\Policies\BloodPolicy',
-        'App\Models\User'      => 'App\Policies\UserPolicy',
-        'App\Models\Faculty'   => 'App\Policies\FacultyPolicy',
-        'App\Models\Post'      => 'App\Policies\PostPolicy',
-        'App\Models\Volunteer' => 'App\Policies\VolunteerPolicy',
-        'App\Models\Chat'      => 'App\Policies\ChatPolicy',
+        'App\Models\Child'        => 'App\Policies\ChildPolicy',
+        'App\Models\Blood'        => 'App\Policies\BloodPolicy',
+        'App\Models\User'         => 'App\Policies\UserPolicy',
+        'App\Models\Faculty'      => 'App\Policies\FacultyPolicy',
+        'App\Models\Post'         => 'App\Policies\PostPolicy',
+        'App\Models\Volunteer'    => 'App\Policies\VolunteerPolicy',
+        'App\Models\Chat'         => 'App\Policies\ChatPolicy',
+        'App\Models\Department'   => 'App\Policies\DepartmentPolicy',
+        'App\Models\WishCategory' => 'App\Policies\WishCategoryPolicy',
+        'App\Models\Diagnosis'    => 'App\Policies\DiagnosisPolicy',
+        'App\Models\Material'     => 'App\Policies\MaterialPolicy',
+        'App\Models\EmailSample'  => 'App\Policies\EmailSamplePolicy',
+        'App\Models\Tutorial'     => 'App\Policies\TutorialPolicy',
     ];
 
     /**
@@ -32,6 +39,15 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::before(function ($user, $ability) {
+        });
+
+        Gate::define('website-content', function ($user) {
+            return $user->hasAnyRole([
+                UserRole::Admin,
+                UserRole::Content,
+            ]);
+        });
+
     }
 }

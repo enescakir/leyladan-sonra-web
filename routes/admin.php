@@ -224,12 +224,14 @@ Route::resource('wish-category', 'Admin\Child\WishCategoryController');
 | Content Routes
 |--------------------------------------------------------------------------
 */
-Route::resource('new', 'Admin\Content\NewController');
-Route::resource('channel', 'Admin\Content\ChannelController');
-Route::resource('sponsor', 'Admin\Content\SponsorController');
-Route::resource('question', 'Admin\Content\QuestionController');
-Route::approve('testimonial', 'Admin\Content\TestimonialController');
-Route::resource('testimonial', 'Admin\Content\TestimonialController');
+Route::middleware('can:website-content')->group(function () {
+    Route::resource('new', 'Admin\Content\NewController');
+    Route::resource('channel', 'Admin\Content\ChannelController');
+    Route::resource('sponsor', 'Admin\Content\SponsorController');
+    Route::resource('question', 'Admin\Content\QuestionController');
+    Route::approve('testimonial', 'Admin\Content\TestimonialController');
+    Route::resource('testimonial', 'Admin\Content\TestimonialController');
+});
 
 /*
 |--------------------------------------------------------------------------

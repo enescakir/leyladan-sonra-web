@@ -41,8 +41,12 @@
                         'parameter' => 'category'
                       ]
                     ])
-                    <a href="{{ route('admin.material.create') }}" class="btn btn-success"><i
-                                class="fa fa-plus"></i></a>
+
+                    @can('create', App\Models\Material::class)
+                        <a href="{{ route('admin.material.create') }}" class="btn btn-success">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -57,14 +61,18 @@
                             <h3 class="box-title"> {{ $material->name }} </h3>
                             <div class="box-tools">
                                 <div class="btn-group btn-group-xs">
-                                    <a class="edit btn btn-warning btn-xs"
-                                       href="{{ route("admin.material.edit", $material->id) }}">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                    <a class="delete btn btn-danger btn-xs" delete-id="{{ $material->id }}"
-                                       delete-name="{{ $material->name }}" href="javascript:;">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
+                                    @can('update', $material)
+                                        <a class="edit btn btn-warning btn-xs"
+                                           href="{{ route("admin.material.edit", $material->id) }}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    @endcan
+                                    @can('delete', $material)
+                                        <a class="delete btn btn-danger btn-xs" delete-id="{{ $material->id }}"
+                                           delete-name="{{ $material->name }}" href="javascript:;">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    @endcan
                                     <a class="btn btn-xs btn-success" target="_blank" href="{{ $material->link }}">
                                         <i class="fa fa-download"></i> İndir
                                     </a>

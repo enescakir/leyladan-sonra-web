@@ -41,8 +41,11 @@
                         'parameter' => 'category'
                       ]
                     ])
-                    <a href="{{ route('admin.tutorial.create') }}" class="btn btn-success"><i
-                                class="fa fa-plus"></i></a>
+                    @can('create', App\Models\Tutorial::class)
+                        <a href="{{ route('admin.tutorial.create') }}" class="btn btn-success">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -58,14 +61,18 @@
                                     class="label label-danger label-sm">{{ $tutorial->category }}</span>
                             <div class="box-tools">
                                 <div class="btn-group btn-group-xs">
-                                    <a class="edit btn btn-warning btn-xs"
-                                       href="{{ route("admin.tutorial.edit", $tutorial->id) }}">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                    <a class="delete btn btn-danger btn-xs" delete-id="{{ $tutorial->id }}"
-                                       delete-name="{{ $tutorial->name }}" href="javascript:;">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
+                                    @can('update', $tutorial)
+                                        <a class="edit btn btn-warning btn-xs"
+                                           href="{{ route("admin.tutorial.edit", $tutorial->id) }}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    @endcan
+                                    @can('delete', $tutorial)
+                                        <a class="delete btn btn-danger btn-xs" delete-id="{{ $tutorial->id }}"
+                                           delete-name="{{ $tutorial->name }}" href="javascript:;">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    @endcan
                                 </div>
                             </div>
                         </div>

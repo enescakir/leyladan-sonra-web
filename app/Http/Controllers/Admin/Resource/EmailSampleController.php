@@ -12,7 +12,9 @@ class EmailSampleController extends Controller
 
     public function index(EmailSampleFilter $filters)
     {
-        $samples = EmailSample::orderBy('category')->with('creator')->filter($filters)->safePaginate();
+        $this->authorize('list', EmailSample::class);
+
+        $samples = EmailSample::filter($filters)->with('creator')->orderBy('category')->safePaginate();
 
         $categories = EmailSample::toCategorySelect('Hepsi');
 
@@ -21,12 +23,17 @@ class EmailSampleController extends Controller
 
     public function create()
     {
+        $this->authorize('create', EmailSample::class);
+
         return view('admin.emailsample.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', EmailSample::class);
+
         $this->validateEmailSample($request);
+
         $sample = EmailSample::create($request->only(['name', 'category', 'text']));
 
         session_success(__('messages.emailsample.create', ['name' => $sample->name]));
@@ -36,12 +43,17 @@ class EmailSampleController extends Controller
 
     public function edit(EmailSample $emailsample)
     {
+        $this->authorize('update', $emailsample);
+
         return view('admin.emailsample.edit', compact('emailsample'));
     }
 
     public function update(Request $request, EmailSample $emailsample)
     {
+        $this->authorize('update', $emailsample);
+
         $this->validateEmailSample($request);
+
         $emailsample->update($request->only(['name', 'category', 'text']));
 
         session_success(__('messages.emailsample.update', ['name' => $emailsample->name]));
@@ -51,6 +63,8 @@ class EmailSampleController extends Controller
 
     public function destroy(EmailSample $emailsample)
     {
+        $this->authorize('delete', $emailsample);
+
         $emailsample->delete();
 
         return api_success($emailsample);

@@ -6,6 +6,7 @@ use App\Filters\ChannelFilter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Channel;
+use Gate;
 
 class ChannelController extends Controller
 {
@@ -16,7 +17,9 @@ class ChannelController extends Controller
 
     public function index(ChannelFilter $filters)
     {
-        $channels = Channel::latest()->with('media')->withCount('news')->filter($filters)->safePaginate();
+        $this->authorize('website-content');
+
+        $channels = Channel::filter($filters)->with('media')->withCount('news')->latest()->safePaginate();
 
         $categories = Channel::toCategorySelect('Hepsi');
 
@@ -31,6 +34,7 @@ class ChannelController extends Controller
     public function store(Request $request)
     {
         $this->validateChannel($request);
+
         $channel = Channel::create($request->only(['name', 'channel', 'category']));
         $channel->addMedia($request->logo);
 
@@ -47,7 +51,9 @@ class ChannelController extends Controller
     public function update(Request $request, Channel $channel)
     {
         $this->validateChannel($request, true);
+
         $channel->update($request->only(['name', 'channel', 'category']));
+
         if ($request->hasFile('logo')) {
             $channel->clearMediaCollection();
             $channel->addMedia($request->logo);

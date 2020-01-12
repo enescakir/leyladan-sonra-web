@@ -285,115 +285,167 @@
                 </ul>
             </li>
         @endcan
-        <li class="treeview {{ set_active(['*diagnosis*', '*department*'], 'menu-open active') }}">
-            <a href="#"><i class="fa fa-cog"></i> <span>Ayarlar</span>
+        <li class="treeview {{ set_active(['*diagnosis*', '*department*', '*wish-category*'], 'menu-open active') }}">
+            <a href="#">
+                <i class="fa fa-cog"></i>
+                <span>Ayarlar</span>
                 <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
             </a>
             <ul class="treeview-menu">
-                <li class="{{ set_active('*admin/wish-category*') }}">
-                    <a href="{{ route('admin.wish-category.index') }}"><i class="fa fa-magic"></i> <span>Dilek Kategorileri</span></a>
-                </li>
-                <li class="{{ set_active('*admin/diagnosis*') }}">
-                    <a href="{{ route('admin.diagnosis.index') }}"><i class="fa fa-flask"></i> <span>Tanılar</span></a>
-                </li>
-                <li class="{{ set_active('*admin/department*') }}">
-                    <a href="{{ route('admin.department.index') }}"><i class="fa fa-hospital-o"></i>
-                        <span>Departmanlar</span></a>
-                </li>
+                @can('list', App\Models\WishCategory::class)
+                    <li class="{{ set_active('*admin/wish-category*') }}">
+                        <a href="{{ route('admin.wish-category.index') }}">
+                            <i class="fa fa-magic"></i> <span>Dilek Kategorileri</span>
+                        </a>
+                    </li>
+                @endcan
+                @can('list', App\Models\Diagnosis::class)
+                    <li class="{{ set_active('*admin/diagnosis*') }}">
+                        <a href="{{ route('admin.diagnosis.index') }}">
+                            <i class="fa fa-flask"></i>
+                            <span>Tanılar</span>
+                        </a>
+                    </li>
+                @endcan
+                @can('list', App\Models\Department::class)
+                    <li class="{{ set_active('*admin/department*') }}">
+                        <a href="{{ route('admin.department.index') }}">
+                            <i class="fa fa-hospital-o"></i>
+                            <span>Departmanlar</span>
+                        </a>
+                    </li>
+                @endcan
             </ul>
         </li>
-
-        <li class="header">Site</li>
-        <li class="treeview {{ set_active(['*admin/new*', '*admin/channel*'], 'menu-open active') }}">
-            <a href="#"><i class="fa fa-newspaper-o"></i> <span>Basında Biz</span>
-                <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-            </a>
-            <ul class="treeview-menu">
-                <li class="{{ set_active('*admin/new/create*') }}">
-                    <a href="{{ route('admin.new.create') }}"><i class="fa fa-plus"></i>
-                        <span>Yeni Haber Ekle</span></a>
-                </li>
-                <li class="{{ set_active('*admin/new') }}">
-                    <a href="{{ route('admin.new.index') }}"><i class="fa fa-list-alt"></i>
-                        <span>Tüm Haberler</span></a>
-                </li>
-                <li class="{{ set_active('*admin/channel/create*') }}">
-                    <a href="{{ route('admin.channel.create') }}"><i class="fa fa-plus"></i>
-                        <span>Yeni Kanal Ekle</span></a>
-                </li>
-                <li class="{{ set_active('*admin/channel') }}">
-                    <a href="{{ route('admin.channel.index') }}"><i class="fa fa-television"></i>
-                        <span>Tüm Kanallar</span></a>
-                </li>
-            </ul>
-        </li>
-        <li class="{{ set_active('*admin/testimonial*') }}">
-            <a href="{{ route('admin.testimonial.index') }}"><i class="fa fa-comment-o"></i>
-                <span>Referanslar</span></a>
-        </li>
-        <li class="{{ set_active('*admin/sponsor*') }}">
-            <a href="{{ route('admin.sponsor.index') }}"><i class="fa fa-briefcase"></i>
-                <span>Destekçiler</span></a>
-        </li>
-        <li class="{{ set_active('*admin/question*') }}">
-            <a href="{{ route('admin.question.index') }}"><i class="fa fa-question-circle-o"></i>
-                <span>Sorular</span></a>
-        </li>
+        @can('website-content')
+            <li class="header">Site</li>
+            <li class="treeview {{ set_active(['*admin/new*', '*admin/channel*'], 'menu-open active') }}">
+                <a href="#">
+                    <i class="fa fa-newspaper-o"></i>
+                    <span>Basında Biz</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="{{ set_active('*admin/new/create*') }}">
+                        <a href="{{ route('admin.new.create') }}">
+                            <i class="fa fa-plus"></i>
+                            <span>Yeni Haber Ekle</span>
+                        </a>
+                    </li>
+                    <li class="{{ set_active('*admin/new') }}">
+                        <a href="{{ route('admin.new.index') }}">
+                            <i class="fa fa-list-alt"></i>
+                            <span>Tüm Haberler</span>
+                        </a>
+                    </li>
+                    <li class="{{ set_active('*admin/channel/create*') }}">
+                        <a href="{{ route('admin.channel.create') }}">
+                            <i class="fa fa-plus"></i>
+                            <span>Yeni Kanal Ekle</span>
+                        </a>
+                    </li>
+                    <li class="{{ set_active('*admin/channel') }}">
+                        <a href="{{ route('admin.channel.index') }}">
+                            <i class="fa fa-television"></i>
+                            <span>Tüm Kanallar</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="{{ set_active('*admin/testimonial*') }}">
+                <a href="{{ route('admin.testimonial.index') }}">
+                    <i class="fa fa-comment-o"></i>
+                    <span>Referanslar</span>
+                </a>
+            </li>
+            <li class="{{ set_active('*admin/sponsor*') }}">
+                <a href="{{ route('admin.sponsor.index') }}">
+                    <i class="fa fa-briefcase"></i>
+                    <span>Destekçiler</span>
+                </a>
+            </li>
+            <li class="{{ set_active('*admin/question*') }}">
+                <a href="{{ route('admin.question.index') }}">
+                    <i class="fa fa-question-circle-o"></i>
+                    <span>Sorular</span>
+                </a>
+            </li>
+        @endcan
         <li class="header">Diğer</li>
         <li class="treeview {{ set_active('*statistic*', 'menu-open active') }}">
-            <a href="#"><i class="fa fa-bar-chart"></i> <span>İstatistikler</span>
+            <a href="#">
+                <i class="fa fa-bar-chart"></i>
+                <span>İstatistikler</span>
                 <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
             </a>
             <ul class="treeview-menu">
                 <li class="{{ set_active('*admin/statistic/child*') }}">
                     <a href="{{ route('admin.statistic.child') }}">
-                        <i class="fa fa-child"></i> <span>Çocuklar</span>
+                        <i class="fa fa-child"></i>
+                        <span>Çocuklar</span>
                     </a>
                 </li>
                 <li class="{{ set_active('*admin/statistic/faculty*') }}">
                     <a href="{{ route('admin.statistic.faculty') }}">
-                        <i class="fa fa-university"></i> <span>Fakülteler</span>
+                        <i class="fa fa-university"></i>
+                        <span>Fakülteler</span>
                     </a>
                 </li>
                 <li class="{{ set_active('*admin/statistic/volunteer*') }}">
                     <a href="{{ route('admin.statistic.volunteer') }}">
-                        <i class="fa fa-trophy"></i> <span>Gönüllüler</span>
+                        <i class="fa fa-trophy"></i>
+                        <span>Gönüllüler</span>
                     </a>
                 </li>
                 <li class="{{ set_active('*admin/statistic/blood*') }}">
                     <a href="{{ route('admin.statistic.blood') }}">
-                        <i class="fa fa-tint"></i> <span>Kan Bağışçıları</span>
+                        <i class="fa fa-tint"></i>
+                        <span>Kan Bağışçıları</span>
                     </a>
                 </li>
                 <li class="{{ set_active('*admin/statistic/user*') }}">
                     <a href="{{ route('admin.statistic.user') }}">
-                        <i class="fa fa-users"></i> <span>Üyeler</span>
+                        <i class="fa fa-users"></i>
+                        <span>Üyeler</span>
                     </a>
                 </li>
                 <li class="{{ set_active('*admin/statistic/website*') }}">
                     <a href="{{ route('admin.statistic.website') }}">
-                        <i class="fa fa-globe"></i> <span>Site Ziyareti</span>
+                        <i class="fa fa-globe"></i>
+                        <span>Site Ziyareti</span>
                     </a>
                 </li>
             </ul>
         </li>
-        <li class="{{ set_active('*admin/material*') }}">
-            <a href="{{ route('admin.material.index') }}"><i class="fa fa-bullhorn"></i>
-                <span>Tanıtım Materyalleri</span></a>
-        </li>
-        <li class="{{ set_active('*admin/emailsample*') }}">
-            <a href="{{ route('admin.emailsample.index') }}"><i class="fa fa-envelope-open-o"></i> <span>E-posta Örnekleri</span></a>
-        </li>
-        <li class="{{ set_active('*admin/tutorial*') }}">
-            <a href="{{ route('admin.tutorial.index') }}"><i class="fa fa-graduation-cap"></i>
-                <span>Kullanma Kılavuzu</span></a>
-        </li>
+        @can('list', App\Models\Material::class)
+            <li class="{{ set_active('*admin/material*') }}">
+                <a href="{{ route('admin.material.index') }}">
+                    <i class="fa fa-bullhorn"></i>
+                    <span>Materyaller</span></a>
+            </li>
+        @endcan
+        @can('list', App\Models\EmailSample::class)
+            <li class="{{ set_active('*admin/emailsample*') }}">
+                <a href="{{ route('admin.emailsample.index') }}">
+                    <i class="fa fa-envelope-open-o"></i>
+                    <span>E-posta Örnekleri</span>
+                </a>
+            </li>
+        @endcan
+        @can('list', App\Models\Tutorial::class)
+            <li class="{{ set_active('*admin/tutorial*') }}">
+                <a href="{{ route('admin.tutorial.index') }}">
+                    <i class="fa fa-graduation-cap"></i>
+                    <span>Kullanma Kılavuzu</span>
+                </a>
+            </li>
+        @endcan
     </ul>
     <!-- /.sidebar-menu -->
 </section>

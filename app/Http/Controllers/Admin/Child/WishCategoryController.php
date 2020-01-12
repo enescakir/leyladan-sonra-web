@@ -17,18 +17,24 @@ class WishCategoryController extends Controller
 
     public function index(WishCategoryFilter $filters)
     {
-        $categories = WishCategory::orderBy('name')->filter($filters)->safePaginate();
+        $this->authorize('list', WishCategory::class);
+
+        $categories = WishCategory::filter($filters)->orderBy('name')->safePaginate();
 
         return view('admin.wishCategory.index', compact('categories'));
     }
 
     public function create()
     {
+        $this->authorize('create', WishCategory::class);
+
         return view('admin.wishCategory.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', WishCategory::class);
+
         $category = WishCategory::create($request->only(['name', 'desc']));
 
         session_success(__('messages.wishCategory.create', ['name' => $category->name]));
@@ -38,11 +44,15 @@ class WishCategoryController extends Controller
 
     public function edit(WishCategory $wish_category)
     {
+        $this->authorize('update', $wish_category);
+
         return view('admin.wishCategory.edit', compact('wish_category'));
     }
 
     public function update(Request $request, WishCategory $wish_category)
     {
+        $this->authorize('update', $wish_category);
+
         $wish_category->update($request->only(['name', 'desc']));
 
         session_success(__('messages.wishCategory.create', ['name' => $wish_category->name]));
@@ -52,7 +62,10 @@ class WishCategoryController extends Controller
 
     public function destroy(WishCategory $wish_category)
     {
+        $this->authorize('delete', $wish_category);
+
         $wish_category->delete();
+
         return api_success($wish_category);
     }
 }

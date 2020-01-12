@@ -42,7 +42,11 @@
                     {{-- OTHER BUTTONS --}}
                     <a class="btn btn-filter btn-primary" target="_blank" href="javascript:;" filter-param="download"
                        filter-value="true"><i class="fa fa-download"></i></a>
-                    <a href="{{ route('admin.emailsample.create') }}" class="btn btn-success"><i class="fa fa-plus"></i></a>
+                    @can('create', App\Models\EmailSample::class)
+                        <a href="{{ route('admin.emailsample.create') }}" class="btn btn-success">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    @endcan
                 @endslot
 
                 @slot('body')
@@ -70,20 +74,24 @@
                                             <button class="clipboard-text btn btn-primary btn-xs"
                                                     data-clipboard-text="{{ $sample->text }}"><i class="fa fa-copy"></i>
                                             </button>
-                                            <a class="edit btn btn-warning btn-xs"
-                                               href="{{ route("admin.emailsample.edit", $sample->id) }}">
-                                                <i class="fa fa-pencil"></i>
-                                            </a>
-                                            <a class="delete btn btn-danger btn-xs"
-                                               delete-id="{{ $sample->id }}" delete-name="{{ $sample->name }}"
-                                               href="javascript:">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
+                                            @can('update', $sample)
+                                                <a class="edit btn btn-warning btn-xs"
+                                                   href="{{ route("admin.emailsample.edit", $sample->id) }}">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                            @endcan
+                                            @can('delete', $sample)
+                                                <a class="delete btn btn-danger btn-xs"
+                                                   delete-id="{{ $sample->id }}" delete-name="{{ $sample->name }}"
+                                                   href="javascript:">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
                             @empty
-                                    @include('admin.partials.noDataRow')
+                                @include('admin.partials.noDataRow')
                             @endforelse
                         @endslot
                     @endcomponent
