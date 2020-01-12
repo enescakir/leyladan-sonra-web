@@ -12,17 +12,6 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function before($user, $ability)
-    {
-        if ($user->hasRole(UserRole::Admin)) {
-            return true;
-        }
-
-        if (!$user->isApproved() || $user->hasRole(UserRole::Left)) {
-            return false;
-        }
-    }
-
     public function listFaculty(User $user, Faculty $faculty)
     {
         if ($user->faculty_id != $faculty->id) {

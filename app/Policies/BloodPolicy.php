@@ -15,49 +15,34 @@ class BloodPolicy
 {
     use HandlesAuthorization;
 
-    public function before($user, $ability)
-    {
-        if ($user->hasRole(UserRole::Admin)) {
-            return true;
-        }
-
-        if (!$user->isApproved()) {
-            return false;
-        }
-
-        if ($user->hasRole(UserRole::Blood)) {
-            return true;
-        }
-    }
-
     public function list(User $user)
     {
-        return false;
+        return $user->hasRole(UserRole::Blood);
     }
 
     public function create(User $user)
     {
-        return false;
+        return $user->hasRole(UserRole::Blood);
     }
 
     public function update(User $user, Blood $blood)
     {
-        return false;
+        return $user->hasRole(UserRole::Blood);
     }
 
     public function delete(User $user, Blood $blood)
     {
-        return false;
+        return $user->hasRole(UserRole::Blood);
     }
 
     public function auth(User $user)
     {
-        return false;
+        return $user->hasRole(UserRole::Blood);
     }
 
     public function send(User $user)
     {
-        return false;
+        return $user->hasRole(UserRole::Blood);
     }
 
 }

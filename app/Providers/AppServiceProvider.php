@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Macros\RouteMacro;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
