@@ -6,8 +6,8 @@ let mix = require('laravel-mix');
  | AdminLTE Resource
  |--------------------------------------------------------------------------
  */
-mix.less('resources/admin/adminlte/less/AdminLTE.less', 'public/admin/css/AdminLTE.min.css');
-mix.js('resources/admin/adminlte/js/AdminLTE.js', 'public/admin/js/AdminLTE.min.js');
+mix.less('resources/admin/adminlte/less/AdminLTE.less', 'public/css/admin/AdminLTE.min.css');
+mix.js('resources/admin/adminlte/js/AdminLTE.js', 'public/js/admin/AdminLTE.min.js');
 
 
 /*
@@ -15,7 +15,7 @@ mix.js('resources/admin/adminlte/js/AdminLTE.js', 'public/admin/js/AdminLTE.min.
  | 3rd Party Libraries
  |--------------------------------------------------------------------------
  */
-mix.less('resources/admin/css/vendor.less', 'public/admin/css/vendor.min.css');
+mix.less('resources/admin/css/vendor.less', 'public/css/admin/vendor.min.css');
 // mix.js('resources/admin/js/vendor.js', 'public/admin/js/vendor.min.js').autoload({
 //   jquery: ['$', 'window.jQuery', 'jQuery'],
 // });;
@@ -43,24 +43,24 @@ mix.scripts([
   'node_modules/cropperjs/dist/cropper.min.js', // CropperJS
   'node_modules/clipboard/dist/clipboard.min.js', // Clipboard JS
   'node_modules/summernote/dist/summernote.js' // Summernote
- ], 'public/admin/js/vendor.min.js');
+ ], 'public/js/admin/vendor.min.js');
 
 
  // Custom
 
-mix.styles('resources/admin/css/app.css', 'public/admin/css/app.min.css');
-mix.babel('resources/admin/js/functions.js', 'public/admin/js/app.min.js');
-mix.copy('resources/admin/img/*', 'public/admin/img/');
+mix.styles('resources/admin/css/app.css', 'public/css/admin/app.min.css');
+mix.babel('resources/admin/js/functions.js', 'public/js/admin/app.min.js');
+mix.copy('resources/admin/img/*', 'public/images/admin/');
 
 
 // JQVMap
 mix.scripts([
   'node_modules/jqvmap/dist/jquery.vmap.min.js',
   'node_modules/jqvmap/dist/maps/jquery.vmap.turkey.js',
-], 'public/admin/js/jqvmap.min.js');
+], 'public/js/admin/jqvmap.min.js');
 
 // Full Calendar
 mix.scripts([
   'node_modules/fullcalendar/dist/fullcalendar.min.js',
   'node_modules/fullcalendar/dist/locale/tr.js',
-], 'public/admin/js/fullcalendar.min.js');
+], 'public/js/admin/fullcalendar.min.js');

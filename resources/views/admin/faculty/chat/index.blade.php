@@ -1,4 +1,4 @@
-@extends('admin.parent')
+@extends('admin.layouts.app')
 
 @section('title', (request()->status == 'active' ? 'Aktif ' : '') . "Fakülte Sohbetleri")
 

@@ -1,5 +1,35 @@
 <?php
 
+function admin_css($file)
+{
+    return asset("css/admin/{$file}");
+}
+
+function admin_js($file)
+{
+    return asset("js/admin/{$file}");
+}
+
+function admin_img($file)
+{
+    return asset("images/admin/{$file}");
+}
+
+function front_css($file)
+{
+    return asset("css/front/{$file}");
+}
+
+function front_js($file)
+{
+    return asset("js/front/{$file}");
+}
+
+function front_img($file)
+{
+    return asset("images/front/{$file}");
+}
+
 function citiesToSelect($code = false, $placeholder = null)
 {
     $cities = collect();

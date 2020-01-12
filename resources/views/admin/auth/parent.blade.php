@@ -58,7 +58,7 @@ Contact: enes@cakir.web.tr
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    @include('admin.partials.messages')
+    @include('admin.layouts.messages')
 
     @yield('content')
   </div>

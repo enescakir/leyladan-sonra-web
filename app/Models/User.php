@@ -127,19 +127,19 @@ class User extends Authenticatable implements HasMedia
     public function getPhotoSmallUrlAttribute()
     {
         return $this->getFirstMediaUrl('profile', 'small')
-            ?: admin_asset('img/user-default-small.png');
+            ?: admin_img('user-default-small.png');
     }
 
     public function getPhotoUrlAttribute()
     {
         return $this->getFirstMediaUrl('profile', 'medium')
-            ?: admin_asset('img/user-default-medium.png');
+            ?: admin_img('user-default-medium.png');
     }
 
     public function getPhotoLargeUrlAttribute()
     {
         return $this->getFirstMediaUrl('profile', 'large')
-            ?: admin_asset('img/user-default-large.png');
+            ?: admin_img('user-default-large.png');
     }
 
     public function getLeftAtLabelAttribute()

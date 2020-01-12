@@ -1,4 +1,4 @@
-@extends('admin.parent')
+@extends('admin.layouts.app')
 
 @section('title', 'Dilek Kategorisi Güncelleme')
   
