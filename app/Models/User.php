@@ -44,7 +44,6 @@ class User extends Authenticatable implements HasMedia
     protected $hidden = ['password', 'remember_token'];
     protected $appends = ['full_name', 'photo_small_url', 'photo_url', 'photo_large_url'];
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'birthday', 'left_at', 'graduated_at', 'approved_at'];
-    protected $with = ['media'];
 
     public static function boot()
     {
