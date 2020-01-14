@@ -115,6 +115,7 @@ class Post extends Model implements HasMedia
                 $request->mediaFeature[$suffix]);
         }
 
+        return $this;
     }
 
     public function addTempMedia($ids, $names, $ratios, $features)

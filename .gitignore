@@ -1,6 +1,8 @@
 # Website Resources
 /resources/views/front
-/public/front
+/public/images/front
+/public/js/front
+/public/css/front
 
 # npm stuff
 /node_modules

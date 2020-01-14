@@ -26,7 +26,7 @@
             <div class="modal-body">
                 <div class="img-container">
                     <img id="cropper-img" class="img-responsive"
-                         src="{{ asset('resources/admin/media/child_no_image.jpg') }}">
+                         src="{{ admin_img('child_no_image.jpg') }}">
                 </div>
             </div>
             <div class="modal-footer">

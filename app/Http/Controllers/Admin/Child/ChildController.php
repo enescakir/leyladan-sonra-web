@@ -140,12 +140,20 @@ class ChildController extends Controller
 
         $child->users()->sync($request->users);
 
-        $child->meetingPost->change($request, 'meeting');
+        $post = $child->meetingPost;
+        $post->change($request, 'meeting');
+        $child->meetingPost()->associate($post);
+        $child->save();
 
         if ($request->has('has_delivery_post') && $request->delivery_text && trim(strip_tags($request->delivery_text))) {
             $post = $child->deliveryPost;
             $post->change($request, 'delivery');
             $child->deliveryPost()->associate($post);
+            $child->save();
+        }
+
+        if (!$child->featuredMedia) {
+            $child->featuredMedia()->associate($child->meetingPost->getFirstMedia());
             $child->save();
         }
 

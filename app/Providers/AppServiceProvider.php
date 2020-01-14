@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        view()->composer('front.parent', function ($view) {
+        view()->composer('front.layouts.app', function ($view) {
             $view->with([
                 'totalChildren'  => ChildCacheManager::count(),
                 'totalFaculties' => FacultyCacheManager::count()

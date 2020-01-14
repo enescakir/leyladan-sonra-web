@@ -20,8 +20,6 @@ Route::get('/neler-soylediniz.html', 'Front\HomeController@testimonials')->name(
 Route::post('/neler-soylediniz', 'Front\HomeController@testimonialStore')->name('front.testimonial.store');
 Route::get('/leyla-kimdir.html', 'Front\HomeController@leyla')->name('front.leyla');
 Route::get('/sikca-sorulan-sorular.html', 'Front\HomeController@sss')->name('front.sss');
-Route::get('/blog.html', 'Front\HomeController@blogs')->name('front.blogs');
-Route::get('/blog/{name}.html', 'Front\HomeController@blog')->name('front.blog');
 Route::get('/fakülteler.html', 'Front\HomeController@faculties')->name('front.faculties');
 Route::get('/gizlilik-politikasi.html', 'Front\HomeController@privacy')->name('front.privacy');
 Route::get('/kullanim-sartlari.html', 'Front\HomeController@tos')->name('front.tos');
@@ -37,6 +35,6 @@ Route::post('/kan-bagisi', 'Front\HomeController@bloodStore')->name('front.blood
 
 Route::get('/yonetim', function () { return redirect('/admin/login'); })->name('admin');
 
-Route::get('/{facultyName}.html', 'Front\HomeController@faculty')->name('front.faculty');
-Route::post('/{facultyName}/{childSlug}', 'Front\HomeController@childMessage')->name('front.child.message');
-Route::get('/{facultyName}/{childSlug}.html', 'Front\HomeController@child')->name('front.child');
+Route::get('/{facultySlug}.html', 'Front\HomeController@faculty')->name('front.faculty');
+Route::post('/{facultySlug}/{childSlug}', 'Front\HomeController@childMessage')->name('front.child.message');
+Route::get('/{facultySlug}/{childSlug}.html', 'Front\HomeController@child')->name('front.child');

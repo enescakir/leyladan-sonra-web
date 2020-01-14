@@ -8,6 +8,7 @@ use EnesCakir\Helper\Traits\HasMediaTrait;
 use EnesCakir\Helper\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 
@@ -171,7 +172,7 @@ class Faculty extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('thumb')->width(100)->height(75);
-        $this->addMediaConversion('optimized')->width(320)->height(240);
+        $this->addMediaConversion('thumb')->fit(Manipulations::FIT_CROP, 100, 75);
+        $this->addMediaConversion('optimized')->fit(Manipulations::FIT_CROP, 320, 240);
     }
 }
