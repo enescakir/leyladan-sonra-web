@@ -7,12 +7,7 @@ use EnesCakir\Helper\Base\Filter;
 
 class PostFilter extends Filter
 {
-    protected $filters = ['faculty_id', 'type', 'approval', 'search', 'download'];
-
-    protected function faculty_id($faculty_id)
-    {
-        return $this->builder->faculty($faculty_id);
-    }
+    protected $filters = ['faculty_id', 'child_id', 'type', 'approval', 'search', 'download'];
 
     protected function approval($approval)
     {

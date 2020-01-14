@@ -83,8 +83,9 @@ class Faculty extends Model implements HasMedia
 
     public function toUsersSelect($placeholder = null)
     {
-        $result = $this->users()->orderBy('first_name')->get(['id', 'faculty_id', 'first_name', 'last_name'])
+        $result = $this->users()->orderBy('first_name')->without('media')->get(['id', 'faculty_id', 'first_name', 'last_name'])
             ->pluck('full_name', 'id');
+
         return $placeholder
             ? collect(['' => $placeholder])->union($result)
             : $result;

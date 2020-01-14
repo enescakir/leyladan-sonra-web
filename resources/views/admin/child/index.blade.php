@@ -64,15 +64,15 @@
                             <th>Doğumgünü</th>
                             <th>Tanışma</th>
                             <th>Hediye</th>
-                            <th class="three-button">İşlem</th>
+                            <th class="four-button">İşlem</th>
                         @endslot
 
                         @slot('body')
                             @forelse($children as $child)
                                 <tr id="child-{{ $child->id }}">
                                     <td>{{ $child->id }}</td>
-                                    <td>{{ $child->full_name }}</td>
-                                    <td>{{ $child->faculty->name }}</td>
+                                    <td class="text-nowrap">{{ $child->full_name }}</td>
+                                    <td class="text-nowrap">{{ $child->faculty->name }}</td>
                                     <td>{{ $child->department }}</td>
                                     <td class="long-column">{{ $child->diagnosis }}</td>
                                     <td class="long-column">{{ $child->wish }}</td>
@@ -81,6 +81,13 @@
                                     <td>{!! $child->gift_state_label !!}</td>
                                     <td>
                                         <div class="btn-group">
+                                            <a class="btn btn-success btn-xs"
+                                               target="_blank"
+                                               href="{{ route("front.child", [$child->faculty->slug, $child->slug]) }}"
+                                            >
+                                                <i class="fa fa-globe"></i>
+                                            </a>
+
                                             @can('view', $child)
                                                 <a class="show btn btn-primary btn-xs"
                                                    href="{{ route("admin.child.show", $child->id) }}">

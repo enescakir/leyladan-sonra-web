@@ -176,7 +176,7 @@
                     <li class="{{ set_active('*admin/faculty/*/post') }}">
                         <a href="{{ route('admin.faculty.post.index', $authUser->faculty_id) }}">
                             <i class="fa fa-folder-o"></i>
-                            <span>Fakülte Yazılar</span>
+                            <span>Fakülte Yazıları</span>
                         </a>
                     </li>
                     @can('listAll', App\Models\Post::class)

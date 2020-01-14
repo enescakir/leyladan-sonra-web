@@ -162,7 +162,8 @@ class ChildController extends Controller
             $child->addVerificationDoc($request->file('verification_doc'));
         }
 
-        session_success("<strong>{$child->full_name}</strong> başarıyla güncellendi.");
+        $url = route("front.child", [$child->faculty->slug, $child->slug]);
+        session_success("<strong>{$child->full_name}</strong> başarıyla güncellendi. <a href='{$url}' class='text-bold' target='_blank' >Sitede görüntüle</a>");
 
         return redirect()->route('admin.child.edit', $child->id);
     }

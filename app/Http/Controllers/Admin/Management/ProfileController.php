@@ -26,7 +26,7 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        $children = auth()->user()->children()->filter($filters)->safePaginate();
+        $children = auth()->user()->children()->filter($filters)->with('faculty')->safePaginate();
 
         return view('admin.profile.show', compact('children', 'user'));
 

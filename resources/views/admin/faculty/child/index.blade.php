@@ -40,7 +40,8 @@
                     @include('admin.partials.selectors.page')
 
                     {{-- OTHER BUTTONS --}}
-                    <a class="btn btn-filter btn-primary hidden-xs" target="_blank" href="javascript:;" filter-param="download"
+                    <a class="btn btn-filter btn-primary hidden-xs" target="_blank" href="javascript:;"
+                       filter-param="download"
                        filter-value="true">
                         <i class="fa fa-download"></i>
                     </a>
@@ -58,14 +59,14 @@
                             <th>Tanışma</th>
                             <th>Hediye</th>
                             <th>Sorumlular</th>
-                            <th class="five-button">İşlem</th>
+                            <th class="six-button">İşlem</th>
                         @endslot
 
                         @slot('body')
                             @forelse($children as $child)
                                 <tr id="child-{{ $child->id }}">
                                     <td itemprop="id">{{ $child->id }}</td>
-                                    <td itemprop="name">{{ $child->full_name }}</td>
+                                    <td itemprop="name" class="text-nowrap">{{ $child->full_name }}</td>
                                     <td class="long-column">{{ $child->department }}</td>
                                     <td>{{ $child->diagnosis }}</td>
                                     <td class="long-column">{{ $child->wish }}</td>
@@ -75,6 +76,12 @@
                                     <td class="long-column">{!! $child->users->implode('full_name', ', ') !!}</td>
                                     <td>
                                         <div class="btn-group">
+                                            <a class="btn btn-success btn-xs"
+                                               target="_blank"
+                                               href="{{ route("front.child", [$faculty->slug, $child->slug]) }}"
+                                            >
+                                                <i class="fa fa-globe"></i>
+                                            </a>
                                             @can('view', $child)
                                                 <a class="show btn btn-primary btn-xs"
                                                    href="{{ route("admin.child.show", $child->id) }}">
@@ -88,19 +95,19 @@
                                                 </a>
                                             @else
                                                 @can('process', [$child, App\Enums\ProcessType::VolunteerFound])
-                                                    <button class="process-btn btn btn-success btn-xs"
+                                                    <button class="process-btn btn btn-default btn-xs"
                                                             process-type="{{ App\Enums\ProcessType::VolunteerFound }}">
                                                         Gönüllü bulundu
                                                     </button>
                                                 @endcan
                                                 @can('process', [$child, App\Enums\ProcessType::PostApproved])
-                                                    <a class="post btn btn-success btn-xs"
-                                                       href="{{ route("admin.child.post.index", $child->id) }}">
-                                                        Yazılarını göster
+                                                    <a class="btn btn-default btn-xs"
+                                                       href="{{ route('admin.faculty.post.index', ['faculty' => $child->faculty_id, 'child_id' => $child->id]) }}">
+                                                        Yazıları göster
                                                     </a>
                                                 @endcan
                                                 @can('process', [$child, App\Enums\ProcessType::GiftArrived])
-                                                    <button class="process-btn btn btn-success btn-xs"
+                                                    <button class="process-btn btn btn-default btn-xs"
                                                             process-type="{{ App\Enums\ProcessType::GiftArrived }}">
                                                         Hediyesi geldi
                                                     </button>

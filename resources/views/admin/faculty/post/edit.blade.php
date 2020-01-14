@@ -76,6 +76,15 @@
                             <td>{{ $post->child->extra_info }}</td>
                         </tr>
                         <tr>
+                            <th>Site Bağlantısı</th>
+                            <td>
+                                <a target="_blank"
+                                   href="{{ route("front.child", [$post->child->faculty->slug, $post->child->slug]) }}">
+                                    {{ route("front.child", [$post->child->faculty->slug, $post->child->slug], false) }}
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
                             <th>Onam Formu</th>
                             <td>
                                 <a href="{{ route('admin.child.verification.show', $post->child->id) }}"
