@@ -137,6 +137,7 @@ class ChildController extends Controller
         $data['is_name_public'] = $request->has('is_name_public');
         $data['is_diagnosis_public'] = $request->has('is_diagnosis_public');
         $child->update($data);
+        $child->updateSlug();
 
         $child->users()->sync($request->users);
 

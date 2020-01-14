@@ -227,6 +227,13 @@ class Child extends Model implements HasMedia
         return date('d.m.Y', strtotime($this->attributes['until']));
     }
 
+    public function getSafeNameAttribute()
+    {
+        return $this->attributes['is_name_public']
+            ? $this->attributes['first_name']
+            : "Minik {$this->id}";
+    }
+
     // Mutators
     public function setMeetingDayAttribute($date)
     {
@@ -246,6 +253,13 @@ class Child extends Model implements HasMedia
             : null;
     }
 
+    public function setSlugAttribute($slug)
+    {
+        $this->attributes['slug'] = $this->is_name_public
+            ? $slug
+            : "minik-{$this->id}";
+    }
+
     public function setGMobileAttribute($g_mobile)
     {
         return $this->attributes['g_mobile'] = make_mobile($g_mobile);
@@ -257,6 +271,18 @@ class Child extends Model implements HasMedia
         $this->volunteer()->associate($volunteer);
         $this->gift_state = GiftStatus::OnRoad;
         $this->save();
+    }
+
+    public function getSlugValues()
+    {
+        $values = collect();
+        foreach ($this->slugKeys as $key) {
+            if (array_key_exists($key, $this->attributes) && ($value = $this->attributes[$key])) {
+                $values->push($value);
+            }
+        }
+
+        return $values;
     }
 
     public function registerMediaCollections()
