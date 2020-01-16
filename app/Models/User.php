@@ -48,7 +48,7 @@ class User extends Authenticatable implements HasMedia
     public static function boot()
     {
         parent::boot();
-        // static::addGlobalScope(new GraduateScope);
+        static::addGlobalScope(new GraduateScope);
         static::addGlobalScope(new LeftScope);
     }
 

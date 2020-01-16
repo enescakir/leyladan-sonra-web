@@ -3,8 +3,9 @@
 namespace App\Providers;
 
 use App\Enums\UserRole;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Auth;
+use Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -56,5 +57,8 @@ class AuthServiceProvider extends ServiceProvider
             ]);
         });
 
+        Auth::provider('custom', function ($app, $config) {
+            return new CustomUserProvider($app['hash'], $config['model']);
+        });
     }
 }
