@@ -274,7 +274,6 @@ class HomeController extends Controller
         return view('front.child', compact('child', 'similarChildren', 'prevChild', 'nextChild'));
     }
 
-    # Refactor
     public function childMessage(VolunteerMessageRequest $request, $facultySlug, $childSlug)
     {
         $child = Child::where('slug', $childSlug)->with('faculty')->first();
@@ -306,6 +305,11 @@ class HomeController extends Controller
 
 
         return $this->successMessage("<strong>{$child->safe_name}</strong> isimli miniğimizin hediyesi ile ilgili talebiniz tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong>{$volunteer->email}</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!");
+    }
+
+    public function admin(Request $request)
+    {
+        return redirect()->route('admin.login');
     }
 
     public function cities()

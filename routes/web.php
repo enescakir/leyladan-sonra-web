@@ -33,7 +33,7 @@ Route::get('/kan-bagisi.html', 'Front\HomeController@blood')->name('front.blood'
 Route::get('/mobil-uygulama.html', 'Front\HomeController@appLanding')->name('front.landing');
 Route::post('/kan-bagisi', 'Front\HomeController@bloodStore')->name('front.blood.store');
 
-Route::get('/yonetim', function () { return redirect('/admin/login'); })->name('admin');
+Route::get('/yonetim', 'Front\HomeController@admin')->name('admin');
 
 Route::get('/{facultySlug}.html', 'Front\HomeController@faculty')->name('front.faculty');
 Route::post('/{facultySlug}/{childSlug}', 'Front\HomeController@childMessage')->name('front.child.message');

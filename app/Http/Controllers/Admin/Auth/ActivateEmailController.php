@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Auth;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -17,11 +18,11 @@ class ActivateEmailController extends Controller
     {
         $user = User::where('email_token', $token)->first();
         if ($user) {
-            $users = $user->faculty->users()->role('manager')->get();
+            $users = $user->faculty->users()->role(UserRole::FacultyManager)->get();
 
             // If it's a new faculty, there is no manager. So send notification to admins
             if ($users->isEmpty()) {
-                $users = User::role('admin')->get();
+                $users = User::role(UserRole::Admin)->get();
             }
 
             $users->each->sendNewUserNotification($user);
