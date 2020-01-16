@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -25,7 +26,6 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = '/admin/login';
-    protected $redirectAfterLogout = '/admin/login';
 
     /**
      * Create a new controller instance.
@@ -74,5 +74,10 @@ class LoginController extends Controller
             $user->save();
             return redirect()->intended(route('admin.dashboard'));
         }
+    }
+
+    protected function loggedOut(Request $request)
+    {
+        return redirect()->route('admin.login');
     }
 }
