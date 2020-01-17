@@ -17,9 +17,8 @@ class CreateWishCategoriesTable extends Migration
             $table->increments('id');
             $table->string('name')->nullable();
             $table->string('desc')->nullable();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+
+            $table->baseActions();
         });
 
         Schema::table('children', function (Blueprint $table) {

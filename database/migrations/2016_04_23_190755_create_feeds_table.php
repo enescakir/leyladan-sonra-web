@@ -19,9 +19,8 @@ class CreateFeedsTable extends Migration
             $table->string('icon');
             $table->string('link')->nullable();
             $table->integer('faculty_id')->unsigned();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+
+            $table->baseActions();
 
             $table->foreign('faculty_id')->references('id')->on('faculties');
         });

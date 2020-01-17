@@ -18,9 +18,8 @@ class CreateBloodsTable extends Migration
             $table->boolean('rh');
             $table->string('mobile')->unique();
             $table->string('city')->nullable();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+
+            $table->baseActions();
         });
     }
 

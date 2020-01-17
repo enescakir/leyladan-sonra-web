@@ -17,9 +17,8 @@ class CreateEmailSamplesTable extends Migration
             $table->string('name')->nullable();
             $table->string('category')->nullable();
             $table->longtext('text');
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+
+            $table->baseActions();
         });
     }
 

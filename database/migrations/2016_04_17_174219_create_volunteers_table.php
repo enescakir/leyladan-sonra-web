@@ -23,9 +23,7 @@ class CreateVolunteersTable extends Migration
             $table->string('notification_token')->nullable();
             $table->string('player_id')->nullable();
             $table->string('device_token')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-            BaseActions($table);
+            $table->baseActions();
         });
 
     }

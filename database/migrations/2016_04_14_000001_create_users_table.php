@@ -30,16 +30,17 @@ class CreateUsersTable extends Migration
             $table->string('email_token')->nullable();
             $table->string('profile_photo')->default('default');
             $table->rememberToken();
-            $table->softDeletes();
-            $table->timestamps();
-            BaseActions($table);
-            Approval($table);
             $table->foreign('faculty_id')->references('id')->on('faculties');
         });
 
 
+        Schema::table('users', function (Blueprint $table) {
+            $table->approval();
+            $table->baseActions();
+        });
+
         Schema::table('faculties', function (Blueprint $table) {
-            BaseActions($table);
+            $table->baseActions();
         });
     }
 
@@ -50,10 +51,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('faculties', function (Blueprint $table) {
-            DropBaseActions($table);
-        });
-
         Schema::dropIfExists('users');
     }
 }

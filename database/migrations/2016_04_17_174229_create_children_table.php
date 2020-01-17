@@ -41,10 +41,8 @@ class CreateChildrenTable extends Migration
             $table->boolean('on_hospital')->nullable();
             $table->date('until');
             $table->string('slug');
-            $table->timestamps();
 
-            BaseActions($table);
-            $table->softDeletes();
+            $table->baseActions();
 
             $table->foreign('faculty_id')->references('id')->on('faculties');
             $table->foreign('volunteer_id')->references('id')->on('volunteers')->onDelete('set null');
@@ -58,9 +56,7 @@ class CreateChildrenTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+            $table->baseActions();
         });
 
     }

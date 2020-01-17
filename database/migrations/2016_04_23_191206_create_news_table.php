@@ -17,9 +17,8 @@ class CreateNewsTable extends Migration
             $table->string('name');
             $table->string('logo');
             $table->string('category');
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+
+            $table->baseActions();
 
         });
 
@@ -29,9 +28,8 @@ class CreateNewsTable extends Migration
             $table->text('desc');
             $table->string('link');
             $table->integer('channel_id')->unsigned();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+
+            $table->baseActions();
 
             $table->foreign('channel_id')->references('id')->on('channels');
 

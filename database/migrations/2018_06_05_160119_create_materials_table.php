@@ -18,9 +18,8 @@ class CreateMaterialsTable extends Migration
             $table->string('name');
             $table->string('category');
             $table->text('link');
-            $table->timestamps();
-            $table->softDeletes();
-            BaseActions($table);
+
+            $table->baseActions();
         });
     }
 

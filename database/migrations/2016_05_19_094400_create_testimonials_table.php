@@ -19,10 +19,9 @@ class CreateTestimonialsTable extends Migration
             $table->string('email')->nullable();
             $table->string('via');
             $table->integer('priority')->unsigned()->default(1);
-            $table->timestamps();
-            $table->softDeletes();
-            BaseActions($table);
-            Approval($table);
+
+            $table->approval();
+            $table->baseActions();
         });
 
     }

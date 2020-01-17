@@ -18,9 +18,8 @@ class CreateTutorialsTable extends Migration
             $table->string('name');
             $table->string('category');
             $table->string('link');
-            $table->timestamps();
-            $table->softDeletes();
-            BaseActions($table);
+
+            $table->baseActions();
         });
     }
 

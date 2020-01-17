@@ -17,10 +17,8 @@ class CreatePostsTable extends Migration
             $table->integer('child_id')->unsigned();
             $table->longtext('text')->nullable();
             $table->string('type');
-            $table->timestamps();
-            BaseActions($table);
-            Approval($table);
-            $table->softDeletes();
+            $table->approval();
+            $table->baseActions();
             $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');
         });
 
@@ -29,9 +27,8 @@ class CreatePostsTable extends Migration
             $table->string('name');
             $table->string('ratio');
             $table->integer('post_id')->unsigned();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+
+            $table->baseActions();
 
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });

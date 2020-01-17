@@ -14,13 +14,12 @@ class CreateDepartmentsTable extends Migration
     public function up()
     {
         Schema::create('departments', function (Blueprint $table) {
-          $table->increments('id');
-          $table->string('name');
-          $table->string('desc')->nullable();
-          $table->string('slug')->nullable();
-          $table->timestamps();
-          BaseActions($table);
-          $table->softDeletes();
+            $table->increments('id');
+            $table->string('name');
+            $table->string('desc')->nullable();
+            $table->string('slug')->nullable();
+
+            $table->baseActions();
         });
     }
 

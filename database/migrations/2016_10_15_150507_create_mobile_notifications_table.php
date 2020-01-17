@@ -17,9 +17,8 @@ class CreateMobileNotificationsTable extends Migration
             $table->string('message');
             $table->dateTime('expected_at');
             $table->dateTime('sent_at')->nullable();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+
+            $table->baseActions();
         });
     }
 

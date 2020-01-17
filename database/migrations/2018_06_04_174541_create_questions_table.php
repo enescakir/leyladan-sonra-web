@@ -18,9 +18,8 @@ class CreateQuestionsTable extends Migration
             $table->text('text');
             $table->text('answer');
             $table->integer('order');
-            $table->timestamps();
-            $table->softDeletes();
-            BaseActions($table);
+
+            $table->baseActions();
         });
     }
 

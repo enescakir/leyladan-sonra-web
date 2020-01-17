@@ -13,13 +13,12 @@ class CreateDiagnosesTable extends Migration
     public function up()
     {
         Schema::create('diagnoses', function (Blueprint $table) {
-          $table->increments('id');
-          $table->string('name')->nullable();
-          $table->string('category')->nullable();
-          $table->string('desc')->nullable();
-          $table->timestamps();
-          BaseActions($table);
-          $table->softDeletes();
+            $table->increments('id');
+            $table->string('name')->nullable();
+            $table->string('category')->nullable();
+            $table->string('desc')->nullable();
+
+            $table->baseActions();
         });
     }
 
