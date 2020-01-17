@@ -79,7 +79,6 @@ class FacultyController extends Controller
             'name', 'slug', 'latitude', 'longitude', 'address', 'city', 'code', 'started_at', 'stopped_at'
         ]));
         if ($request->hasFile('logo')) {
-            $faculty->clearMediaCollection();
             $faculty->addMedia($request->logo);
         }
 
@@ -100,8 +99,11 @@ class FacultyController extends Controller
     private function validateFaculty(Request $request, $isUpdate = false)
     {
         $this->validate($request, [
-            'name'      => 'required|max:255', 'slug' => 'required|max:255', 'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric', 'city' => 'required|max:255'
+            'name'      => 'required|max:255',
+            'slug'      => 'required|max:255',
+            'latitude'  => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'city'      => 'required|max:255'
         ]);
     }
 

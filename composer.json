@@ -1,5 +1,5 @@
 {
-  "name": "enescakir/leyladan-sonra",
+  "name": "enescakir/leyladan-sonra-web",
   "description": "Leyla'dan Sonra Web Application",
   "version": "v3.1.0",
   "keywords": [
@@ -54,7 +54,8 @@
       "App\\": "app/"
     },
     "files": [
-      "app/helpers.php"
+      "app/helpers.php",
+      "data_migrations.php"
     ]
   },
   "autoload-dev": {
