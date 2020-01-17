@@ -13,14 +13,14 @@ class CreateNotificationsTable extends Migration
     public function up()
     {
         Schema::create('notifications', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('title');
             $table->string('desc')->nullable();
             $table->string('icon');
             $table->datetime('done_at')->nullable();
-            $table->integer('done_by')->unsigned()->nullable();
+            $table->bigInteger('done_by')->unsigned()->nullable();
             $table->string('link')->nullable();
-            $table->integer('faculty_id')->unsigned();
+            $table->bigInteger('faculty_id')->unsigned();
 
             $table->baseActions();
 

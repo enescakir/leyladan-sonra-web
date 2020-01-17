@@ -14,7 +14,7 @@ class CreateWishCategoriesTable extends Migration
     public function up()
     {
         Schema::create('wish_categories', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->string('desc')->nullable();
 
@@ -22,7 +22,7 @@ class CreateWishCategoriesTable extends Migration
         });
 
         Schema::table('children', function (Blueprint $table) {
-            $table->integer('wish_category_id')->nullable()->unsigned();
+            $table->bigInteger('wish_category_id')->nullable()->unsigned();
             $table->foreign('wish_category_id')->references('id')->on('wish_categories')->onDelete('set null');;
         });
 

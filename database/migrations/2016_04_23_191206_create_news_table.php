@@ -13,7 +13,7 @@ class CreateNewsTable extends Migration
     public function up()
     {
         Schema::create('channels', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('logo');
             $table->string('category');
@@ -23,11 +23,11 @@ class CreateNewsTable extends Migration
         });
 
         Schema::create('news', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('title');
             $table->text('desc');
             $table->string('link');
-            $table->integer('channel_id')->unsigned();
+            $table->bigInteger('channel_id')->unsigned();
 
             $table->baseActions();
 

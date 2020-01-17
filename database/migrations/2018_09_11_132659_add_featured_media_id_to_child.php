@@ -14,7 +14,7 @@ class AddFeaturedMediaIdToChild extends Migration
     public function up()
     {
         Schema::table('children', function (Blueprint $table) {
-            $table->integer('featured_media_id')->nullable()->unsigned();
+            $table->bigInteger('featured_media_id')->nullable()->unsigned();
         });
     }
 

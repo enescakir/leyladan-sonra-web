@@ -13,7 +13,7 @@ class CreateBlogsTable extends Migration
     public function up()
     {
         Schema::create('blogs', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('title');
             $table->longtext('text')->nullable();
             $table->string('thumb')->nullable();
@@ -26,7 +26,7 @@ class CreateBlogsTable extends Migration
         });
 
         Schema::create('blog_categories', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('title');
             $table->string('slug');
             $table->text('desc')->nullable();
@@ -36,11 +36,11 @@ class CreateBlogsTable extends Migration
 
 
         Schema::create('blog_category', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('blog_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('blog_id')->unsigned();
             $table->foreign('blog_id')->references('id')->on('blogs')->onDelete('cascade');
 
-            $table->integer('category_id')->unsigned();
+            $table->bigInteger('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('blog_categories')->onDelete('cascade');
             $table->timestamps();
         });

@@ -13,8 +13,8 @@ class CreatePostsTable extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('child_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('child_id')->unsigned();
             $table->longtext('text')->nullable();
             $table->string('type');
             $table->approval();
@@ -23,10 +23,10 @@ class CreatePostsTable extends Migration
         });
 
         Schema::create('post_images', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('ratio');
-            $table->integer('post_id')->unsigned();
+            $table->bigInteger('post_id')->unsigned();
 
             $table->baseActions();
 

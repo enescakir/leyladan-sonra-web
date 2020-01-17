@@ -13,7 +13,7 @@ class CreateEmailSamplesTable extends Migration
     public function up()
     {
         Schema::create('email_samples', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->string('category')->nullable();
             $table->longtext('text');

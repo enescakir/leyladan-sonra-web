@@ -13,12 +13,12 @@ class CreateSmsTable extends Migration
     public function up()
     {
         Schema::create('sms', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('title');
             $table->text('message');
             $table->string('category');
             $table->integer('receiver_count')->unsigned();
-            $table->integer('sent_by')->unsigned();
+            $table->bigInteger('sent_by')->unsigned();
             $table->foreign('sent_by')->references('id')->on('users');
             $table->timestamps();
         });

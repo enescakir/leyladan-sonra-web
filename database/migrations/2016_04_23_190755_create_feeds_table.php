@@ -13,12 +13,12 @@ class CreateFeedsTable extends Migration
     public function up()
     {
         Schema::create('feeds', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('title');
             $table->string('desc')->nullable();
             $table->string('icon');
             $table->string('link')->nullable();
-            $table->integer('faculty_id')->unsigned();
+            $table->bigInteger('faculty_id')->unsigned();
 
             $table->baseActions();
 

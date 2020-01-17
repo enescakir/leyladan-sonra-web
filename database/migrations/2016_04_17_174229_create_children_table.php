@@ -13,8 +13,8 @@ class CreateChildrenTable extends Migration
     public function up()
     {
         Schema::create('children', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('faculty_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('faculty_id')->unsigned();
             $table->string('department');
             $table->string('first_name');
             $table->string('last_name');
@@ -35,7 +35,7 @@ class CreateChildrenTable extends Migration
             $table->string('city');
             $table->text('address');
             $table->text('extra_info')->nullable();
-            $table->integer('volunteer_id')->unsigned()->nullable();
+            $table->bigInteger('volunteer_id')->unsigned()->nullable();
             $table->string('verification_doc')->nullable();
             $table->enum('gift_state', ['Bekleniyor', 'Yolda', 'Bize Ulaştı', 'Teslim Edildi'])->default('Bekleniyor');
             $table->boolean('on_hospital')->nullable();
@@ -49,11 +49,11 @@ class CreateChildrenTable extends Migration
         });
 
         Schema::create('child_user', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('child_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('child_id')->unsigned();
             $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');
 
-            $table->integer('user_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->baseActions();

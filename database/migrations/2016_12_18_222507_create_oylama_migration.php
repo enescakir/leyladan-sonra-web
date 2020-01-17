@@ -13,8 +13,8 @@ class CreateOylamaMigration extends Migration
     public function up()
     {
         Schema::create('votes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('used_by')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('used_by')->unsigned();
             $table->string('faculty_name');
             $table->boolean('first');
             $table->boolean('second');

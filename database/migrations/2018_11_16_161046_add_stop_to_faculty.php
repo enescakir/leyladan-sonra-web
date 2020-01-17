@@ -15,7 +15,7 @@ class AddStopToFaculty extends Migration
     {
         Schema::table('faculties', function (Blueprint $table) {
             $table->dateTime('stopped_at')->nullable();
-            $table->integer('stopped_by')->unsigned()->nullable();
+            $table->bigInteger('stopped_by')->unsigned()->nullable();
             $table->foreign('stopped_by')->references('id')->on('users');
         });
     }

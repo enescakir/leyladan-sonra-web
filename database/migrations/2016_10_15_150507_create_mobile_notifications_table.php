@@ -13,7 +13,7 @@ class CreateMobileNotificationsTable extends Migration
     public function up()
     {
         Schema::create('mobile_notifications', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('message');
             $table->dateTime('expected_at');
             $table->dateTime('sent_at')->nullable();
