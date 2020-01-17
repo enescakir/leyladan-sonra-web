@@ -14,9 +14,9 @@ class CreateFeedsTable extends Migration
     {
         Schema::create('feeds', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title')->nullable();
+            $table->string('role')->nullable();
             $table->string('desc')->nullable();
-            $table->string('icon');
+            $table->string('type');
             $table->string('link')->nullable();
             $table->bigInteger('faculty_id')->unsigned();
 
