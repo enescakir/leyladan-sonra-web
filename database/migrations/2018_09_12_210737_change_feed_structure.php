@@ -14,8 +14,6 @@ class ChangeFeedStructure extends Migration
     public function up()
     {
         Schema::table('feeds', function (Blueprint $table) {
-            $table->string('title')->nullable()->change();
-
             $table->renameColumn('title', 'role');
             $table->renameColumn('icon', 'type');
         });
@@ -29,8 +27,6 @@ class ChangeFeedStructure extends Migration
     public function down()
     {
         Schema::table('feeds', function (Blueprint $table) {
-            $table->string('role')->nullable(false)->change();
-
             $table->renameColumn('role', 'title');
             $table->renameColumn('type', 'icon');
 
