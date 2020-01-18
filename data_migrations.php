@@ -6,6 +6,7 @@ function test_migration()
     echo "It's OK";
 }
 
+// Done
 function channel_migration()
 {
     $channels = App\Models\Channel::whereNotNull('logo')->get();
@@ -24,6 +25,7 @@ function channel_migration()
     });
 }
 
+// Done
 function sponsor_migration()
 {
     $sponsors = App\Models\Sponsor::whereNotNull('logo')->get();
@@ -87,6 +89,7 @@ function user_image_migration()
 
 }
 
+// Done
 function faculty_migration()
 {
     $faculties = App\Models\Faculty::all();
@@ -117,6 +120,8 @@ function post_image_migration()
 }
 
 // featured images
+
+// Done
 function post_child_migration()
 {
     $posts = App\Models\Post::with('child')->get();
