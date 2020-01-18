@@ -86,7 +86,15 @@ function user_approval_migration()
 
 function user_image_migration()
 {
-
+    $users = App\Models\User::where('profile_photo', '<>', 'default')->get();
+    $users->each(function ($user) {
+        try {
+            $user->addMedia(storage_path('app/public/profile/' . $user->profile_photo . '_l.jpg'), [], 'profile');
+        } catch (\Exception $e) {
+            echo 'Message: ' . $e->getMessage() . "\n";
+            echo 'User #' . $user->id . "\n";
+        }
+    });
 }
 
 // Done
@@ -121,7 +129,6 @@ function post_image_migration()
 
 // featured images
 
-// Done
 function post_child_migration()
 {
     $posts = App\Models\Post::with('child')->get();
@@ -136,6 +143,6 @@ function post_child_migration()
     });
 }
 
-function post_verification_migration()
+function child_verification_migration()
 {
 }
