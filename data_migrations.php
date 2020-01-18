@@ -42,6 +42,7 @@ function sponsor_migration()
     });
 }
 
+// Done
 function user_role_migration()
 {
     App\Models\User::chunk(100, function ($users) {

@@ -254,8 +254,8 @@ class User extends Authenticatable implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('small')->fit(Manipulations::FIT_CROP, 64, 64)->performOnCollections('profile');;
-        $this->addMediaConversion('medium')->fit(Manipulations::FIT_CROP, 256, 256)->performOnCollections('profile');;
-        $this->addMediaConversion('large')->fit(Manipulations::FIT_CROP, 512, 512)->performOnCollections('profile');;
+        $this->addMediaConversion('small')->width(64)->height(64)->performOnCollections('profile');;
+        $this->addMediaConversion('medium')->width(256)->height(256)->performOnCollections('profile');;
+        $this->addMediaConversion('large')->width(512)->height(512)->performOnCollections('profile');;
     }
 }

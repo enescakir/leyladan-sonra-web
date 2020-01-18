@@ -134,8 +134,8 @@ class Post extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('thumb')->fit(Manipulations::FIT_CONTAIN, 200, 200);
-        $this->addMediaConversion('medium')->fit(Manipulations::FIT_CONTAIN, 500, 1000);
-        $this->addMediaConversion('large')->fit(Manipulations::FIT_CONTAIN, 1000, 1000);
+        $this->addMediaConversion('thumb')->width(200)->height(200);
+        $this->addMediaConversion('medium')->width(500)->height(1000);
+        $this->addMediaConversion('large')->width(1000)->height(1000);
     }
 }
