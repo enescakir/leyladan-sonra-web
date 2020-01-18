@@ -55,8 +55,7 @@
       "App\\": "app/"
     },
     "files": [
-      "app/helpers.php",
-      "data_migrations.php"
+      "app/helpers.php"
     ]
   },
   "autoload-dev": {
