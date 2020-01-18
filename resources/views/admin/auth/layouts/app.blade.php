@@ -72,7 +72,7 @@ Contact: enes@cakir.web.tr
 <!-- Plugins - JQuery, Bootstrap etc. -->
 <script src="{{ admin_js('vendor.min.js') }}"></script>
 <!-- AdminLTE App -->
-<script src="{{ admin_js('adminlte.min.js') }}"></script>
+<script src="{{ admin_js('AdminLTE.min.js') }}"></script>
 <!-- App -->
 <script src="{{ admin_js('app.min.js') }}"></script>
 
