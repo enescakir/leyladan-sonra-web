@@ -73,8 +73,8 @@
                             @forelse ($questions as $question)
                                 <tr id="question-{{ $question->id }}">
                                     <td>{{ $question->id }}</td>
-                                    <td>{{ $question->text }}</td>
-                                    <td>{!! $question->answer !!}</td>
+                                    <td class="post-column">{{ $question->text }}</td>
+                                    <td class="post-column">{!! $question->answer !!}</td>
                                     <td>{{ $question->order }}</td>
                                     <td>
                                         <div class="btn-group">

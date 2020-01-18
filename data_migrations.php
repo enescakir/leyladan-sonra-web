@@ -84,6 +84,7 @@ function user_approval_migration()
 {
 }
 
+// Done
 function user_image_migration()
 {
     $users = App\Models\User::where('profile_photo', '<>', 'default')->get();
@@ -131,15 +132,20 @@ function post_image_migration()
 
 function post_child_migration()
 {
-    $posts = App\Models\Post::with('child')->get();
-    $posts->each(function ($post) {
-        if ($post->type == App\Enums\PostType::Meeting) {
-            $post->child->meetingPost()->associate($post);
-            $post->child->save();
-        } elseif ($post->type == App\Enums\PostType::Delivery) {
-            $post->child->deliveryPost()->associate($post);
-            $post->child->save();
-        }
+    App\Models\Post::with('child')->chunk(200, function ($posts) {
+        $posts->each(function ($post) {
+            if (is_null($post->child)) {
+                echo "NULL child - post: #{$post->id} child: #{$post->child_id} \n";
+                return;
+            }
+            if ($post->type == App\Enums\PostType::Meeting) {
+                $post->child->meetingPost()->associate($post);
+                $post->child->save();
+            } elseif ($post->type == App\Enums\PostType::Delivery) {
+                $post->child->deliveryPost()->associate($post);
+                $post->child->save();
+            }
+        });
     });
 }
 

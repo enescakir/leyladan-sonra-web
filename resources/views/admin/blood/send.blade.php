@@ -27,7 +27,7 @@
                     <div class="form-group{{ $errors->has('blood_types') ? ' has-error' : '' }}">
                         {!! Form::label('blood_types', 'Kan Grubu *', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-9">
-                            <div class="btn-group" data-toggle="buttons">
+                            <div class="btn-group btn-group-justified" data-toggle="buttons">
                                 <label class="btn btn-ls @if(in_array('A', old('blood_types') ?? [] )) active @endif">
                                     {!! Form::checkbox('blood_types[]', 'A',  null) !!} A
                                 </label>
@@ -47,7 +47,7 @@
                     <div class="form-group{{ $errors->has('rhs') ? ' has-error' : '' }}">
                         {!! Form::label('rhs', 'RH *', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-9">
-                            <div class="btn-group" data-toggle="buttons">
+                            <div class="btn-group btn-group-justified" data-toggle="buttons">
                                 <label class="btn btn-ls @if(in_array('1', old('rhs') ?? [] )) active @endif">
                                     {!! Form::checkbox('rhs[]', '1',  null) !!} Pozitif
                                 </label>

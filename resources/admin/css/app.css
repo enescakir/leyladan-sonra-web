@@ -162,6 +162,12 @@ tr .two-button {
     white-space: normal !important;
 }
 
+.post-column {
+    max-width: 400px !important;
+    white-space: normal !important;
+    min-width: 300px !important;
+}
+
 .box-buttons {
     float: right;
 }

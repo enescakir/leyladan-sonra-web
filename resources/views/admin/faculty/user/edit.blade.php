@@ -76,7 +76,7 @@
                         <div class="col-md-6 form-group{{ $errors->has('year') ? ' has-error' : '' }}">
                             {!! Form::label('year', 'Sınıf *', ['class' => 'control-label']) !!}
                             <br>
-                            <div class="btn-group" data-toggle="buttons">
+                            <div class="btn-group btn-group-justified" data-toggle="buttons">
                                 @foreach(range(0, 6) as $key)
                                     <label class="btn btn-ls @if($user->year == $key) active @endif">
                                         {!! Form::radio('year', $key,  ($user->year == $key)) !!} {{ $key }}

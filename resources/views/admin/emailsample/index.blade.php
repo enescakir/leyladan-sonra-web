@@ -66,7 +66,7 @@
                                     <td>{{ $sample->id }}</td>
                                     <td>{{ $sample->name }}</td>
                                     <td>{{ $sample->category }}</td>
-                                    <td class="clipboard-text"
+                                    <td class="clipboard-text post-column"
                                         data-clipboard-text="{{ $sample->text }}">{!!  $sample->formatted_text !!}</td>
                                     <td>{{ $sample->creator->full_name ?? "-" }}</td>
                                     <td>

@@ -56,7 +56,7 @@
                             <th>Telefon</th>
                             <th>Doğumgünü</th>
                             <th>Yıl</th>
-                            <th class="seven-button">İşlem</th>
+                            <th class="four-button">İşlem</th>
                         @endslot
 
                         @slot('body')
