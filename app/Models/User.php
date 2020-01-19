@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\GiftStatus;
 use App\Enums\ProcessType;
+use App\Enums\UserRole;
 use Carbon\Carbon;
 use EnesCakir\Helper\Traits\Approvable;
 use EnesCakir\Helper\Traits\BaseActions;
@@ -106,7 +107,13 @@ class User extends Authenticatable implements HasMedia
     // Accessors
     public function getFullNameAttribute()
     {
-        return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+        $name = $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+        if ($this->attributes['graduated_at'] ?? false) {
+            $name = $name . " (M)";
+        } else if ($this->attributes['left_at'] ?? false) {
+            $name = $name . " (A)";
+        }
+        return $name;
     }
 
     public function getRoleDisplayAttribute()

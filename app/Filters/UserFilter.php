@@ -14,6 +14,12 @@ class UserFilter extends Filter
         return $this->builder->approved($approval);
     }
 
+
+    protected function roleName($role)
+    {
+        $this->builder->role($role);
+    }
+
     protected function download()
     {
         $name = "LS_Uyeler_" . date('d_m_Y');
