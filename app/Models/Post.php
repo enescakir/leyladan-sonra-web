@@ -61,7 +61,7 @@ class Post extends Model implements HasMedia
     public function scopeSearch($query, $search)
     {
         $query->where(function ($query2) use ($search) {
-            $query2->where('id', $search)
+            $query2->where('posts.id', $search)
                 ->orWhere('text', 'like', '%' . $search . '%')
                 ->orWhereHas('child', function ($query3) use ($search) {
                     $query3->search($search);
