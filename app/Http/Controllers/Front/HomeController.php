@@ -76,7 +76,14 @@ class HomeController extends Controller
 
     public function bloodStore(Request $request)
     {
-        $blood = Blood::where('mobile', $request->mobile)->first();
+        $mobile = make_mobile($request->mobile);
+        $blood = Blood::where('mobile', $mobile)->withTrashed()->first();
+
+        if ($blood->trashed() ?? false) {
+            $blood->restore();
+            return $this->successMessage("{$blood->city} şehrinde {$blood->blood_type} kan grubuna ihtiyaç durumunda vermiş olduğunuz {$blood->mobile} telefon numarası üzerinden SMS ile bildireceğiz.");
+        }
+
         if ($blood != null) {
             return $this->errorMessage('Verdiğiniz telefon numarası zaten SMS sistemimizde kayıtlı.');
         }
