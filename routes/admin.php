@@ -96,7 +96,7 @@ Route::prefix('faculty')->as('faculty.')->group(function () {
         Route::resource('email', 'Admin\Management\FacultyEmailController')->only(['create', 'store']);
         Route::resource('user', 'Admin\Management\FacultyUserController')->parameters([
             'user' => 'any_user'
-        ]);
+        ])->only(['index', 'edit']);
     });
 });
 Route::resource('faculty', 'Admin\Management\FacultyController');
