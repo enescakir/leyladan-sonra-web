@@ -19,6 +19,8 @@ class ChildVerificationController extends Controller
 
         $path = $child->getFirstMediaPath('verification');
 
-        return response()->file($path);
+        return $path
+            ? response()->file($path)
+            : response()->file(public_path('images/admin/child_no_verification.jpg'));
     }
 }
