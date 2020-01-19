@@ -242,6 +242,10 @@ class User extends Authenticatable implements HasMedia
 
     public function sendApprovedUserNotification()
     {
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            return;
+        }
+
         $this->notify(new ApprovedUserNotification());
     }
 
