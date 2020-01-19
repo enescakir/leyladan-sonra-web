@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Auth;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -56,7 +57,11 @@ class LoginController extends Controller
      */
     protected function authenticated($request, $user)
     {
-        if ($user->email_token != null) {
+        if ($user->hasRole(UserRole::Left)) {
+            session_info('Projeden ayrılan üyeler sisteme giriş yapamazlar. <br> Bir sorun olduğunu düşünüyorsanız fakülte sorumlunuzla görüşünüz.');
+            $this->guard()->logout();
+            return back()->withInput($request->only('email', 'remember'));
+        } elseif ($user->email_token != null) {
             session_info('E-posta adresinizi doğrulamamışsınız. <br> Doğrulama kodu e-postanıza tekrardan gönderildi.');
             $user->sendEmailActivationNotification();
             $this->guard()->logout();
