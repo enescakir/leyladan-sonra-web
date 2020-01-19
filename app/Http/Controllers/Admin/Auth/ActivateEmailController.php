@@ -11,7 +11,7 @@ class ActivateEmailController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('guest');
     }
 
     public function activate(Request $request, $token)

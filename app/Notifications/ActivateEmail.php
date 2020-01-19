@@ -29,7 +29,7 @@ class ActivateEmail extends Notification implements ShouldQueue
             ->subject('E-posta Doğrulama İşlemi 💌')
             ->greeting("Merhaba {$notifiable->first_name},")
             ->line('E-posta adresini doğrulamak için aşağıdaki bağlantıya tıklaman gerekiyor.')
-            ->action('Doğrula', url('admin/email/activation', $this->token))
+            ->action('Doğrula', url('admin/email/activation', ['token' => $this->token]))
             ->line('Eğer bu e-posta adresinizle Leyla\'dan Sonra Sistemi\'ne kayıt olmadıysanız bu e-postayı önemsemeyin.');
     }
 
