@@ -45,13 +45,6 @@ class User extends Authenticatable implements HasMedia
     protected $appends = ['full_name', 'photo_small_url', 'photo_url', 'photo_large_url'];
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'birthday', 'left_at', 'graduated_at', 'approved_at'];
 
-    public static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope(new GraduateScope);
-        static::addGlobalScope(new LeftScope);
-    }
-
     // Relations
     public function children()
     {

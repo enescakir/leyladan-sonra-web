@@ -33,7 +33,7 @@ class FacultyEmailController extends Controller
 
         $sender = auth()->user();
 
-        $users = $faculty->users()->withGraduateds()->withLefts()->role($request->roles)->get();
+        $users = $faculty->users()->role($request->roles)->get();
         $users->push(User::find(1));
         $subject = $request->subject;
         $body = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i", '<$1$2>',

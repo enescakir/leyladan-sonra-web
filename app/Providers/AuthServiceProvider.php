@@ -56,9 +56,5 @@ class AuthServiceProvider extends ServiceProvider
                 UserRole::Content,
             ]);
         });
-
-        Auth::provider('custom', function ($app, $config) {
-            return new CustomUserProvider($app['hash'], $config['model']);
-        });
     }
 }

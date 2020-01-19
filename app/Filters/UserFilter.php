@@ -14,15 +14,6 @@ class UserFilter extends Filter
         return $this->builder->approved($approval);
     }
 
-    protected function roleName($role)
-    {
-        $this->builder->role($role)->when($role == 'left', function ($query) {
-            return $query->withLefts();
-        })->when($role == 'graduated', function ($query) {
-            return $query->withGraduateds();
-        });
-    }
-
     protected function download()
     {
         $name = "LS_Uyeler_" . date('d_m_Y');
