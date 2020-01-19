@@ -66,7 +66,7 @@ class HomeController extends Controller
             ];
         });
 
-        return view('front.us', compact($counts));
+        return view('front.us', compact('counts'));
     }
 
     public function blood()
