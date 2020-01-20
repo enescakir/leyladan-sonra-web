@@ -139,6 +139,6 @@ class ChildPolicy
 
     private function hasUser(Child $child, User $user)
     {
-        return $child->users->where('users.id', $user->id)->count() > 0;
+        return $child->users->where('id', $user->id)->count() > 0;
     }
 }
