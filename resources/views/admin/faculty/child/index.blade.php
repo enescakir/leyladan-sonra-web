@@ -93,26 +93,30 @@
                                                    href="{{ route("admin.child.edit", $child->id) }}">
                                                     <i class="fa fa-pencil"></i>
                                                 </a>
-                                            @else
-                                                @can('process', [$child, App\Enums\ProcessType::VolunteerFound])
-                                                    <button class="process-btn btn btn-default btn-xs"
-                                                            process-type="{{ App\Enums\ProcessType::VolunteerFound }}">
-                                                        Gönüllü bulundu
-                                                    </button>
-                                                @endcan
-                                                @can('process', [$child, App\Enums\ProcessType::PostApproved])
-                                                    <a class="btn btn-default btn-xs"
-                                                       href="{{ route('admin.faculty.post.index', ['faculty' => $child->faculty_id, 'child_id' => $child->id]) }}">
-                                                        Yazıları göster
-                                                    </a>
-                                                @endcan
-                                                @can('process', [$child, App\Enums\ProcessType::GiftArrived])
-                                                    <button class="process-btn btn btn-default btn-xs"
-                                                            process-type="{{ App\Enums\ProcessType::GiftArrived }}">
-                                                        Hediyesi geldi
-                                                    </button>
-                                                @endcan
                                             @endcan
+                                            @if ($child->gift_state == App\Enums\GiftStatus::Waiting )
+                                                @role(App\Enums\UserRole::Relation)
+                                                <button class="process-btn btn btn-default btn-xs"
+                                                        process-type="{{ App\Enums\ProcessType::VolunteerFound }}">
+                                                    Gönüllü bulundu
+                                                </button>
+                                                @endrole
+                                            @endif
+                                            @if(in_array($child->gift_state, [App\Enums\GiftStatus::Waiting, App\Enums\GiftStatus::OnRoad]))
+                                                @role(App\Enums\UserRole::Gift)
+                                                <button class="process-btn btn btn-default btn-xs"
+                                                        process-type="{{ App\Enums\ProcessType::GiftArrived }}">
+                                                    Hediyesi geldi
+                                                </button>
+                                                @endrole
+                                            @endif
+                                            @role(App\Enums\UserRole::Website)
+                                            <a class="btn btn-default btn-xs"
+                                               href="{{ route('admin.faculty.post.index', ['faculty' => $child->faculty_id, 'child_id' => $child->id]) }}">
+                                                Yazıları göster
+                                            </a>
+                                            @endrole
+
                                             @can('delete', $child)
                                                 <a class="delete btn btn-danger btn-xs" delete-id="{{ $child->id }}"
                                                    delete-name="{{ $child->full_name }}" href="javascript:">

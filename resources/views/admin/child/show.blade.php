@@ -127,7 +127,7 @@
 
             </div>
 
-            <a class="btn btn-success btn-block"
+            <a class="btn btn-success btn-block margin-bottom"
                target="_blank"
                href="{{ route("front.child", [$child->faculty->slug, $child->slug]) }}"
             >
