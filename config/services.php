@@ -17,9 +17,6 @@ return [
         'secret' => env('SES_SECRET'),
         'region' => env('SES_REGION'),
     ],
-    'sendgrid'     => [
-        'api_key' => env('SENDGRID_API_KEY'),
-    ],
     'iletimerkezi' => [
         'username' => env('ILETI_USERNAME'),
         'password' => env('ILETI_PASSWORD'),
