@@ -79,8 +79,9 @@ class HomeController extends Controller
         $mobile = make_mobile($request->mobile);
         $blood = Blood::where('mobile', $mobile)->withTrashed()->first();
 
-        if ($blood->trashed() ?? false) {
+        if ($blood && $blood->trashed()) {
             $blood->restore();
+
             return $this->successMessage("{$blood->city} şehrinde {$blood->blood_type} kan grubuna ihtiyaç durumunda vermiş olduğunuz {$blood->mobile} telefon numarası üzerinden SMS ile bildireceğiz.");
         }
 
