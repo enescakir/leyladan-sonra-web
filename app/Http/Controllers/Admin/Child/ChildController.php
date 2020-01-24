@@ -127,6 +127,7 @@ class ChildController extends Controller
     public function update(Request $request, Child $child)
     {
         $this->authorize('update', $child);
+        $this->validateResource($request);
 
         $data = $request->only([
             'department', 'first_name', 'last_name', 'diagnosis', 'diagnosis_desc', 'taken_treatment', 'child_state',
@@ -216,4 +217,14 @@ class ChildController extends Controller
         return Child::query()->where('first_name', 'like', "%{$first_name}%")
             ->where('last_name', 'like', "%{$last_name}%")->with('users', 'faculty')->get();
     }
+
+    private function validateResource(Request $request, $isUpdate = false)
+    {
+        $this->validate($request, [
+            'meeting_day' => 'required|date|date_format:d.m.Y',
+            'birthday'    => 'required|date|date_format:d.m.Y',
+            'until'       => 'required|date|date_format:d.m.Y',
+        ]);
+    }
+
 }
