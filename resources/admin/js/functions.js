@@ -196,7 +196,7 @@ function initSummernote() {
 function initBrokenImage() {
     $('img').on('error', function () {
         console.log($(this));
-        $(this).attr('src', '/admin/img/child_no_image.jpg');
+        $(this).attr('src', '/images/admin/child_no_image.jpg');
     });
 }
 

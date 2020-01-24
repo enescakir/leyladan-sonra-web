@@ -60,6 +60,13 @@ class ChildController extends Controller
 
         $this->checkSimilarChildren($request->first_name, $request->last_name, $request->similarity_accept);
 
+        if (!(count($request->mediaId) == count($request->mediaName)
+            && count($request->mediaId) == count($request->mediaRatio)
+            && count($request->mediaId) == count($request->mediaFeature))) {
+            session_error("Çocuğun fotoğraflarında bir problem var. Lütfen tekrar yükleyiniz");
+            return redirect()->back()->withInput();
+        }
+
         $data = $request->only([
             'department', 'first_name', 'last_name', 'diagnosis', 'diagnosis_desc', 'taken_treatment', 'child_state',
             'child_state_desc', 'gender', 'meeting_day', 'birthday', 'wish', 'g_first_name', 'g_last_name', 'g_mobile',
