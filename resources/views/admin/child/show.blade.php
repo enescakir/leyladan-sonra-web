@@ -250,7 +250,7 @@
                                     @foreach($child->processes as $process)
                                         <tr>
                                             <td>{{ $process->text }}</td>
-                                            <td>{{ $process->creator->full_name }}</td>
+                                            <td>{{ $process->creator->full_name ?? '-' }}</td>
                                             <td>{{ $process->created_at_label }}</td>
                                         </tr>
                                     @endforeach
