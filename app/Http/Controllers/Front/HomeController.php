@@ -81,7 +81,11 @@ class HomeController extends Controller
 
         if ($blood && $blood->trashed()) {
             $blood->restore();
-
+            $blood->update($request->only([
+                'city',
+                'blood_type',
+                'rh'
+            ]));
             return $this->successMessage("{$blood->city} şehrinde {$blood->blood_type} kan grubuna ihtiyaç durumunda vermiş olduğunuz {$blood->mobile} telefon numarası üzerinden SMS ile bildireceğiz.");
         }
 
