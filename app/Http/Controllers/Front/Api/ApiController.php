@@ -16,8 +16,7 @@ class ApiController extends Controller
 {
     public function children()
     {
-        $data = new \stdClass();
-        $data->children = Child::select('id', 'first_name', 'last_name', 'gift_state', 'faculty_id', 'meeting_day', 'wish')
+        $children = Child::select('id', 'first_name', 'last_name', 'gift_state', 'faculty_id', 'meeting_day', 'wish', 'featured_media_id', 'until', 'meeting_post_id')
             ->where('gift_state', GiftStatus::Waiting)
             ->with(['featuredMedia', 'faculty'])
             ->whereHas('meetingPost', function ($query) {
@@ -27,13 +26,13 @@ class ApiController extends Controller
             ->latest('meeting_day')
             ->get();
 
-        $data->waitGeneralChild = DB::table('children')->where('gift_state', GiftStatus::Waiting)->count();
-        $data->roadGeneralChild = DB::table('children')->where('gift_state', GiftStatus::OnRoad)->count();
-        $data->reachGeneralChild = DB::table('children')->where('gift_state', GiftStatus::Arrived)->count();
-        $data->deliveredGeneralChild = DB::table('children')->where('gift_state', GiftStatus::Delivered)->count();
-        $data->totalChild = DB::table('children')->count();
+        $waitGeneralChild = DB::table('children')->where('gift_state', GiftStatus::Waiting)->count();
+        $roadGeneralChild = DB::table('children')->where('gift_state', GiftStatus::OnRoad)->count();
+        $reachGeneralChild = DB::table('children')->where('gift_state', GiftStatus::Arrived)->count();
+        $deliveredGeneralChild = DB::table('children')->where('gift_state', GiftStatus::Delivered)->count();
+        $totalChild = DB::table('children')->count();
 
-        return $data;
+        return compact('children', 'waitGeneralChild', 'roadGeneralChild', 'reachGeneralChild', 'deliveredGeneralChild', 'totalChild');
     }
 
     public function child($id)
