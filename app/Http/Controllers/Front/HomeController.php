@@ -290,11 +290,15 @@ class HomeController extends Controller
     {
         $child = cache()->remember("child-{$childSlug}", static::SHORT_TERM_MINUTES, function () use ($childSlug) {
             return Child::where('slug', $childSlug)
-                ->with('faculty', 'meetingPost', 'meetingPost.media', 'deliveryPost', 'deliveryPost.media')
+                ->with('faculty', 'faculty.media', 'featuredMedia', 'meetingPost', 'meetingPost.media', 'deliveryPost', 'deliveryPost.media')
                 ->firstOrFail();
         });
 
         if ($child->faculty->slug != $facultySlug) {
+            abort(404);
+        }
+
+        if (!optional($child->meetingPost)->isApproved()) {
             abort(404);
         }
 
