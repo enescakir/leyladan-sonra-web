@@ -292,7 +292,8 @@ class Child extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('optimized')->width(1500)->height(2000)
+        $this->addMediaConversion('optimized')
+            ->fit(Manipulations::FIT_MAX, 1500, 2000)
             ->performOnCollections('verification');
     }
 

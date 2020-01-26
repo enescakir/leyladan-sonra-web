@@ -6,6 +6,7 @@ use EnesCakir\Helper\Traits\BaseActions;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 
@@ -57,7 +58,7 @@ class Material extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('thumb')->width(100)->height(100);
-        $this->addMediaConversion('optimized')->width(300)->height(300);
+        $this->addMediaConversion('thumb')->fit(Manipulations::FIT_CROP, 100, 100);
+        $this->addMediaConversion('optimized')->fit(Manipulations::FIT_CROP, 300, 300);
     }
 }

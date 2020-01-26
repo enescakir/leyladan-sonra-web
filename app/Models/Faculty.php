@@ -173,7 +173,7 @@ class Faculty extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('thumb')->width(100)->height(75);
-        $this->addMediaConversion('optimized')->width(320)->height(240);
+        $this->addMediaConversion('thumb')->fit(Manipulations::FIT_CROP, 100, 75);
+        $this->addMediaConversion('optimized')->fit(Manipulations::FIT_CROP, 320, 240);
     }
 }

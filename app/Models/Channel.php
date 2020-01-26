@@ -64,7 +64,8 @@ class Channel extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('thumb')->width(100)->height(75);
-        $this->addMediaConversion('optimized')->width(400)->height(300);
+
+        $this->addMediaConversion('thumb')->fit(Manipulations::FIT_CROP, 100, 75);
+        $this->addMediaConversion('optimized')->fit(Manipulations::FIT_CROP, 400, 300);
     }
 }
