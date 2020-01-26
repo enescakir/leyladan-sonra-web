@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Enums\GiftStatus;
 use App\Enums\UserRole;
+use App\Models\Question;
 use App\Notifications\MessageReceived as MessageReceivedNotification;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -194,7 +195,11 @@ class HomeController extends Controller
 
     public function sss()
     {
-        return view('front.sss');
+        $questions = cache()->remember('questions', static::LONG_TERM_MINUTES, function () {
+            return Question::orderBy('order', 'DESC')->get();
+        });
+
+        return view('front.sss', compact('questions'));
     }
 
     public function appLanding()
