@@ -29,6 +29,7 @@ Route::get('/cities', 'Front\HomeController@cities')->name('admin.front.cities')
 Route::get('/city/{code}', 'Front\HomeController@city')->name('admin.front.city');
 Route::get('/english.html', 'Front\HomeController@english')->name('front.english');
 Route::get('/kan-bagisi.html', 'Front\HomeController@blood')->name('front.blood');
+Route::get('/kan-bagisi-ayril.html', 'Front\HomeController@bloodDeleteForm')->name('front.blood.delete');
 Route::get('/mobil-uygulama.html', 'Front\HomeController@appLanding')->name('front.landing');
 
 Route::get('/yonetim', 'Front\HomeController@admin')->name('admin');
@@ -38,6 +39,7 @@ Route::middleware(ProtectAgainstSpam::class)->group(function () {
     Route::post('/iletisim', 'Front\HomeController@contactStore')->name('front.contact.store');
     Route::post('/newsletter', 'Front\HomeController@newsletter')->name('front.newsletter');
     Route::post('/kan-bagisi', 'Front\HomeController@bloodStore')->name('front.blood.store');
+    Route::post('/kan-bagisi-ayril', 'Front\HomeController@bloodDelete')->name('front.blood.delete.post');
     Route::post('/{facultySlug}/{childSlug}', 'Front\HomeController@childMessage')->name('front.child.message');
 });
 

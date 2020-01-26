@@ -110,6 +110,37 @@ class HomeController extends Controller
         return $this->errorMessage('Beklenmedik bir sorunla karşılaşıldı.');
     }
 
+    public function bloodDeleteForm()
+    {
+        return view('front.bloodDelete');
+    }
+
+    public function bloodDelete(Request $request)
+    {
+        if ($request->has('g-recaptcha-response')) {
+            $recaptcha_secret = config('services.recaptcha.secret');
+            $recaptcha_response = $request->get('g-recaptcha-response');
+            $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret}&response={$recaptcha_response}");
+
+            $g_response = json_decode($response);
+            if ($g_response->success !== true) {
+                return $this->errorMessage("Robot olmadığınızı doğrulayamadınız");
+            }
+        } else {
+            return $this->errorMessage("Robot olmadığınızı doğrulayamadınız");
+        }
+
+        $mobile = make_mobile($request->mobile);
+        $blood = Blood::where('mobile', $mobile)->first();
+        if ($blood) {
+            $blood->delete();
+
+            return $this->successMessage("Verdiğiniz telefon numarası SMS sistemimizden silinmiştir.");
+        } else {
+            return $this->errorMessage("Verdiğiniz telefon numarası zaten SMS sistemimize kayıtlı değildir.");
+        }
+    }
+
     public function privacy()
     {
         return view('front.privacy');
