@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Front;
 
 use App\Enums\GiftStatus;
+use App\Enums\UserRole;
+use App\Models\Question;
+use App\Notifications\MessageReceived as MessageReceivedNotification;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VolunteerMessageRequest;
@@ -16,8 +20,8 @@ use App\Models\Message;
 use App\Models\Testimonial;
 use App\Models\Blood;
 use App\Models\Sponsor;
-use DB;
-use Carbon\Carbon;
+use Mail;
+use Notification;
 use Newsletter;
 
 class HomeController extends Controller
@@ -32,11 +36,7 @@ class HomeController extends Controller
 
         $children = cache()->remember("home-children-{$page}", static::SHORT_TERM_MINUTES, function () {
             return Child::gift(GiftStatus::Waiting)
-                ->with([
-                    'meetingPost',
-                    'meetingPost.media',
-                    'faculty'
-                ])
+                ->with(['featuredMedia', 'faculty'])
                 ->whereHas('meetingPost', function ($query) {
                     $query->approved();
                 })
@@ -51,7 +51,7 @@ class HomeController extends Controller
     public function news()
     {
         $channels = cache()->remember('channels', static::LONG_TERM_MINUTES, function () {
-            return Channel::with('news')->get();
+            return Channel::with('news', 'media')->get();
         });
 
         return view('front.news', compact('channels'));
@@ -68,7 +68,7 @@ class HomeController extends Controller
             ];
         });
 
-        return view('front.us', compact($counts));
+        return view('front.us', compact('counts'));
     }
 
     public function blood()
@@ -78,12 +78,21 @@ class HomeController extends Controller
 
     public function bloodStore(Request $request)
     {
-        $blood = Blood::where('mobile', $request->mobile)->first();
+        $mobile = make_mobile($request->mobile);
+        $blood = Blood::where('mobile', $mobile)->withTrashed()->first();
+
+        if ($blood && $blood->trashed()) {
+            $blood->restore();
+            $blood->update($request->only([
+                'city',
+                'blood_type',
+                'rh'
+            ]));
+            return $this->successMessage("{$blood->city} şehrinde {$blood->blood_type} kan grubuna ihtiyaç durumunda vermiş olduğunuz {$blood->mobile} telefon numarası üzerinden SMS ile bildireceğiz.");
+        }
+
         if ($blood != null) {
-            return [
-                'alert'   => 'error',
-                'message' => '<span style="font-size: 24px"><br> Verdiğiniz telefon numarası zaten SMS sistemimizde kayıtlı.<br></br></span>'
-            ];
+            return $this->errorMessage('Verdiğiniz telefon numarası zaten SMS sistemimizde kayıtlı.');
         }
 
         $blood = Blood::create(
@@ -96,12 +105,40 @@ class HomeController extends Controller
         );
 
         if ($blood) {
-            $text = "<span style='font-size: 24px'><br>{$blood->city} şehrinde {$blood->blood_type} kan grubuna ihtiyaç durumunda vermiş olduğunuz {$blood->mobile} telefon numarası üzerinden SMS ile bildireceğiz.<br></br></span>";
+            return $this->successMessage("{$blood->city} şehrinde {$blood->blood_type} kan grubuna ihtiyaç durumunda vermiş olduğunuz {$blood->mobile} telefon numarası üzerinden SMS ile bildireceğiz.");
+        }
 
-            return [
-                'alert'   => 'success',
-                'message' => $text
-            ];
+        return $this->errorMessage('Beklenmedik bir sorunla karşılaşıldı.');
+    }
+
+    public function bloodDeleteForm()
+    {
+        return view('front.bloodDelete');
+    }
+
+    public function bloodDelete(Request $request)
+    {
+        if ($request->has('g-recaptcha-response')) {
+            $recaptcha_secret = config('services.recaptcha.secret');
+            $recaptcha_response = $request->get('g-recaptcha-response');
+            $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret}&response={$recaptcha_response}");
+
+            $g_response = json_decode($response);
+            if ($g_response->success !== true) {
+                return $this->errorMessage("Robot olmadığınızı doğrulayamadınız");
+            }
+        } else {
+            return $this->errorMessage("Robot olmadığınızı doğrulayamadınız");
+        }
+
+        $mobile = make_mobile($request->mobile);
+        $blood = Blood::where('mobile', $mobile)->first();
+        if ($blood) {
+            $blood->delete();
+
+            return $this->successMessage("Verdiğiniz telefon numarası SMS sistemimizden silinmiştir.");
+        } else {
+            return $this->errorMessage("Verdiğiniz telefon numarası zaten SMS sistemimize kayıtlı değildir.");
         }
     }
 
@@ -122,51 +159,38 @@ class HomeController extends Controller
 
     public function contactStore(Request $request)
     {
-        $text = '<strong>Ad Soyad: </strong>' . $request->name . '<br>';
-        $text .= '<strong>E-posta: </strong>' . $request->email . '<br>';
-        $text .= '<strong>Telefon: </strong>' . $request->mobile . '<br>';
-        $text .= '<strong>Mesaj: </strong><br>' . $request->message . '<br>';
-        $text .= '<br><br><em>Bu mesaj sitedeki iletişim formu aracılığıyla ' . Carbon::now() . ' tarihinde oluşturulmuştur. </em>';
+        $text = "<strong>Ad Soyad: </strong> . {$request->name} . <br>";
+        $text .= "<strong>E-posta: </strong> . {$request->email} . <br>";
+        $text .= "<strong>Telefon: </strong> . {$request->mobile} . <br>";
+        $text .= "<strong>Mesaj: </strong><br> . {$request->message} . <br>";
+        $text .= "<br><br><em>Bu mesaj sitedeki iletişim formu aracılığıyla " . now() . " tarihinde oluşturulmuştur. </em>";
 
-        \Mail::raw($text, function ($message) {
+        Mail::html($text, function ($message) {
             $message->to('iletisim@leyladansonra.com')
                 ->from('teknik@leyladansonra.com', 'Leyla\'dan Sonra Sistem')
                 ->subject('İletişim Formu');
         });
 
-        $text = "<span style='font-size: 24px'><br>Mesajınız tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong> {$request->email}</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!<br></br></span>";
-
-        return [
-            'alert'   => 'success',
-            'message' => $text
-        ];
+        return $this->successMessage("Mesajınız tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong> {$request->email}</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!");
     }
 
     public function newsletter(Request $request)
     {
-        $text = "<span style='font-size: 24px'><br> Bu e-posta adresi zaten e-posta listemize kayıtlıdır. <br> İyilikle Kalın!<br></br></span>";
-
         if (Newsletter::hasMember($request->email)) {
-            return ['alert' => 'success', 'message' => $text];
+            return $this->successMessage("<strong>{$request->email}</strong> adresi zaten e-posta listemize kayıtlıdır. <br> İyilikle Kalın!");
         }
 
         Newsletter::subscribe($request->email);
 
-        if (Newsletter::lastActionSucceeded()) {
-            $text = '<span style="font-size: 24px"><br><strong>' . $request->email . '</strong> e-posta adresi listemize başarıyla eklendi. <br> İyilikle Kalın!<br></br></span>';
-
-            return ['alert' => 'success', 'message' => $text];
-        } else {
-            $text = '<span style="font-size: 24px"><br Maalesef bir hata ile karşılaşıldı.<br> İyilikle Kalın!<br></br></span>';
-
-            return ['alert' => 'success', 'message' => $text];
-        }
+        return Newsletter::lastActionSucceeded()
+            ? $this->successMessage("<strong>{$request->email}</strong> e-posta adresi listemize başarıyla eklendi. <br> İyilikle Kalın!")
+            : $this->errorMessage("Maalesef bir hata ile karşılaşıldı.<br> İyilikle Kalın!");
     }
 
     public function sponsors()
     {
         $sponsors = cache()->remember('sponsors', static::LONG_TERM_MINUTES, function () {
-            return Sponsor::orderBy('order', 'DESC')->get();
+            return Sponsor::with('media')->orderBy('order', 'DESC')->get();
         });
 
         return view('front.sponsors', compact('sponsors'));
@@ -175,7 +199,7 @@ class HomeController extends Controller
     public function testimonials()
     {
         $testimonials = cache()->remember('testimonials', static::LONG_TERM_MINUTES, function () {
-            return Testimonial::whereNotNull('approved_at')->orderBy('priority', 'DESC')->get();
+            return Testimonial::approved()->orderBy('priority', 'DESC')->get();
         });
 
         return view('front.testimonials', compact('testimonials'));
@@ -183,15 +207,12 @@ class HomeController extends Controller
 
     public function testimonialStore(Request $request)
     {
-        $testimonial = new Testimonial($request->all());
+        $testimonial = new Testimonial($request->only('name', 'text', 'email'));
         $testimonial->via = 'Site';
-        if ($testimonial->save()) {
-            $text = '<span style="font-size: 24px"><br>' . $testimonial->name . ' mesajınız başarıyla alınmıştır.<br></br></span>';
-            return ['alert' => 'success', 'message' => $text];
-        } else {
-            $text = '<span style="font-size: 24px"><br> Bir sorun ile karşılaşıldı :( <br></br></span>';
-            return ['alert' => 'error', 'message' => $text];
-        }
+
+        return $testimonial->save()
+            ? $this->successMessage("<strong>{$testimonial->name}</strong> mesajınız başarıyla alınmıştır.")
+            : $this->errorMessage("Bir sorun ile karşılaşıldı :(");
     }
 
     public function newskit()
@@ -206,12 +227,11 @@ class HomeController extends Controller
 
     public function sss()
     {
-        return view('front.sss');
-    }
+        $questions = cache()->remember('questions', static::LONG_TERM_MINUTES, function () {
+            return Question::orderBy('order', 'DESC')->get();
+        });
 
-    public function blogs()
-    {
-        return view('front.blogs');
+        return view('front.sss', compact('questions'));
     }
 
     public function appLanding()
@@ -224,11 +244,6 @@ class HomeController extends Controller
         });
 
         return view('front.appLanding', compact('counts'));
-    }
-
-    public function blog($name)
-    {
-        return view('front.blog');
     }
 
     public function english()
@@ -247,26 +262,20 @@ class HomeController extends Controller
     public function faculties()
     {
         $faculties = cache()->remember('faculties', static::LONG_TERM_MINUTES, function () {
-            return Faculty::all();
+            return Faculty::with('media')->get();
         });
 
         return view('front.faculties', compact('faculties'));
     }
 
-    public function faculty(Request $request, $facultyName)
+    public function faculty(Request $request, $facultySlug)
     {
-        $faculty = Faculty::slug($facultyName)->firstOrFail();
+        $faculty = Faculty::findBySlugOrFail($facultySlug);
 
         $page = $request->has('page') ? $request->page : '1';
-        $children = cache()->remember("{$facultyName}-children-{$page}", static::SHORT_TERM_MINUTES, function () use ($faculty) {
+        $children = cache()->remember("{$facultySlug}-children-{$page}", static::SHORT_TERM_MINUTES, function () use ($faculty) {
             return $faculty->children()
-                ->with([
-                    'meetingPost',
-                    'meetingPost.media',
-                    'deliveryPost',
-                    'deliveryPost.media',
-                    'faculty'
-                ])
+                ->with(['featuredMedia'])
                 ->whereHas('meetingPost', function ($query) {
                     $query->approved();
                 })
@@ -278,103 +287,90 @@ class HomeController extends Controller
         return view('front.faculty', compact('faculty', 'children'));
     }
 
-    public function child($facultyName, $childSlug)
+    public function child($facultySlug, $childSlug)
     {
-        $child = cache()->remember('child-' . $childSlug, static::SHORT_TERM_MINUTES, function () use ($childSlug) {
-            return Child::where('slug', $childSlug)->with('faculty', 'posts', 'posts.images')->first();
+        $child = cache()->remember("child-{$childSlug}", static::SHORT_TERM_MINUTES, function () use ($childSlug) {
+            return Child::where('slug', $childSlug)
+                ->with('faculty', 'faculty.media', 'featuredMedia', 'meetingPost', 'meetingPost.media', 'deliveryPost', 'deliveryPost.media')
+                ->firstOrFail();
         });
 
-        if ($child == null || $child->faculty->slug != $facultyName) {
+        if ($child->faculty->slug != $facultySlug) {
             abort(404);
         }
 
-        if ($child->until < Carbon::now()) {
+        if (!optional($child->meetingPost)->isApproved()) {
+            abort(404);
+        }
+
+        if (now()->isAfter($child->until)) {
             return view('front.childExpired');
         }
-        $children = cache()->remember('childRandom-' . $childSlug, static::SHORT_TERM_MINUTES, function () {
-            return Child::where('gift_state', 'Bekleniyor')
-                ->with([
-                    'meetingPosts',
-                    'faculty',
-                    'meetingPosts.images' => function ($query) {
-                        $query->where('ratio', '4/3');
-                    }])
-                ->whereHas('posts', function ($query) {
-                    $query->where('type', 'Tanışma')->approved();
+
+        $similarChildren = cache()->remember("childRandom-{$childSlug}", static::SHORT_TERM_MINUTES, function () use ($child) {
+            return Child::where('gift_state', GiftStatus::Waiting)
+                ->with(['faculty', 'featuredMedia'])
+                ->whereHas('meetingPost', function ($query) {
+                    $query->approved();
                 })
-                ->whereHas('posts.images', function ($query) {
-                    $query->where('ratio', '4/3');
-                })
-                ->orderby('meeting_day', 'desc')
+                ->whereDate('until', '>', now())
+                ->where('id', '<>', $child->id)
+                ->latest('meeting_day')
+                ->inRandomOrder()
+                ->limit(12)
                 ->get();
         });
-        $children = $children->random(min(10, $children->count()));
-//        $nextPrev = cache()->remember('childNextPrev-' . $childSlug, 30, function () {
-//            return Child::select('id', 'gift_state', 'slug', 'faculty_id')->with('faculty')->where('gift_state', 'Bekleniyor')->get()->random(2);
-//        });
-        $previousChild = $children->first();
-        $nextChild = $children->last();
 
-        return view('front.child', compact(['child', 'children', 'previousChild', 'nextChild']));
+        $prevChild = $similarChildren->first();
+        $nextChild = $similarChildren->last();
+
+        return view('front.child', compact('child', 'similarChildren', 'prevChild', 'nextChild'));
     }
 
-    public function childMessage(VolunteerMessageRequest $request, $facultyName, $childSlug)
+    public function childMessage(VolunteerMessageRequest $request, $facultySlug, $childSlug)
     {
         $child = Child::where('slug', $childSlug)->with('faculty')->first();
 
         $volunteer = Volunteer::where('email', $request->email)->first();
         if ($volunteer == null) {
-            $volunteer = new Volunteer($request->only(['first_name', 'last_name', 'email', 'mobile', 'city']));
-            $volunteer->save();
+            $volunteer = Volunteer::create($request->only(['first_name', 'last_name', 'email', 'mobile', 'city']));
         }
 
         $chat = Chat::where('volunteer_id', $volunteer->id)->where('child_id', $child->id)->first();
         if ($chat == null) {
-            $chat = new Chat([
+            $chat = Chat::create([
                 'volunteer_id' => $volunteer->id,
                 'faculty_id'   => $child->faculty->id,
                 'child_id'     => $child->id,
                 'via'          => 'Web',
                 'status'       => 'Açık'
             ]);
-            $chat->save();
         }
 
-        $message = new Message(['chat_id' => $chat->id, 'text' => $request->text]);
-        $message->save();
+        $message = Message::create(['chat_id' => $chat->id, 'text' => $request->text]);
 
-//        $users = User::where('faculty_id', $child->faculty->id)->whereIn('title', ['Fakülte Sorumlusu', 'İletişim Sorumlusu'])->get();
-        $users = User::where('faculty_id', $child->faculty->id)->where('title', 'İletişim Sorumlusu')->get();
-        if (count($users) == 0) {
-            $users = User::where('faculty_id', $child->faculty->id)->where('title', 'Fakülte Sorumlusu')->get();
-        }
+        NotificationService::sendMessageReceivedNotification($chat);
 
-        foreach ($users as $user) {
-            \Mail::send('email.admin.newmessage', ['user' => $user, 'volunteer' => $volunteer, 'child' => $child], function ($message) use ($user, $volunteer, $child) {
-                $message
-                    ->to($user->email)
-                    ->from('teknik@leyladansonra.com', 'Leyla\'dan Sonra Sistem')
-                    ->subject('Fakültenizde yeni mesaj var!');
-            });
-        }
+        return $this->successMessage("<strong>{$child->safe_name}</strong> isimli miniğimizin hediyesi ile ilgili talebiniz tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong>{$volunteer->email}</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!");
+    }
 
-        $text = '<span style="font-size: 24px"><br><strong>' . $child->first_name . '</strong> isimli miniğimizin hediyesi ile ilgili talebiniz tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong>' . $volunteer->email . '</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!<br></br></span>';
-
-        return ['alert' => 'success', 'message' => $text];
+    public function admin(Request $request)
+    {
+        return redirect()->route('admin.login');
     }
 
     public function cities()
     {
         $coloredCities = cache()->remember('coloredCities', static::LONG_TERM_MINUTES, function () {
-            $cities = Faculty::all();
+            $faculties = Faculty::all();
             $colored = [];
-            foreach ($cities as $city) {
-                if ($city->started_at == null) {
-                    if (!array_has($colored, $city->code)) {
-                        $colored[$city->code] = '#fcd5ae';
+            foreach ($faculties as $faculty) {
+                if (!$faculty->isStarted()) {
+                    if (!array_has($colored, $faculty->code)) {
+                        $colored[$faculty->code] = '#fcd5ae';
                     }
                 } else {
-                    $colored[$city->code] = '#339999';
+                    $colored[$faculty->code] = '#339999';
                 }
             }
 
@@ -386,8 +382,24 @@ class HomeController extends Controller
 
     public function city($code)
     {
-        $cities = Faculty::where('code', $code)->get();
+        $faculties = Faculty::where('code', $code)->get();
 
-        return $cities;
+        return $faculties;
+    }
+
+    private function successMessage($message)
+    {
+        return [
+            'alert'   => 'success',
+            'message' => "<span style='font-size: 24px; padding: 10px;'>{$message}</span>"
+        ];
+    }
+
+    private function errorMessage($message)
+    {
+        return [
+            'alert'   => 'error',
+            'message' => "<span style='font-size: 24px; padding: 10px;'>{$message}</span>"
+        ];
     }
 }

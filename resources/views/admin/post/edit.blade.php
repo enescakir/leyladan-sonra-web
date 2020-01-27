@@ -74,6 +74,15 @@
                             <th>Ekstra Bilgi</th>
                             <td>{{ $post->child->extra_info }}</td>
                         </tr>
+                        <tr>
+                            <th>Site Bağlantısı</th>
+                            <td>
+                                <a target="_blank"
+                                   href="{{ route("front.child", [$post->child->faculty->slug, $post->child->slug]) }}">
+                                    {{ route("front.child", [$post->child->faculty->slug, $post->child->slug], false) }}
+                                </a>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

@@ -11,12 +11,19 @@ class SponsorFilter extends Filter
 
     protected function download()
     {
-        $mapper = function ($item) {
-            $item->logo = $item->logo_url;
-            return $item;
+        $name = "LS_DestekVerenler_" . date('d_m_Y');
+        $mapper = function ($item, $key) {
+            return [
+                'ID'          => $item->id,
+                'Ad'          => $item->name,
+                'Bağlantı'    => $item->link,
+                'Logo'        => $item->logo_url,
+                'Sıralama'    => $item->order,
+                'Oluşturulma' => $item->created_at,
+            ];
         };
 
-        Sponsor::download($this->builder, $mapper);
+        $this->builder->download($name, $mapper);
     }
 
 }

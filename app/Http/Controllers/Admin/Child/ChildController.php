@@ -45,10 +45,10 @@ class ChildController extends Controller
     {
         $this->authorize('create', Child::class);
 
-        $faculties = Faculty::toSelect('Fakülte seçiniz');
-        $users = auth()->user()->faculty->toUsersSelect();
-        $diagnosises = Diagnosis::toSelect('Tanı seçiniz');
-        $departments = Department::toSelect('Departman seçiniz');
+        $faculties = Faculty::toSelect('Fakülte seçiniz', 'full_name', 'id', 'name');
+        $users = auth()->user()->faculty->users()->toSelect(null, 'full_name', 'id', 'first_name');
+        $diagnosises = Diagnosis::toSelect('Tanı seçiniz', 'name', 'name');
+        $departments = Department::toSelect('Departman seçiniz', 'name', 'name');
         $categories = WishCategory::toSelect('Dilek kategorisi seçiniz');
 
         return view('admin.child.create', compact('faculties', 'users', 'diagnosises', 'departments', 'categories'));
@@ -59,6 +59,13 @@ class ChildController extends Controller
         $this->authorize('create', Child::class);
 
         $this->checkSimilarChildren($request->first_name, $request->last_name, $request->similarity_accept);
+
+        if (!(count($request->mediaId) == count($request->mediaName)
+            && count($request->mediaId) == count($request->mediaRatio)
+            && count($request->mediaId) == count($request->mediaFeature))) {
+            session_error("Çocuğun fotoğraflarında bir problem var. Lütfen tekrar yükleyiniz");
+            return redirect()->back()->withInput();
+        }
 
         $data = $request->only([
             'department', 'first_name', 'last_name', 'diagnosis', 'diagnosis_desc', 'taken_treatment', 'child_state',
@@ -114,10 +121,10 @@ class ChildController extends Controller
     {
         $this->authorize('update', $child);
 
-        $faculties = Faculty::toSelect('Fakülte seçiniz');
-        $users = auth()->user()->faculty->toUsersSelect();
-        $diagnosises = Diagnosis::toSelect('Tanı seçiniz');
-        $departments = Department::toSelect('Departman seçiniz');
+        $faculties = Faculty::toSelect('Fakülte seçiniz', 'full_name', 'id', 'name');
+        $users = auth()->user()->faculty->users()->toSelect(null, 'full_name', 'id', 'first_name');
+        $diagnosises = Diagnosis::toSelect('Tanı seçiniz', 'name', 'name');
+        $departments = Department::toSelect('Departman seçiniz', 'name', 'name');
         $categories = WishCategory::toSelect('Dilek kategorisi seçiniz');
 
         return view('admin.child.edit',
@@ -127,6 +134,7 @@ class ChildController extends Controller
     public function update(Request $request, Child $child)
     {
         $this->authorize('update', $child);
+        $this->validateResource($request);
 
         $data = $request->only([
             'department', 'first_name', 'last_name', 'diagnosis', 'diagnosis_desc', 'taken_treatment', 'child_state',
@@ -137,10 +145,14 @@ class ChildController extends Controller
         $data['is_name_public'] = $request->has('is_name_public');
         $data['is_diagnosis_public'] = $request->has('is_diagnosis_public');
         $child->update($data);
+        $child->updateSlug();
 
         $child->users()->sync($request->users);
 
-        $child->meetingPost->change($request, 'meeting');
+        $post = $child->meetingPost;
+        $post->change($request, 'meeting');
+        $child->meetingPost()->associate($post);
+        $child->save();
 
         if ($request->has('has_delivery_post') && $request->delivery_text && trim(strip_tags($request->delivery_text))) {
             $post = $child->deliveryPost;
@@ -149,11 +161,17 @@ class ChildController extends Controller
             $child->save();
         }
 
+        if (!$child->featuredMedia) {
+            $child->featuredMedia()->associate($child->meetingPost->getFirstMedia());
+            $child->save();
+        }
+
         if ($request->hasFile('verification_doc')) {
             $child->addVerificationDoc($request->file('verification_doc'));
         }
 
-        session_success("<strong>{$child->full_name}</strong> başarıyla güncellendi.");
+        $url = route("front.child", [$child->faculty->slug, $child->slug]);
+        session_success("<strong>{$child->full_name}</strong> başarıyla güncellendi. <a href='{$url}' class='text-bold' target='_blank' >Sitede görüntüle</a>");
 
         return redirect()->route('admin.child.edit', $child->id);
     }
@@ -206,4 +224,14 @@ class ChildController extends Controller
         return Child::query()->where('first_name', 'like', "%{$first_name}%")
             ->where('last_name', 'like', "%{$last_name}%")->with('users', 'faculty')->get();
     }
+
+    private function validateResource(Request $request, $isUpdate = false)
+    {
+        $this->validate($request, [
+            'meeting_day' => 'required|date|date_format:d.m.Y',
+            'birthday'    => 'required|date|date_format:d.m.Y',
+            'until'       => 'required|date|date_format:d.m.Y',
+        ]);
+    }
+
 }

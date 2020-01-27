@@ -13,16 +13,15 @@ class CreateTestimonialsTable extends Migration
     public function up()
     {
         Schema::create('testimonials', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->longtext('text');
             $table->string('email')->nullable();
             $table->string('via');
             $table->integer('priority')->unsigned()->default(1);
-            $table->timestamps();
-            $table->softDeletes();
-            BaseActions($table);
-            Approval($table);
+
+            $table->approval();
+            $table->baseActions();
         });
 
     }

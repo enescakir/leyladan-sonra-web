@@ -69,7 +69,7 @@
                             @forelse ($posts as $post)
                                 <tr id="post-{{ $post->id }}">
                                     <td>{{ $post->id }}</td>
-                                    <td>{{ $post->child->full_name ?? '-' }} <strong>({{ $post->child->id ?? '-' }}
+                                    <td class="text-nowrap">{{ $post->child->full_name ?? '-' }} <strong>({{ $post->child->id ?? '-' }}
                                             )</strong></td>
                                     <td>{{ $post->child->faculty->name ?? '-' }}</td>
                                     <td>{{ $post->type }}</td>
@@ -84,7 +84,7 @@
                                             </div>
                                         @endforeach
                                     </td>
-                                    <td>{!! $post->text !!}</td>
+                                    <td class="post-column">{!! $post->text !!}</td>
                                     <td id="post-{{ $post->id }}-status">{!! $post->approval_label !!}</td>
                                     <td>
                                         <div class="btn-group">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Management;
 
 use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
 use App\Models\Role;
@@ -31,17 +32,15 @@ class FacultyEmailController extends Controller
     {
         $this->authorize('sendFaculty', [User::class, $faculty]);
 
+        $roles = $request->roles;
         $sender = auth()->user();
-
-        $users = $faculty->users()->withGraduateds()->withLefts()->role($request->roles)->get();
-        $users->push(User::find(1));
         $subject = $request->subject;
         $body = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i", '<$1$2>',
             strip_tags($request->body, '<p><br><i><b><u><ul><li><ol><h1><h2><h3><h4><h5><a>'));
 
-        Notification::send($users, new FacultyInformNotification($subject, $body, $sender->full_name));
+        $notifiables = NotificationService::sendFacultyInformNotification($faculty, $roles, $sender, $subject, $body);
 
-        session_success("{$users->count()} kişiye başarılı bir şekilde e-posta gönderildi");
+        session_success($notifiables->count() . " kişiye başarılı bir şekilde e-posta gönderildi");
 
         return redirect()->back();
     }

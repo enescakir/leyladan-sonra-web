@@ -11,6 +11,16 @@ class DepartmentFilter extends Filter
 
     protected function download()
     {
-        Department::download($this->builder);
+        $name = "LS_Departman_" . date('d_m_Y');
+        $mapper = function ($item, $key) {
+            return [
+                'ID'          => $item->id,
+                'Ad'          => $item->name,
+                'Açıklama'    => $item->desc,
+                'Oluşturulma' => $item->created_at,
+            ];
+        };
+
+        $this->builder->download($name, $mapper);
     }
 }

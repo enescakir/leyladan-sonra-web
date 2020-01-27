@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasMediaTrait;
 use EnesCakir\Helper\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 
@@ -17,7 +17,6 @@ class Faculty extends Model implements HasMedia
     use BaseActions;
     use Filterable;
     use HasMediaTrait;
-    use Downloadable;
     use HasSlug;
 
     // Properties
@@ -69,26 +68,6 @@ class Faculty extends Model implements HasMedia
     public function children()
     {
         return $this->hasMany(Child::class);
-    }
-
-    // Methods
-    public static function toSelect($placeholder = null)
-    {
-        $result = static::orderBy('name')->pluck('name', 'id')->map(function ($name) {
-            return "{$name} Tıp Fakültesi";
-        });
-        return $placeholder
-            ? collect(['' => $placeholder])->union($result)
-            : $result;
-    }
-
-    public function toUsersSelect($placeholder = null)
-    {
-        $result = $this->users()->orderBy('first_name')->get(['id', 'faculty_id', 'first_name', 'last_name'])
-            ->pluck('full_name', 'id');
-        return $placeholder
-            ? collect(['' => $placeholder])->union($result)
-            : $result;
     }
 
     // Scopes
@@ -173,7 +152,7 @@ class Faculty extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('thumb')->width(100)->height(75);
-        $this->addMediaConversion('optimized')->width(320)->height(240);
+        $this->addMediaConversion('thumb')->fit(Manipulations::FIT_CROP, 100, 75);
+        $this->addMediaConversion('optimized')->fit(Manipulations::FIT_CROP, 320, 240);
     }
 }

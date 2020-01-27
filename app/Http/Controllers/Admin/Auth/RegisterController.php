@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -49,7 +50,7 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm()
     {
-        $faculties = Faculty::toSelect();
+        $faculties = Faculty::toSelect(null, 'full_name', 'id', 'name');
         $roles = Role::toSelect();
         return view('admin.auth.register', compact('faculties', 'roles'));
     }
@@ -58,7 +59,8 @@ class RegisterController extends Controller
     {
         $this->guard()->logout();
         session_info('E-posta adresinize doğrulama kodu gönderilmiştir.');
-        $user->sendEmailActivationNotification();
+        NotificationService::sendEmailActivationNotification($user);
+
         return redirect($this->redirectPath());
     }
 

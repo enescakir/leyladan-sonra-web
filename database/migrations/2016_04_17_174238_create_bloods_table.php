@@ -13,14 +13,13 @@ class CreateBloodsTable extends Migration
     public function up()
     {
         Schema::create('bloods', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->enum('blood_type', ['A', 'B', 'AB', '0']);
             $table->boolean('rh');
             $table->string('mobile')->unique();
             $table->string('city')->nullable();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+
+            $table->baseActions();
         });
     }
 

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Auth;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -25,7 +28,6 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = '/admin/login';
-    protected $redirectAfterLogout = '/admin/login';
 
     /**
      * Create a new controller instance.
@@ -56,9 +58,13 @@ class LoginController extends Controller
      */
     protected function authenticated($request, $user)
     {
-        if ($user->email_token != null) {
+        if ($user->hasRole(UserRole::Left)) {
+            session_info('Projeden ayrılan üyeler sisteme giriş yapamazlar. <br> Bir sorun olduğunu düşünüyorsanız fakülte sorumlunuzla görüşünüz.');
+            $this->guard()->logout();
+            return back()->withInput($request->only('email', 'remember'));
+        } elseif ($user->email_token != null) {
             session_info('E-posta adresinizi doğrulamamışsınız. <br> Doğrulama kodu e-postanıza tekrardan gönderildi.');
-            $user->sendEmailActivationNotification();
+            NotificationService::sendEmailActivationNotification($user);
             $this->guard()->logout();
             return back()->withInput($request->only('email', 'remember'));
         } elseif ($user->approved_at == null) {
@@ -74,5 +80,10 @@ class LoginController extends Controller
             $user->save();
             return redirect()->intended(route('admin.dashboard'));
         }
+    }
+
+    protected function loggedOut(Request $request)
+    {
+        return redirect()->route('admin.login');
     }
 }

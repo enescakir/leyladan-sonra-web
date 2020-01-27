@@ -13,25 +13,23 @@ class CreateNewsTable extends Migration
     public function up()
     {
         Schema::create('channels', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('logo');
             $table->string('category');
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+
+            $table->baseActions();
 
         });
 
         Schema::create('news', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('title');
             $table->text('desc');
             $table->string('link');
-            $table->integer('channel_id')->unsigned();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+            $table->bigInteger('channel_id')->unsigned();
+
+            $table->baseActions();
 
             $table->foreign('channel_id')->references('id')->on('channels');
 

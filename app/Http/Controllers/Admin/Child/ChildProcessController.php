@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Child;
 
 use App\Enums\GiftStatus;
 use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 use App\Services\ProcessService;
 use App\Services\FeedService;
 use Illuminate\Http\Request;
@@ -35,7 +36,7 @@ class ChildProcessController extends Controller
             $child->gift_state = GiftStatus::Arrived;
             $child->save();
 
-            Notification::send($child->users, new GiftArrivedNotification($child));
+            NotificationService::sendGiftArrivedNotification($child);
 
             $this->feedService->create($child->faculty, FeedType::GiftArrived, ['child' => $child->full_name]);
         } elseif ($process->type == ProcessType::VolunteerFound) {

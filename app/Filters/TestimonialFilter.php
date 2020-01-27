@@ -11,6 +11,19 @@ class TestimonialFilter extends Filter
 
     protected function download()
     {
-        Testimonial::download($this->builder);
+        $name = "LS_Referanslar_" . date('d_m_Y');
+        $mapper = function ($item, $key) {
+            return [
+                'ID'          => $item->id,
+                'Ad'          => $item->name,
+                'Metin'       => $item->text,
+                'E-posta'     => $item->email,
+                'Öncelik'     => $item->priority,
+                'Oluşturulma' => $item->created_at,
+            ];
+        };
+
+        $this->builder->download($name, $mapper);
     }
+
 }

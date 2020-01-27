@@ -63,7 +63,7 @@
                                     <td>{{ $message->id }}</td>
                                     <td>{{ $message->sender->full_name ?? '-' }}</td>
                                     <td>{{ $message->receiver_count }}</td>
-                                    <td>{{ $message->message }}</td>
+                                    <td class="post-column">{{ $message->message }}</td>
                                 </tr>
                             @empty
                                     @include('admin.partials.noDataRow')

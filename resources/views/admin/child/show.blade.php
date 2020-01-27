@@ -126,6 +126,13 @@
                 <!-- /.box-body -->
 
             </div>
+
+            <a class="btn btn-success btn-block margin-bottom"
+               target="_blank"
+               href="{{ route("front.child", [$child->faculty->slug, $child->slug]) }}"
+            >
+                <i class="fa fa-globe"></i> Sitede Göster
+            </a>
             @can('update', $child)
                 <a href="{{ route('admin.child.edit', $child->id) }}" class="btn btn-primary btn-block margin-bottom">
                     <i class="fa fa-edit"></i> Düzenle
@@ -243,7 +250,7 @@
                                     @foreach($child->processes as $process)
                                         <tr>
                                             <td>{{ $process->text }}</td>
-                                            <td>{{ $process->creator->full_name }}</td>
+                                            <td>{{ $process->creator->full_name ?? '-' }}</td>
                                             <td>{{ $process->created_at_label }}</td>
                                         </tr>
                                     @endforeach

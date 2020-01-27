@@ -14,9 +14,9 @@ class AddPostIdsToChild extends Migration
     public function up()
     {
         Schema::table('children', function (Blueprint $table) {
-            $table->integer('meeting_post_id')->nullable()->unsigned();
+            $table->bigInteger('meeting_post_id')->nullable()->unsigned();
             $table->foreign('meeting_post_id')->references('id')->on('posts');
-            $table->integer('delivery_post_id')->nullable()->unsigned();
+            $table->bigInteger('delivery_post_id')->nullable()->unsigned();
             $table->foreign('delivery_post_id')->references('id')->on('posts');
 
         });

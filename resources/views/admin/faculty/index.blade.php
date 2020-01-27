@@ -63,7 +63,7 @@
                             <th>Üye Sayısı</th>
                             <th>Durum</th>
                             <th>Yöneticiler</th>
-                            <th class="two-button">İşlem</th>
+                            <th class="three-button">İşlem</th>
                         @endslot
 
                         @slot('body')
@@ -93,6 +93,12 @@
                                     <td>{{ $faculty->managers->implode('full_name', ', ') }}</td>
                                     <td>
                                         <div class="btn-group">
+                                            <a class="btn btn-success btn-xs"
+                                               target="_blank"
+                                               href="{{ route("front.faculty", [$faculty->slug]) }}"
+                                            >
+                                                <i class="fa fa-globe"></i>
+                                            </a>
                                             @can('view', $faculty)
                                                 <a class="show btn btn-primary btn-xs"
                                                    href="{{ route("admin.faculty.show", [$faculty->id]) }}"
@@ -111,7 +117,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                    @include('admin.partials.noDataRow')
+                                @include('admin.partials.noDataRow')
                             @endforelse
                         @endslot
                     @endcomponent

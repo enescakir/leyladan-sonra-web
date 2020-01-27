@@ -13,25 +13,22 @@ class CreatePostsTable extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('child_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('child_id')->unsigned();
             $table->longtext('text')->nullable();
             $table->string('type');
-            $table->timestamps();
-            BaseActions($table);
-            Approval($table);
-            $table->softDeletes();
+            $table->approval();
+            $table->baseActions();
             $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');
         });
 
         Schema::create('post_images', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('ratio');
-            $table->integer('post_id')->unsigned();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+            $table->bigInteger('post_id')->unsigned();
+
+            $table->baseActions();
 
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });

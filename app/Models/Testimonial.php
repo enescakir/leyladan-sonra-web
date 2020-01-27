@@ -4,7 +4,6 @@ namespace App\Models;
 
 use EnesCakir\Helper\Traits\Approvable;
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,7 +12,6 @@ class Testimonial extends Model
     use BaseActions;
     use Approvable;
     use Filterable;
-    use Downloadable;
 
     // Properties
     protected $table = 'testimonials';

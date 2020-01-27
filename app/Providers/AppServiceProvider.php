@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Macros\RouteMacro;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -11,6 +9,7 @@ use Auth;
 use App\CacheManagers\ChildCacheManager;
 use App\CacheManagers\FacultyCacheManager;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        view()->composer('front.parent', function ($view) {
+        view()->composer('front.layouts.app', function ($view) {
             $view->with([
                 'totalChildren'  => ChildCacheManager::count(),
                 'totalFaculties' => FacultyCacheManager::count()
@@ -55,5 +54,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
     }
 }

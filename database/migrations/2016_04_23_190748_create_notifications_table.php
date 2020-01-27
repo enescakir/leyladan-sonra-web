@@ -13,17 +13,16 @@ class CreateNotificationsTable extends Migration
     public function up()
     {
         Schema::create('notifications', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('title');
             $table->string('desc')->nullable();
             $table->string('icon');
             $table->datetime('done_at')->nullable();
-            $table->integer('done_by')->unsigned()->nullable();
+            $table->bigInteger('done_by')->unsigned()->nullable();
             $table->string('link')->nullable();
-            $table->integer('faculty_id')->unsigned();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+            $table->bigInteger('faculty_id')->unsigned();
+
+            $table->baseActions();
 
             $table->foreign('faculty_id')->references('id')->on('faculties');
             $table->foreign('done_by')->references('id')->on('users')->onDelete('set null');

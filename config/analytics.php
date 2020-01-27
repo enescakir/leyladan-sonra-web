@@ -17,7 +17,7 @@ return [
      * The amount of minutes the Google API responses will be cached.
      * If you set this to zero, the responses won't be cached at all.
      */
-    'cache_lifetime_in_minutes' => 60 * 24,
+    'cache_lifetime_in_minutes' => 60 * 12,
 
     /*
      * Here you may configure the "store" that the underlying Google_Client will
@@ -27,6 +27,6 @@ return [
      * Optional parameters: "lifetime", "prefix"
      */
     'cache' => [
-        'store' => 'file',
+        'store' => env('CACHE_DRIVER', 'file'),
     ],
 ];

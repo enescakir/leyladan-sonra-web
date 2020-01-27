@@ -71,7 +71,7 @@ $style = [
                     <tr>
                         <td style="{{ $style['email-masthead'] }}">
                             <a style="{{ $fontFamily }} {{ $style['email-masthead_name'] }}" href="{{ url('/') }}" target="_blank">
-                                <img src="http://www.leyladansonra.com/resources/admin/media/logo_login.png" width="200" alt="" border="0">
+                                <img src="{{ admin_img('logo_login.png') }}" width="200" alt="" border="0">
                             </a>
                         </td>
                     </tr>

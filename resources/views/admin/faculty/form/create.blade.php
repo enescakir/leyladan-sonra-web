@@ -45,7 +45,7 @@
                             <h4>
                                 Örnek Onam Formu
                             </h4>
-                            <img style="width: 100%;" src="{{ admin_asset("img/form_sample.jpg") }}">
+                            <img style="width: 100%;" src="{{ admin_img("form_sample.jpg") }}">
 
                         </div>
                     </div>

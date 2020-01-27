@@ -18,7 +18,7 @@
 @section('content')
     <!-- Small boxes (Stat box) -->
     <div class="row">
-        <div class="col-lg-2 col-xs-4">
+        <div class="col-lg-2 col-sm-4 col-xs-6">
             <!-- small box -->
             <div class="small-box bg-aqua">
                 <div class="inner">
@@ -31,7 +31,7 @@
             </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-2 col-xs-4">
+        <div class="col-lg-2 col-sm-4 col-xs-6">
             <!-- small box -->
             <div class="small-box bg-red">
                 <div class="inner">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-2 col-xs-4">
+        <div class="col-lg-2 col-sm-4 col-xs-6">
             <!-- small box -->
             <div class="small-box bg-yellow">
                 <div class="inner">
@@ -57,7 +57,7 @@
             </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-2 col-xs-4">
+        <div class="col-lg-2 col-sm-4 col-xs-6">
             <!-- small box -->
             <div class="small-box bg-green">
                 <div class="inner">
@@ -70,7 +70,7 @@
             </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-2 col-xs-4">
+        <div class="col-lg-2 col-sm-4 col-xs-6">
             <!-- small box -->
             <div class="small-box bg-orange">
                 <div class="inner">
@@ -83,7 +83,7 @@
             </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-2 col-xs-4">
+        <div class="col-lg-2 col-sm-4 col-xs-6">
             <!-- small box -->
             <div class="small-box bg-purple">
                 <div class="inner">
@@ -101,7 +101,7 @@
 
     <!-- Main row -->
     <div class="row">
-        <section class="col-lg-6">
+        <section class="col-lg-6 ">
             <!-- Map Box -->
             <div class="box bg-gray-light">
                 <div class="box-header">
@@ -157,7 +157,7 @@
                 <!-- /.box-body-->
                 <div class="box-footer no-border text-black">
                     <div class="row">
-                        <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
+                        <div class="col-sm-3 col-xs-6 text-center" style="border-right: 1px solid #f4f4f4">
                             <h3>
                                 {{ $childCounts['faculty'][App\Enums\GiftStatus::Waiting] ?? 0 }} /
                                 {{ $childCounts['general'][App\Enums\GiftStatus::Waiting] ?? 0 }}
@@ -165,7 +165,7 @@
                             <div class="knob-label label bg-red">Beklenen</div>
                         </div>
                         <!-- ./col -->
-                        <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
+                        <div class="col-sm-3 col-xs-6 text-center" style="border-right: 1px solid #f4f4f4">
                             <h3>
                                 {{ $childCounts['faculty'][App\Enums\GiftStatus::OnRoad] ?? 0 }} /
                                 {{ $childCounts['general'][App\Enums\GiftStatus::OnRoad] ?? 0 }}
@@ -173,7 +173,7 @@
                             <div class="knob-label label bg-yellow">Yolda</div>
                         </div>
                         <!-- ./col -->
-                        <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
+                        <div class="col-sm-3 col-xs-6 text-center" style="border-right: 1px solid #f4f4f4">
                             <h3>
                                 {{ $childCounts['faculty'][App\Enums\GiftStatus::Arrived] ?? 0 }} /
                                 {{ $childCounts['general'][App\Enums\GiftStatus::Arrived] ?? 0 }}
@@ -181,7 +181,7 @@
                             <div class="knob-label label bg-aqua">Bize Ulaşan</div>
                         </div>
                         <!-- ./col -->
-                        <div class="col-xs-3 text-center">
+                        <div class="col-sm-3 col-xs-6 text-center">
                             <h3>
                                 {{ $childCounts['faculty'][App\Enums\GiftStatus::Delivered] ?? 0 }} /
                                 {{ $childCounts['general'][App\Enums\GiftStatus::Delivered] ?? 0 }}
@@ -207,9 +207,9 @@
             <div class="box box-info">
                 <div class="box-header">
                     <h3 class="box-title">Güncel Fakülte Bildirimleri</h3>
-{{--                    <div class="box-tools pull-right">--}}
-{{--                        <a type="button" class="btn btn-sm btn-primary">Tüm Bildirimler</a>--}}
-{{--                    </div>--}}
+                    {{--                    <div class="box-tools pull-right">--}}
+                    {{--                        <a type="button" class="btn btn-sm btn-primary">Tüm Bildirimler</a>--}}
+                    {{--                    </div>--}}
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body no-padding">
@@ -218,14 +218,18 @@
                             <tbody>
                             @forelse( App\CacheManagers\CacheManager::feeds(auth()->user()->faculty_id, 17)  as $feed)
                                 <tr>
-                                    <td style="display: flex;"><div style="margin-right: 8px;">{!! $feed->icon_label !!}</div> <div>{{ $feed->desc }}</div></td>
+                                    <td style="display: flex;">
+                                        <div style="margin-right: 8px;">{!! $feed->icon_label !!}</div>
+                                        <div>{{ $feed->desc }}</div>
+                                    </td>
                                     <td class="text-nowrap">{{ $feed->creator ? $feed->creator->full_name : '-' }}</td>
                                     <td class="text-nowrap text-muted text-sm">{{ $feed->created_at_human }}</td>
                                 </tr>
                             @empty
                                 <tr>
                                     <td class="text-center" colspan="20">
-                                        <p style="font-size: 80px; line-height: 1; margin: 10px;"><i class="fa fa-exclamation-triangle"></i></p>
+                                        <p style="font-size: 80px; line-height: 1; margin: 10px;"><i
+                                                    class="fa fa-exclamation-triangle"></i></p>
                                         <p style="font-size: 24px;">Bildirim bulunmamaktadır</p>
                                     </td>
                                 </tr>
@@ -266,10 +270,10 @@
 
 @section('scripts')
     <!-- Full Calendar -->
-    <script src="{{ admin_asset('js/fullcalendar.min.js') }}" type="text/javascript"></script>
+    <script src="{{ admin_js('fullcalendar.min.js') }}" type="text/javascript"></script>
 
     <!-- JQVMap -->
-    <script src="{{ admin_asset('js/jqvmap.min.js') }}" type="text/javascript"></script>
+    <script src="{{ admin_js('jqvmap.min.js') }}" type="text/javascript"></script>
 
     <!-- Custom Scripts -->
     <script type="text/javascript">

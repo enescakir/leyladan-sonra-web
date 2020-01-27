@@ -7,11 +7,13 @@ use EnesCakir\Helper\Base\Filter;
 
 class PostFilter extends Filter
 {
-    protected $filters = ['faculty_id', 'type', 'approval', 'search', 'download'];
+    protected $filters = ['faculty_id', 'child_id', 'type', 'approval', 'search', 'download'];
 
-    protected function faculty_id($faculty_id)
+    protected function facultyId($value)
     {
-        return $this->builder->faculty($faculty_id);
+        return $this->builder->whereHas('child', function ($query) use ($value) {
+            $query->where('faculty_id', $value);
+        });
     }
 
     protected function approval($approval)
@@ -21,6 +23,19 @@ class PostFilter extends Filter
 
     protected function download()
     {
-        Post::download($this->builder);
+        $name = "LS_Yazi_" . date('d_m_Y');
+        $mapper = function ($item, $key) {
+            return [
+                'ID'          => $item->id,
+                'Çocuk'       => $item->child->full_name,
+                'Tip'         => $item->type,
+                'Metin'       => $item->text,
+                'Onay'        => $item->approved_at,
+                'Oluşturulma' => $item->created_at,
+            ];
+        };
+
+        $this->builder->with('child')->download($name, $mapper);
     }
+
 }

@@ -11,6 +11,17 @@ class DiagnosisFilter extends Filter
 
     protected function download()
     {
-        Diagnosis::download($this->builder);
+        $name = "LS_Tanı_" . date('d_m_Y');
+        $mapper = function ($item, $key) {
+            return [
+                'ID'          => $item->id,
+                'Ad'          => $item->name,
+                'Kategory'    => $item->category,
+                'Açıklama'    => $item->desc,
+                'Oluşturulma' => $item->created_at,
+            ];
+        };
+
+        $this->builder->download($name, $mapper);
     }
 }

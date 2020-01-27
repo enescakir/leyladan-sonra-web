@@ -1,5 +1,5 @@
 {
-  "name": "enescakir/leyladan-sonra",
+  "name": "enescakir/leyladan-sonra-web",
   "description": "Leyla'dan Sonra Web Application",
   "keywords": [
     "leyladan",
@@ -11,11 +11,11 @@
   "license": "MIT",
   "type": "project",
   "require": {
-    "php": "^7.2",
-    "aws/aws-sdk-php": "^3.130",
+    "php": "^7.3",
+    "aws/aws-sdk-php": "^3.133",
     "barryvdh/laravel-snappy": "^0.4.3",
     "doctrine/dbal": "^2.10",
-    "enescakir/laravel-helper": "0.2.4",
+    "enescakir/laravel-helper": "0.2.7",
     "fideloper/proxy": "^4.0",
     "guzzlehttp/guzzle": "^6.5",
     "intervention/image": "^2.5",
@@ -27,8 +27,9 @@
     "laravelcollective/html": "^6.0",
     "maatwebsite/excel": "^3.1",
     "sentry/sentry-laravel": "^1.5",
-    "spatie/laravel-analytics": "^3.6",
+    "spatie/laravel-analytics": "^3.8",
     "spatie/laravel-backup": "^6.7",
+    "spatie/laravel-honeypot": "^1.4",
     "spatie/laravel-medialibrary": "^7.0.0",
     "spatie/laravel-newsletter": "^4.7",
     "spatie/laravel-permission": "^3.0",

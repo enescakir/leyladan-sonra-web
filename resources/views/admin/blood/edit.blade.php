@@ -46,7 +46,7 @@
                     <div class="form-group{{ $errors->has('blood_type') ? ' has-error' : '' }}">
                         {!! Form::label('blood_type', 'Kan Grubu *', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-9">
-                            <div class="btn-group" data-toggle="buttons">
+                            <div class="btn-group btn-group-justified" data-toggle="buttons">
                                 <label class="btn btn-ls @if($blood->blood_type == 'A') active @endif">
                                     {!! Form::radio('blood_type', 'A',  null) !!} A
                                 </label>
@@ -66,7 +66,7 @@
                     <div class="form-group{{ $errors->has('rh') ? ' has-error' : '' }}">
                         {!! Form::label('rh', 'RH *', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-9">
-                            <div class="btn-group" data-toggle="buttons">
+                            <div class="btn-group btn-group-justified" data-toggle="buttons">
                                 <label class="btn btn-ls @if($blood->rh == '1') active @endif">
                                     {!! Form::radio('rh', '1',  null) !!} Pozitif
                                 </label>

@@ -1,68 +1,6 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Admin Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-// Routes to later refactoring
-/*
-Route::prefix('vote')->group(function () {
-    Route::get('/', 'Admin\Miscellaneous\DashboardController@vote')->name('vote');
-    Route::post('/', 'Admin\Miscellaneous\DashboardController@voteStore')->name('vote.store');
-});
-
-Route::prefix('statistic')->as('statistics.')->group(function () {
-    Route::get('volunteer', 'Admin\Miscellaneous\StatisticController@volunteer')->name('volunteer');
-    Route::get('volunteer/messages', 'Admin\Miscellaneous\StatisticController@volunteersAndMessages')
-         ->name('volunteer.messages');
-
-    Route::get('faculty', 'Admin\Miscellaneous\StatisticController@faculty')->name('faculty');
-
-    Route::get('social/facebook', 'Admin\Miscellaneous\StatisticController@facebook')->name('facebook');
-    Route::get('social/facebook/{id}', 'Admin\Miscellaneous\StatisticController@facebookPost')->name('facebook.post');
-
-    Route::prefix('website')->group(function () {
-        Route::get('/', 'Admin\Miscellaneous\StatisticController@website')->name('website');
-        Route::get('/visitors', 'Admin\Miscellaneous\StatisticController@websiteVisitors')->name('website.visitors');
-        Route::get('/active', 'Admin\Miscellaneous\StatisticController@websiteActive')->name('website.active');
-    });
-
-    Route::get('child', 'Admin\Miscellaneous\StatisticController@child')->name('child');
-    Route::get('child/department', 'Admin\Miscellaneous\StatisticController@childDepartment')->name('child.department');
-
-    Route::prefix('blood')->group(function () {
-        Route::get('/', 'Admin\Miscellaneous\StatisticController@blood')->name('blood');
-        Route::get('/rh', 'Admin\Miscellaneous\StatisticController@bloodRh')->name('blood.rh');
-        Route::get('/type', 'Admin\Miscellaneous\StatisticController@bloodType')->name('blood.type');
-    });
-
-    Route::get('user', 'Admin\Miscellaneous\StatisticController@user')->name('user');
-    Route::get('user/horoscope', 'Admin\Miscellaneous\StatisticController@userHoroscope')->name('user.horoscope');
-
-    Route::get('children/count/general', 'Admin\Miscellaneous\StatisticController@children_by_general')
-         ->name('children.count.general');
-    Route::get('children/count/faculty/{id}', 'Admin\Miscellaneous\StatisticController@children_by_faculty')
-         ->name('children.count.faculty');
-});
-*/
-
-
-/*
-|--------------------------------------------------------------------------
-| Refactored Routes
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/', function () {
-    return redirect('/admin/login');
-})->name('home');
+Route::get('/', 'Admin\HomeController@index')->name('home');
 
 Route::prefix('dashboard')->group(function () {
     Route::get('/', 'Admin\Miscellaneous\DashboardController@index')->name('dashboard');
@@ -142,9 +80,6 @@ Route::prefix('chat')->as('chat.')->group(function () {
     });
 });
 Route::resource('chat', 'Admin\Volunteer\ChatController');
-
-//Route::resource('message', 'Admin\Volunteer\MessageController');
-
 Route::resource('volunteer', 'Admin\Volunteer\VolunteerController');
 
 
@@ -161,7 +96,7 @@ Route::prefix('faculty')->as('faculty.')->group(function () {
         Route::resource('email', 'Admin\Management\FacultyEmailController')->only(['create', 'store']);
         Route::resource('user', 'Admin\Management\FacultyUserController')->parameters([
             'user' => 'any_user'
-        ]);
+        ])->only(['index', 'edit']);
     });
 });
 Route::resource('faculty', 'Admin\Management\FacultyController');
@@ -256,5 +191,4 @@ Route::prefix('statistic')->as('statistic.')->group(function () {
     Route::get('blood', 'Admin\Miscellaneous\StatisticController@blood')->name('blood');
     Route::get('user', 'Admin\Miscellaneous\StatisticController@user')->name('user');
     Route::get('website', 'Admin\Miscellaneous\StatisticController@website')->name('website');
-
 });

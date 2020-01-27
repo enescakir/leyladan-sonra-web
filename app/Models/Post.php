@@ -6,7 +6,6 @@ use App\Enums\PostType;
 use App\Services\ProcessService;
 use EnesCakir\Helper\Traits\Approvable;
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasMediaTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +21,6 @@ class Post extends Model implements HasMedia
     }
     use HasMediaTrait;
     use Filterable;
-    use Downloadable;
 
     // Properties
     protected $table = 'posts';
@@ -63,7 +61,7 @@ class Post extends Model implements HasMedia
     public function scopeSearch($query, $search)
     {
         $query->where(function ($query2) use ($search) {
-            $query2->where('id', $search)
+            $query2->where('posts.id', $search)
                 ->orWhere('text', 'like', '%' . $search . '%')
                 ->orWhereHas('child', function ($query3) use ($search) {
                     $query3->search($search);
@@ -117,6 +115,7 @@ class Post extends Model implements HasMedia
                 $request->mediaFeature[$suffix]);
         }
 
+        return $this;
     }
 
     public function addTempMedia($ids, $names, $ratios, $features)
@@ -135,8 +134,8 @@ class Post extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('thumb')->fit(Manipulations::FIT_CONTAIN, 200, 200);
-        $this->addMediaConversion('medium')->fit(Manipulations::FIT_CONTAIN, 500, 1000);
-        $this->addMediaConversion('large')->fit(Manipulations::FIT_CONTAIN, 1000, 1000);
+        $this->addMediaConversion('thumb')->width(200)->height(200);
+        $this->addMediaConversion('medium')->width(500)->height(1000);
+        $this->addMediaConversion('large')->width(1000)->height(1000);
     }
 }

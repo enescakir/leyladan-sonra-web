@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,7 +10,6 @@ class WishCategory extends Model
 {
     use BaseActions;
     use Filterable;
-    use Downloadable;
 
     // Properties
     protected $table = 'wish_categories';
@@ -31,14 +29,4 @@ class WishCategory extends Model
                 ->orWhere('desc', 'like', '%' . $search . '%');
         });
     }
-
-    // Global Methods
-    public static function toSelect($placeholder = null)
-    {
-        $result = static::orderBy('name')->pluck('name', 'id');
-        return $placeholder
-            ? collect(['' => $placeholder])->union($result)
-            : $result;
-    }
-
 }

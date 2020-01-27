@@ -65,7 +65,7 @@
 <p class="text-justify">{{ $text }}</p>
 <p class="desc noindent">[Kutucuğu <span class="strong">✔</span> (evet) olarak işaretlerseniz o bilginin paylaşılmasını
     onaylamış,<br><span class="strong">✘</span> (hayır) olarak işaretlerseniz onaylamamış olursunuz.]
-    <img src="{{ admin_asset('img/form_options.jpg') }}">
+    <img src="{{ admin_img('form_options.jpg') }}">
 <p class="nomargin noindent text-justify">Leyla'dan Sonra Projesi'nde yer almayı ve iznim dahilindeki bilgilerin
     internet sitesi
     (www.leyladansonra.com), ilişkili sosyal medya hesaplarında (Facebook, Twitter, Instagram, Youtube)

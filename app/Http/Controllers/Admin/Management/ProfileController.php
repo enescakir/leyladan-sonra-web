@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Management;
 use App\Filters\ChildFilter;
 use App\Filters\UserFilter;
 use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -17,7 +18,7 @@ class ProfileController extends Controller
 
     public function index(UserFilter $filters)
     {
-        $users = auth()->user()->faculty->users()->filter($filters)->with('roles')->orderBy('first_name')->safePaginate();
+        $users = auth()->user()->faculty->users()->filter($filters)->with('roles', 'media')->orderBy('first_name')->safePaginate();
 
         return view('admin.profile.index', compact('users'));
     }
@@ -26,7 +27,7 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        $children = auth()->user()->children()->filter($filters)->safePaginate();
+        $children = auth()->user()->children()->filter($filters)->with('faculty')->safePaginate();
 
         return view('admin.profile.show', compact('children', 'user'));
 
@@ -56,7 +57,8 @@ class ProfileController extends Controller
 
         if ($user->isDirty('email')) {
             $user->approved_at = null;
-            $user->sendEmailActivationNotification();
+            $user->save();
+            NotificationService::sendEmailActivationNotification($user);
         }
         $user->save();
 

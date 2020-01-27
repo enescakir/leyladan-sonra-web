@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasMobile;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +12,6 @@ class Volunteer extends Model
     use BaseActions;
     use HasMobile;
     use Filterable;
-    use Downloadable;
 
     // Properties
     protected $table = 'volunteers';

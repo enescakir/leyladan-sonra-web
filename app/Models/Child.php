@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enums\PostType;
 use Carbon\Carbon;
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasBirthday;
 use EnesCakir\Helper\Traits\HasSlug;
@@ -23,7 +22,6 @@ class Child extends Model implements HasMedia
     use BaseActions;
     use HasBirthday;
     use Filterable;
-    use Downloadable;
     use HasSlug;
     use HasMediaTrait;
 
@@ -229,6 +227,13 @@ class Child extends Model implements HasMedia
         return date('d.m.Y', strtotime($this->attributes['until']));
     }
 
+    public function getSafeNameAttribute()
+    {
+        return $this->attributes['is_name_public']
+            ? $this->attributes['first_name']
+            : "Minik {$this->id}";
+    }
+
     // Mutators
     public function setMeetingDayAttribute($date)
     {
@@ -248,6 +253,13 @@ class Child extends Model implements HasMedia
             : null;
     }
 
+    public function setSlugAttribute($slug)
+    {
+        $this->attributes['slug'] = $this->is_name_public
+            ? $slug
+            : "minik-{$this->id}";
+    }
+
     public function setGMobileAttribute($g_mobile)
     {
         return $this->attributes['g_mobile'] = make_mobile($g_mobile);
@@ -261,6 +273,18 @@ class Child extends Model implements HasMedia
         $this->save();
     }
 
+    public function getSlugValues()
+    {
+        $values = collect();
+        foreach ($this->slugKeys as $key) {
+            if (array_key_exists($key, $this->attributes) && ($value = $this->attributes[$key])) {
+                $values->push($value);
+            }
+        }
+
+        return $values;
+    }
+
     public function registerMediaCollections()
     {
         $this->addMediaCollection('verification')->useDisk('verification')->singleFile();
@@ -268,7 +292,8 @@ class Child extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('optimized')->fit(Manipulations::FIT_CONTAIN, 1500, 2000)
+        $this->addMediaConversion('optimized')
+            ->fit(Manipulations::FIT_MAX, 1500, 2000)
             ->performOnCollections('verification');
     }
 

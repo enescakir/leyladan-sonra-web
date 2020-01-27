@@ -13,7 +13,7 @@ class CreateFacultiesTable extends Migration
     public function up()
     {
         Schema::create('faculties', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('slug');
             $table->string('latitude')->nullable();
@@ -22,8 +22,6 @@ class CreateFacultiesTable extends Migration
             $table->string('city');
             $table->string('code')->nullable();
             $table->date('started_at')->nullable();
-            $table->softDeletes();
-            $table->timestamps();
         });
     }
 

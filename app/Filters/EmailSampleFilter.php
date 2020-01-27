@@ -11,6 +11,17 @@ class EmailSampleFilter extends Filter
 
     protected function download()
     {
-        EmailSample::download($this->builder);
+        $name = "LS_Eposta_Ornekleri_" . date('d_m_Y');
+        $mapper = function ($item, $key) {
+            return [
+                'ID'          => $item->id,
+                'Ad'          => $item->name,
+                'Kategori'    => $item->category,
+                'Metin'       => $item->text,
+                'Oluşturulma' => $item->created_at,
+            ];
+        };
+
+        $this->builder->download($name, $mapper);
     }
 }

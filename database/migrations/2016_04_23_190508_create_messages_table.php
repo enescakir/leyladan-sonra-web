@@ -14,16 +14,15 @@ class CreateMessagesTable extends Migration
     {
 
         Schema::create('chats', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('volunteer_id')->unsigned();
-            $table->integer('faculty_id')->unsigned()->nullable();
-            $table->integer('child_id')->unsigned()->nullable();
+            $table->bigIncrements('id');
+            $table->bigInteger('volunteer_id')->unsigned();
+            $table->bigInteger('faculty_id')->unsigned()->nullable();
+            $table->bigInteger('child_id')->unsigned()->nullable();
             $table->string('via');
             $table->string('status');
-            $table->timestamps();
-            $table->softDeletes();
 
-            BaseActions($table);
+            $table->baseActions();
+
             $table->foreign('volunteer_id')->references('id')->on('volunteers')->onDelete('cascade');
             $table->foreign('child_id')->references('id')->on('children')->onDelete('cascade');
             $table->foreign('faculty_id')->references('id')->on('faculties')->onDelete('cascade');
@@ -31,12 +30,12 @@ class CreateMessagesTable extends Migration
         });
 
         Schema::create('messages', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('chat_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('chat_id')->unsigned();
             $table->longtext('text');
-            $table->integer('answered_by')->unsigned()->nullable();
+            $table->bigInteger('answered_by')->unsigned()->nullable();
             $table->datetime('answered_at')->nullable();
-            $table->integer('sent_by')->unsigned()->nullable();
+            $table->bigInteger('sent_by')->unsigned()->nullable();
             $table->datetime('sent_at')->nullable();
             $table->timestamps();
             $table->foreign('chat_id')->references('id')->on('chats')->onDelete('cascade');

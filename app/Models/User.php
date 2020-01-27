@@ -4,10 +4,10 @@ namespace App\Models;
 
 use App\Enums\GiftStatus;
 use App\Enums\ProcessType;
+use App\Enums\UserRole;
 use Carbon\Carbon;
 use EnesCakir\Helper\Traits\Approvable;
 use EnesCakir\Helper\Traits\BaseActions;
-use EnesCakir\Helper\Traits\Downloadable;
 use EnesCakir\Helper\Traits\Filterable;
 use EnesCakir\Helper\Traits\HasBirthday;
 use EnesCakir\Helper\Traits\HasMediaTrait;
@@ -35,7 +35,6 @@ class User extends Authenticatable implements HasMedia
     use HasRoles;
     use HasMediaTrait;
     use Filterable;
-    use Downloadable;
 
     // Properties
     protected $table = 'users';
@@ -46,14 +45,6 @@ class User extends Authenticatable implements HasMedia
     protected $hidden = ['password', 'remember_token'];
     protected $appends = ['full_name', 'photo_small_url', 'photo_url', 'photo_large_url'];
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'birthday', 'left_at', 'graduated_at', 'approved_at'];
-    protected $with = ['media'];
-
-    public static function boot()
-    {
-        parent::boot();
-        // static::addGlobalScope(new GraduateScope);
-        static::addGlobalScope(new LeftScope);
-    }
 
     // Relations
     public function children()
@@ -116,7 +107,13 @@ class User extends Authenticatable implements HasMedia
     // Accessors
     public function getFullNameAttribute()
     {
-        return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+        $name = $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+        if ($this->attributes['graduated_at'] ?? false) {
+            $name = $name . " (M)";
+        } else if ($this->attributes['left_at'] ?? false) {
+            $name = $name . " (A)";
+        }
+        return $name;
     }
 
     public function getRoleDisplayAttribute()
@@ -216,36 +213,10 @@ class User extends Authenticatable implements HasMedia
         return $this->save();
     }
 
-    public static function toSelect($placeholder = null)
-    {
-        $res = static::orderBy('first_name')->get()->pluck('full_name', 'id');
-        return $placeholder
-            ? collect(['' => $placeholder])->union($res)
-            : $res;
-    }
-
     // Notifications
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
-    }
-
-    public function sendEmailActivationNotification()
-    {
-        $token = hash_hmac('sha256', str_random(40), $this->email);
-        $this->email_token = $token;
-        $this->save();
-        $this->notify(new ActivateEmailNotification($token));
-    }
-
-    public function sendNewUserNotification($user)
-    {
-        $this->notify(new NewUserNotification($user));
-    }
-
-    public function sendApprovedUserNotification()
-    {
-        $this->notify(new ApprovedUserNotification());
     }
 
 
@@ -257,8 +228,8 @@ class User extends Authenticatable implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('small')->fit(Manipulations::FIT_CROP, 64, 64)->performOnCollections('profile');;
-        $this->addMediaConversion('medium')->fit(Manipulations::FIT_CROP, 256, 256)->performOnCollections('profile');;
-        $this->addMediaConversion('large')->fit(Manipulations::FIT_CROP, 512, 512)->performOnCollections('profile');;
+        $this->addMediaConversion('small')->fit(Manipulations::FIT_CROP, 64, 64)->performOnCollections('profile');
+        $this->addMediaConversion('medium')->fit(Manipulations::FIT_CROP, 256, 256)->performOnCollections('profile');
+        $this->addMediaConversion('large')->fit(Manipulations::FIT_CROP, 512, 512)->performOnCollections('profile');
     }
 }

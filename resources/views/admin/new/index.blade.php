@@ -62,7 +62,7 @@
                                 <tr id="new-{{ $new->id }}">
                                     <td>{{ $new->id }}</td>
                                     <td>{{ $new->title }}</td>
-                                    <td>{{ $new->desc }}</td>
+                                    <td class="post-column">{{ $new->desc }}</td>
                                     <td>{{ $new->channel->name }}</td>
                                     <td>
                                         <div class="btn-group">

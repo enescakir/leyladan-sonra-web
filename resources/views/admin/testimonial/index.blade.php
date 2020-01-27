@@ -89,7 +89,7 @@
                                     <td>{{ $testimonial->email }}</td>
                                     <td>{{ $testimonial->priority }}</td>
                                     <td>{{ $testimonial->via }}</td>
-                                    <td>{{ $testimonial->text }}</td>
+                                    <td class="post-column">{{ $testimonial->text }}</td>
                                     <td>
                                         <div class="btn-group">
                                             <button id="approval-testimonial-{{ $testimonial->id }}"

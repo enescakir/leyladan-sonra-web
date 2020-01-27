@@ -13,15 +13,14 @@ class CreateFeedsTable extends Migration
     public function up()
     {
         Schema::create('feeds', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('title');
+            $table->bigIncrements('id');
+            $table->string('role')->nullable();
             $table->string('desc')->nullable();
-            $table->string('icon');
+            $table->string('type');
             $table->string('link')->nullable();
-            $table->integer('faculty_id')->unsigned();
-            $table->timestamps();
-            BaseActions($table);
-            $table->softDeletes();
+            $table->bigInteger('faculty_id')->unsigned();
+
+            $table->baseActions();
 
             $table->foreign('faculty_id')->references('id')->on('faculties');
         });
