@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Auth;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -63,7 +64,7 @@ class LoginController extends Controller
             return back()->withInput($request->only('email', 'remember'));
         } elseif ($user->email_token != null) {
             session_info('E-posta adresinizi doğrulamamışsınız. <br> Doğrulama kodu e-postanıza tekrardan gönderildi.');
-            $user->sendEmailActivationNotification();
+            NotificationService::sendEmailActivationNotification($user);
             $this->guard()->logout();
             return back()->withInput($request->only('email', 'remember'));
         } elseif ($user->approved_at == null) {

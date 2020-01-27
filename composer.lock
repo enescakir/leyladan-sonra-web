@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9337e18baf51adcabbb7643d295ac7fb",
+    "content-hash": "946ce3d49057c6d4fbc1e9309929f134",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -829,20 +829,21 @@
         },
         {
             "name": "enescakir/laravel-helper",
-            "version": "0.2.4",
+            "version": "v0.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/enescakir/laravel-helper.git",
-                "reference": "d6a70d380f51b7e74f0db6e3ac931905f5247678"
+                "reference": "9a425feffe5a1d7a3fe8c3a9e534237253d54c27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/enescakir/laravel-helper/zipball/d6a70d380f51b7e74f0db6e3ac931905f5247678",
-                "reference": "d6a70d380f51b7e74f0db6e3ac931905f5247678",
+                "url": "https://api.github.com/repos/enescakir/laravel-helper/zipball/9a425feffe5a1d7a3fe8c3a9e534237253d54c27",
+                "reference": "9a425feffe5a1d7a3fe8c3a9e534237253d54c27",
                 "shasum": ""
             },
             "require": {
-                "laravel/framework": "^6.0"
+                "laravel/framework": "^6.0",
+                "maatwebsite/excel": "^3.1"
             },
             "type": "library",
             "extra": {
@@ -871,10 +872,10 @@
             ],
             "description": "It includes basic helpers for Laravel Projects",
             "support": {
-                "source": "https://github.com/enescakir/laravel-helper/tree/v0.2.4",
+                "source": "https://github.com/enescakir/laravel-helper/tree/v0.2.7",
                 "issues": "https://github.com/enescakir/laravel-helper/issues"
             },
-            "time": "2019-12-29T10:26:07+00:00"
+            "time": "2020-01-27T18:53:49+00:00"
         },
         {
             "name": "fideloper/proxy",

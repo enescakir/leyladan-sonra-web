@@ -6,6 +6,7 @@ use App\Enums\GiftStatus;
 use App\Enums\UserRole;
 use App\Models\Question;
 use App\Notifications\MessageReceived as MessageReceivedNotification;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VolunteerMessageRequest;
@@ -348,13 +349,7 @@ class HomeController extends Controller
 
         $message = Message::create(['chat_id' => $chat->id, 'text' => $request->text]);
 
-        $users = $chat->faculty->users()->role(UserRole::Relation)->get();
-        if (!$users) {
-            $users = $chat->faculty->users()->role(UserRole::FacultyManager)->get();
-        }
-
-        Notification::send($users, new MessageReceivedNotification($child, $volunteer, $chat));
-
+        NotificationService::sendMessageReceivedNotification($chat);
 
         return $this->successMessage("<strong>{$child->safe_name}</strong> isimli miniğimizin hediyesi ile ilgili talebiniz tarafımıza ulaştırmıştır.<br>İlgili arkadaşlarımız vermiş olduğunuz <strong>{$volunteer->email}</strong> e-posta adresi üzerinden sizinle iletişime geçecektir. <br> İyilikle Kalın!");
     }

@@ -18,11 +18,11 @@ class MessageReceived extends Notification implements ShouldQueue
     protected $volunteer;
     protected $chat;
 
-    public function __construct(Child $child, Volunteer $volunteer, Chat $chat)
+    public function __construct(Chat $chat)
     {
-        $this->child = $child;
-        $this->volunteer = $volunteer;
         $this->chat = $chat;
+        $this->child = $chat->child;
+        $this->volunteer = $chat->volunteer;
     }
 
     public function via($notifiable)

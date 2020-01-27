@@ -45,10 +45,10 @@ class ChildController extends Controller
     {
         $this->authorize('create', Child::class);
 
-        $faculties = Faculty::toSelect('Fakülte seçiniz');
-        $users = auth()->user()->faculty->toUsersSelect();
-        $diagnosises = Diagnosis::toSelect('Tanı seçiniz');
-        $departments = Department::toSelect('Departman seçiniz');
+        $faculties = Faculty::toSelect('Fakülte seçiniz', 'full_name', 'id', 'name');
+        $users = auth()->user()->faculty->users()->toSelect(null, 'full_name', 'id', 'first_name');
+        $diagnosises = Diagnosis::toSelect('Tanı seçiniz', 'name', 'name');
+        $departments = Department::toSelect('Departman seçiniz', 'name', 'name');
         $categories = WishCategory::toSelect('Dilek kategorisi seçiniz');
 
         return view('admin.child.create', compact('faculties', 'users', 'diagnosises', 'departments', 'categories'));
@@ -121,10 +121,10 @@ class ChildController extends Controller
     {
         $this->authorize('update', $child);
 
-        $faculties = Faculty::toSelect('Fakülte seçiniz');
-        $users = auth()->user()->faculty->toUsersSelect();
-        $diagnosises = Diagnosis::toSelect('Tanı seçiniz');
-        $departments = Department::toSelect('Departman seçiniz');
+        $faculties = Faculty::toSelect('Fakülte seçiniz', 'full_name', 'id', 'name');
+        $users = auth()->user()->faculty->users()->toSelect(null, 'full_name', 'id', 'first_name');
+        $diagnosises = Diagnosis::toSelect('Tanı seçiniz', 'name', 'name');
+        $departments = Department::toSelect('Departman seçiniz', 'name', 'name');
         $categories = WishCategory::toSelect('Dilek kategorisi seçiniz');
 
         return view('admin.child.edit',

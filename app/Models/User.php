@@ -213,40 +213,10 @@ class User extends Authenticatable implements HasMedia
         return $this->save();
     }
 
-    public static function toSelect($placeholder = null)
-    {
-        $res = static::orderBy('first_name')->get()->pluck('full_name', 'id');
-        return $placeholder
-            ? collect(['' => $placeholder])->union($res)
-            : $res;
-    }
-
     // Notifications
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
-    }
-
-    public function sendEmailActivationNotification()
-    {
-        $token = hash_hmac('sha256', str_random(40), $this->email);
-        $this->email_token = $token;
-        $this->save();
-        $this->notify(new ActivateEmailNotification($token));
-    }
-
-    public function sendNewUserNotification($user)
-    {
-        $this->notify(new NewUserNotification($user));
-    }
-
-    public function sendApprovedUserNotification()
-    {
-        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            return;
-        }
-
-        $this->notify(new ApprovedUserNotification());
     }
 
 

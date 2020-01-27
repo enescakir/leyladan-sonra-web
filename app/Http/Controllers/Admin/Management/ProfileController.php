@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Management;
 use App\Filters\ChildFilter;
 use App\Filters\UserFilter;
 use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -56,7 +57,8 @@ class ProfileController extends Controller
 
         if ($user->isDirty('email')) {
             $user->approved_at = null;
-            $user->sendEmailActivationNotification();
+            $user->save();
+            NotificationService::sendEmailActivationNotification($user);
         }
         $user->save();
 
