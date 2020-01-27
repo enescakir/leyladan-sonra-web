@@ -50,7 +50,7 @@
                     <div class="row">
                         <div class="col-md-6 form-group{{ $errors->has('diagnosis') ? ' has-error' : '' }}">
                             {!! Form::label('diagnosis', 'Tanı *', ['class' => 'control-label']) !!}
-                            {!! Form::select('diagnosis', $diagnosises, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+                            {!! Form::select('diagnosis', $diagnosises, null, ['class' => 'form-control', 'required' => 'required']) !!}
                             <small class="text-danger">{{ $errors->first('diagnosis') }}</small>
                         </div>
                         <div class="col-md-6 form-group{{ $errors->has('diagnosis_desc') ? ' has-error' : '' }}">
@@ -122,7 +122,8 @@
                             {!! Form::label('until', 'Son Yayın Tarihi *', ['class' => 'control-label']) !!}
                             {!! Form::text('until', $child->until_label, ['class' => 'form-control date-mask date-picker', 'required' => 'required']) !!}
                             <small class="text-danger">{{ $errors->first('until') }}</small>
-                            <small class="text-dark">Bu tarihten sonra çocuğumuz sitede gözükmez. Çocuğumuzun görüntülenmesini istiyorsanız ileri bir tarih seçiniz.</small>
+                            <small class="text-dark">Bu tarihten sonra çocuğumuz sitede gözükmez. Çocuğumuzun
+                                görüntülenmesini istiyorsanız ileri bir tarih seçiniz.</small>
                         </div>
                     </div>
                     <div class="row">
@@ -140,7 +141,7 @@
                         </div>
                         <div class="col-md-6 form-group{{ $errors->has('wish_category_id') ? ' has-error' : '' }}">
                             {!! Form::label('wish_category_id', 'Dilek Kategorisi', ['class' => 'control-label']) !!}
-                            {!! Form::select('wish_category_id', $categories, null, ['class' => 'form-control select2']) !!}
+                            {!! Form::select('wish_category_id', $categories, null, ['class' => 'form-control']) !!}
                             <small class="text-danger">{{ $errors->first('wish_category_id') }}</small>
                         </div>
                     </div>
@@ -365,6 +366,43 @@
             $('input[name="mediaFeature[]"]').val('0');
             $('#media-' + id + ' input[name="mediaFeature[]"]').val('1');
             setFeaturedMedia(id, 'feature-tmp-btn');
+        });
+    </script>
+    <script>
+        var diagnosisDescriptions = {!! json_encode(\App\Models\Diagnosis::get()->pluck('desc', 'name')) !!};
+        var wishDescriptions = {!! json_encode(\App\Models\WishCategory::get()->pluck('desc', 'id')) !!};
+
+        function formatWishCategory(state) {
+            if (!state.id) {
+                return state.text;
+            }
+
+            return wishDescriptions[state.id]
+                ? $('<span>' + state.text + '<br><span class="option-description">- ' + wishDescriptions[state.id] + '</span></span>')
+                : state.text;
+        }
+
+        function formatDiagnosis(state) {
+            if (!state.id) {
+                return state.text;
+            }
+
+            return diagnosisDescriptions[state.id]
+                ? $('<span>' + state.text + '<br><span class="option-description">- ' + diagnosisDescriptions[state.id] + '</span></span>')
+                : state.text;
+        }
+
+        $(function () {
+            $("#wish_category_id").select2({
+                width: '100%',
+                templateResult: formatWishCategory,
+            });
+
+            $("#diagnosis").select2({
+                width: '100%',
+                templateResult: formatDiagnosis,
+            });
+
         });
     </script>
 @endsection

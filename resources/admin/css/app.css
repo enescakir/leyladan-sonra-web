@@ -17,6 +17,11 @@
     top: 0px;
 }
 
+.option-description {
+    font-size: 70%;
+    color: #777;
+}
+
 @media (max-width: 768px) {
     .box-tools {
         width: 100%;
