@@ -1,7 +1,6 @@
 {
   "name": "enescakir/leyladan-sonra-web",
   "description": "Leyla'dan Sonra Web Application",
-  "version": "v3.1.0",
   "keywords": [
     "leyladan",
     "sonra",
@@ -16,7 +15,7 @@
     "aws/aws-sdk-php": "^3.133",
     "barryvdh/laravel-snappy": "^0.4.3",
     "doctrine/dbal": "^2.10",
-    "enescakir/laravel-helper": "0.2.4",
+    "enescakir/laravel-helper": "0.2.7",
     "fideloper/proxy": "^4.0",
     "guzzlehttp/guzzle": "^6.5",
     "intervention/image": "^2.5",

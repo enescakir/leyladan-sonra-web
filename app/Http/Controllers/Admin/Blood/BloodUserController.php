@@ -18,7 +18,7 @@ class BloodUserController extends Controller
     {
         $this->authorize('auth', Blood::class);
 
-        $users = User::toSelect();
+        $users = User::toSelect(null, 'full_name', 'id', 'first_name');
         $responsibles = User::role('blood')->get()->pluck('id');
 
         return view('admin.blood.people', compact('users', 'responsibles'));

@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\Admin\Child;
 
-use App\Enums\UserRole;
 use App\Filters\PostFilter;
 use App\Http\Controllers\Controller;
-use App\Notifications\GiftDelivered;
-use App\Notifications\GiftDelivered as GiftDeliveredNotification;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Enums\PostType;
-use Notification;
 
 class PostController extends Controller
 {
@@ -48,8 +45,7 @@ class PostController extends Controller
         if ($request->approval) {
             $post->approve();
             if ($post->type == PostType::Delivery) {
-                $users = $post->child->faculty->users()->role(UserRole::Relation)->get();
-                Notification::send($users, new GiftDeliveredNotification($post->child));
+                NotificationService::sendGiftDeliveredNotification($post->child);
             }
         }
 
@@ -72,8 +68,7 @@ class PostController extends Controller
         $post->approve($request->approval);
 
         if ($request->approval && $post->type == PostType::Delivery) {
-            $users = $post->child->faculty->users()->role(UserRole::Relation)->get();
-            Notification::send($users, new GiftDeliveredNotification($post->child));
+            NotificationService::sendGiftDeliveredNotification($post->child);
         }
 
         return api_success([

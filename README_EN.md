@@ -1,4 +1,4 @@
-<p align="center"><a href="http://www.leyladansonra.com"><img src="http://www.leyladansonra.com/resources/front/images/logo@2x.png" style="width:80%;"></a></p>
+<p align="center"><a href="http://www.leyladansonra.com"><img src="https://www.leyladansonra.com/images/front/logo@2x.png" style="width:80%;"></a></p>
 
 ## Leyla'dan Sonra Web Application [[Türkçe](https://github.com/EnesCakir/leyladan-sonra-web/blob/master/README.md)]
 `This project is actively under development`

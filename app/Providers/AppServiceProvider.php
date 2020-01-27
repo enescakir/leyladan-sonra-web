@@ -55,15 +55,5 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
 
-        Builder::macro('download', function ($name, $mapper = null) {
-            $elements = $this->get();
-
-            if (is_callable($mapper)) {
-                $elements = $elements->map($mapper);
-            }
-
-            abort($elements->downloadExcel("{$name}.xlsx", null, true));
-        });
-
     }
 }

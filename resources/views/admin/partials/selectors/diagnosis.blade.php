@@ -4,7 +4,7 @@
         'class'     => 'btn-default',
         'icon'      => 'fa fa-stethoscope',
         'current'   => request()->diagnosis,
-        'values'    => App\Models\Diagnosis::toSelect('Hepsi'),
+        'values'    => App\Models\Diagnosis::toSelect('Hepsi', 'name', 'name'),
         'default'   => 'Tanı',
         'parameter' => 'diagnosis',
         'menu_class' => 'scrollable-menu',

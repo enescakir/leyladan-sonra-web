@@ -29,14 +29,4 @@ class WishCategory extends Model
                 ->orWhere('desc', 'like', '%' . $search . '%');
         });
     }
-
-    // Global Methods
-    public static function toSelect($placeholder = null)
-    {
-        $result = static::orderBy('name')->pluck('name', 'id');
-        return $placeholder
-            ? collect(['' => $placeholder])->union($result)
-            : $result;
-    }
-
 }

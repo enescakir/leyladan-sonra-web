@@ -70,27 +70,6 @@ class Faculty extends Model implements HasMedia
         return $this->hasMany(Child::class);
     }
 
-    // Methods
-    public static function toSelect($placeholder = null)
-    {
-        $result = static::orderBy('name')->pluck('name', 'id')->map(function ($name) {
-            return "{$name} Tıp Fakültesi";
-        });
-        return $placeholder
-            ? collect(['' => $placeholder])->union($result)
-            : $result;
-    }
-
-    public function toUsersSelect($placeholder = null)
-    {
-        $result = $this->users()->orderBy('first_name')->without('media')->get(['id', 'faculty_id', 'first_name', 'last_name', 'graduated_at', 'left_at'])
-            ->pluck('full_name', 'id');
-
-        return $placeholder
-            ? collect(['' => $placeholder])->union($result)
-            : $result;
-    }
-
     // Scopes
     public function scopeStarted($query, $started = true)
     {

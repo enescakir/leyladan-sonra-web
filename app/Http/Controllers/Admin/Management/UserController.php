@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Management;
 use App\Filters\UserFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Faculty;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
@@ -31,7 +32,7 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
 
-        $faculties = Faculty::toSelect('Fakülte seçiniz');
+        $faculties = Faculty::toSelect('Fakülte seçiniz', 'full_name', 'id', 'name');
         $roles = Role::toSelect('Görev seçiniz', null);
 
         return view('admin.user.create', compact('faculties', 'roles'));
@@ -49,7 +50,7 @@ class UserController extends Controller
         $user->changeRole($request->role);
         session_success("<strong>{$user->full_name}</strong> başarıyla oluşturuldu. <br><strong>{$user->email}</strong> e-posta adresine doğrulama kodu gönderildi");
         $user->approve();
-        $user->sendEmailActivationNotification();
+        NotificationService::sendEmailActivationNotification($user);
 
         return redirect()->to(request('redirect', route('admin.user.index')));
     }
@@ -66,7 +67,7 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
-        $faculties = Faculty::toSelect('Fakülte seçiniz');
+        $faculties = Faculty::toSelect('Fakülte seçiniz', 'full_name', 'id', 'name');
         $roles = Role::toSelect('Görev seçiniz', null);
 
         return view('admin.user.edit', compact('user', 'faculties', 'roles'));
@@ -86,7 +87,8 @@ class UserController extends Controller
         ]));
         if ($user->isDirty('email')) {
             $user->approved_at = null;
-            $user->sendEmailActivationNotification();
+            $user->save();
+            NotificationService::sendEmailActivationNotification($user);
         }
         if ($user->isDirty('faculty_id')) {
             $user->children()->detach();
@@ -126,7 +128,7 @@ class UserController extends Controller
         $user->approve($request->approval);
 
         if ($request->approval) {
-            $user->sendApprovedUserNotification();
+            NotificationService::sendApprovedUserNotification($user);
         }
 
         return api_success([

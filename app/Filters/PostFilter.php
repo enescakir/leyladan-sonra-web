@@ -9,6 +9,13 @@ class PostFilter extends Filter
 {
     protected $filters = ['faculty_id', 'child_id', 'type', 'approval', 'search', 'download'];
 
+    protected function facultyId($value)
+    {
+        return $this->builder->whereHas('child', function ($query) use ($value) {
+            $query->where('faculty_id', $value);
+        });
+    }
+
     protected function approval($approval)
     {
         return $this->builder->approved($approval);
