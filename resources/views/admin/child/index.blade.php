@@ -61,6 +61,7 @@
                             <th>Departman</th>
                             <th>Tanı</th>
                             <th>Dilek</th>
+                            <th>Onam</th>
                             <th>Doğumgünü</th>
                             <th>Tanışma</th>
                             <th>Hediye</th>
@@ -76,6 +77,16 @@
                                     <td>{{ $child->department }}</td>
                                     <td class="long-column">{{ $child->diagnosis }}</td>
                                     <td class="long-column">{{ $child->wish }}</td>
+                                    <td>
+                                        @if($child->getFirstMedia('verification'))
+                                            <a href="{{ route('admin.child.verification.show', $child->id) }}"
+                                               target="_blank">
+                                                Göster
+                                            </a>
+                                        @else
+                                            Yok
+                                        @endif
+                                    </td>
                                     <td>{{ $child->birthday_human }}</td>
                                     <td>{{ $child->meeting_day_human }}</td>
                                     <td>{!! $child->gift_state_label !!}</td>

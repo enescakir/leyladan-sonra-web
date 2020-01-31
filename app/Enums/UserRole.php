@@ -18,4 +18,5 @@ class UserRole extends Enum
     const Content = 'content';
     const Graduated = 'graduated';
     const Left = 'left';
+    const Control = 'control';
 }

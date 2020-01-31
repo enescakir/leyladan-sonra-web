@@ -36,7 +36,7 @@ class ChildController extends Controller
     {
         $this->authorize('list', Child::class);
 
-        $children = Child::filter($filters)->with(['faculty'])->latest()->safePaginate();
+        $children = Child::filter($filters)->with('faculty', 'media')->latest()->safePaginate();
 
         return view('admin.child.index', compact('children'));
     }
