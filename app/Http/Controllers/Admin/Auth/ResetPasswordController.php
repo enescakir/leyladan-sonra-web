@@ -44,4 +44,10 @@ class ResetPasswordController extends Controller
             ['token' => $token, 'email' => $request->email]
         );
     }
+
+    protected function setUserPassword($user, $password)
+    {
+        // User has set attribute method
+        $user->password = $password;
+    }
 }
