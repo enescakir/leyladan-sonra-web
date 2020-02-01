@@ -39,6 +39,6 @@ class FacultyPolicy
 
     public function form(User $user)
     {
-        return $user->hasRole(UserRole::FacultyManager);
+        return false;
     }
 }
