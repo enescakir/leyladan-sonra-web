@@ -13,6 +13,15 @@ class ActivateEmail extends Notification
         $this->token = $token;
     }
 
+    public function via($notifiable)
+    {
+        if ($notifiable->shouldSendMail()) {
+            return ['mail'];
+        }
+
+        return [];
+    }
+
     public function toMail($notifiable)
     {
         return (new MailMessage)

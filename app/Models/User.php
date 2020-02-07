@@ -210,6 +210,7 @@ class User extends Authenticatable implements HasMedia
     public function shouldSendMail()
     {
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) return false;
+        if (is_null($this->approved_at)) return false;
         if ($this->left_at) return false;
         if ($this->graduated_at) return false;
 
@@ -218,7 +219,12 @@ class User extends Authenticatable implements HasMedia
 
     public function shouldSendTelegram()
     {
-        return $this->telegram_user_id;
+        if (is_null($this->telegram_user_id)) return false;
+        if (is_null($this->approved_at)) return false;
+        if ($this->left_at) return false;
+        if ($this->graduated_at) return false;
+
+        return true;
     }
 
 

@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Child;
 use Illuminate\Notifications\Messages\MailMessage;
+use NotificationChannels\Telegram\TelegramFile;
 
 class GiftArrived extends Notification
 {
@@ -23,6 +24,18 @@ class GiftArrived extends Notification
             ->line("Çocuğunu fazla bekletmeden hediyesini teslim etmen gerekiyor.")
             ->line("Hediye teslim fotoğrafını ve yazısını sisteme yüklemeyi unutma.")
             ->action('Çocuğu Görüntüle', route('admin.child.show', $this->child->id));
+    }
+
+    public function toTelegram($notifiable)
+    {
+        $message = "*{$this->child->full_name}* isimli çocuğunun hediyesi fakültene ulaştı 🎉 " .
+            "Çocuğunu fazla bekletmeden hediyesini teslim etmen gerekiyor. Hediye teslim fotoğrafını ve yazısını sisteme yüklemeyi unutma.";
+
+        return TelegramFile::create()
+            ->to($notifiable->telegram_user_id)
+            ->content($message)
+            ->animation('https://media.giphy.com/media/14c7Q3pdEOnZN6/giphy.gif')
+            ->button('Çocuğu Görüntüle', route('admin.child.show', $this->child->id));
     }
 
     public function toArray($notifiable)

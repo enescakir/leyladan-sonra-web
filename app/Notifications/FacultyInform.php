@@ -3,6 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Notifications\Messages\MailMessage;
+use NotificationChannels\Telegram\TelegramFile;
+use NotificationChannels\Telegram\TelegramMessage;
 
 class FacultyInform extends Notification
 {
@@ -24,6 +26,18 @@ class FacultyInform extends Notification
             ->greeting("Merhaba {$notifiable->first_name},")
             ->line($this->body)
             ->line("Leyla'dan Sonra ekibinden {$this->sender}");
+    }
+
+    public function toTelegram($notifiable)
+    {
+        $message = "*{$this->subject}* \n" .
+            "Merhaba {$notifiable->first_name}, \n" .
+            "{$this->body} \n\n" .
+            "_Leyla'dan Sonra ekibinden {$this->sender}_";
+
+        return TelegramMessage::create()
+            ->to($notifiable->telegram_user_id)
+            ->content($message);
     }
 
     public function toArray($notifiable)
