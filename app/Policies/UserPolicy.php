@@ -37,7 +37,7 @@ class UserPolicy
 
     public function create(User $user)
     {
-        return $user->hasRole(UserRole::FacultyManager);
+        return false;
     }
 
     public function update(User $user, User $u)

@@ -54,10 +54,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 form-group{{ $errors->has('role') ? ' has-error' : '' }}">
-                            {!! Form::label('role', 'Görev *', ['class' => 'control-label']) !!}
-                            {!! Form::select('role', $roles, optional($user->roles)->first()->name ?? null, ['class' => 'form-control select2-no-search', 'required' => 'required'])  !!}
-                            <small class="text-danger">{{ $errors->first('role') }}</small>
+                        <div class="col-md-12 form-group{{ $errors->has('roles') ? ' has-error' : '' }}">
+                            {!! Form::label('roles[]', 'Görev *', ['class' => 'control-label']) !!}
+                            {!! Form::select('roles[]', $roles, optional($user->roles)->first()->name ?? null, ['class' => 'form-control select2-no-search', 'required' => 'required'])  !!}
+                            <small class="text-danger">{{ $errors->first('roles') }}</small>
                         </div>
                     </div>
                     <div class="row">

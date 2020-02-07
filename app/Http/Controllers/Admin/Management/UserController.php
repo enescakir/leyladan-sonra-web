@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Management;
 
+use App\Enums\UserRole;
 use App\Filters\UserFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Faculty;
@@ -33,7 +34,7 @@ class UserController extends Controller
         $this->authorize('create', User::class);
 
         $faculties = Faculty::toSelect('Fakülte seçiniz', 'full_name', 'id', 'name');
-        $roles = Role::toSelect('Görev seçiniz', null);
+        $roles = Role::toSelect(null, null);
 
         return view('admin.user.create', compact('faculties', 'roles'));
     }
@@ -47,7 +48,7 @@ class UserController extends Controller
         $user = User::create($request->only([
             'first_name', 'last_name', 'email', 'password', 'faculty_id', 'birthday', 'gender', 'mobile', 'year'
         ]));
-        $user->changeRole($request->role);
+        $user->changeRoles([$request->role]);
         session_success("<strong>{$user->full_name}</strong> başarıyla oluşturuldu. <br><strong>{$user->email}</strong> e-posta adresine doğrulama kodu gönderildi");
         $user->approve();
         NotificationService::sendEmailActivationNotification($user);
@@ -68,7 +69,7 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         $faculties = Faculty::toSelect('Fakülte seçiniz', 'full_name', 'id', 'name');
-        $roles = Role::toSelect('Görev seçiniz', null);
+        $roles = Role::toSelect(null, null);
 
         return view('admin.user.edit', compact('user', 'faculties', 'roles'));
     }
@@ -95,11 +96,11 @@ class UserController extends Controller
         }
         $user->save();
         if ($request->filled('left_at')) {
-            $user->syncRoles('left');
+            $user->syncRoles(UserRole::Left);
         } elseif ($request->filled('graduated_at')) {
-            $user->syncRoles('graduated');
+            $user->syncRoles(UserRole::Graduated);
         } else {
-            $user->changeRole($request->role);
+            $user->changeRoles($request->roles);
         }
         if ($request->ajax()) {
             return api_success(['user' => $user, 'role' => $user->role_display]);
@@ -152,7 +153,7 @@ class UserController extends Controller
             'birthday'   => 'required|max:255',
             'mobile'     => 'required|max:255',
             'year'       => 'required|max:255',
-            'role'       => 'required|max:255'
+            'roles'      => 'required'
         ]);
     }
 }

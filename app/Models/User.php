@@ -15,15 +15,10 @@ use EnesCakir\Helper\Traits\HasMobile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
-use App\Notifications\ActivateEmail as ActivateEmailNotification;
-use App\Notifications\NewUser as NewUserNotification;
-use App\Notifications\ApprovedUser as ApprovedUserNotification;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\Image\Manipulations;
-use App\Scopes\GraduateScope;
-use App\Scopes\LeftScope;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -40,7 +35,7 @@ class User extends Authenticatable implements HasMedia
     protected $table = 'users';
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'birthday', 'mobile', 'year', 'title', 'profile_photo',
-        'faculty_id', 'gender', 'email_token', 'left_at', 'graduated_at', 'approved_at', 'approved_by'
+        'faculty_id', 'gender', 'email_token', 'left_at', 'graduated_at', 'approved_at', 'approved_by', 'telegram_user_id'
     ];
     protected $hidden = ['password', 'remember_token'];
     protected $appends = ['full_name', 'photo_small_url', 'photo_url', 'photo_large_url'];
@@ -176,17 +171,16 @@ class User extends Authenticatable implements HasMedia
     }
 
     // Helpers
-    public function changeRole($role)
+    public function changeRoles($roles)
     {
-        if ($role) {
-            $this->syncRoles($role);
-            if ($role == 'left') {
+        if ($roles) {
+            $this->syncRoles($roles);
+            if (in_array(UserRole::Left, $roles)) {
                 $this->left();
-            } elseif ($role == 'graduated') {
+            } elseif (in_array(UserRole::Graduated, $roles)) {
                 $this->graduate();
             }
         }
-
     }
 
     public function activateEmail()
@@ -212,6 +206,21 @@ class User extends Authenticatable implements HasMedia
 
         return $this->save();
     }
+
+    public function shouldSendMail()
+    {
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) return false;
+        if ($this->left_at) return false;
+        if ($this->graduated_at) return false;
+
+        return true;
+    }
+
+    public function shouldSendTelegram()
+    {
+        return $this->telegram_user_id;
+    }
+
 
     // Notifications
     public function sendPasswordResetNotification($token)

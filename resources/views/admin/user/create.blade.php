@@ -59,10 +59,10 @@
                             {!! Form::select('faculty_id', $faculties, null, ['class' => 'form-control select2', 'required' => 'required'])  !!}
                             <small class="text-danger">{{ $errors->first('faculty_id') }}</small>
                         </div>
-                        <div class="col-md-6 form-group{{ $errors->has('role') ? ' has-error' : '' }}">
-                            {!! Form::label('role', 'Görev *', ['class' => 'control-label']) !!}
-                            {!! Form::select('role', $roles, null, ['class' => 'form-control select2-no-search', 'required' => 'required'])  !!}
-                            <small class="text-danger">{{ $errors->first('role') }}</small>
+                        <div class="col-md-6 form-group{{ $errors->has('roles') ? ' has-error' : '' }}">
+                            {!! Form::label('roles[]', 'Görevler *', ['class' => 'control-label']) !!}
+                            {!! Form::select('roles[]', $roles, null, ['class' => 'form-control select2-no-search', 'required' => 'required', 'multiple' => 'multiple'])  !!}
+                            <small class="text-danger">{{ $errors->first('roles') }}</small>
                         </div>
                     </div>
                     <div class="row">

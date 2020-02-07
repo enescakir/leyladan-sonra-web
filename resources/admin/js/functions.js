@@ -390,7 +390,7 @@ function selectRole(slug, roles, buttonClass = "role") {
                         $.ajax({
                             url: "/admin/" + slug + "/" + id,
                             method: "PUT",
-                            data: {role: role}
+                            data: {roles: [role]}
                         })
                             .done(function (response) {
                                 resolve(response)

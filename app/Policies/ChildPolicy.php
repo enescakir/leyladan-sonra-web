@@ -71,6 +71,10 @@ class ChildPolicy
 
     public function update(User $user, Child $child)
     {
+        if ($user->hasRole(UserRole::Control)) {
+            return true;
+        }
+
         if ($user->faculty_id != $child->faculty_id) {
             return false;
         }
