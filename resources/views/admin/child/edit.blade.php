@@ -148,8 +148,8 @@
                     <div class="row">
                         <div class="col-md-6 form-group{{ $errors->has('faculty_id') ? ' has-error' : '' }}">
                             {!! Form::label('faculty_id', 'Fakülte', ['class' => 'control-label']) !!}
-                            {!! Form::select('faculty_id', $faculties, auth()->user()->faculty_id, ['class' => 'form-control select2', 'required' => 'required', 'disabled' => 'disabled']) !!}
-                            {!! Form::hidden('faculty_id', auth()->user()->faculty_id) !!}
+                            {!! Form::select('faculty_id', $faculties, $child->faculty_id, ['class' => 'form-control select2', 'required' => 'required', 'disabled' => 'disabled']) !!}
+                            {!! Form::hidden('faculty_id', $child->faculty_id) !!}
                             <small class="text-danger">{{ $errors->first('faculty_id') }}</small>
                         </div>
                         <div class="col-md-6 form-group{{ $errors->has('department') ? ' has-error' : '' }}">
