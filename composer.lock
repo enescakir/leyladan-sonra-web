@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "017471b7b2840b9e7d35f40d80ce97c0",
+    "content-hash": "5dc370cf9a97463e2472c0af97dfecf9",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -5064,6 +5064,53 @@
                 "spatie"
             ],
             "time": "2020-01-24T13:05:20+00:00"
+        },
+        {
+            "name": "spatie/emoji",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/emoji.git",
+                "reference": "145f40f4bcc08bd22d009988a1aec0b24188b13c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/emoji/zipball/145f40f4bcc08bd22d009988a1aec0b24188b13c",
+                "reference": "145f40f4bcc08bd22d009988a1aec0b24188b13c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Emoji\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Display emoji characters",
+            "homepage": "https://github.com/spatie/emoji",
+            "keywords": [
+                "emoji",
+                "spatie"
+            ],
+            "time": "2019-03-22T08:34:58+00:00"
         },
         {
             "name": "spatie/image",

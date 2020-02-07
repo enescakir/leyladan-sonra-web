@@ -19,7 +19,9 @@ class TelegramController extends Controller
 
     public function set(PhpTelegramBotContract $telegramBot)
     {
-        $telegramBot->setWebhook(route('admin.telegram.webhook'));
+        $webhook = route('admin.telegram.webhook');
+        $telegramBot->deleteWebhook();
+        $telegramBot->setWebhook($webhook);
 
         return api_success();
     }
