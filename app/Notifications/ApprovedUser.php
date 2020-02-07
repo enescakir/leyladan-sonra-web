@@ -2,24 +2,10 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ApprovedUser extends Notification implements ShouldQueue
+class ApprovedUser extends Notification
 {
-    use Queueable;
-
-    public function __construct()
-    {
-    }
-
-    public function via($notifiable)
-    {
-        return ['mail'];
-    }
-
     public function toMail($notifiable)
     {
         return (new MailMessage)

@@ -4,38 +4,62 @@ namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Request;
+use Longman\TelegramBot\ChatAction;
+use Auth;
 
-class RegisterCommand extends UserCommand
+class NotificationCommand extends UserCommand
 {
-    protected $name = 'register';
-    protected $usage = '/register [E-POSTA] [ŞİFRE]';
+    protected $name = 'notification';
+    protected $usage = '/notification [E-POSTA] [ŞİFRE]';
     protected $description = 'Telegram bildirimleri için kayıt olun';
     protected $version = '1.0.0';
 
     public function execute()
     {
-        \Log::info("RegisterCommand");
-//        $this->replyWithMessage(['text' => 'Bilgilerinizin doğruluğu kontrol ediliyor 🔐']);
-//
-//        $this->replyWithChatAction(['action' => Actions::TYPING]);
-//
-//        $args = explode('', $arguments);
-//
-//        if (count($args) < 2) {
-//        }
-//
-//        $this->replyWithMessage(['text' => "Naber"]);
+        $message = $this->getMessage();
+        $chatID = $message->getChat()->getId();
+        $messageID = $message->getMessageId();
 
-//        -----
-        $message = $this->getMessage();            // Get Message object
+        $this->replyToUser("Bilgilerinin doğruluğu kontrol ediliyor 🔐");
 
-        $chat_id = $message->getChat()->getId();   // Get the current Chat ID
+        Request::sendChatAction([
+            'chat_id' => $chatID,
+            'action'  => ChatAction::TYPING,
+        ]);
 
-        $data = [                                  // Set up the new message data
-            'chat_id' => $chat_id,                 // Set Chat ID to send the message to
-            'text'    => 'This is just a Test...', // Set message to send
-        ];
+        $args = explode(" ", $message->getText(true));
 
-        return Request::sendMessage($data);        // Send message!
+        if (count($args) < 2) {
+            $this->replyToUser("Komutu yanlış kullandın ‼️");
+            $this->replyToUser("Doğru kullanımı aşağıdaki gibidir 👇");
+            $this->replyToUser("`{$this->usage}`", ['parse_mode' => 'MARKDOWN']);
+
+            return Request::emptyResponse();
+        }
+
+        $email = $args[0];
+        $password = $args[1];
+
+        Request::deleteMessage([
+            'chat_id'    => $chatID,
+            'message_id' => $messageID,
+        ]);
+
+
+        if (!Auth::once(['email' => $email, 'password' => $password])) {
+            $this->replyToUser("Bu kriterlerlere uygun kullanıcı bulamadım 😪");
+
+            return Request::emptyResponse();
+        }
+
+        $user = auth()->user();
+
+        $user->update(['telegram_user_id' => $chatID]);
+
+        $this->replyToUser("Hoş geldin {$user->first_name} 🎉");
+        $this->replyToUser("Bundan böyle sistemden gelen bildirimleri e-posta yerine benden alacaksın 💌");
+        $this->replyToUser("`/stop` yazarak benden bildirim almayı bırakabilirsin", ['parse_mode' => 'MARKDOWN']);
+
+        return Request::emptyResponse();
     }
 }

@@ -3,38 +3,24 @@
 namespace App\Http\Controllers\Admin\Miscellaneous;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\DashboardService;
+use PhpTelegramBot\Laravel\PhpTelegramBotContract;
 
-class DashboardController extends Controller
+class TelegramController extends Controller
 {
-
-    protected $service;
-
-    public function __construct(DashboardService $service)
+    public function __construct()
     {
-        $this->middleware('auth');
-        $this->service = $service;
+        $this->middleware('auth', ['except' => 'webhook']);
     }
 
-    public function index()
+    public function webhook(PhpTelegramBotContract $telegramBot)
     {
-        $childCounts = $this->service->childCountByGift(auth()->user()->faculty_id);
-        $generalCounts = $this->service->counts();
-        $facultyCounts = $this->service->facultyCounts();
-
-        return view('admin.dashboard', compact('childCounts', 'generalCounts', 'facultyCounts'));
+        $telegramBot->handle();
     }
 
-    public function data(Request $request)
+    public function set(PhpTelegramBotContract $telegramBot)
     {
-        $data = $this->service->getData($request->type, $request->parameter);
+        $telegramBot->setWebhook(route('admin.telegram.webhook'));
 
-        return api_success($data);
-    }
-
-    public function blank()
-    {
-        return view('admin.blank');
+        return api_success();
     }
 }

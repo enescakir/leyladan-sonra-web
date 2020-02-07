@@ -13,14 +13,11 @@ use App\Notifications\ApprovedUser as ApprovedUserNotification;
 use App\Notifications\GiftArrived as GiftArrivedNotification;
 use App\Notifications\GiftDelivered as GiftDeliveredNotification;
 use App\Notifications\NewUser as NewUserNotification;
-use App\Notifications\ResetPassword as ResetPasswordNotification;
 
 class NotificationService extends Service
 {
     static function sendEmailActivationNotification($notifiable)
     {
-        if (!static::validateEmail($notifiable->email)) return;
-
         $token = hash_hmac('sha256', str_random(40), $notifiable->email);
         $notifiable->update(['email_token' => $token]);
         $notifiable->notify(new ActivateEmailNotification($token));
@@ -28,8 +25,6 @@ class NotificationService extends Service
 
     static function sendApprovedUserNotification($notifiable)
     {
-        if (!static::validateEmail($notifiable->email)) return;
-
         $notifiable->notify(new ApprovedUserNotification());
     }
 
@@ -43,8 +38,6 @@ class NotificationService extends Service
             $notifiables = User::role(UserRole::Admin)->get();
         }
 
-        $notifiables = static::filterEmails($notifiables);
-
         Notification::send($notifiables, new NewUserNotification($newUser));
 
         return $notifiables;
@@ -54,8 +47,6 @@ class NotificationService extends Service
     {
         $notifiables = $child->faculty->users()->role(UserRole::Relation)->get();
 
-        $notifiables = static::filterEmails($notifiables);
-
         Notification::send($notifiables, new GiftDeliveredNotification($child));
 
         return $notifiables;
@@ -64,8 +55,6 @@ class NotificationService extends Service
     static function sendGiftArrivedNotification($child)
     {
         $notifiables = $child->users;
-
-        $notifiables = static::filterEmails($notifiables);
 
         Notification::send($notifiables, new GiftArrivedNotification($child));
 
@@ -79,8 +68,6 @@ class NotificationService extends Service
             $notifiables = $chat->faculty->users()->role(UserRole::FacultyManager)->get();
         }
 
-        $notifiables = static::filterEmails($notifiables);
-
         Notification::send($notifiables, new MessageReceivedNotification($chat));
 
         return $notifiables;
@@ -90,22 +77,8 @@ class NotificationService extends Service
     {
         $notifiables = $faculty->users()->role($roles)->get();
 
-        $notifiables = static::filterEmails($notifiables);
-
         Notification::send($notifiables, new FacultyInformNotification($subject, $body, $sender->full_name));
 
         return $notifiables;
-    }
-
-    private static function filterEmails($notifiables)
-    {
-        return $notifiables->filter(function ($notifiable) {
-            return filter_var($notifiable->email, FILTER_VALIDATE_EMAIL);
-        });
-    }
-
-    private static function validateEmail($email)
-    {
-        return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 }

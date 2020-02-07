@@ -1,6 +1,8 @@
 <?php
 
 Route::get('/', 'Admin\HomeController@index')->name('home');
+Route::post('/telegram/webhook', 'Admin\Miscellaneous\TelegramController@webhook')->name('telegram.webhook');
+Route::get('/telegram/set', 'Admin\Miscellaneous\TelegramController@set')->name('telegram.set');
 
 Route::prefix('dashboard')->group(function () {
     Route::get('/', 'Admin\Miscellaneous\DashboardController@index')->name('dashboard');
@@ -14,6 +16,7 @@ Route::get('sidebar/data', 'Admin\Miscellaneous\SidebarController@data')->name('
 | Auth Routes
 |--------------------------------------------------------------------------
 */
+
 // TODO: Uncomment on Laravel 5.7
 //Route::prefix('email')->as('verification.')->group(function () {
 //    Route::get('resend', 'Admin\Auth\VerificationController@resend')->name('resend');

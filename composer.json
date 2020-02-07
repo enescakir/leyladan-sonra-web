@@ -20,6 +20,8 @@
     "guzzlehttp/guzzle": "^6.5",
     "intervention/image": "^2.5",
     "jenssegers/agent": "^2.6",
+    "php-telegram-bot/laravel": "v1.1.1",
+    "laravel-notification-channels/telegram": "^0.1.1",
     "laravel/framework": "^6.0",
     "laravel/helpers": "^1.1",
     "laravel/horizon": "^3.0",

@@ -2,28 +2,16 @@
 
 namespace App\Notifications;
 
-use App\Models\Chat;
 use App\Models\Child;
-use App\Models\Volunteer;
-use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class GiftDelivered extends Notification implements ShouldQueue
+class GiftDelivered extends Notification
 {
-    use Queueable;
-
     protected $child;
 
     public function __construct(Child $child)
     {
         $this->child = $child;
-    }
-
-    public function via($notifiable)
-    {
-        return ['mail'];
     }
 
     public function toMail($notifiable)

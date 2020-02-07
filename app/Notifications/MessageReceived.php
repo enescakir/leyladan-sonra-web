@@ -3,17 +3,10 @@
 namespace App\Notifications;
 
 use App\Models\Chat;
-use App\Models\Child;
-use App\Models\Volunteer;
-use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class MessageReceived extends Notification implements ShouldQueue
+class MessageReceived extends Notification
 {
-    use Queueable;
-
     protected $child;
     protected $volunteer;
     protected $chat;
@@ -24,12 +17,7 @@ class MessageReceived extends Notification implements ShouldQueue
         $this->child = $chat->child;
         $this->volunteer = $chat->volunteer;
     }
-
-    public function via($notifiable)
-    {
-        return ['mail'];
-    }
-
+    
     public function toMail($notifiable)
     {
         return (new MailMessage)

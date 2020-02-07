@@ -4,19 +4,23 @@ namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Request;
+use App\Models\User;
 
-class StartCommand extends UserCommand
+class StopCommand extends UserCommand
 {
-    protected $name = 'start';
-    protected $usage = '/start';
-    protected $description = 'Telegram botunu başlatın';
+    protected $name = 'stop';
+    protected $usage = '/stop';
+    protected $description = 'Telegram botunu durdurun';
     protected $version = '1.0.0';
 
     public function execute()
     {
-        $this->replyToUser("Merhabalar 👋");
-        $this->replyToUser("Ben Leyla'dan Sonra Botu 😇");
-        $this->replyToUser("`/notification [E-POSTA] [ŞİFRE]` komutu ile sistemden gelen bildirimler için kayıt olabilirs. 📣", ['parse_mode' => 'MARKDOWN']);
+        $chatID = $this->getMessage()->getChat()->getId();
+        User::where('telegram_user_id', $chatID)->update(['telegram_user_id' => null]);
+
+        $this->replyToUser("Benden artık bildirim almayacaksın 😪");
+        $this->replyToUser("Güle güle 👋");
+        $this->replyToUser("`/notification [E-POSTA] [ŞİFRE]` komutu ile sistemden gelen bildirimleri almaya yeniden başlayabilirsin 📣", ['parse_mode' => 'MARKDOWN']);
 
         return Request::emptyResponse();
     }

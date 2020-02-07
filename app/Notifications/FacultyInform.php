@@ -2,15 +2,10 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class FacultyInform extends Notification implements ShouldQueue
+class FacultyInform extends Notification
 {
-    use Queueable;
-
     protected $sender;
     protected $subject;
     protected $body;
@@ -20,11 +15,6 @@ class FacultyInform extends Notification implements ShouldQueue
         $this->subject = $subject;
         $this->body = $body;
         $this->sender = $sender;
-    }
-
-    public function via($notifiable)
-    {
-        return ['mail'];
     }
 
     public function toMail($notifiable)
