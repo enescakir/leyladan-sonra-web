@@ -61,7 +61,7 @@
                         <li class="{{ set_active('*admin/child') }}">
                             <a href="{{ route('admin.child.index') }}">
                                 <i class="fa fa-list"></i>
-                                <span>Bütün Çocuklar</span>
+                                <span>Tüm Çocuklar</span>
                             </a>
                         </li>
                     @endcan
@@ -90,7 +90,7 @@
                         <li class="{{ set_active('*admin/faculty') }}">
                             <a href="{{ route('admin.faculty.index') }}">
                                 <i class="fa fa-fort-awesome"></i>
-                                <span>Bütün Fakülteler</span>
+                                <span>Tüm Fakülteler</span>
                             </a>
                         </li>
                     @endcan

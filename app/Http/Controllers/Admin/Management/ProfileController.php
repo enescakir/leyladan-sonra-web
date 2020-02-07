@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Management;
 
+use App\Enums\UserRole;
 use App\Filters\ChildFilter;
 use App\Filters\UserFilter;
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Auth;
@@ -18,9 +20,13 @@ class ProfileController extends Controller
 
     public function index(UserFilter $filters)
     {
-        $users = auth()->user()->faculty->users()->filter($filters)->with('roles', 'media')->orderBy('first_name')->safePaginate();
+        $roles = Role::toSelect('Hepsi', true);
+        $roles->forget([UserRole::Left, UserRole::Graduated]);
+        $users = auth()->user()->faculty->users()->filter($filters)->whereDoesntHave('roles', function ($query) {
+            $query->whereIn('name', [UserRole::Left, UserRole::Graduated]);
+        })->with('roles', 'media')->orderBy('first_name')->safePaginate();
 
-        return view('admin.profile.index', compact('users'));
+        return view('admin.profile.index', compact('users', 'roles'));
     }
 
     public function show(ChildFilter $filters)

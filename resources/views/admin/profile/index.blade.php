@@ -61,7 +61,7 @@
     <section class="content-header">
         <h1>
             Arkadaşlarım
-            <small>Fakültendeki bütün üyeleri burada görüntüleyebilirsin</small>
+            <small>Fakültendeki tüm üyeleri burada görüntüleyebilirsin</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home"></i> Anasayfa</a></li>
@@ -91,7 +91,7 @@
                             </div>
                         </div>
                         <div class="btn-group btn-group-sm filter-group">
-                            @include('admin.partials.selectors.role')
+                            @include('admin.partials.selectors.role', ['roles' => $roles])
                         </div>
                     </div>
                 </div>

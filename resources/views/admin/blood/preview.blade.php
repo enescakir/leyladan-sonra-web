@@ -21,7 +21,7 @@
         <div class="col-xs-12">
             <div class="box box-primary" id="sms-send">
                 <div class="box-header with-border">
-                    <h4 class="box-title">SMS göndermeden önce bütün bilgileri kontrol ediniz</h4>
+                    <h4 class="box-title">SMS göndermeden önce tüm bilgileri kontrol ediniz</h4>
                     <div class="box-tools">
                         <div class="input-group input-group-sm">
                             <input type="text" id="test-number" class="form-control mobile pull-right"

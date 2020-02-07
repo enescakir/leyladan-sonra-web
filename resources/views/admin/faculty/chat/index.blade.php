@@ -231,7 +231,7 @@
                     </div>
                     <!-- /.mail-box-messages -->
                     <button id="close-all-button" class="btn btn-danger btn-block">
-                        <i class="fa fa-archive"></i> Bütün sohbetleri kapat
+                        <i class="fa fa-archive"></i> Tüm sohbetleri kapat
                     </button>
                     <div class="direct-chat-contacts">
                         <h3 class="text-center"> Çocuk Ayrıntıları</h3>
@@ -642,8 +642,8 @@
         });
 
         $('#close-all-button').on('click', function () {
-            var message = "'<strong>" + child.full_name + "</strong>' isimli çocuğun bütün sohbetlerini kapatmak istediğine emin misin? " +
-                "<br> Cevaplanmamış bütün mesajlar şu an senin tarafından cevaplandı olarak işaretlenecekler.";
+            var message = "'<strong>" + child.full_name + "</strong>' isimli çocuğun tüm sohbetlerini kapatmak istediğine emin misin? " +
+                "<br> Cevaplanmamış tüm mesajlar şu an senin tarafından cevaplandı olarak işaretlenecekler.";
             var url = "/admin/child/" + child.id + "/chat";
 
             applyAction(
@@ -658,7 +658,7 @@
 
         $('#close-button').on('click', function () {
             var message = "'<strong>" + volunteer.full_name + "</strong>' isimli gönüllünün sohbetini kapatmak istediğine emin misin? " +
-                "<br> Cevaplanmamış bütün mesajlar şu an senin tarafından cevaplandı olarak işaretlenecekler.";
+                "<br> Cevaplanmamış tüm mesajlar şu an senin tarafından cevaplandı olarak işaretlenecekler.";
             var url = "/admin/chat/" + chat.id + "/message";
 
             applyAction(

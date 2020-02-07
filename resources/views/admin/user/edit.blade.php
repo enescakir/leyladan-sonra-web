@@ -106,7 +106,7 @@
                             {!! Form::label('faculty_id', 'Fakülte *', ['class' => 'control-label']) !!}
                             {!! Form::select('faculty_id', $faculties, null, ['class' => 'form-control select2', 'required' => 'required'])  !!}
                             <small class="text-danger">{{ $errors->first('faculty_id') }}</small>
-                            <small class="help-block">Eğer üyenin fakültesini değiştirirseniz ilişik olduğu bütün
+                            <small class="help-block">Eğer üyenin fakültesini değiştirirseniz ilişik olduğu tüm
                                 çocuklarla ilişkisi kesilir
                             </small>
                         </div>
