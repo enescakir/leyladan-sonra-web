@@ -15,10 +15,9 @@ class StartCommand extends UserCommand
 
     public function execute()
     {
-
-        $this->replyToUser("Merhabalar " . Emoji::CHARACTER_WAVING_HAND);
-        $this->replyToUser("Ben Leyla'dan Sonra Botu " . Emoji::CHARACTER_SMILING_FACE_WITH_HALO);
-        $this->replyToUser("`/notification [E-POSTA] [ŞİFRE]` komutu ile sistemden gelen bildirimleri almaya başlayabilirsin " . Emoji::CHARACTER_MEGAPHONE, ['parse_mode' => 'MARKDOWN']);
+        $this->replyToUser("Merhabalar " . Emoji::wavingHand());
+        $this->replyToUser("Ben Leyla'dan Sonra Botu " . Emoji::smilingFaceWithHalo());
+        $this->replyToUser("`/notification [E-POSTA] [ŞİFRE]` komutu ile sistemden gelen bildirimleri almaya başlayabilirsin " . Emoji::megaphone(), ['parse_mode' => 'MARKDOWN']);
 
         return Request::emptyResponse();
     }

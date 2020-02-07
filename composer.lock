@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5dc370cf9a97463e2472c0af97dfecf9",
+    "content-hash": "7be4f94d1037c41cacb7ecc0076d277e",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.133.8",
+            "version": "3.133.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "c564fcccd5fc7b5e8514d1cbe35558be1e3a11cd"
+                "reference": "59e059bd6d25d315a03cdad10b79102df5cb0a1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c564fcccd5fc7b5e8514d1cbe35558be1e3a11cd",
-                "reference": "c564fcccd5fc7b5e8514d1cbe35558be1e3a11cd",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/59e059bd6d25d315a03cdad10b79102df5cb0a1b",
+                "reference": "59e059bd6d25d315a03cdad10b79102df5cb0a1b",
                 "shasum": ""
             },
             "require": {
@@ -88,7 +88,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2020-02-05T19:12:47+00:00"
+            "time": "2020-02-06T19:11:31+00:00"
         },
         {
             "name": "barryvdh/laravel-snappy",
@@ -2501,16 +2501,16 @@
         },
         {
             "name": "longman/telegram-bot",
-            "version": "0.60.0",
+            "version": "dev-entity-strtolower",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-telegram-bot/core.git",
-                "reference": "46646884f5c05f1161f10605a0705aa24df3e583"
+                "url": "https://github.com/enescakir/php-telegram-bot-core.git",
+                "reference": "ec626d6aa2c60534c8945065907e61bf784c1452"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-telegram-bot/core/zipball/46646884f5c05f1161f10605a0705aa24df3e583",
-                "reference": "46646884f5c05f1161f10605a0705aa24df3e583",
+                "url": "https://api.github.com/repos/enescakir/php-telegram-bot-core/zipball/ec626d6aa2c60534c8945065907e61bf784c1452",
+                "reference": "ec626d6aa2c60534c8945065907e61bf784c1452",
                 "shasum": ""
             },
             "require": {
@@ -2519,12 +2519,13 @@
                 "ext-mbstring": "*",
                 "ext-pdo": "*",
                 "guzzlehttp/guzzle": "^6.3",
-                "monolog/monolog": "^1.24",
                 "php": "^5.5|^7.0",
                 "psr/log": "^1.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8|^5.7|^6.5|^7.5|^8.1",
+                "dms/phpunit-arraysubset-asserts": "^0.1.0",
+                "monolog/monolog": "^2.0",
+                "phpunit/phpunit": "^8.4",
                 "squizlabs/php_codesniffer": "^3.4"
             },
             "type": "library",
@@ -2533,7 +2534,25 @@
                     "Longman\\TelegramBot\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Longman\\TelegramBot\\Tests\\Unit\\": "tests/unit"
+                }
+            },
+            "scripts": {
+                "check-code": [
+                    "\"vendor/bin/phpcs\" -snp src/ tests/"
+                ],
+                "test": [
+                    "\"vendor/bin/phpunit\""
+                ],
+                "test-cov": [
+                    "\"vendor/bin/phpunit\" --coverage-clover clover.xml"
+                ],
+                "test-cov-upload": [
+                    "wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover clover.xml"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -2557,7 +2576,11 @@
                 "bot",
                 "telegram"
             ],
-            "time": "2019-08-16T15:10:43+00:00"
+            "support": {
+                "issues": "https://github.com/php-telegram-bot/core/issues",
+                "source": "https://github.com/php-telegram-bot/core"
+            },
+            "time": "2020-02-07T12:58:32+00:00"
         },
         {
             "name": "maatwebsite/excel",
@@ -2905,21 +2928,21 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.25.3",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "fa82921994db851a8becaf3787a9e73c5976b6f1"
+                "reference": "c861fcba2ca29404dc9e617eedd9eff4616986b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/fa82921994db851a8becaf3787a9e73c5976b6f1",
-                "reference": "fa82921994db851a8becaf3787a9e73c5976b6f1",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/c861fcba2ca29404dc9e617eedd9eff4616986b8",
+                "reference": "c861fcba2ca29404dc9e617eedd9eff4616986b8",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0",
-                "psr/log": "~1.0"
+                "php": "^7.2",
+                "psr/log": "^1.0.1"
             },
             "provide": {
                 "psr/log-implementation": "1.0.0"
@@ -2927,33 +2950,36 @@
             "require-dev": {
                 "aws/aws-sdk-php": "^2.4.9 || ^3.0",
                 "doctrine/couchdb": "~1.0@dev",
-                "graylog2/gelf-php": "~1.0",
-                "jakub-onderka/php-parallel-lint": "0.9",
+                "elasticsearch/elasticsearch": "^6.0",
+                "graylog2/gelf-php": "^1.4.2",
+                "jakub-onderka/php-parallel-lint": "^0.9",
                 "php-amqplib/php-amqplib": "~2.4",
                 "php-console/php-console": "^3.1.3",
-                "phpunit/phpunit": "~4.5",
-                "phpunit/phpunit-mock-objects": "2.3.0",
+                "phpspec/prophecy": "^1.6.1",
+                "phpunit/phpunit": "^8.3",
+                "predis/predis": "^1.1",
+                "rollbar/rollbar": "^1.3",
                 "ruflin/elastica": ">=0.90 <3.0",
-                "sentry/sentry": "^0.13",
                 "swiftmailer/swiftmailer": "^5.3|^6.0"
             },
             "suggest": {
                 "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
                 "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
                 "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
-                "ext-mongo": "Allow sending log messages to a MongoDB server",
+                "ext-mbstring": "Allow to work properly with unicode symbols",
+                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
                 "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
-                "mongodb/mongodb": "Allow sending log messages to a MongoDB server via PHP Driver",
+                "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
                 "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
                 "php-console/php-console": "Allow sending log messages to Google Chrome",
                 "rollbar/rollbar": "Allow sending log messages to Rollbar",
-                "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
-                "sentry/sentry": "Allow sending log messages to a Sentry server"
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0.x-dev"
+                    "dev-master": "2.x-dev"
                 }
             },
             "autoload": {
@@ -2979,7 +3005,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2019-12-20T14:15:16+00:00"
+            "time": "2019-12-20T14:22:59+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -3040,16 +3066,16 @@
         },
         {
             "name": "myclabs/php-enum",
-            "version": "1.7.2",
+            "version": "1.7.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/php-enum.git",
-                "reference": "45f01adf6922df6082bcda36619deb466e826acf"
+                "reference": "c3f3b36602748871098069f4f2f8224ca34df899"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/php-enum/zipball/45f01adf6922df6082bcda36619deb466e826acf",
-                "reference": "45f01adf6922df6082bcda36619deb466e826acf",
+                "url": "https://api.github.com/repos/myclabs/php-enum/zipball/c3f3b36602748871098069f4f2f8224ca34df899",
+                "reference": "c3f3b36602748871098069f4f2f8224ca34df899",
                 "shasum": ""
             },
             "require": {
@@ -3057,8 +3083,9 @@
                 "php": ">=7.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35|^5.7|^6.0",
-                "squizlabs/php_codesniffer": "1.*"
+                "phpunit/phpunit": "^7",
+                "squizlabs/php_codesniffer": "1.*",
+                "vimeo/psalm": "^3.8"
             },
             "type": "library",
             "autoload": {
@@ -3081,7 +3108,7 @@
             "keywords": [
                 "enum"
             ],
-            "time": "2019-08-19T13:53:00+00:00"
+            "time": "2020-02-07T08:35:07+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -3823,22 +3850,22 @@
         },
         {
             "name": "php-telegram-bot/laravel",
-            "version": "1.1.1",
+            "version": "dev-new-versions",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-telegram-bot/laravel.git",
-                "reference": "fce8c67ba25e7d4a2378a33807d3962984cce3f0"
+                "url": "https://github.com/enescakir/php-telegram-bot-laravel.git",
+                "reference": "5c3ad6ee34b52ea7df19a76b69c5ee85014e04c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-telegram-bot/laravel/zipball/fce8c67ba25e7d4a2378a33807d3962984cce3f0",
-                "reference": "fce8c67ba25e7d4a2378a33807d3962984cce3f0",
+                "url": "https://api.github.com/repos/enescakir/php-telegram-bot-laravel/zipball/5c3ad6ee34b52ea7df19a76b69c5ee85014e04c3",
+                "reference": "5c3ad6ee34b52ea7df19a76b69c5ee85014e04c3",
                 "shasum": ""
             },
             "require": {
                 "illuminate/database": "^6.0",
                 "illuminate/support": "^6.0",
-                "longman/telegram-bot": "^0.60",
+                "longman/telegram-bot": "dev-entity-strtolower",
                 "php": "^7.2"
             },
             "require-dev": {
@@ -3860,7 +3887,28 @@
                     "PhpTelegramBot\\Laravel\\": "src/Laravel"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/phpunit"
+                ],
+                "coverage-text": [
+                    "vendor/bin/phpunit --coverage-text --colors=never"
+                ],
+                "coverage-html": [
+                    "vendor/bin/phpunit --coverage-html public/coverage"
+                ],
+                "phpcs": [
+                    "vendor/bin/phpcs --standard=phpcs.xml -spn --encoding=utf-8 src/ tests/ --report-width=150"
+                ],
+                "phpcbf": [
+                    "vendor/bin/phpcbf --standard=phpcs.xml -spn --encoding=utf-8 src/ tests/ --report-width=150"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -3879,7 +3927,11 @@
                 "laravel",
                 "telegram"
             ],
-            "time": "2019-10-17T07:05:52+00:00"
+            "support": {
+                "issues": "https://github.com/php-telegram-bot/laravel/issues",
+                "source": "https://github.com/php-telegram-bot/laravel"
+            },
+            "time": "2020-02-07T13:27:20+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",
@@ -5067,16 +5119,16 @@
         },
         {
             "name": "spatie/emoji",
-            "version": "2.1.1",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/emoji.git",
-                "reference": "145f40f4bcc08bd22d009988a1aec0b24188b13c"
+                "reference": "d3e9286089c46ae504cb6e898a96f4aaf523e65d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/emoji/zipball/145f40f4bcc08bd22d009988a1aec0b24188b13c",
-                "reference": "145f40f4bcc08bd22d009988a1aec0b24188b13c",
+                "url": "https://api.github.com/repos/spatie/emoji/zipball/d3e9286089c46ae504cb6e898a96f4aaf523e65d",
+                "reference": "d3e9286089c46ae504cb6e898a96f4aaf523e65d",
                 "shasum": ""
             },
             "require": {
@@ -5084,7 +5136,12 @@
                 "php": "^7.2"
             },
             "require-dev": {
-                "phpunit/phpunit": "^8.0"
+                "ext-iconv": "*",
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^6.3",
+                "phpunit/phpunit": "^8.0",
+                "symfony/console": "^4.2",
+                "twig/twig": "^2.7"
             },
             "type": "library",
             "autoload": {
@@ -5110,7 +5167,7 @@
                 "emoji",
                 "spatie"
             ],
-            "time": "2019-03-22T08:34:58+00:00"
+            "time": "2020-02-07T13:47:25+00:00"
         },
         {
             "name": "spatie/image",
@@ -10595,7 +10652,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "php-telegram-bot/laravel": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
