@@ -26,6 +26,7 @@
     "laravel/horizon": "^3.0",
     "laravel/tinker": "~1.0",
     "laravelcollective/html": "^6.0",
+    "league/flysystem-aws-s3-v3": "^1.0",
     "maatwebsite/excel": "^3.1",
     "php-telegram-bot/laravel": "dev-new-versions",
     "sentry/sentry-laravel": "^1.5",

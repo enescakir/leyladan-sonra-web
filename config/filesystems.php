@@ -62,12 +62,13 @@ return [
             'root'       => storage_path('app/verification'),
             'visibility' => 'private',
         ],
-        's3' => [
+
+        'backup' => [
             'driver' => 's3',
-            'key'    => 'your-key',
-            'secret' => 'your-secret',
-            'region' => 'your-region',
-            'bucket' => 'your-bucket',
+            'key'    => env('BACKUP_S3_KEY'),
+            'secret' => env('BACKUP_S3_SECRET'),
+            'region' => env('S3_REGION'),
+            'bucket' => env('BACKUP_S3_BUCKET'),
         ],
     ],
 ];

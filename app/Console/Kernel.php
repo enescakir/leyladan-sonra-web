@@ -25,6 +25,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('horizon:snapshot')->everyFiveMinutes();
+        $schedule->command('backup:run --only-db')->dailyAt('2:00');
+        $schedule->command('backup:run')->weeklyOn(7, '2:30');
+        $schedule->command('backup:clean')->dailyAt('4:00');
     }
 
     /**
