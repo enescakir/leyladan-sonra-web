@@ -159,15 +159,15 @@ class HomeController extends Controller
 
     public function contactStore(Request $request)
     {
-        $text = "<strong>Ad Soyad: </strong> . {$request->name} . <br>";
-        $text .= "<strong>E-posta: </strong> . {$request->email} . <br>";
-        $text .= "<strong>Telefon: </strong> . {$request->mobile} . <br>";
-        $text .= "<strong>Mesaj: </strong><br> . {$request->message} . <br>";
-        $text .= "<br><br><em>Bu mesaj sitedeki iletişim formu aracılığıyla " . now() . " tarihinde oluşturulmuştur. </em>";
+        $text = "<strong>Ad Soyad: </strong>{$request->name}<br>";
+        $text .= "<strong>E-posta: </strong>{$request->email}<br>";
+        $text .= "<strong>Telefon: </strong>{$request->mobile}<br>";
+        $text .= "<strong>Mesaj: </strong><br>{$request->message}<br>";
+        $text .= "<br><br><small><em>Bu mesaj sitedeki iletişim formu aracılığıyla " . now()->format('d.m.Y H:i:s') . " tarihinde oluşturulmuştur. </em></small>";
 
-        Mail::html($text, function ($message) {
+        Mail::html($text, function ($message) use ($request) {
             $message->to('iletisim@leyladansonra.com')
-                ->from('teknik@leyladansonra.com', 'Leyla\'dan Sonra Sistem')
+                ->replyTo($request->email, $request->name)
                 ->subject('İletişim Formu');
         });
 
