@@ -73,7 +73,9 @@ class HomeController extends Controller
 
     public function blood()
     {
-        return view('front.blood');
+        $cities = citiesToSelect(false, "-- Seçiniz... --");
+
+        return view('front.blood', compact('cities'));
     }
 
     public function bloodStore(Request $request)
