@@ -24,11 +24,15 @@ class FacultyChatController extends Controller
                 ->filter($filters)
                 ->has('chats')
                 ->withChatCounts()
+                ->with('chats')
                 ->when(request()->status == 'active', function ($query) {
                     return $query->has('activeChats');
                 })
-                ->orderBy('first_name')
-                ->get();
+                ->get()
+                ->sortByDesc(function ($child) {
+                    return $child->chats->last()->created_at;
+                })
+                ->values();
 
             return api_success(['children' => $children]);
         }
