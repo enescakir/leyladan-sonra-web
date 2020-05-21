@@ -111,7 +111,7 @@
                             </h4>
                         </div>
                         <div class="box-body no-padding">
-                            <table class="table table-striped table-bordered">
+                            <table class="table table-bordered">
                                 <thead>
                                 <tr>
                                     <th>Ad</th>
@@ -128,8 +128,30 @@
                                         <td>{{ $chat->faculty->full_name }}</td>
                                         <td>{{ $chat->child->wish }}</td>
                                         <td>{{ $chat->created_at_label }}</td>
-                                        <td>{{ $chat->messages->count() }}</td>
+                                        <td>
+                                            {{ $chat->messages->count() }}
+                                            <button class="btn btn-primary btn-xs" title="Görüntüle"
+                                                    data-toggle="collapse" data-target=".chat-{{$chat->id}}">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </td>
                                     </tr>
+                                    @foreach($chat->messages as $message)
+                                        <tr class="active collapse chat-{{$chat->id}}">
+                                            <td colspan="4">
+                                                {{ $message->text }}
+                                            </td>
+                                            <td>
+                                                @if($message->isAnswered)
+                                                    <strong>Cevaplayan: </strong>{{ optional($message->answerer)->full_name ?? "-" }}
+                                                    <br>
+                                                    <strong>Tarih: </strong>{{ $message->answered_at->format("d.m.Y H:i") }}
+                                                @else
+                                                    Cevaplanmadı
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 @endforeach
                                 </tbody>
                             </table>

@@ -47,7 +47,7 @@ class VolunteerController extends Controller
     {
         $this->authorize('view', $volunteer);
 
-        $volunteer->load('chats.child', 'chats.faculty', 'chats.messages', 'children.faculty');
+        $volunteer->load('chats.child', 'chats.faculty', 'chats.messages', 'chats.messages.answerer', 'chats.messages.sender', 'children.faculty');
 
         return view('admin.volunteer.show', compact('volunteer'));
     }

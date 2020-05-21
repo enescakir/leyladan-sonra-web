@@ -22,6 +22,14 @@ class VolunteerPolicy
         ]);
     }
 
+    public function view(User $user, Volunteer $volunteer)
+    {
+        return $user->hasAnyRole([
+            UserRole::FacultyManager,
+            UserRole::Relation,
+        ]);
+    }
+
     public function create(User $user)
     {
         return $user->hasAnyRole([
