@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Enums\GiftStatus;
-use App\Enums\UserRole;
 use App\Models\Question;
-use App\Notifications\MessageReceived as MessageReceivedNotification;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,7 +19,6 @@ use App\Models\Testimonial;
 use App\Models\Blood;
 use App\Models\Sponsor;
 use Mail;
-use Notification;
 use Newsletter;
 
 class HomeController extends Controller
@@ -61,10 +58,16 @@ class HomeController extends Controller
     {
         $counts = cache()->remember('us', static::LONG_TERM_MINUTES, function () {
             return [
+                'bloods'                => Blood::count(),
                 'children'              => Child::count(),
                 'started-faculties'     => Faculty::started()->count(),
                 'not-started-faculties' => Faculty::started(false)->count(),
-                'users'                 => User::count(),
+                'users'                 => User::approved()
+                    ->whereNull('left_at')
+                    ->whereNull('graduated_at')
+                    ->whereHas('faculty', function ($query) {
+                        $query->stopped(false);
+                    })->count(),
             ];
         });
 

@@ -23,7 +23,12 @@ class CacheManager
                 'volunteer' => Volunteer::count(),
                 'faculty'   => Faculty::started()->count(),
                 'child'     => Child::count(),
-                'user'      => User::count(),
+                'user'      => User::approved()
+                    ->whereNull('left_at')
+                    ->whereNull('graduated_at')
+                    ->whereHas('faculty', function ($query) {
+                        $query->stopped(false);
+                    })->count(),
                 'city'      => Faculty::started()->get()->groupBy('code')->count()
             ];
         });

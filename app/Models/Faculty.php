@@ -78,6 +78,13 @@ class Faculty extends Model implements HasMedia
             : $query->whereNull('started_at');
     }
 
+    public function scopeStopped($query, $started = true)
+    {
+        return $started
+            ? $query->whereNotNull('stopped_at')
+            : $query->whereNull('stopped_at');
+    }
+
     public function scopeSearch($query, $search)
     {
         if (is_null($search)) {
