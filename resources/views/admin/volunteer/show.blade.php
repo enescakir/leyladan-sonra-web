@@ -91,13 +91,15 @@
                                 </tr>
                                 </thead>
                                 <tbody id="process-container">
-                                @foreach($volunteer->children as $child)
+                                @forelse($volunteer->children as $child)
                                     <tr>
                                         <td>{{ $child->full_name }}</td>
                                         <td>{{ $child->faculty->full_name }}</td>
                                         <td>{{ $child->wish }}</td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    @include("admin.partials.noDataRow", ["message" => "Hediye aldığı çocuk bulunmamaktadır"])
+                                @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -118,16 +120,16 @@
                                     <th>Fakülte</th>
                                     <th>Dilek</th>
                                     <th>Başlangıç</th>
-                                    <th>Mesaj Sayısı</th>
+                                    <th class="five-button">Mesaj Sayısı</th>
                                 </tr>
                                 </thead>
                                 <tbody id="process-container">
-                                @foreach($volunteer->chats as $chat)
+                                @forelse($volunteer->chats as $chat)
                                     <tr>
-                                        <td>{{ $chat->child->full_name }}</td>
-                                        <td>{{ $chat->faculty->full_name }}</td>
+                                        <td class="text-nowrap">{{ $chat->child->full_name }}</td>
+                                        <td class="text-nowrap">{{ $chat->faculty->full_name }}</td>
                                         <td>{{ $chat->child->wish }}</td>
-                                        <td>{{ $chat->created_at_label }}</td>
+                                        <td class="text-nowrap">{{ $chat->created_at_label }}</td>
                                         <td>
                                             {{ $chat->messages->count() }}
                                             <button class="btn btn-primary btn-xs" title="Görüntüle"
@@ -143,16 +145,20 @@
                                             </td>
                                             <td>
                                                 @if($message->isAnswered)
-                                                    <strong>Cevaplayan: </strong>{{ optional($message->answerer)->full_name ?? "-" }}
+                                                    <strong>Cevaplayan: </strong><br>
+                                                    {{ optional($message->answerer)->full_name ?? "-" }}
                                                     <br>
-                                                    <strong>Tarih: </strong>{{ $message->answered_at->format("d.m.Y H:i") }}
+                                                    <strong>Tarih: </strong><br>
+                                                    {{ $message->answered_at->format("d.m.Y H:i") }}
                                                 @else
                                                     Cevaplanmadı
                                                 @endif
                                             </td>
                                         </tr>
                                     @endforeach
-                                @endforeach
+                                @empty
+                                    @include("admin.partials.noDataRow", ["message" => "Mesaj attığı çocuk bulunmamaktadır"])
+                                @endforelse
                                 </tbody>
                             </table>
                         </div>
