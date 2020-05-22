@@ -299,10 +299,8 @@ class Child extends Model implements HasMedia
 
     public function addVerificationDoc($file)
     {
-        $media = $this->addMedia($file)->sanitizingFileName(function ($fileName) {
-            return $this->id . str_random(5) . '.' . explode('.', $fileName)[1];
+        return $this->addMedia($file)->sanitizingFileName(function ($name) {
+            return $this->id . str_random(5) . '.' . pathinfo($name, PATHINFO_EXTENSION);
         })->toMediaCollection('verification');
-
-        return $media;
     }
 }
