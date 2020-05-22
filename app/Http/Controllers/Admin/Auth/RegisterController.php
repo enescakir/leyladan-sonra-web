@@ -52,6 +52,8 @@ class RegisterController extends Controller
     {
         $faculties = Faculty::toSelect(null, 'full_name', 'id', 'name');
         $roles = Role::toSelect();
+        $roles->forget(["left", "graduated"]);
+
         return view('admin.auth.register', compact('faculties', 'roles'));
     }
 
@@ -79,7 +81,7 @@ class RegisterController extends Controller
             'password'   => 'required|min:8|confirmed',
             'faculty_id' => 'required',
             'gender'     => 'required',
-            'birthday'   => 'required|max:255',
+            'birthday'   => 'required|date|date_format:d.m.Y',
             'mobile'     => 'required|max:255',
             'year'       => 'required|max:255',
             'role'       => 'required|max:255',
