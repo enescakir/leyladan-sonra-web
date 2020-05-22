@@ -86,6 +86,7 @@ class Sms extends Model
         curl_setopt($ch, CURLOPT_TIMEOUT, 120);
 
         $result = curl_exec($ch);
+
         return $result;
     }
 
@@ -114,7 +115,12 @@ class Sms extends Model
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 120);
-        $result = curl_exec($ch);
-        return (string)simplexml_load_string($result)->balance->sms;
+        $response = simplexml_load_string(curl_exec($ch));
+
+        if (!$response) {
+            return 0;
+        }
+
+        return (string)$response->balance->sms;
     }
 }
