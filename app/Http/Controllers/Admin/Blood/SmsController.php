@@ -42,7 +42,7 @@ class SmsController extends Controller
             'cities'      => 'required',
             'blood_types' => 'required',
             'rhs'         => 'required',
-            'message'     => 'required|string|max:255',
+            'message'     => 'required|string|max:150|min:20',
         ]);
 
         $blood_types = $request->blood_types;
@@ -58,6 +58,10 @@ class SmsController extends Controller
     public function send(Request $request)
     {
         $this->authorize('send', Blood::class);
+
+        $this->validate($request, [
+            'message' => 'required|string|max:150|min:20',
+        ]);
 
         $sms = Sms::create([
             'title'          => 'LEYLADANSNR',
@@ -77,6 +81,10 @@ class SmsController extends Controller
     public function test(Request $request)
     {
         $this->authorize('send', Blood::class);
+
+        $this->validate($request, [
+            'message' => 'required|string|max:150|min:20',
+        ]);
 
         $sms = Sms::create([
             'title'          => 'LEYLADANSNR',
