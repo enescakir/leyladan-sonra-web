@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Child;
 
+use App\Enums\ProcessType;
 use App\Filters\PostFilter;
 use App\Http\Controllers\Controller;
 use App\Services\NotificationService;
+use App\Services\ProcessService;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Enums\PostType;
@@ -44,9 +46,6 @@ class PostController extends Controller
 
         if ($request->approval) {
             $post->approve();
-            if ($post->type == PostType::Delivery) {
-                NotificationService::sendGiftDeliveredNotification($post->child);
-            }
         }
 
         return redirect()->to(request('redirect', route('admin.post.edit', $post->id)));
@@ -66,10 +65,6 @@ class PostController extends Controller
         $this->authorize('approve', $post);
 
         $post->approve($request->approval);
-
-        if ($request->approval && $post->type == PostType::Delivery) {
-            NotificationService::sendGiftDeliveredNotification($post->child);
-        }
 
         return api_success([
             'approval' => (int)$post->isApproved(),

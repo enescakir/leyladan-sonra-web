@@ -22,14 +22,9 @@ use App\Filters\ChildFilter;
 
 class ChildController extends Controller
 {
-    protected $processService;
-    protected $feedService;
-
-    public function __construct(ProcessService $processService, FeedService $feedService)
+    public function __construct()
     {
         $this->middleware('auth');
-        $this->processService = $processService;
-        $this->feedService = $feedService;
     }
 
     public function index(ChildFilter $filters)
@@ -102,8 +97,8 @@ class ChildController extends Controller
             $child->save();
         }
 
-        $this->processService->create($child, ProcessType::Created);
-        $this->feedService->create($child->faculty, FeedType::ChildCreated, ['child' => $child->full_name]);
+        ProcessService::create($child, ProcessType::Created);
+        FeedService::create($child->faculty, FeedType::ChildCreated, ['child' => $child->full_name]);
 
         session_success("<strong>{$child->full_name}</strong> başarıyla sisteme eklendi.");
         return redirect()->route('admin.child.show', $child->id);
@@ -185,8 +180,8 @@ class ChildController extends Controller
         $child->processes()->delete();
         $child->chats()->delete();
 
-        $this->processService->create($child, ProcessType::Deleted);
-        $this->feedService->create(
+        ProcessService::create($child, ProcessType::Deleted);
+        FeedService::create(
             $child->faculty,
             FeedType::ChildDeleted,
             ['child' => $child->full_name, 'user' => auth()->user()->full_name]

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\PostType;
+use App\Enums\ProcessType;
+use App\Services\FeedService;
 use App\Services\ProcessService;
 use EnesCakir\Helper\Traits\Approvable;
 use EnesCakir\Helper\Traits\BaseActions;
@@ -94,11 +96,18 @@ class Post extends Model implements HasMedia
     // Helpers
     public function approve($approval = true)
     {
+        if ($approval == $this->isApproved()) {
+            return;
+        }
+
         $this->approveTrait($approval);
 
-        (new ProcessService())->createPost($this->child, $approval, $this);
+        ProcessService::createPost($this->child, $approval, $this);
 
-        return $this->save();
+        if ($approval && $this->type == PostType::Delivery) {
+            $process = ProcessService::create($this->child, ProcessType::GiftDelivered);
+            FeedService::fromProcess($process);
+        }
     }
 
     public function change($request, $suffix)

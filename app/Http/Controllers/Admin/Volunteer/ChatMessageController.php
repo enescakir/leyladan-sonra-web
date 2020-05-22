@@ -11,12 +11,9 @@ use App\Models\Chat;
 
 class ChatMessageController extends Controller
 {
-    protected $processService;
-
-    public function __construct(ProcessService $processService)
+    public function __construct()
     {
         $this->middleware('auth');
-        $this->processService = $processService;
     }
 
     public function index(Request $request, Chat $chat)
@@ -51,7 +48,7 @@ class ChatMessageController extends Controller
             $chat->child->volunteered($volunteer);
             $chat->answer();
             $chat->answerMessages();
-            $this->processService->create($chat->child, ProcessType::VolunteerDecided, $volunteer);
+            ProcessService::create($chat->child, ProcessType::VolunteerDecided, $volunteer);
         }
 
         return api_success();
