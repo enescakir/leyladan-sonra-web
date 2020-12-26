@@ -111,8 +111,8 @@
 
     <!-- Main Footer -->
     <footer class="main-footer">
-        2019 &copy; <a href="https://www.github.com/enescakir/leyladan-sonra-web" target="_blank">Enes Çakır</a>.
-        Leyla'dan Sonra Yönetim Programı. v3.1.0
+        {{ date("Y") }} &copy; <a href="https://www.github.com/enescakir/leyladan-sonra-web" target="_blank">Enes Çakır</a>.
+        Leyla'dan Sonra Yönetim Programı. v{{ config('app.version')}}
     </footer>
 </div>
 <!-- ./wrapper -->
