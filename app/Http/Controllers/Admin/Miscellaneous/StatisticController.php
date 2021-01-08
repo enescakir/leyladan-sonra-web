@@ -7,6 +7,7 @@ use App\Enums\ChatStatus;
 use App\Enums\GiftStatus;
 use App\Enums\ProcessType;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\Role;
@@ -18,36 +19,88 @@ use Analytics;
 use Spatie\Analytics\Period;
 use App\Models\Faculty;
 use App\Models\Blood;
+use Carbon\Carbon;
 
 class StatisticController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
+        Builder::macro('dateIn', function ($startAt, $endAt, $column = 'created_at') {
+            if ($startAt != null) {
+                $this->where($column, '>=', $startAt);
+            }
+
+            if ($endAt != null) {
+                $this->where($column, '<=', $endAt);
+            }
+            return $this;
+        });
     }
 
-    public function child()
+    public function child(Request $request)
     {
-        $youngestChild = Child::orderby('birthday', 'DESC')->whereNotNull('birthday')->first();
-        $oldestChild = Child::orderby('birthday')->whereYear('birthday', '>', 1950)->first();
-        $ageAverage = DB::table('children')->selectRaw('AVG(TIMESTAMPDIFF(YEAR, birthday, CURDATE())) AS `average`')
+        $startAt = $request->has('start_at') ? Carbon::parse($request->start_at)->format('Y-m-d') : null;
+        $endAt = $request->has('end_at') ? Carbon::parse($request->end_at)->format('Y-m-d') : null;
+
+        $youngestChild = Child::orderby('birthday', 'DESC')
+            ->whereNotNull('birthday')
+            ->dateIn($startAt, $endAt)
+            ->first();
+        $oldestChild = Child::orderby('birthday')
             ->whereYear('birthday', '>', 1950)
-            ->get()[0];
-        $childByCity = Child::select('city', DB::raw('count(*) as count'))->groupBy('city')->orderBy('count', 'DESC')
-            ->get()->pluck('count', 'city');
-        $childByDiagnosis = Child::select('diagnosis', DB::raw('count(*) as count'))->groupBy('diagnosis')
-            ->orderBy('count', 'DESC')->get()->pluck('count', 'diagnosis');
-        $childByDepartment = Child::select('department', DB::raw('count(*) as count'))->groupBy('department')
-            ->orderBy('count', 'DESC')->get()->pluck('count', 'department');
-        $childByGift = Child::select('gift_state', DB::raw('count(*) as count'))->groupBy('gift_state')
-            ->orderBy('count', 'DESC')->get()->pluck('count', 'gift_state');
+            ->dateIn($startAt, $endAt)
+            ->first();
+        $ageAverage = DB::table('children')
+            ->selectRaw('AVG(TIMESTAMPDIFF(YEAR, birthday, CURDATE())) AS `average`')
+            ->whereYear('birthday', '>', 1950)
+            ->dateIn($startAt, $endAt)
+            ->first();
+        $childByCity = Child::select('city', DB::raw('count(*) as count'))
+            ->dateIn($startAt, $endAt)
+            ->groupBy('city')
+            ->orderBy('count', 'DESC')
+            ->get()
+            ->pluck('count', 'city');
+        $childByDiagnosis = Child::select('diagnosis', DB::raw('count(*) as count'))
+            ->dateIn($startAt, $endAt)
+            ->groupBy('diagnosis')
+            ->orderBy('count', 'DESC')
+            ->get()
+            ->pluck('count', 'diagnosis');
+        $childByDepartment = Child::select('department', DB::raw('count(*) as count'))
+            ->dateIn($startAt, $endAt)
+            ->groupBy('department')
+            ->orderBy('count', 'DESC')
+            ->get()
+            ->pluck('count', 'department');
+        $childByGift = Child::select('gift_state', DB::raw('count(*) as count'))
+            ->dateIn($startAt, $endAt)
+            ->groupBy('gift_state')
+            ->orderBy('count', 'DESC')
+            ->get()
+            ->pluck('count', 'gift_state');
         $childByGiftCategory = Child::select(DB::raw('IFNULL(wish_categories.name, "Kategorisiz") as name'), DB::raw('count(*) as count'))
-            ->leftJoin('wish_categories', 'children.wish_category_id', '=', 'wish_categories.id')->groupBy('children.wish_category_id')
-            ->orderBy('count', 'DESC')->get()->pluck('count', 'name');
-        $childByName = Child::select('first_name', DB::raw('count(*) as count'))->groupBy('first_name')
-            ->orderBy('count', 'DESC')->limit(20)->get()->pluck('count', 'first_name');
-        $mostChats = Child::select('id', 'first_name', 'last_name', 'wish', 'faculty_id')->with('faculty')
-            ->withCount('chats')->orderBy('chats_count', 'DESC')->limit(20)->get();
+            ->leftJoin('wish_categories', 'children.wish_category_id', '=', 'wish_categories.id')
+            ->dateIn($startAt, $endAt, 'children.created_at')
+            ->groupBy('children.wish_category_id')
+            ->orderBy('count', 'DESC')
+            ->get()
+            ->pluck('count', 'name');
+        $childByName = Child::select('first_name', DB::raw('count(*) as count'))
+            ->dateIn($startAt, $endAt)
+            ->groupBy('first_name')
+            ->orderBy('count', 'DESC')
+            ->limit(20)
+            ->get()
+            ->pluck('count', 'first_name');
+        $mostChats = Child::select('id', 'first_name', 'last_name', 'wish', 'faculty_id')
+            ->with('faculty')
+            ->withCount('chats')
+            ->dateIn($startAt, $endAt)
+            ->orderBy('chats_count', 'DESC')
+            ->limit(20)
+            ->get();
 
         return view(
             'admin.statistic.child',

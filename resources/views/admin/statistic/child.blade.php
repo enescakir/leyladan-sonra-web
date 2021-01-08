@@ -3,6 +3,25 @@
 @section('title', 'Çocuk İstatistikleri')
 
 @section('styles')
+<style>
+    .date-range-input {
+        float:right;
+        display:flex;
+        margin-bottom: 10px;
+    }
+
+    .date-range-input .input-group-btn {
+        width:auto;
+    }
+
+    @media (max-width: 768px) {
+        .date-range-input {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+
+</style>
 @endsection
 
 @section('header')
@@ -21,11 +40,24 @@
 
 @section('content')
     <div class="row">
+        {!!	Form::open(['method' => 'GET', 'class' => 'col-md-12']) !!}
+            <div class="input-group input-group-sm date-range-input">
+                {!! Form::text('start_at', request()->get('start_at'), ['class' => 'form-control date-picker', 'placeholder' => 'Başlangıç']) !!}
+                {!! Form::text('end_at', request()->get('end_at'), ['class' => 'form-control date-picker', 'placeholder' => 'Bitiş']) !!}
+                <div class="input-group-btn">
+                    <button id="search-btn" class="btn btn-default" type="submit">
+                        <i class="fa fa-search"></i> Uygula
+                    </button>
+                </div>
+            </div>
+        {!!	Form::close() !!}
+    </div>
+    <div class="row">
         <div class="col-md-4 col-sm-6 col-xs-12">
             <!-- small box -->
             <div class="small-box bg-aqua">
                 <div class="inner">
-                    <h3>{{ $oldestChild->birthday->format('d.m.Y') }}</h3>
+                    <h3>{{ $oldestChild != null ? $oldestChild ->birthday->format('d.m.Y') : 'Yok' }}</h3>
                     <p>En Büyük Çocuk</p>
                 </div>
                 <div class="icon">
@@ -38,7 +70,7 @@
             <!-- small box -->
             <div class="small-box bg-red">
                 <div class="inner">
-                    <h3>{{ $youngestChild->birthday->format('d.m.Y') }}</h3>
+                    <h3>{{ $youngestChild != null ? $youngestChild ->birthday->format('d.m.Y') : 'Yok' }}</h3>
                     <p>En Küçük Çocuk</p>
                 </div>
                 <div class="icon">
@@ -51,7 +83,7 @@
             <!-- small box -->
             <div class="small-box bg-yellow">
                 <div class="inner">
-                    <h3>{{ $ageAverage->average }}</h3>
+                    <h3>{{ $ageAverage->average ?? 'Yok' }}</h3>
                     <p>Yaş Ortalaması</p>
                 </div>
                 <div class="icon">
