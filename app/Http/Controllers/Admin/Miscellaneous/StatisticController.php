@@ -41,9 +41,11 @@ class StatisticController extends Controller
             ->orderBy('count', 'DESC')->get()->pluck('count', 'department');
         $childByGift = Child::select('gift_state', DB::raw('count(*) as count'))->groupBy('gift_state')
             ->orderBy('count', 'DESC')->get()->pluck('count', 'gift_state');
+        $childByGiftCategory = Child::select(DB::raw('IFNULL(wish_categories.name, "Kategorisiz") as name'), DB::raw('count(*) as count'))
+            ->leftJoin('wish_categories', 'children.wish_category_id', '=', 'wish_categories.id')->groupBy('children.wish_category_id')
+            ->orderBy('count', 'DESC')->get()->pluck('count', 'name');
         $childByName = Child::select('first_name', DB::raw('count(*) as count'))->groupBy('first_name')
             ->orderBy('count', 'DESC')->limit(20)->get()->pluck('count', 'first_name');
-
         $mostChats = Child::select('id', 'first_name', 'last_name', 'wish', 'faculty_id')->with('faculty')
             ->withCount('chats')->orderBy('chats_count', 'DESC')->limit(20)->get();
 
@@ -57,6 +59,7 @@ class StatisticController extends Controller
                 'childByDiagnosis',
                 'childByDepartment',
                 'childByGift',
+                'childByGiftCategory',
                 'childByName',
                 'mostChats'
             )
